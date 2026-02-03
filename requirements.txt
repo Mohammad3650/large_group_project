@@ -1,0 +1,22 @@
+
+Django==5.2.7
+djangorestframework>=3.14
+djangorestframework-simplejwt>=5.3
+django-cors-headers>=4.3
+python-dotenv>=1.0
+psycopg2-binary>=2.9
+pytz
+
+# Django – core backend framework
+
+# djangorestframework – clean API for React
+
+# simplejwt – token-based auth (easy with React)
+
+# cors-headers – required for frontend → backend calls
+
+# python-dotenv – keep secrets out of git
+
+# psycopg2-binary – safe if you later move to Postgres
+
+# pytz – timezone handling (important for schedules)
