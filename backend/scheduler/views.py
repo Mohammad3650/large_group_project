@@ -7,8 +7,7 @@ from django.urls import reverse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import UserPreferences, User
-from .forms import UserPreferencesForm, UserPreferencesFormSet
+from .forms import UserPreferencesFormSet
 
 
 @api_view(["GET"])

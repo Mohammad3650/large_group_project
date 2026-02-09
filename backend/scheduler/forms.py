@@ -1,27 +1,6 @@
 from django import forms
-from .models import UserPreferences, DayPlan, TimeBlock
+from .models import TimeBlock
 from django.forms import formset_factory
-
-# class UserPreferencesForm(forms.ModelForm):
-#     class Meta:
-#         model = UserPreferences
-#         fields = [
-#             "sleep_start",
-#             "sleep_end",
-#             "study_start",
-#             "study_end",
-#             "commute_start",
-#             "commute_end",
-#             "day",
-#         ]
-#         widgets = {
-#             "sleep_start": forms.TimeInput(attrs={"type": "time"}),
-#             "sleep_end": forms.TimeInput(attrs={"type": "time"}),
-#             "study_start": forms.TimeInput(attrs={"type": "time"}),
-#             "study_end": forms.TimeInput(attrs={"type": "time"}),
-#             "commute_start": forms.TimeInput(attrs={"type": "time"}),
-#             "commute_end": forms.TimeInput(attrs={"type": "time"}),
-#         }
 
 
 class UserPreferencesForm(forms.ModelForm):
