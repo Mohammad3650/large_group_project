@@ -53,6 +53,14 @@ class Scheduler:
         """Prevent any overlaps between all scheduled and newly created intervals."""
         self.model.AddNoOverlap(self.intervals)
 
+    def earlyBiasConstraints(self):
+        """Bias the scheduler to select earliest start times"""
+        self.model.Minimize(sum(s[0] for s in self.newSessions))
+    
+    def lateBiasConstraints(self):
+        """Bias the scheduler to select latest start times"""
+        self.model.Maximize(sum(s[0] for s in self.newSessions))
+
     def _startSolver(self):
         """Instantiate and run the solver."""
         self.solver = cp_model.CpSolver()
