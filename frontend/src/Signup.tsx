@@ -41,8 +41,10 @@ function Signup() {
                 setAuthToken(token);
                 nav("/");
             }
-        } catch (err) {
-            setError("Signup failed. Please try again")
+        } catch (err: any) {
+            console.log("STATUS:", err?.response?.status);
+            console.log("ERROR DATA:", err?.response?.data); // <-- THIS
+            setError(JSON.stringify(err?.response?.data));
         }
     }
 
