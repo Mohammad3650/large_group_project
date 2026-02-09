@@ -43,6 +43,7 @@ function Signup() {
             }
         } catch (err) {
             setError("Signup failed. Please try again")
+            console.error("Signup error:", err);
         }
     }
 

@@ -1,11 +1,13 @@
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 from scheduler.serializer.users_serializer import UserRegistrationSerializer, UserDetailsSerializer
 
+
+@permission_classes([AllowAny])
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
-    permission_classes = [AllowAny]
 
 
 class UserDetailsView(generics.RetrieveUpdateAPIView):

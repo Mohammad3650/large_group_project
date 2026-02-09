@@ -9,6 +9,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<TestPage />} />
+
+        {/* <Route path="/auth/*" element={<AuthLayout />}>         */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>

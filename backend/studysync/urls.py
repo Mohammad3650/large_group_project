@@ -24,8 +24,10 @@ from scheduler.views.user_auth import UserRegistrationView, UserDetailsView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("scheduler/health/", serverTest.health),
-    path("scheduler/user/register/", UserRegistrationView.as_view(), name="user-register"),
-    path("scheduler/user/profile/", UserDetailsView.as_view(), name="user-profile"),
+    path("auth/signup/", UserRegistrationView.as_view(), name="user-signup"),
+    path("auth/login/", UserRegistrationView.as_view(), name="user-login"),
+    # path("dashboard/", placeholder.as_view(), name="dashboard"),
+    path("auth/profile/", UserDetailsView.as_view(), name="user-profile"),
 
     # JWT auth
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
