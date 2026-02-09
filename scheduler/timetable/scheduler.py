@@ -1,6 +1,6 @@
 from ortools.sat.python import cp_model
 from typing import List, Tuple
-
+from utils import TimeUtils
 class Scheduler:
     """
     Constrains based scheduler using OR-Tools CP-SAT.
