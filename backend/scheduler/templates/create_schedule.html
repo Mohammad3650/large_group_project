@@ -17,21 +17,36 @@
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
+                        <div class="row px-5 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">User</label>
+                                {{ dayplan_form.user|as_crispy_field }}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form.label fw-bold">Date</label>
+                                {{ dayplan_form.date|as_crispy_field }}
+                                <div class="form-text">
+                                    Weekday: <span id="weekdayLabel" class="fw-semibold"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="mx-5 mb-4">
+                            
                         {{ pref_formset.management_form }}
                         <div id="schedule-forms">
                         {% for pref_form in pref_formset %}
                         <div class="schedule-form">
                             <div class="row px-5">
                                 <div class="col justify-content-center">
-                                    {{ pref_form }}
+                                    {{ pref_form|crispy }}
                                 </div>
                             </div>
-                            <div class="row mt-5 mb-5 px-5">
-                            </div>
-                            </div>
-                        </div>
+                            <div class="row mt-5 mb-5 px-5"></div>
                         </div>
                         {% endfor %}
+                        </div>
 
                         <div class="d-grid mb-4">
                             <div id='empty-form' class="hidden">{{ pref_formset.empty_form }}</div>
@@ -56,10 +71,25 @@
   </div>
 
 <script>
+    const dateInput = document.querySelector('input[type="date"]');
+    const weekdayLabel = document.getElementById("weekdayLabel");
+
+    function updateWeekdayLabel() {
+      if (!dateInput || !dateInput.value) {
+        weekdayLabel.textContent = "";
+        return;
+      }
+      const d = new Date(dateInput.value + "T00:00:00");
+      weekdayLabel.textContent = d.toLocaleDateString(undefined, { weekday: "long" });
+    }
+
+    if (dateInput) {
+      dateInput.addEventListener("change", updateWeekdayLabel);
+      updateWeekdayLabel();
+    }
+
     const addMoreBtn = document.getElementById('add-more')
     const totalNewForms = document.getElementById('id_form-TOTAL_FORMS')
-
-
 
     addMoreBtn.addEventListener('click', add_new_form)
 

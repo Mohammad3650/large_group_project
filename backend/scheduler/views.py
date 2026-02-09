@@ -1,14 +1,11 @@
-from django.forms import formset_factory
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.urls import reverse
+from django.shortcuts import render, redirect
+from django.db import transaction
 
-# Create your views here.
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .forms import UserPreferencesFormSet
-
+from .forms import DayPlanForm, TimeBlockFormSet
+from .models import DayPlan, TimeBlock
 
 @api_view(["GET"])
 def health(request):
@@ -19,21 +16,41 @@ def welcome(request):
     return render(request, "welcome.html")
 
 
-def save_preferences_formset(formset):
-    for form in formset:
-        if form.cleaned_data:
-            form.save()
+def save_preferences_formset(formset, dayplan):
+    blocks = formset.save(commit=False)
+    for block in blocks:
+        block.day = dayplan
+        block.save()
 
+def delete_object_in_formset(formset):
+    for obj in formset.deleted_objects:
+        obj.delete()
 
+@transaction.atomic
 def create_schedule(request):
     if request.method == "POST":
-        preferences_formset = UserPreferencesFormSet(request.POST)
-        if preferences_formset.is_valid():
-            save_preferences_formset(preferences_formset)
-            path = reverse("welcome")
-            return HttpResponseRedirect(path)
+        dayplan_form = DayPlanForm(request.POST)
+        formset = TimeBlockFormSet(request.POST, queryset=TimeBlock.objects.none())
+
+        if dayplan_form.is_valid() and formset.is_valid():
+            user = dayplan_form.cleaned_data["user"]
+            date = dayplan_form.cleaned_data["date"]
+
+            dayplan, _ = DayPlan.objects.get_or_create(user=user, date=date)
+
+            TimeBlock.objects.filter(day=dayplan).delete()
+            
+            save_preferences_formset(formset, dayplan)
+            delete_object_in_formset(formset)
+
+            return redirect("welcome")
     else:
-        preferences_formset = UserPreferencesFormSet()
+        dayplan_form = DayPlanForm()
+        formset = TimeBlockFormSet(queryset=TimeBlock.objects.none())
+    
     return render(
-        request, "create_schedule.html", {"pref_formset": preferences_formset}
+        request,
+        "create_schedule.html",
+        {"dayplan_form": dayplan_form, "pref_formset": formset},
     )
+

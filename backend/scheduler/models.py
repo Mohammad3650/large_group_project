@@ -31,14 +31,3 @@ class TimeBlock(models.Model):
     block_type = models.CharField(max_length=10, choices=BLOCK_TYPE_CHOICES)
 
 
-# Choices for day of the week
-
-# DAYS_OF_THE_WEEK = [
-#     ("MON", "Monday"),
-#     ("TUE", "Tuesday"),
-#     ("WED", "Wednesday"),
-#     ("THU", "Thrusday"),
-#     ("FRI", "Friday"),
-#     ("SAT", "Saturday"),
-#     ("SUN", "Sunday"),
-# ]
