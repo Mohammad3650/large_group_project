@@ -25,27 +25,32 @@ function Signup() {
         }
         
         try {
-            const response = await api.post("/auth/signup/", {
-                email: email,
-                username: username,
+
+            await api.post("/auth/signup/", {
+                email,
+                username,
                 first_name: firstName,
                 last_name: lastName,
                 phone_number: phoneNumber,
-                password: password,
+                password,
             });
 
-            const token = response.data.access ? response.data.access : response.data.token;
+            const res = await api.post("/api/token/", {
+                email,
+                password,
+            });
 
-            if (token) {
-                localStorage.setItem("token", token);
-                setAuthToken(token);
-                nav("/dashboard");
-            }
-        } catch (err: any) {
-            console.log("STATUS:", err?.response?.status);
-            console.log("ERROR DATA:", err?.response?.data); // <-- THIS
-            setError(JSON.stringify(err?.response?.data));
+            localStorage.setItem("access", res.data.access);
+            localStorage.setItem("refresh", res.data.refresh);
+
+            setAuthToken(res.data.access);
+            nav("/dashboard");
+
+        } catch {
+            setError("Signup failed");
         }
+            
+
     }
 
     return (

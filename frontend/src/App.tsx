@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TestPage from "./testpage";
 import Login from "./Login";
 import Signup from "./Signup"
-import Dashboard from "./dashboard";
+import ProtectedRoute from "./ProtectedRoute";
+import Dashboard from "./Dashboard";
 import { setAuthToken } from "./api";
 
 
@@ -21,7 +22,11 @@ function App() {
         {/* <Route path="/auth/*" element={<AuthLayout />}>         */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
       </Routes>
     </BrowserRouter>
 
