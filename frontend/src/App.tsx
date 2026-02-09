@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import TestPage from "./testpage";
+import Login from "./Login";
+import Signup from "./Signup"
+
 
 function App() {
-  const [status, setStatus] = useState<string>("loading...");
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/scheduler/health/")
-      .then((res) => res.json())
-      .then((data) => setStatus(data.status))
-      .catch(() => setStatus("error"));
-  }, []);
-
   return (
-    <div style={{ padding: 24 }}>
-      <h1>Frontend ↔ Backend Test</h1>
-      <p>Django says: <b>{status}</b></p>
-    </div>
-  );
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<TestPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </BrowserRouter>
+
+  )
 }
 
 export default App;
