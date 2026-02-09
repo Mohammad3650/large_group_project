@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 function TestPage() {
-  const [status, setStatus] = useState<string>("loading...");
+  const [status, setStatus] = useState("loading...");
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/scheduler/health/")

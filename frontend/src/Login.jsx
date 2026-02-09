@@ -13,14 +13,14 @@ function Login() {
         setError("");
 
         try {
-            const res = await api.post("/api/token/", { email, password });
+            const res = await api.post("/token/", { email, password });
 
             localStorage.setItem("access", res.data.access);
             localStorage.setItem("refresh", res.data.refresh);
 
             setAuthToken(res.data.access)
 
-            nav("/dashboard");
+            nav("/profile");
         } catch (err) {
             setError("Login failed")
         }

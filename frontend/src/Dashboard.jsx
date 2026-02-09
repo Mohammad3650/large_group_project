@@ -5,17 +5,17 @@ import LogoutButton from "./logoutButton";
 
 function Dashboard() {
   const nav = useNavigate();
-  const [message, setMessage] = useState<string>("Loading...");
-  const [error, setError] = useState<string>("");
+  const [message, setMessage] = useState("Loading...");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchDashboard() {
       try {
         const res = await api.get("/dashboard/");
         setMessage(res.data.message);
-      } catch (err: any) {
+      } catch (err) {
         if (err?.response?.status === 401) {
-          nav("/login"); // token missing/expired
+          nav("/login"); // token missing / expired
         } else {
           setError("Failed to load dashboard");
         }
@@ -31,14 +31,12 @@ function Dashboard() {
 
   return (
     <>
-    <div>
-      <h1>{message}</h1>
-    </div>
+      <div>
+        <h1>{message}</h1>
+      </div>
 
-    <LogoutButton />
+      <LogoutButton />
     </>
-
-
   );
 }
 
