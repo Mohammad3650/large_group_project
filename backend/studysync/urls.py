@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from scheduler.views import health
+from scheduler import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('scheduler/health/', health),
+    path('', views.welcome, name='welcome'),
+    path('create_schedule', views.create_schedule, name='create-schedule')
 ]
 
