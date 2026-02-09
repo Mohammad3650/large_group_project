@@ -2,6 +2,36 @@ from ortools.sat.python import cp_model
 from typing import List, Tuple
 
 class Scheduler:
+    """
+    Constrains based scheduler using OR-Tools CP-SAT.
+
+    Inputs:
+        days - no. of days in planning horizon.
+            The solvers domain is [0, 24*60*days]
+        
+        windows - Allowed timed windows during which unsheduled events may start.
+            Format: (start_min, end_min) in absolute minutes since day 0.
+            Example: If the user allows events scheduled between 9AM - 5PM on day 2 -> (1980, 2460)
+        
+        scheduled - Fixed events already placed on the calendar.
+            Format: (start_min, end_min, name) in absolute minutes since day 0.
+            Example: If the user has a lecture from 10AM - 12PM on day 2 -> (2040, 2220, "FC2 lecture")
+        
+        unscheduled - Sessions to take place that the sheduler will assign times to.
+            Format: (duration_mins, name)
+            Example: If the user would like to schedule a 1 hour revision session -> (60, "Revision")
+    
+    Output:
+        Returns:
+            - Solutions: List[Tuple(start_min, end_min, duration, name)] - 
+                Start and end times in minutes for all events in 'unscheduled' input.
+            - [] 
+                If no feasible solution found or if `unscheduled` is empty.
+        
+    Notes: 
+        - All unscheduled sessions must start within exactly one window
+        - All intervals (scheduled and unscheduled) are non-overlapping
+    """
     def __init__(self, days: int, windows: List[Tuple[int, int]], scheduled: List[Tuple[int, int, str]], unscheduled: List[Tuple[int, str]]):
         # Problem inputs
         self.days = days
