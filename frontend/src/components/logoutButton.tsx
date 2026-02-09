@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { logout } from "./api";
+import { logout } from "../api";
 
 function LogoutButton() {
   const nav = useNavigate();

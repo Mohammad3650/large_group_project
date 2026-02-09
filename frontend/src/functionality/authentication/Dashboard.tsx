@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "./api";
-import LogoutButton from "./logoutButton";
+import { api } from "../../api";
+import LogoutButton from "../../components/logoutButton";
 
 function Dashboard() {
   const nav = useNavigate();

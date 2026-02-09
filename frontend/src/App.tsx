@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TestPage from "./testpage";
-import Login from "./Login";
-import Signup from "./Signup"
-import ProtectedRoute from "./ProtectedRoute";
-import Dashboard from "./Dashboard";
+import Login from "./functionality/authentication/Login";
+import Signup from "./functionality/authentication/Signup"
+import ProtectedRoute from "./components/ProtectedRoute";
+import Dashboard from "./functionality/authentication/Dashboard";
 import { setAuthToken } from "./api";
 
 

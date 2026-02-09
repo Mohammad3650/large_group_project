@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { api, setAuthToken } from "./api"
+import { api, setAuthToken } from "../../api"
 
 function Login() {
     const nav = useNavigate();
