@@ -26,6 +26,6 @@ TimeBlockFormSet = modelformset_factory(
     TimeBlock,
     form=TimeBlockForm,
     extra=1,
-    can_delete=True
+    can_delete=False
 )
 
