@@ -1,6 +1,8 @@
 from ortools.sat.python import cp_model
 from typing import List, Tuple
 from utils import TimeUtils
+
+
 class Scheduler:
     """
     Constrains based scheduler using OR-Tools CP-SAT.
@@ -116,3 +118,30 @@ class Scheduler:
             s = self.solver.Value(start)
             e = self.solver.Value(end)
             print(f"Session {i+1} ; {name}: {s} - {e} ; {duration}")
+
+#EXAMPLE USEAGE
+# days = 1
+# windows = [
+    # (hm_to_min("08:00"), hm_to_min("11:00"))
+    # (hm_to_min("13:30"), hm_to_min("18:"))
+    # ]
+# scheduled = [
+    # start, end, name
+    # (hm_to_min("10:00"), hm_to_min("11:00"), "lecture 1")
+    # (hm_to_min("14:00"), hm_to_min("14:55"), "lecture 2")
+    # ]
+# unscheduled = [
+    #     duration, name
+    #     (60, "gym"),
+    #     (120, "FC2 Revision"),
+    #     (45, "SEG meeting")
+    # ]
+
+# --- Most of this can be abstracted away making the process simpler ----
+# scheduler = Scheduler(days, windows, scheduled, unscheduled)
+# scheduler.create_scheduled_intervals()
+# scheduler.create_unscheduled_intervals()
+# scheduler.overlapConstraints()
+# scheduler.earlyBiasConstrains()
+# scheduler.solve()
+# scheduler.debugOutput()
