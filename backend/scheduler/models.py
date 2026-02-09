@@ -33,12 +33,12 @@ class TimeBlock(models.Model):
 
 # Choices for day of the week
 
-DAYS_OF_THE_WEEK = [
-    ("MON", "Monday"),
-    ("TUE", "Tuesday"),
-    ("WED", "Wednesday"),
-    ("THU", "Thrusday"),
-    ("FRI", "Friday"),
-    ("SAT", "Saturday"),
-    ("SUN", "Sunday"),
-]
+# DAYS_OF_THE_WEEK = [
+#     ("MON", "Monday"),
+#     ("TUE", "Tuesday"),
+#     ("WED", "Wednesday"),
+#     ("THU", "Thrusday"),
+#     ("FRI", "Friday"),
+#     ("SAT", "Saturday"),
+#     ("SUN", "Sunday"),
+# ]
