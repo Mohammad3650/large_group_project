@@ -44,18 +44,3 @@ DAYS_OF_THE_WEEK = [
     ("SUN", "Sunday"),
 ]
 
-
-class UserPreferences(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="user_preferences"
-    )
-    sleep_start = models.TimeField()
-    sleep_end = models.TimeField()
-
-    study_start = models.TimeField()
-    study_end = models.TimeField()
-
-    commute_start = models.TimeField()
-    commute_end = models.TimeField()
-
-    day = models.CharField(max_length=3, choices=DAYS_OF_THE_WEEK)
