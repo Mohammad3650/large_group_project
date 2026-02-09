@@ -1,3 +1,4 @@
+from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -16,3 +17,11 @@ class UserDetailsView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+class DashboardView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return Response({"message": f"Welcome to your dashboard, {request.user.username}!"})
+    
+

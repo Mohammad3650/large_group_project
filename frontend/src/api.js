@@ -14,3 +14,14 @@ export function setAuthToken(token) {
         delete api.defaults.headers.common["Authorization"];
     }
 }
+
+export function logout() {
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
+  setAuthToken(null);
+}
+
+const token = localStorage.getItem("access");
+if (token) {
+  setAuthToken(token);
+}

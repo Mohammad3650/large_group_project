@@ -39,7 +39,7 @@ function Signup() {
             if (token) {
                 localStorage.setItem("token", token);
                 setAuthToken(token);
-                nav("/");
+                nav("/dashboard");
             }
         } catch (err: any) {
             console.log("STATUS:", err?.response?.status);

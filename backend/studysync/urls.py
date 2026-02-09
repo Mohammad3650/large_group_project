@@ -24,14 +24,14 @@ from rest_framework_simplejwt.views import (
 )
 
 from scheduler.views import serverTest
-from scheduler.views.user_auth import UserRegistrationView, UserDetailsView
+from scheduler.views.user_auth import UserRegistrationView, UserDetailsView, DashboardView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("scheduler/health/", serverTest.health),
     path("auth/signup/", UserRegistrationView.as_view(), name="user-signup"),
     path("auth/login/", UserRegistrationView.as_view(), name="user-login"),
-    # path("dashboard/", placeholder.as_view(), name="dashboard"),
+    path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("auth/profile/", UserDetailsView.as_view(), name="user-profile"),
     
     # JWT auth
