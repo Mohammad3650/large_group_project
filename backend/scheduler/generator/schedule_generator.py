@@ -1,6 +1,6 @@
 from ortools.sat.python import cp_model
 from typing import List, Tuple
-from utils import TimeUtils
+from .utils import TimeUtils
 
 
 class Scheduler:
@@ -11,7 +11,7 @@ class Scheduler:
         days - no. of days in planning horizon.
             The solvers domain is [0, 24*60*days]
         
-        windows - Allowed timed windows during which unsheduled events may start.
+        windows - Allowed timed windows during which unscheduled events may start.
             Format: (start_min, end_min) in absolute minutes since day 0.
             Example: If the user allows events scheduled between 9AM - 5PM on day 2 -> (1980, 2460)
         
@@ -19,7 +19,7 @@ class Scheduler:
             Format: (start_min, end_min, name) in absolute minutes since day 0.
             Example: If the user has a lecture from 10AM - 12PM on day 2 -> (2040, 2220, "FC2 lecture")
         
-        unscheduled - Sessions to take place that the sheduler will assign times to.
+        unscheduled - Sessions to take place that the scheduler will assign times to.
             Format: (duration_mins, name)
             Example: If the user would like to schedule a 1 hour revision session -> (60, "Revision")
     
@@ -100,6 +100,7 @@ class Scheduler:
 
     def solve(self):
         """Solve the model and return solutions list"""
+        """self._startSolver(self.model)"""""
         self._startSolver()
 
         if self.status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
