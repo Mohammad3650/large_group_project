@@ -19,11 +19,6 @@
                         {% csrf_token %}
                         <div class="row px-5 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">User</label>
-                                {{ dayplan_form.user|as_crispy_field }}
-                            </div>
-                            
-                            <div class="col-md-6">
                                 <label class="form.label fw-bold">Date</label>
                                 {{ dayplan_form.date|as_crispy_field }}
                                 <div class="form-text">

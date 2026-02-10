@@ -26,6 +26,7 @@ def delete_object_in_formset(formset):
     for obj in formset.deleted_objects:
         obj.delete()
 
+
 @transaction.atomic
 def create_schedule(request):
     if request.method == "POST":
@@ -33,10 +34,11 @@ def create_schedule(request):
         formset = TimeBlockFormSet(request.POST, queryset=TimeBlock.objects.none())
 
         if dayplan_form.is_valid() and formset.is_valid():
-            user = dayplan_form.cleaned_data["user"]
             date = dayplan_form.cleaned_data["date"]
 
-            dayplan, _ = DayPlan.objects.get_or_create(user=user, date=date)
+            profile = request.user.scheduler_profile
+
+            dayplan, _ = DayPlan.objects.get_or_create(user=profile, date=date)
 
             TimeBlock.objects.filter(day=dayplan).delete()
             
