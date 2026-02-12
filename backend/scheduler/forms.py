@@ -7,7 +7,7 @@ from django.forms import modelformset_factory
 class DayPlanForm(forms.ModelForm):
     class Meta:
         model = DayPlan
-        fields = ["user", "date"]
+        fields = ["date"]
         widgets = {
             "date": forms.DateInput(attrs={"type": "date"}),
         }
