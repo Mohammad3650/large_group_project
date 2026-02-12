@@ -1,17 +1,5 @@
 from django.db import models
-
-# Create your models here.
-
-
-class User(models.Model):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.EmailField()
-
-
-class DayPlan(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField()
+from .DayPlan import DayPlan
 
 
 class TimeBlock(models.Model):

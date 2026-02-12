@@ -1,18 +1,8 @@
-from django.shortcuts import render, redirect
 from django.db import transaction
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-from .forms import DayPlanForm, TimeBlockFormSet
-from .models import DayPlan, TimeBlock
-
-
-@api_view(["GET"])
-def health(request):
-    return Response({"status": "ok"})
+from ..forms import DayPlanForm, TimeBlockFormSet
+from ..models import DayPlan, TimeBlock
 
 
 def welcome(request):
