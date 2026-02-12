@@ -23,7 +23,6 @@ class DayPlan(models.Model):
 class TimeBlock(models.Model):
 
     BLOCK_TYPE_CHOICES = [
-        ("sleep", "Sleep"),
         ("study", "Study"),
         ("lecture", "Lecture"),
         ("lab", "Lab"),
@@ -42,5 +41,8 @@ class TimeBlock(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     block_type = models.CharField(max_length=20, choices=BLOCK_TYPE_CHOICES)
+
+    #add location field, remove day field , remove start and end time and keep it as just how many hours you want to spend, type :daily, weekly, monthly
+    #create more models to inherit time block: academic (add modolue, module code)
 
 
