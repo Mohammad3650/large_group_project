@@ -8,9 +8,13 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false)
 
     async function handleLogin() {
+        if (loading) return;
+
         setError("");
+        setLoading(true);
 
         try {
             const res = await api.post("/api/token/", { email, password });
@@ -23,6 +27,8 @@ function Login() {
             nav("/dashboard");
         } catch (err) {
             setError("Login failed")
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -32,21 +38,29 @@ function Login() {
 
             {(error) && <p>{error}</p>}
 
-            <input placeholder="Email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)}/>
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+            }}
+            >
 
-            <input placeholder="Password" 
-                   type="password" 
-                   value={password}
-                   onChange={(e) => setPassword(e.target.value)}/>
+                <input placeholder="Email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}/>
 
-            <button onClick={handleLogin}>Login</button>
+                <input placeholder="Password" 
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}/>
 
+                <button type="submit" disabled={loading}>
+                    {loading ? "Logging in..." : "Login"}
+                </button>
+            </form>
             <p>
-                No account?
-                <button onClick={() => nav("/signup")}>
-                    Sign up
+                No account?{" "}
+                <button type="button" onClick={() => nav("/signup")} disabled={loading}>
+                Sign up
                 </button>
             </p>
 
