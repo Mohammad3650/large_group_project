@@ -29,5 +29,3 @@ class TimeBlock(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     block_type = models.CharField(max_length=10, choices=BLOCK_TYPE_CHOICES)
-
-

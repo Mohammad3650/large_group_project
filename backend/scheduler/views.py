@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from django.db import transaction
+from django.contrib.auth.decorators import login_required
+
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .forms import DayPlanForm, TimeBlockFormSet
 from .models import DayPlan, TimeBlock
+
 
 @api_view(["GET"])
 def health(request):
@@ -22,10 +25,13 @@ def save_preferences_formset(formset, dayplan):
         block.day = dayplan
         block.save()
 
+
 def delete_object_in_formset(formset):
     for obj in formset.deleted_objects:
         obj.delete()
 
+
+# will be needed @login_required
 @transaction.atomic
 def create_schedule(request):
     if request.method == "POST":
@@ -39,7 +45,7 @@ def create_schedule(request):
             dayplan, _ = DayPlan.objects.get_or_create(user=user, date=date)
 
             TimeBlock.objects.filter(day=dayplan).delete()
-            
+
             save_preferences_formset(formset, dayplan)
             delete_object_in_formset(formset)
 
@@ -47,10 +53,9 @@ def create_schedule(request):
     else:
         dayplan_form = DayPlanForm()
         formset = TimeBlockFormSet(queryset=TimeBlock.objects.none())
-    
+
     return render(
         request,
         "create_schedule.html",
         {"dayplan_form": dayplan_form, "pref_formset": formset},
     )
-
