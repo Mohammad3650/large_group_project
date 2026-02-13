@@ -16,13 +16,20 @@ function Signup() {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
 
     async function handleSignup(e) {
         e.preventDefault();
+
+        if (loading) return;
+
         setError("");
+        setLoading(true);
 
         if (password !== confirmPassword) {
             setError("Passwords do not match");
+            setLoading(false);
             return;
         }
         
@@ -47,6 +54,8 @@ function Signup() {
 
         } catch (err) {
             setError(formatApiError(err));
+        } finally {
+            setLoading(false);
         }
     } 
 
@@ -112,8 +121,8 @@ function Signup() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                 />
 
-                <button>
-                    Sign up
+                <button disabled={loading}>
+                    {loading ? "Signing up" : "Sign up"}
                 </button>
             </form>
 

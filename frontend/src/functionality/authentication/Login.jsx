@@ -10,9 +10,13 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false)
 
     async function handleLogin() {
+        if (loading) return;
+
         setError("");
+        setLoading(true);
 
         try {
             const res = await api.post("/api/token/", { email, password });
@@ -22,21 +26,21 @@ function Login() {
             nav("/dashboard");
         } catch (err) {
             setError(formatApiError(err));
+        } finally {
+            setLoading(false);
         }
     }
 
-        return (
+return (
     <div className="container vh-100 d-flex align-items-center justify-content-center">
       <div className="row w-100 justify-content-center">
           <div className="card shadow-sm">
             <div className="card-body">
               <h3 className="text-center mb-4">Login</h3>
 
-              {error && (
-                <div className="alert alert-danger text-center">
-                  {error}
-                </div>
-              )}
+              {error && (<div className="alert alert-danger text-center">{error}</div>)}
+            
+            <form onSubmit={(e) => {e.preventDefault();handleLogin();}}>
 
               <div className="mb-3">
                 <label className="form-label">Email</label>
@@ -44,42 +48,40 @@ function Login() {
                   type="email"
                   className="form-control"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                  onChange={(e) => setEmail(e.target.value)}/>
               </div>
 
               <div className="mb-3">
                 <label className="form-label">Password</label>
+
                 <input
                   type="password"
                   className="form-control"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                  onChange={(e) => setPassword(e.target.value)}/>
               </div>
 
               <div className="d-grid gap-2">
-                <button
-                  type="button"
-                  className="btn btn-dark"
-                  onClick={handleLogin}
-                >
-                  Login
+                <button type="submit" disabled={loading}>
+                    {loading ? "Logging in..." : "Login"}
+                </button>
+              </div>
+
+            </form>
+
+              <div className="card-footer text-center">
+
+                No account?{" "}
+                <button type="button" onClick={() => nav("/signup")} disabled={loading}>
+                Sign up
                 </button>
 
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary"
-                  onClick={() => nav("/signup")}
-                >
-                  Register
-                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-  );
+      );
 }
 
 export default Login;
