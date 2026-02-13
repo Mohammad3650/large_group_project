@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { api, setAuthToken } from "../../api"
+import { saveTokens } from "../../utils/handleLocalStorage";
+import { api } from "../../api";
+import { formatApiError } from "../../utils/errors";
 
 function Signup() {
     const nav = useNavigate();
@@ -39,25 +41,30 @@ function Signup() {
                 email,
                 password,
             });
+            saveTokens(res.data.access, res.data.refresh);
 
-            localStorage.setItem("access", res.data.access);
-            localStorage.setItem("refresh", res.data.refresh);
-
-            setAuthToken(res.data.access);
             nav("/dashboard");
 
-        } catch {
-            setError("Signup failed");
+        } catch (err) {
+            setError(formatApiError(err));
         }
-            
+    } 
 
-    }
 
     return (
         <div>
             <h2>Sign up</h2>
 
-            {error && <p>{error}</p>}
+
+            {error.length > 0 && (
+            <ul className="error">
+                {error.map((err, index) => (
+                <li key={index}>{err}</li>
+                ))}
+            </ul>
+            )}
+
+
 
             <form onSubmit={handleSignup}>
                 <input 
@@ -114,9 +121,7 @@ function Signup() {
                 Already have an account? <Link to="/login">Log in</Link>
             </p>
         </div>
-    )
-
-
+    );
 }
 
 export default Signup;
