@@ -23,6 +23,7 @@ class TimeBlock(models.Model):
 
     start_time = models.TimeField()
     end_time = models.TimeField()
+    location = models.CharField(max_length=255, blank=True)
     block_type = models.CharField(max_length=20, choices=BLOCK_TYPE_CHOICES)
 
     #add location field, remove day field , remove start and end time and keep it as just how many hours you want to spend, type :daily, weekly, monthly

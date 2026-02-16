@@ -1,103 +1,42 @@
-from django.shortcuts import render, redirect
-from django.db import transaction
-from django.shortcuts import render, redirect
-
-from ..forms import DayPlanForm, TimeBlockFormSet
-from ..models import DayPlan, TimeBlock
-
-from django.contrib.auth import get_user_model
-from ..models import User as ProfileUser
-from django.contrib.auth.decorators import login_required
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import status
 
+from ..models import DayPlan, TimeBlock
+from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
-def get_profile_user(request) -> ProfileUser:
-    """
-    TEMP DEV BEHAVIOUR:
-    - If someone is logged in, use their profile.
-    - Otherwise, use a shared 'dev-user' so the app is usable before login is merged.
-    Delete the dev fallback once real login is ready.
-    """
-    if request.user.is_authenticated:
-        profile, _ = ProfileUser.objects.get_or_create(
-            auth_user=request.user,
-            defaults={
-                "first_name": request.user.first_name,
-                "last_name": request.user.last_name,
-                "email": request.user.email,
-            },
-        )
-        return profile
-
-    # ----- DEV FALLBACK (no login yet) -----
-    AuthUser = get_user_model()
-    dev_auth_user, _ = AuthUser.objects.get_or_create(
-        username="dev-user",
-        defaults={"email": "dev@example.com"},
-    )
-
-    profile, _ = ProfileUser.objects.get_or_create(
-        auth_user=dev_auth_user,
-        defaults={
-            "first_name": "Dev",
-            "last_name": "User",
-            "email": "dev@example.com",
-        },
-    )
-    return profile
-
-def schedule_success(request):
-    return render(request, "schedule_success.html")
-
-@api_view(["GET"])
-def health(request):
-    return Response({"status": "ok"})
-
-
-def welcome(request):
-    return render(request, "welcome.html")
-
-
-def save_preferences_formset(formset, dayplan):
-    blocks = formset.save(commit=False)
-    for block in blocks:
-        block.day = dayplan
-        block.save()
-
-def delete_object_in_formset(formset):
-    for obj in formset.deleted_objects:
-        obj.delete()
-
-
-# will be needed @login_required
-@transaction.atomic
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def create_schedule(request):
-    if request.method == "POST":
-        dayplan_form = DayPlanForm(request.POST)
-        formset = TimeBlockFormSet(request.POST, queryset=TimeBlock.objects.none())
+    serializer = TimeBlockSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        if dayplan_form.is_valid() and formset.is_valid():
-            user = dayplan_form.cleaned_data["user"]
-            date = dayplan_form.cleaned_data["date"]
+    data = serializer.validated_data
 
-            profile = get_profile_user(request)
-
-            dayplan, _ = DayPlan.objects.get_or_create(user=profile, date=date)
-
-            TimeBlock.objects.filter(day=dayplan).delete()
-            
-            save_preferences_formset(formset, dayplan)
-            delete_object_in_formset(formset)
-
-            return redirect("schedule_success")
-    else:
-        dayplan_form = DayPlanForm()
-        formset = TimeBlockFormSet(queryset=TimeBlock.objects.none())
-    
-    return render(
-        request,
-        "create_schedule.html",
-        {"dayplan_form": dayplan_form, "pref_formset": formset},
+    # Create/get the DayPlan for that user + date
+    dayplan, _ = DayPlan.objects.get_or_create(
+        user=request.user,
+        date=data["date"]
     )
 
+    time_block = TimeBlock.objects.create(
+        day=dayplan,
+        start_time=data["start_time"],
+        end_time=data["end_time"],
+        block_type=data["block_type"],
+        location=data.get("location", "")
+    )
+
+    return Response(
+        {
+            "id": time_block.id,
+            "date": str(dayplan.date),
+            "start_time": str(time_block.start_time),
+            "end_time": str(time_block.end_time),
+            "location": time_block.location,
+            "block_type": time_block.block_type,
+        },
+        status=status.HTTP_201_CREATED
+    )

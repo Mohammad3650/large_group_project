@@ -21,7 +21,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from scheduler.views.create_schedule_view import create_schedule, schedule_success
+from scheduler.views.create_schedule_view import create_schedule
 from scheduler.views import serverTest
 from scheduler.views.user_auth import (
     UserRegistrationView,
@@ -39,6 +39,6 @@ urlpatterns = [
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
-    path("create_schedule", create_schedule, name="create-schedule"),
+    path("api/time-blocks/", create_schedule, name="api-create-timeblock"),
 ]
 
