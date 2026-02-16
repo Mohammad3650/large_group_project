@@ -4,6 +4,8 @@ import Login from "./functionality/authentication/Login";
 import Signup from "./functionality/authentication/Signup"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
+import Landing from "./functionality/LandingPage/Landing";
+
 import { setAuthToken } from "./api";
 
 
@@ -16,11 +18,12 @@ function App() {
   
   return (
     <Routes>
-      <Route path="/" element={<TestPage />} />
+      <Route path="/" element={<Landing />} />
 
       {/* <Route path="/auth/*" element={<AuthLayout />}>         */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <Dashboard />
