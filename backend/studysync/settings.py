@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     "scheduler",
     "rest_framework",
     "corsheaders",
-    'crispy_forms',
-    'crispy_bootstrap5',
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -127,6 +127,7 @@ AUTH_USER_MODEL = "scheduler.User"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:5174",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
