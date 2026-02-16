@@ -1,0 +1,148 @@
+.buttons {
+    margin: 40px;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+
+
+
+.signup {
+    background-color: #0f0f10;
+    color: #ffffff;
+    border-radius: 1rem;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255 0, 0.08),
+        0 10px 0 #0b0b0c,
+        0 14px 22px rgba(0,0,0,0.25);
+
+    position: relative;
+    font-size: 1.4rem;
+    padding: 1rem 3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 250ms;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.3px;
+    min-width: 170px;
+    max-width: 180px;
+    text-align: center;
+
+}
+
+
+.signup:hover {
+    transform: translateY(4px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255 0, 0.08),
+        0 10px 0 #0b0b0c,
+        0 14px 22px rgba(0,0,0,0.25);
+}
+
+
+
+
+
+
+
+
+
+
+.login {
+    background-color: #e9e9ec;
+    color: #1c1c1c;
+    border-radius: 1rem;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255 0.9),
+        0 10px 0 #d6d6db,
+        0 14px 22px rgba(0,0,0,0.12);
+
+    position: relative;
+    font-size: 1.4rem;
+    padding: 1rem 3rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 250ms;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.3px;
+    min-width: 170px;
+    max-width:230px;
+    text-align: center;
+}
+
+
+
+
+.login:hover {
+    transform: translateY(4px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255 0.9),
+        0 10px 0 #d6d6db,
+        0 14px 22px rgba(0,0,0,0.12);
+}
+
+
+
+.toptext {
+    font-size: 70px;
+    font-family: sans-serif;
+    font-weight: bold;
+
+}
+
+
+
+.bottomtext {
+    font-size: 70px;
+    font-family: sans-serif;
+    font-weight: bold
+}
+
+.quote {
+    padding-left: 30px;
+}
+
+
+.main {
+    margin-top:     0px;
+    border-bottom: 1px solid #e6e6ef;
+    margin-bottom: 60px;
+    padding-bottom: 70px;
+}
+
+
+
+
+
+.hero-content
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left
+{
+    flex: 1;
+}
+
+.right
+{
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.right img
+{
+    width: 100%;
+    max-width: 750px;
+    height:auto
+}
