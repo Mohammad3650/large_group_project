@@ -1,0 +1,90 @@
+.card1 {
+    margin-top: 20px;
+    overflow: hidden;
+    display: inline-block;
+
+
+
+}
+
+
+
+.card2 {
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
+    border: 1px solid hsl(0, 0%, 80%);
+    margin: 20px;
+    height: 200px;
+
+    overflow: hidden;
+    display: inline-block;
+    width: 500px;
+
+    align-items: center;
+    display: flex;
+
+    justify-content: center;
+
+}
+
+
+.title
+{
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: hsl(0, 0%, 20%);
+    font-size: 25px;
+    
+}
+
+.text {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: hsl(0, 0%, 20%);
+    font-size: 20px;
+    line-height: 2;
+    
+}
+
+
+.stars {
+    font-size: 25px;
+    margin: 0px;
+}
+
+
+.avatar {
+    width: 85px;
+    height: 85px;
+    flex: 0 0 auto;
+
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5, #38bdf8);
+    box-shadow:
+        0 8px 20px rgba(79, 70, 229, 0.35),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    font-size: 30px;
+    font-weight: 500;
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing: 1px;
+
+}
+
+.content
+{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    flex: 1;
+    align-items: flex-start;
+    gap: 10px;
+    margin-left: 80px;
+}
