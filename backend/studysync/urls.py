@@ -23,7 +23,6 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from scheduler.views import serverTest
 from scheduler.views.user_auth import (
     UserRegistrationView,
     UserDetailsView,
