@@ -15,7 +15,7 @@ function Signup() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const [error, setError] = useState("");
+    const [error, setError] = useState([]);
     const [loading, setLoading] = useState(false);
 
 
@@ -24,33 +24,29 @@ function Signup() {
 
         if (loading) return;
 
-        setError("");
+        setError([]);
         setLoading(true);
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            setError(["Passwords do not match"]);
             setLoading(false);
             return;
         }
         
         try {
 
-            await api.post("/auth/signup/", {
-                email,
-                username,
-                first_name: firstName,
-                last_name: lastName,
-                phone_number: phoneNumber,
-                password,
+            const res = await api.post("/auth/signup/", {
+            email,
+            username,
+            first_name: firstName,
+            last_name: lastName,
+            phone_number: phoneNumber,
+            password,
             });
 
-            const res = await api.post("/api/token/", {
-                email,
-                password,
-            });
             saveTokens(res.data.access, res.data.refresh);
-
             nav("/dashboard");
+
 
         } catch (err) {
             setError(formatApiError(err));
@@ -65,13 +61,14 @@ function Signup() {
             <h2>Sign up</h2>
 
 
-            {error.length > 0 && (
-            <ul className="error">
-                {error.map((err, index) => (
-                <li key={index}>{err}</li>
-                ))}
-            </ul>
-            )}
+        {error.length > 0 && (
+            <div className="alert alert-danger text-center">
+            {error.map((msg, index) => (
+                <p key={index}>{msg}</p>
+            ))}
+            </div>
+        )}
+                
 
 
 
