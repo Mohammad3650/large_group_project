@@ -25,8 +25,9 @@ def create_schedule(request):
         day=dayplan,
         start_time=data["start_time"],
         end_time=data["end_time"],
-        block_type=data["block_type"],
-        location=data.get("location", "")
+        location=data.get("location", ""),
+        block_type=data["block_type"]
+        
     )
 
     return Response(

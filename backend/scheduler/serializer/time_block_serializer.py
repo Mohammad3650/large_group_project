@@ -3,8 +3,8 @@ from ..models import DayPlan, TimeBlock
 
 class TimeBlockSerializer(serializers.Serializer):
     date = serializers.DateField()
-    start_time = serializers.DateTimeField()
-    end_time = serializers.DateTimeField()
+    start_time = serializers.TimeField()
+    end_time = serializers.TimeField()
     location = serializers.CharField(allow_blank=True, required=False)
     block_type = serializers.ChoiceField(choices=TimeBlock.BLOCK_TYPE_CHOICES)
 
