@@ -59,7 +59,7 @@ function TimeBlockForm({ onSubmit, loading }) {
       />
 
       {blocks.map((block, index) => (
-        <div key={index} style={{ marginBottom: "20px", marginTop: "50px" }}>
+        <div key={index} className="time-block-section">
 
           <input
             placeholder="location"
