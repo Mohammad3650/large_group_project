@@ -1,0 +1,6 @@
+.time-block-form-btn{
+    display: flex;
+    gap: 12px;          /* space between buttons */
+    margin-top: 20px;
+}
+
