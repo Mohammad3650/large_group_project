@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TestPage from "./testpage";
 import Login from "./functionality/authentication/Login";
 import Signup from "./functionality/authentication/Signup"
 import ProtectedRoute from "./components/ProtectedRoute";
