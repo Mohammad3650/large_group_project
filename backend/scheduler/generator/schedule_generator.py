@@ -100,7 +100,7 @@ class Scheduler:
 
     def solve(self):
         """Solve the model and return solutions list"""
-        self._startSolver(self.model)
+        self._startSolver()
 
         if self.status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             print("No feasible schedule.")
