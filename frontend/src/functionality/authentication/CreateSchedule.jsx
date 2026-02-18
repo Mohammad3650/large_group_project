@@ -27,16 +27,18 @@ function CreateSchedule() {
     }
 
     return (
-        <div>
-            <h2>Create Time Block</h2>
+        <div className="page-center">
+            <div className="time-block-form-card">
+                <h2>Create Time Block</h2>
 
-            {error && <p>{error}</p>}
-            {success && <p>{success}</p>}
+                {error && <p>{error}</p>}
+                {success && <p>{success}</p>}
 
-            <TimeBlockForm 
-                onSubmit={handleCreate}
-                loading={loading}
-            />
+                <TimeBlockForm 
+                    onSubmit={handleCreate}
+                    loading={loading}
+                />
+            </div>
         </div>
     );
 }

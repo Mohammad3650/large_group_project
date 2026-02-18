@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../timeBlockFormStyle.css";
 
 function TimeBlockForm({ onSubmit, loading }) {
 
@@ -62,7 +63,7 @@ function TimeBlockForm({ onSubmit, loading }) {
       />
 
       {blocks.map((block, index) => (
-        <div key={index} style={{ marginBottom: "20px", marginTop: "50px" }}>
+        <div key={index} className="time-block-section">
 
           {blocks.length > 1 && (
               <button
@@ -153,14 +154,15 @@ function TimeBlockForm({ onSubmit, loading }) {
 
         </div>
       ))}
-
-      <button type="button" onClick={addBlock}>
+    <div className="time-block-form-btn">
+      <button className="btn btn-secondary" cltype="button" onClick={addBlock}>
         Add Another Event
       </button>
 
-      <button type="submit" disabled={loading}>
+      <button className="btn btn-primary" type="submit" disabled={loading}>
         {loading ? "Saving..." : "Create Schedule"}
       </button>
+    </div>
 
     </form>
   );
