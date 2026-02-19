@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { saveTokens } from "../../utils/handleLocalStorage";
+import { saveTokens, getAccessToken } from "../../utils/handleLocalStorage";
 import { api } from "../../api";
 import { formatApiError } from "../../utils/errors";
+import { useEffect } from "react";
+
 
 function Signup() {
     const nav = useNavigate();
@@ -18,9 +20,16 @@ function Signup() {
     const [error, setError] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+      if (getAccessToken()) {
+        nav("/dashboard");
+      }
+    }, [nav]);
 
     async function handleSignup(e) {
         e.preventDefault();
+
+
 
         if (loading) return;
 
