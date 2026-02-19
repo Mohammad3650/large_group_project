@@ -1,0 +1,106 @@
+body.dashboard-page {
+    display: block;
+    place-items: unset;
+    overflow: hidden;
+}
+
+.dashboard-content {
+    display: flex;
+    width: 100vw;
+    height: calc(100vh - 75px);
+    box-sizing: border-box;
+    padding: 0 32px 50px 32px;
+    justify-content: space-between;
+}
+
+.add-task-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #f0f0f0;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.2s;
+}
+
+.add-task-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.task-section {
+    width: 58%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.day-section {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    user-select: none
+}
+
+.arrow {
+    font-size: 0.8rem;
+    transform: rotate(180deg);
+    transition: transform 0.2s;
+    color: #acacac;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: -3px;
+}
+
+.arrow.closed {
+    transform: rotate(90deg);
+}
+
+.number-of-tasks {
+    color: #acacac;
+}
+
+.notes-section {
+    width: 40%;
+    box-sizing: border-box;
+    padding-bottom: 32px;
+}
+
+.notes-section textarea {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    box-sizing: border-box;
+    resize: none;
+    padding: 8px;
+    background-color: #f4f4f4;
+    color: black;
+    border: none;
+}
+
+.logout-bottom {
+    margin-top: auto;
+    padding-top: 32px;
+    padding-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-content {
+        flex-direction: column;
+    }
+
+    .task-section {
+        width: 100%;
+    }
+    .notes-section {
+        width: 100%;
+        min-width: 100%;
+        height: 30vh;
+        border-left: none;
+    }
+}

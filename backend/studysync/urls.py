@@ -32,6 +32,7 @@ from scheduler.views.user_auth import (
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/signup/", UserRegistrationView.as_view(), name="user-signup"),
+    path("dashboard/", DashboardView.as_view(), name="dashboard"),
     
     # JWT auth
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
