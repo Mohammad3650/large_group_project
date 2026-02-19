@@ -65,16 +65,6 @@ function TimeBlockForm({ onSubmit, loading }) {
       {blocks.map((block, index) => (
         <div key={index} className="time-block-section">
 
-          {blocks.length > 1 && (
-              <button
-                type="button"
-                onClick={() => deleteBlock(index)}
-                style={{ background: "red", color: "white", marginBottom: "10px" }}
-              >
-                Delete Event
-              </button>
-          )}
-
           <input
             placeholder="location"
             value={block.location}
@@ -151,6 +141,15 @@ function TimeBlockForm({ onSubmit, loading }) {
 
               )}
 
+          {blocks.length > 1 && (
+              <button
+                type="button"
+                onClick={() => deleteBlock(index)}
+                style={{ background: "red", color: "white", marginBottom: "10px" }}
+              >
+                Delete Event
+              </button>
+          )}
 
         </div>
       ))}
