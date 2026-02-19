@@ -5,6 +5,9 @@ function Task(props) {
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
 
+    const ding = new Audio("/ding.mp3");
+    ding.volume = 0.3;
+
     function formatDatetime(datetime) {
         const date = new Date(datetime);
         const time = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
@@ -13,8 +16,7 @@ function Task(props) {
     }
 
     function handleClick() {
-        const ding = new Audio("/ding.mp3");
-        ding.volume = 0.3   ;
+        if (checked) return;
         ding.play().catch(err => console.error("Audio failed:", err));
         setChecked(true);
         setFading(true);

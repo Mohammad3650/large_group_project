@@ -1,6 +1,5 @@
 body.dashboard-page {
     display: block;
-    place-items: unset;
     overflow: hidden;
 }
 
@@ -16,7 +15,7 @@ body.dashboard-page {
 .add-task-btn {
     width: 100%;
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: #f4f4f4;
     box-sizing: border-box;
     border: none;
     border-radius: 8px;
@@ -29,6 +28,15 @@ body.dashboard-page {
 
 .add-task-btn:hover {
     background-color: #e0e0e0;
+}
+
+.no-tasks-message {
+    color: #acacac;
+    font-size: 2rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .task-section {
@@ -74,7 +82,7 @@ body.dashboard-page {
 .notes-section textarea {
     width: 100%;
     height: 100%;
-    border-radius: 5px;
+    border-radius: 8px;
     box-sizing: border-box;
     resize: none;
     padding: 8px;

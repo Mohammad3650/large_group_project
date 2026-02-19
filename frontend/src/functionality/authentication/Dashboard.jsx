@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import LogoutButton from "../../components/logoutButton";
 import NavBar from "../LandingPage/NavBar.jsx";
-import SideBar from "./SideBar.jsx";
 import Task from "./Task.jsx";
 import "./Dashboard.css";
 
@@ -32,6 +31,15 @@ function Dashboard() {
   useEffect(() => {
     document.body.classList.add("dashboard-page");
     return () => document.body.classList.remove("dashboard-page");
+  }, []);
+
+  useEffect(() => {
+    function handleResize() {
+      window.scrollTo(0, 0);
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   if (error) {
@@ -77,52 +85,69 @@ function Dashboard() {
     setWeekTasks(weekTasks.filter(task => task.id !== id));
   }
 
+  const totalTasks = todayTasks.length + tomorrowTasks.length + weekTasks.length;
+
   return (
       <>
         <NavBar/>
-        <div className="dashboard-page">
-          <div className="dashboard-content">
-            <div className="task-section">
-              <h1 className="title-message">{message}</h1>
-              <button className="add-task-btn">+ Add Task</button>
-              <div className={"day-section"} onClick={() => setTodayOpen(!todayOpen)}>
-                <span className={`arrow ${todayOpen ? "open" : "closed"}`}>^</span>
-                <h5>Today</h5>
-                <h5 className={"number-of-tasks"}>({todayTasks.length})</h5>
-              </div>
-              {todayOpen && todayTasks.map(task => (
-                <Task key={task.id} name={task.name} datetime={task.datetime}
-                      onDelete={() => handleDeleteToday(task.id)} />
-              ))}
+        <div className="dashboard-content">
+          <div className="task-section">
+            <h1 className="title-message">{message}</h1>
+            <button className="add-task-btn">+ Add Task</button>
 
-              <div className={"day-section"} onClick={() => setTomorrowOpen(!tomorrowOpen)}>
-                <span className={`arrow ${tomorrowOpen ? "open" : "closed"}`}>^</span>
-                <h5>Tomorrow</h5>
-                <h5 className={"number-of-tasks"}>({tomorrowTasks.length})</h5>
-              </div>
-              {tomorrowOpen && tomorrowTasks.map(task => (
-                <Task key={task.id} name={task.name} datetime={task.datetime}
-                      onDelete={() => handleDeleteTomorrow(task.id)} />
-              ))}
+            {totalTasks === 0 && (
+                <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
+            )}
 
-              <div className={"day-section"} onClick={() => setWeekOpen(!weekOpen)}>
-                <span className={`arrow ${weekOpen ? "open" : "closed"}`}>^</span>
-                <h5>Next 7 Days</h5>
-                <h5 className={"number-of-tasks"}>({weekTasks.length})</h5>
-              </div>
-              {weekOpen && weekTasks.map(task => (
-                <Task key={task.id} name={task.name} datetime={task.datetime}
-                      onDelete={() => handleDeleteRestOfWeek(task.id)} />
-              ))}
-              <br/>
-              <div className="logout-bottom">
-                <LogoutButton />
-              </div>
+            {todayTasks.length > 0 && (
+              <>
+                <div className="day-section" onClick={() => setTodayOpen(!todayOpen)}>
+                  <span className={`arrow ${todayOpen ? "open" : "closed"}`}>^</span>
+                  <h5>Today</h5>
+                  <h5 className="number-of-tasks">({todayTasks.length})</h5>
+                </div>
+                {todayOpen && todayTasks.map(task => (
+                    <Task key={task.id} name={task.name} datetime={task.datetime}
+                          onDelete={() => handleDeleteToday(task.id)} />
+                ))}
+              </>
+            )}
+
+            {tomorrowTasks.length > 0 && (
+              <>
+                <div className="day-section" onClick={() => setTomorrowOpen(!tomorrowOpen)}>
+                  <span className={`arrow ${tomorrowOpen ? "open" : "closed"}`}>^</span>
+                  <h5>Tomorrow</h5>
+                  <h5 className="number-of-tasks">({tomorrowTasks.length})</h5>
+                </div>
+                {tomorrowOpen && tomorrowTasks.map(task => (
+                    <Task key={task.id} name={task.name} datetime={task.datetime}
+                          onDelete={() => handleDeleteTomorrow(task.id)} />
+                ))}
+              </>
+            )}
+
+            {weekTasks.length > 0 && (
+                <>
+                  <div className="day-section" onClick={() => setWeekOpen(!weekOpen)}>
+                    <span className={`arrow ${weekOpen ? "open" : "closed"}`}>^</span>
+                    <h5>Next 7 Days</h5>
+                    <h5 className="number-of-tasks">({weekTasks.length})</h5>
+                  </div>
+                  {weekOpen && weekTasks.map(task => (
+                      <Task key={task.id} name={task.name} datetime={task.datetime}
+                            onDelete={() => handleDeleteRestOfWeek(task.id)} />
+                  ))}
+                </>
+            )}
+
+            <div className="logout-bottom">
+              <LogoutButton />
             </div>
+          </div>
 
-            <div className="notes-section">
-              <textarea placeholder="Notes"></textarea>
-            </div>
+          <div className="notes-section">
+            <textarea placeholder="Notes"></textarea>
           </div>
         </div>
       </>
