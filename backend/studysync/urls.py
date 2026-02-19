@@ -22,7 +22,6 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from scheduler.views.create_schedule_view import create_schedule
-from scheduler.views import serverTest
 from scheduler.views.user_auth import (
     UserRegistrationView,
     UserDetailsView,
@@ -31,14 +30,13 @@ from scheduler.views.user_auth import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("scheduler/health/", serverTest.health),
     path("auth/signup/", UserRegistrationView.as_view(), name="user-signup"),
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
-    path("auth/my/profile/", UserDetailsView.as_view(), name="user-profile"),
+    
     # JWT auth
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    # path("", TokenVerifyView.as_view(), name="Landing_Page"),
     path("api/time-blocks/", create_schedule, name="api-create-timeblock"),
 ]
 
