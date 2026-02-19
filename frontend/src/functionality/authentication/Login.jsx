@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { api, setAuthToken } from "../../api"
+import { api } from "../../api"
+import { formatApiError } from "../../utils/errors";
+import { saveTokens } from "../../utils/handleLocalStorage";
 
 function Login() {
     const nav = useNavigate();
@@ -19,56 +21,67 @@ function Login() {
         try {
             const res = await api.post("/api/token/", { email, password });
 
-            localStorage.setItem("access", res.data.access);
-            localStorage.setItem("refresh", res.data.refresh);
-
-            setAuthToken(res.data.access)
+            saveTokens(res.data.access, res.data.refresh);
 
             nav("/dashboard");
         } catch (err) {
-            setError("Login failed")
+            setError(formatApiError(err));
         } finally {
             setLoading(false);
         }
     }
 
-    return (
-        <div>
-            <h1>Login Page</h1>
+return (
+    <div className="container vh-100 d-flex align-items-center justify-content-center">
+      <div className="row w-100 justify-content-center">
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h3 className="text-center mb-4">Login</h3>
 
-            {(error) && <p>{error}</p>}
+              {error && (<div className="alert alert-danger text-center">{error}</div>)}
+            
+            <form onSubmit={(e) => {e.preventDefault();handleLogin();}}>
 
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                handleLogin();
-            }}
-            >
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}/>
+              </div>
 
-                <input placeholder="Email" 
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)}/>
+              <div className="mb-3">
+                <label className="form-label">Password</label>
 
-                <input placeholder="Password" 
-                    type="password" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}/>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}/>
+              </div>
 
+              <div className="d-grid gap-2">
                 <button type="submit" disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
                 </button>
+              </div>
+
             </form>
-            <p>
+
+              <div className="card-footer text-center">
+
                 No account?{" "}
                 <button type="button" onClick={() => nav("/signup")} disabled={loading}>
                 Sign up
                 </button>
-            </p>
 
-            <p>
-                Forgot your password?
-            </p>
+              </div>
+            </div>
+          </div>
         </div>
-    )
+      </div>
+      );
 }
 
 export default Login;
