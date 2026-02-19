@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import LogoutButton from "../../components/logoutButton";
+import CreateScheduleButton from "../../components/CreateScheduleButton";
 
 function Dashboard() {
   const nav = useNavigate();
@@ -36,6 +37,7 @@ function Dashboard() {
       </div>
 
       <LogoutButton />
+      <CreateScheduleButton/>
     </>
   );
 }
