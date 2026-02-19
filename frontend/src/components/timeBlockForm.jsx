@@ -145,7 +145,7 @@ function TimeBlockForm({ onSubmit, loading }) {
               <button
                 type="button"
                 onClick={() => deleteBlock(index)}
-                style={{ background: "red", color: "white", marginBottom: "10px" }}
+                className="delete-btn"
               >
                 Delete Event
               </button>
@@ -154,11 +154,11 @@ function TimeBlockForm({ onSubmit, loading }) {
         </div>
       ))}
     <div className="time-block-form-btn">
-      <button className="btn btn-secondary" cltype="button" onClick={addBlock}>
+      <button className="btn btn-secondary btn" cltype="button" onClick={addBlock}>
         Add Another Event
       </button>
 
-      <button className="btn btn-primary" type="submit" disabled={loading}>
+      <button className="btn btn-primary btn" type="submit" disabled={loading}>
         {loading ? "Saving..." : "Create Schedule"}
       </button>
     </div>
