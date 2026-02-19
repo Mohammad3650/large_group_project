@@ -149,7 +149,7 @@ function TimeBlockForm({ onSubmit, loading }) {
               >
                 Delete Event
               </button>
-          )
+          )}
 
         </div>
       ))}
