@@ -1,0 +1,352 @@
+StudySync – Database Design (MVP Proposal)
+The overview:
+
+This document proposes the initial database schema for the StudySync scheduling system.
+
+The goal of this design is to:
+
+Support user authentication (already implemented)
+
+Store user subjects/modules
+
+Store user availability
+
+Store generated study schedules
+
+Keep the schema simple for MVP
+
+Allow future expansion (deadlines, exam weighting, AI improvements)
+
+This schema is designed to work cleanly with:
+
+Django ORM
+
+Django REST Framework
+
+OR-Tools schedule generator
+
+JWT authentication
+
+Core Entities
+
+
+
+User
+
+Use Django’s built-in User model.
+
+No need to recreate it.
+
+Every major table will include:
+
+user = ForeignKey(User, on_delete=models.CASCADE) 
+
+Subject:
+
+Represents a module/course the student is studying. Something like: 
+
+class Subject(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    total_hours_required = models.IntegerField()
+    priority = models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.name
+
+Purpose:
+
+Stores each module
+
+Used by schedule generator to distribute hours
+
+Priority can influence optimisation
+
+
+
+
+Availability:
+
+Represents when a user is free to study. We can make it look something like this: 
+
+class Availability(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    day_of_week = models.IntegerField()  # 0=Monday ... 6=Sunday
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+Purpose:
+
+Used by OR-Tools to create valid scheduling windows
+
+Multiple rows per user allowed
+
+
+
+
+
+
+Schedule:
+
+Represents a generated study plan. Something similar to this: 
+
+class Schedule(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    week_start = models.DateField()
+
+Purpose:
+
+One schedule per generation
+
+Can store multiple schedules per user (history)
+
+
+
+
+
+StudySession:
+
+Represents a single scheduled study block. We could try something like this: 
+
+class StudySession(models.Model):
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
+
+Purpose:
+
+Stores solver output
+
+Connects schedule → subject
+
+Allows rendering calendar view
+
+
+
+
+
+
+3. Entity Relationships
+
+Each user will have:
+-> many subjects
+-> has many availability slots
+-> has many schedules
+
+Schedule
+-> has many StudySessions
+
+Subject
+-> appears in many StudySessions
+
+
+
+
+
+4. How it is going to connect to the scheduler logic
+
+Flow:
+
+User submits preferences
+
+Backend fetches:
+
+Subjects
+
+Availability
+
+Data passed to:
+
+schedule_service
+
+OR-Tools solver
+
+Solver returns study blocks
+
+Blocks saved as:
+
+Schedule
+
+StudySession entries
+
+
+
+
+
+5. Future Expansion Ideas (Not MVP)
+
+Deadlines model
+
+Exam weightings
+
+Recurring preferences
+
+Soft constraints
+
+Study streak tracking
+
+Analytics table
+
+AI adaptive scheduling
+
+
+
+
+
+6. Notes For Team Review
+
+Confirm if we want schedule history or overwrite each time
+
+Confirm if availability is weekly recurring or date-specific
+
+Confirm if priority should be integer or weighted float
+
+Confirm if sessions should store duration separately
+
+
+
+
+
+7. Next Step (After we agree on what to do)
+
+Once we agree on what to do:
+
+Implement models in scheduler/models.py
+
+Run:
+
+python manage.py makemigrations
+python manage.py migrate
+
+
+Update serializers
+
+Connect to schedule_service
+
+
+
+
+
+
+
+
+
+
+
+Exemplar DJango model: 
+
+from django.conf import settings
+from django.db import models
+from django.utils import timezone
+
+
+class UserProfile(models.Model):
+    class Bias(models.TextChoices):
+        EARLY = "EARLY", "Early"
+        LATE = "LATE", "Late"
+        BALANCED = "BALANCED", "Balanced"
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+
+    timezone = models.CharField(max_length=64, default="Europe/London")
+    planning_horizon_days = models.PositiveSmallIntegerField(default=7)
+
+    # Workday bounds (local time)
+    day_start_time = models.TimeField(default="09:00")
+    day_end_time = models.TimeField(default="17:00")
+
+    bias = models.CharField(max_length=16, choices=Bias.choices, default=Bias.BALANCED)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class CalendarEvent(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="calendar_events")
+
+    title = models.CharField(max_length=200)
+    start_dt = models.DateTimeField()
+    end_dt = models.DateTimeField()
+
+    is_fixed = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["user", "start_dt"]),
+            models.Index(fields=["user", "end_dt"]),
+        ]
+
+    def clean(self):
+        # Optional: enforce end after start at validation time
+        if self.end_dt <= self.start_dt:
+            raise ValueError("end_dt must be after start_dt")
+
+
+class Task(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tasks")
+
+    title = models.CharField(max_length=200)
+    duration_minutes = models.PositiveIntegerField()
+
+    # Useful for better scheduling/balancing later
+    due_dt = models.DateTimeField(null=True, blank=True)
+
+    priority = models.PositiveSmallIntegerField(default=3)  # 1 low -> 5 high
+    completed = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["user", "completed"]),
+            models.Index(fields=["user", "due_dt"]),
+        ]
+
+
+class ScheduleRequest(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "Pending"
+        SUCCESS = "SUCCESS", "Success"
+        FAILED = "FAILED", "Failed"
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="schedule_requests")
+
+    horizon_start_dt = models.DateTimeField(default=timezone.now)
+    horizon_end_dt = models.DateTimeField()
+
+    status = models.CharField(max_length=16, choices=Status.choices, default=Status.PENDING)
+    error_message = models.TextField(blank=True, default="")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["user", "created_at"]),
+            models.Index(fields=["status"]),
+        ]
+
+
+class ScheduledItem(models.Model):
+    class SourceType(models.TextChoices):
+        TASK = "TASK", "Task"
+        EVENT = "EVENT", "Event"
+
+    schedule_request = models.ForeignKey(ScheduleRequest, on_delete=models.CASCADE, related_name="items")
+
+    source_type = models.CharField(max_length=8, choices=SourceType.choices)
+    source_id = models.PositiveIntegerField()  # ID of Task or CalendarEvent (simple MVP)
+
+    title = models.CharField(max_length=200)
+    start_dt = models.DateTimeField()
+    end_dt = models.DateTimeField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["schedule_request", "start_dt"]),
+        ]
