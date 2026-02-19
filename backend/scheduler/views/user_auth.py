@@ -37,11 +37,12 @@ class UserDetailsView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
-    
+
+
 class DashboardView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        return Response({"message": f"Welcome to your dashboard, {request.user.username}!"})
-    
-
+        return Response(
+            {"message": f"Welcome to your dashboard, {request.user.username}!"}
+        )

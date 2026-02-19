@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "scheduler",
     "rest_framework",
     "corsheaders",
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -130,6 +132,7 @@ AUTH_USER_MODEL = "scheduler.User"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:5174",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -147,6 +150,10 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=3),
 }
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 
 LOGIN_REDIRECT_URL = "/callback/"
 
