@@ -8,9 +8,10 @@ import "./DaySection.css"
  * @param {string} title - The section heading (e.g. "Today", "Tomorrow")
  * @param {Array} tasks - Array of task objects to display
  * @param {Function} setTasks - State setter to update the tasks array
+ * @param {boolean} [overdue=false] - Whether the section represents overdue tasks
  * @returns {JSX.Element|null} The day section, or null if no tasks
  */
-function DaySection({ title, tasks, setTasks }) {
+function DaySection({ title, tasks, setTasks, overdue = false}) {
     const [isOpen, setIsOpen] = useState(true);
 
     function handleDelete(id) {
@@ -23,12 +24,12 @@ function DaySection({ title, tasks, setTasks }) {
         <>
             <div className="day-section" onClick={() => setIsOpen(!isOpen)}>
                 <span className={`arrow ${isOpen ? "open" : "closed"}`}>^</span>
-                <h5>{title}</h5>
+                <h5 className={overdue ? "overdue-title" : ""}>{title}</h5>
                 <h5 className="number-of-tasks">({tasks.length})</h5>
             </div>
             {isOpen && tasks.map(task => (
                 <Task key={task.id} name={task.name} datetime={task.datetime}
-                      onDelete={() => handleDelete(task.id)} />
+                      onDelete={() => handleDelete(task.id)} overdue={overdue} />
             ))}
         </>
     );

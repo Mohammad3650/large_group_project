@@ -47,6 +47,10 @@
     opacity: 0;
 }
 
+.overdue-text {
+    color: #e74c3c;
+}
+
 .task-datetime {
     color: #4a90d9;
     font-size: 0.85rem;

@@ -18,13 +18,18 @@ const sortTasksByDate = (a, b) => new Date(a.datetime) - new Date(b.datetime)
 
 /**
  * Dashboard component - main page displayed after successful login.
- * Displays tasks grouped by day sections (today, tomorrow, next 7 days) alongside a notes section.
+ * Displays tasks grouped by day sections (outstanding, today, tomorrow, next 7 days) alongside a notes section.
  * @returns {JSX.Element} The dashboard page
  */
 function Dashboard() {
     const nav = useNavigate();
     const [message, setMessage] = useState("Loading...");
     const [error, setError] = useState("");
+
+    const [overdueTasks, setOverdueTasks] = useState([
+        { id: 1, name: "Go gym", datetime: "2026-02-16T20:00" },
+        { id: 2, name: "Go to SGT", datetime: "2026-02-17T14:00" },
+    ].sort(sortTasksByDate));
 
     const [todayTasks, setTodayTasks] = useState([
         { id: 1, name: "Go for a run", datetime: "2026-02-19T09:00" },
@@ -67,7 +72,7 @@ function Dashboard() {
         fetchDashboard();
     }, [nav]);
 
-    const totalTasks = todayTasks.length + tomorrowTasks.length + weekTasks.length;
+    const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length;
 
     if (error) return <p>{error}</p>;
 
@@ -81,6 +86,7 @@ function Dashboard() {
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
                     )}
+                    <DaySection title="Overdue" tasks={overdueTasks} setTasks={setOverdueTasks} overdue={true}/>
                     <DaySection title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
                     <DaySection title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
                     <DaySection title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>

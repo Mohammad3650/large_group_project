@@ -21,6 +21,10 @@
     transform: rotate(90deg);
 }
 
+.overdue-title {
+    color: #e74c3c;
+}
+
 .number-of-tasks {
     color: #acacac;
 }
