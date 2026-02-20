@@ -5,6 +5,8 @@ import Signup from "./functionality/authentication/Signup"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
 import Landing from "./functionality/LandingPage/Landing";
+
+import CreateSchedule from "./functionality/authentication/createSchedule";
 import { setAuthToken } from "./api";
 
 
@@ -26,6 +28,12 @@ function App() {
           <Dashboard />
         </ProtectedRoute>
       } />
+      <Route path="/create-schedule" element={
+        <ProtectedRoute>
+          <CreateSchedule />
+        </ProtectedRoute>
+      } />
+
     </Routes>
 
   )
