@@ -82,6 +82,13 @@ function TimeBlockForm({ onSubmit, loading }) {
             <option value="sleep">Sleep</option>
             <option value="study">Study</option>
             <option value="lecture">Lecture</option>
+            <option value="lab">Lab</option>
+            <option value="tutorial">Tutorial</option>
+            <option value="commute">Commute</option>
+            <option value="exercise">Exercise</option>
+            <option value="break">Break</option>
+            <option value="work">Work</option>
+            <option value="extracurricular">extracurricular</option>
           </select>
 
           <select
