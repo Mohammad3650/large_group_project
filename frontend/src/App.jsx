@@ -1,25 +1,23 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./functionality/authentication/Login";
 import Signup from "./functionality/authentication/Signup"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
 import Landing from "./functionality/LandingPage/Landing";
-
 import { setAuthToken } from "./api";
 
 
 function App() {
 
-  const token = localStorage.getItem("access");
-  if (token) {
-    setAuthToken(token);
-  }
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+    if (token) setAuthToken(token);
+}, []);
   
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-
-      {/* <Route path="/auth/*" element={<AuthLayout />}>         */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 

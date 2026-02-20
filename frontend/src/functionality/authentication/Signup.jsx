@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { saveTokens, getAccessToken } from "../../utils/handleLocalStorage";
-import { api } from "../../api";
+import { publicApi } from "../../api";
 import { formatApiError } from "../../utils/errors";
-import { useEffect } from "react";
+import { isTokenValid } from "../../utils/authToken";
 
 
 function Signup() {
@@ -21,9 +21,10 @@ function Signup() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-      if (getAccessToken()) {
-        nav("/dashboard");
-      }
+      (async () => {
+        const ok = await isTokenValid();
+        if (ok) nav("/dashboard");
+      })()
     }, [nav]);
 
     async function handleSignup(e) {
@@ -44,7 +45,7 @@ function Signup() {
         
         try {
 
-            const res = await api.post("/auth/signup/", {
+            const res = await publicApi.post("/auth/signup/", {
             email,
             username,
             first_name: firstName,
