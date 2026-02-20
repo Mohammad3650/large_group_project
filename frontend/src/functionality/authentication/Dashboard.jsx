@@ -18,7 +18,7 @@ const sortTasksByDate = (a, b) => new Date(a.datetime) - new Date(b.datetime)
 
 /**
  * Dashboard component - main page displayed after successful login.
- * Displays tasks grouped by day sections (outstanding, today, tomorrow, next 7 days) alongside a notes section.
+ * Displays tasks grouped by day sections (overdue, today, tomorrow, next 7 days) alongside a notes section.
  * @returns {JSX.Element} The dashboard page
  */
 function Dashboard() {
