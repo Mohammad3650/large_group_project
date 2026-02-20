@@ -1,3 +1,8 @@
+* {
+    scrollbar-color: #e0e0e0 white;
+    scrollbar-width: thin;
+}
+
 body.dashboard-page {
     display: block;
     overflow: hidden;
@@ -46,33 +51,6 @@ body.dashboard-page {
     flex-direction: column;
 }
 
-.day-section {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-    cursor: pointer;
-    user-select: none
-}
-
-.arrow {
-    font-size: 0.8rem;
-    transform: rotate(180deg);
-    transition: transform 0.2s;
-    color: #acacac;
-    display: inline-block;
-    vertical-align: middle;
-    position: relative;
-    top: -3px;
-}
-
-.arrow.closed {
-    transform: rotate(90deg);
-}
-
-.number-of-tasks {
-    color: #acacac;
-}
-
 .notes-section {
     width: 40%;
     box-sizing: border-box;
@@ -91,7 +69,7 @@ body.dashboard-page {
     border: none;
 }
 
-.logout-bottom {
+.bottom-buttons {
     margin-top: auto;
     padding-top: 32px;
     padding-bottom: 16px;
