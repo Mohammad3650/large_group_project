@@ -4,6 +4,10 @@ export function getAccessToken() {
   return localStorage.getItem("access");
 }
 
+export function getRefreshToken() {
+  return localStorage.getItem("refresh");
+}
+
 export function logout() {
   localStorage.removeItem("access");
   localStorage.removeItem("refresh");

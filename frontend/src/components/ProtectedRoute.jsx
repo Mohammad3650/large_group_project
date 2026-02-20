@@ -1,11 +1,20 @@
 import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { isTokenValid } from "../utils/authToken";
 
 function ProtectedRoute({ children }) {
-    const access = localStorage.getItem("access");
+    const [allowed, setAllowed] = useState(null);
 
-    if (!access) {
-        return <Navigate to="/login" replace />
-    }
+
+    useEffect(() => {
+        (async () => {
+            const ok = await isTokenValid();
+            setAllowed(ok);
+        })();
+    }, []);
+       
+    if (allowed == null) return null;
+    if (!allowed) return <Navigate to="/login" replace />
 
     return children;
 }

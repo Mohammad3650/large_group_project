@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"
-import { api } from "../../api"
+import { publicApi } from "../../api"
 import { formatApiError } from "../../utils/errors";
-import { saveTokens } from "../../utils/handleLocalStorage";
+import { saveTokens, getAccessToken } from "../../utils/handleLocalStorage";
+import { isTokenValid } from "../../utils/authToken";
+
 
 function Login() {
     const nav = useNavigate();
@@ -12,6 +14,13 @@ function Login() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false)
 
+    useEffect(() => {
+      (async () => {
+        const ok = await isTokenValid();
+        if (ok) nav("/dashboard");
+      })()
+    }, [nav]);
+
     async function handleLogin() {
         if (loading) return;
 
@@ -19,7 +28,7 @@ function Login() {
         setLoading(true);
 
         try {
-            const res = await api.post("/api/token/", { email, password });
+            const res = await publicApi.post("/api/token/", { email, password });
 
             saveTokens(res.data.access, res.data.refresh);
 
