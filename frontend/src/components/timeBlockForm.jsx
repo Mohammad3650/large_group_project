@@ -56,6 +56,7 @@ function TimeBlockForm({ onSubmit, loading }) {
         start_time: block.start_time,
         end_time: block.end_time,
         location: block.location,
+        description: block.description,
         block_type: block.block_type
       });
     });
