@@ -10,6 +10,7 @@ function TimeBlockForm({ onSubmit, loading }) {
       date: "",
       location: "",
       block_type: "study",
+      description: "",
       is_fixed: false,
       duration: "",
       time_of_day: "",
@@ -25,6 +26,7 @@ function TimeBlockForm({ onSubmit, loading }) {
         date: "",
         location: "",
         block_type: "study",
+        description: "",
         is_fixed: false,
         duration: "",
         time_of_day: "",
@@ -46,9 +48,16 @@ function TimeBlockForm({ onSubmit, loading }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSubmit({
-      date,
-      blocks
+  
+    // Submit each block separately
+    blocks.forEach(block => {
+      onSubmit({
+        date: date,
+        start_time: block.start_time,
+        end_time: block.end_time,
+        location: block.location,
+        block_type: block.block_type
+      });
     });
   }
 
@@ -82,6 +91,13 @@ function TimeBlockForm({ onSubmit, loading }) {
             <option value="sleep">Sleep</option>
             <option value="study">Study</option>
             <option value="lecture">Lecture</option>
+            <option value="lab">Lab</option>
+            <option value="tutorial">Tutorial</option>
+            <option value="commute">Commute</option>
+            <option value="exercise">Exercise</option>
+            <option value="break">Break</option>
+            <option value="work">Work</option>
+            <option value="extracurricular">extracurricular</option>
           </select>
 
           <select
@@ -158,7 +174,7 @@ function TimeBlockForm({ onSubmit, loading }) {
         Add Another Event
       </button>
 
-      <button className="btn btn-primary btn" type="submit" disabled={loading}>
+      <button className="btn btn-primary" type="submit" disabled={loading}>
         {loading ? "Saving..." : "Create Schedule"}
       </button>
     </div>
