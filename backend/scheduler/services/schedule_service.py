@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Tuple
 
 from scheduler.services.request_parser import ScheduleRequestParser
 from scheduler.services.response_builder import ScheduleResponseBuilder
-from scheduler.timetable.scheduler import Scheduler
+from scheduler.generator.schedule_generator import Scheduler
 
 
 class ScheduleService:
