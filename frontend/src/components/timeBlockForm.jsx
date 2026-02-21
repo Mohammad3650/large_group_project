@@ -10,6 +10,7 @@ function TimeBlockForm({ onSubmit, loading }) {
       date: "",
       location: "",
       block_type: "study",
+      description: "",
       is_fixed: false,
       duration: "",
       time_of_day: "",
@@ -25,6 +26,7 @@ function TimeBlockForm({ onSubmit, loading }) {
         date: "",
         location: "",
         block_type: "study",
+        description: "",
         is_fixed: false,
         duration: "",
         time_of_day: "",
@@ -148,6 +150,13 @@ function TimeBlockForm({ onSubmit, loading }) {
 
               )}
 
+              <textarea
+                placeholder="Description (optional)"
+                value={block.description}
+                onChange={(e) => updateBlock(index, "description", e.target.value)}
+                className="description-input"
+              />
+
           {blocks.length > 1 && (
               <button
                 type="button"
@@ -165,7 +174,7 @@ function TimeBlockForm({ onSubmit, loading }) {
         Add Another Event
       </button>
 
-      <button className="btn btn-primary btn" type="submit" disabled={loading}>
+      <button className="btn btn-primary" type="submit" disabled={loading}>
         {loading ? "Saving..." : "Create Schedule"}
       </button>
     </div>
