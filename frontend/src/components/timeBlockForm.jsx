@@ -48,9 +48,16 @@ function TimeBlockForm({ onSubmit, loading }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSubmit({
-      date,
-      blocks
+  
+    // Submit each block separately
+    blocks.forEach(block => {
+      onSubmit({
+        date: date,
+        start_time: block.start_time,
+        end_time: block.end_time,
+        location: block.location,
+        block_type: block.block_type
+      });
     });
   }
 

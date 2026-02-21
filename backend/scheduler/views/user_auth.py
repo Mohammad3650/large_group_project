@@ -8,6 +8,7 @@ from scheduler.serializer.users_serializer import (
     UserDetailsSerializer,
 )
 
+
 class UserRegistrationView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserRegistrationSerializer
@@ -28,7 +29,6 @@ class UserRegistrationView(generics.CreateAPIView):
             },
             status=status.HTTP_201_CREATED,
         )
-
 
 
 class UserDetailsView(generics.RetrieveUpdateAPIView):
