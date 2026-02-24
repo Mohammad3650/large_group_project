@@ -201,11 +201,16 @@ function Signup() {
             </form>
           </div>
 
-          <div className="card-footer text-center bg-white border-0 rounded-4 pb-4">
-            <small className="text-muted">Already have an account?</small>
-            <Link to="/login" className="btn btn-link btn-sm pl-2">
-              Log in
-            </Link>
+          <div className="card-footer text-center bg-white border-0 pb-4">
+            <small className="text-muted">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="fw-semibold text-decoration-none ms-1"
+              >
+                Log in
+              </Link>
+            </small>
           </div>
         </div>
       </div>
