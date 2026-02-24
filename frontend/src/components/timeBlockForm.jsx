@@ -52,14 +52,23 @@ function TimeBlockForm({ onSubmit, loading }) {
   
     // Submit each block separately
     blocks.forEach(block => {
-      onSubmit({
-        date: date,
-        start_time: block.start_time,
-        end_time: block.end_time,
-        location: block.location,
-        description: block.description,
-        block_type: block.block_type
-      });
+        const data = {
+          date: date,
+          location: block.location,
+          description: block.description,
+          block_type: block.block_type,
+          is_fixed: block.is_fixed,
+        };
+
+        if (block.is_fixed) {
+          data.start_time = block.start_time;
+          data.end_time = block.end_time;
+        } else {
+          data.duration = parseInt(block.duration);
+          data.time_of_day_preference = block.time_of_day;  // note: renamed to match serializer
+        }
+
+        onSubmit(data);
     });
   }
 
