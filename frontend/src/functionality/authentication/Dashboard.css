@@ -11,7 +11,7 @@ body.dashboard-page {
 .dashboard-content {
     display: flex;
     width: 100vw;
-    height: calc(100vh - 75px);
+    height: calc(100vh - 75px - 16px);
     box-sizing: border-box;
     padding: 0 32px 50px 32px;
     justify-content: space-between;
@@ -32,11 +32,13 @@ body.dashboard-page {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    padding-right: 8px;
 }
 
 
 .bottom-buttons {
     margin-top: auto;
+    padding-top: 16px;
 }
 
 @media (max-width: 768px) {

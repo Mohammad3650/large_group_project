@@ -20,6 +20,7 @@ def get_schedule(request):
     data = [
         {
             "id": block.id,
+            "name": block.name,
             "date": str(block.day.date),
             "start_time": str(block.start_time) if block.start_time else None,
             "end_time": str(block.end_time) if block.end_time else None,

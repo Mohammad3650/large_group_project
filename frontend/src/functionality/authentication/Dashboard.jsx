@@ -32,9 +32,6 @@ function Dashboard() {
     const [tomorrowTasks, setTomorrowTasks] = useState([]);
     const [weekTasks, setWeekTasks] = useState([]);
 
-    const [notes, setNotes] = useState("");
-    const [saveStatus, setSaveStatus] = useState(""); // "saving", "saved", ""
-
     useEffect(() => {
         document.body.classList.add("dashboard-page");
 
@@ -76,7 +73,7 @@ function Dashboard() {
 
                 const blocks = res.data.map(block => ({
                     id: block.id,
-                    name: block.description || block.block_type,
+                    name: block.name,
                     datetime: `${block.date}T${block.start_time || "00:00"}`
                 }));
 
