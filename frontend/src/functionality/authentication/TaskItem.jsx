@@ -16,7 +16,7 @@ function playDing() {
  *
  * @param {string} date - Date string (e.g. "2026-02-19")
  * @param {string} startTime - Start time string (e.g. "09:00:00")
- * @param {string} [endTime] - End time string (e.g. "10:00:00"), optional
+ * @param {string} endTime - End time string (e.g. "10:00:00")
  * @returns {string} Formatted string (e.g. "09:00 - 10:00 19 Feb")
  */
 function formatDatetime(date, startTime, endTime) {
