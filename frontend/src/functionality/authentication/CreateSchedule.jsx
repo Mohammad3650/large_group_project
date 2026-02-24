@@ -11,23 +11,30 @@ function CreateSchedule() {
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
 
-    async function handleCreate(data) {
+    async function handleCreate(dataList) {
 
         if (loading) return;
 
-        setServerErrors({});
-        setSuccess("");
+        setServerErrors([]);
         setLoading(true);
 
-        try {
-            await api.post("/api/time-blocks/", data);
-            navigate("/successful-timeblock");
-            return;
-        } catch (err) {
-            setServerErrors(err.response?.data || {});  //if no errors just have default of nothing
-        } finally {
-            setLoading(false);
+        const errors = [];
+        let allSuccess = true;
+
+        for (const data of dataList) {
+            try {
+                await api.post("/api/time-blocks/", data);
+                errors.push({});
+            } catch (err) {
+                errors.push(err.response?.data || {});
+                allSuccess = false;
+            }
         }
+
+        setServerErrors(errors);
+        setLoading(false);
+
+        if (allSuccess) navigate("/successful-timeblock");
     }
 
     return (
@@ -40,7 +47,7 @@ function CreateSchedule() {
                     onSubmit={handleCreate}
                     loading={loading}
                     serverErrors={serverErrors}
-                    clearErrors={() => setServerErrors({})}
+                    clearErrors={() => setServerErrors([])}
                 />
             </div>
         </div>

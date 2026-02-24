@@ -57,7 +57,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
     e.preventDefault();
   
     // Submit each block separately
-    blocks.forEach(block => {
+    const dataList = blocks.map(block => {
         const data = {
           date: date,
           name: block.name,
@@ -66,7 +66,6 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
           block_type: block.block_type,
           is_fixed: block.is_fixed,
         };
-
         if (block.is_fixed) {
           data.start_time = block.start_time;
           data.end_time = block.end_time;
@@ -74,16 +73,16 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
           data.duration = parseInt(block.duration);
           data.time_of_day_preference = block.time_of_day;  // note: renamed to match serializer
         }
-
-        onSubmit(data);
+        return data;
     });
+    onSubmit(dataList);
   }
 
   return (
     <form onSubmit={handleSubmit}>
 
       {/* Date once for whole schedule */}
-      {serverErrors?.date && <p className="error-text-date">Date must be provided</p>}
+      {serverErrors[0]?.date && <p className="error-text-date">Date must be provided</p>}
       <input
         type="date"
         value={date}
@@ -94,7 +93,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
       {blocks.map((block, index) => (
         <div key={index} className="time-block-section">
 
-          {serverErrors?.name && <p className="error-text">A name for the event must be provided</p>}
+          {serverErrors[index]?.name && <p className="error-text">A name for the event must be provided</p>}
           <input
             placeholder="Name"
             value={block.name}
@@ -103,7 +102,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
             }
           />
 
-          {serverErrors?.location && <p className="error-text">Location must be provided</p>}
+          {serverErrors[index]?.location && <p className="error-text">Location must be provided</p>}
           <input
             placeholder="Location"
             value={block.location}
@@ -144,7 +143,8 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
           { block.is_fixed ? (
               <>
 
-              {serverErrors?.start_time && <p className="error-text">A start time that is before the end time must be provided</p>}
+              {serverErrors[index]?.start_time && <p className="error-text">A start time must be provided</p>}
+              {serverErrors[index]?.non_field_errors && (<p className="error-text">A start time that is before the end time must be provided</p>)}
               <input
                   type="time"
                   value={block.start_time}
@@ -153,7 +153,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
                   }
                 />
 
-              {serverErrors?.end_time && <p className="error-text">An end time that is ahead of the start time must be provided</p>}
+              {serverErrors[index]?.end_time && <p className="error-text">An end time must be provided</p>}
               <input
                   type="time"
                   value={block.end_time}
@@ -175,7 +175,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
                   }
               />
 
-               {serverErrors?.time_of_day_preference && <p className="error-text">A preference for time of day must be provided</p>}
+               {serverErrors[index]?.time_of_day_preference && <p className="error-text">A preference for time of day must be provided</p>}
                <select
                   value={block.time_of_day}
                   onChange={(e) =>
