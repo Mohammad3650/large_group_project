@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../timeBlockFormStyle.css";
 
 
-function TimeBlockForm({ onSubmit, loading, serverErrors }) {
+function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
 
   const [date, setDate] = useState("");
 
@@ -37,16 +37,20 @@ function TimeBlockForm({ onSubmit, loading, serverErrors }) {
         end_time: "",
       }
     ]);
+    clearErrors();
   }
 
   function updateBlock(index, field, value) {
     const updated = [...blocks];
     updated[index][field] = value;
     setBlocks(updated);
+    clearErrors();
   }
 
   function deleteBlock(indexToDelete) {
   setBlocks(blocks.filter((_, index) => index !== indexToDelete));
+  clearErrors();
+
   }
 
   function handleSubmit(e) {
@@ -207,7 +211,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors }) {
         </div>
       ))}
     <div className="time-block-form-btn">
-      <button className="btn btn-secondary btn" cltype="button" onClick={addBlock}>
+      <button className="btn btn-secondary btn" type="button" onClick={addBlock}>
         Add Another Event
       </button>
 

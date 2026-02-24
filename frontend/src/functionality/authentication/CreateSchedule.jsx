@@ -40,6 +40,7 @@ function CreateSchedule() {
                     onSubmit={handleCreate}
                     loading={loading}
                     serverErrors={serverErrors}
+                    clearErrors={() => setServerErrors({})}
                 />
             </div>
         </div>
