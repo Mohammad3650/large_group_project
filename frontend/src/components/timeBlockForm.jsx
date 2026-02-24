@@ -9,6 +9,7 @@ function TimeBlockForm({ onSubmit, loading }) {
   const [blocks, setBlocks] = useState([
     {
       date: "",
+      name: "",
       location: "",
       block_type: "study",
       description: "",
@@ -25,6 +26,7 @@ function TimeBlockForm({ onSubmit, loading }) {
       ...blocks,
       {
         date: "",
+        name: "",
         location: "",
         block_type: "study",
         description: "",
@@ -54,6 +56,7 @@ function TimeBlockForm({ onSubmit, loading }) {
     blocks.forEach(block => {
         const data = {
           date: date,
+          name: block.name,
           location: block.location,
           description: block.description,
           block_type: block.block_type,
@@ -86,7 +89,15 @@ function TimeBlockForm({ onSubmit, loading }) {
         <div key={index} className="time-block-section">
 
           <input
-            placeholder="location"
+            placeholder="Name"
+            value={block.name}
+            onChange={(e) =>
+              updateBlock(index, "name", e.target.value)
+            }
+          />
+
+          <input
+            placeholder="Location"
             value={block.location}
             onChange={(e) =>
               updateBlock(index, "location", e.target.value)

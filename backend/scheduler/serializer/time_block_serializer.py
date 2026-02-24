@@ -4,6 +4,7 @@ from ..models import DayPlan, TimeBlock
 
 class TimeBlockSerializer(serializers.Serializer):
     date = serializers.DateField()
+    name = serializers.CharField()
     start_time = serializers.TimeField(required=False)
     end_time = serializers.TimeField(required=False)
     duration = serializers.IntegerField(required=False)
