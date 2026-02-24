@@ -22,6 +22,10 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from scheduler.views.create_schedule_view import create_schedule
+from scheduler.views.get_schedule_view import get_schedule
+from scheduler.views.delete_schedule_view import delete_schedule
+from scheduler.views.note_view import get_note, save_note
+
 from scheduler.views.user_auth import (
     UserRegistrationView,
     UserDetailsView,
@@ -40,5 +44,9 @@ urlpatterns = [
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     # path("", TokenVerifyView.as_view(), name="Landing_Page"),
     path("api/time-blocks/", create_schedule, name="api-create-timeblock"),
+    path("api/time-blocks/get/", get_schedule, name="api-get-timeblocks"),
+    path("api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"),
+    path("api/notes/", get_note, name="api-get-note"),
+    path("api/notes/save/", save_note, name="api-save-note"),
 ]
 

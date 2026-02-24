@@ -5,6 +5,7 @@ import LogoutButton from "../../components/logoutButton";
 import NavBar from "../LandingPage/NavBar.jsx";
 import TaskGroup from "./TaskGroup.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
+import NotesSection from "./NotesSection.jsx";
 import "./Dashboard.css";
 
 /**
@@ -26,23 +27,13 @@ function Dashboard() {
     const [message, setMessage] = useState("Loading...");
     const [error, setError] = useState("");
 
-    const [overdueTasks, setOverdueTasks] = useState([
-        { id: 1, name: "Go gym", datetime: "2026-02-16T20:00" },
-        { id: 2, name: "Go to SGT", datetime: "2026-02-17T14:00" },
-    ].sort(sortTasksByDate));
+    const [overdueTasks, setOverdueTasks] = useState([]);
+    const [todayTasks, setTodayTasks] = useState([]);
+    const [tomorrowTasks, setTomorrowTasks] = useState([]);
+    const [weekTasks, setWeekTasks] = useState([]);
 
-    const [todayTasks, setTodayTasks] = useState([
-        { id: 1, name: "Go for a run", datetime: "2026-02-19T09:00" },
-        { id: 2, name: "Go shopping", datetime: "2026-02-19T17:00" },
-    ].sort(sortTasksByDate));
-
-    const [tomorrowTasks, setTomorrowTasks] = useState([
-        { id: 1, name: "Lecture", datetime: "2026-02-20T10:00" }
-    ].sort(sortTasksByDate));
-
-    const [weekTasks, setWeekTasks] = useState([
-        { id: 1, name: "Lab", datetime: "2026-02-24T14:00" }
-    ].sort(sortTasksByDate));
+    const [notes, setNotes] = useState("");
+    const [saveStatus, setSaveStatus] = useState(""); // "saving", "saved", ""
 
     useEffect(() => {
         document.body.classList.add("dashboard-page");
@@ -72,6 +63,51 @@ function Dashboard() {
         fetchDashboard();
     }, [nav]);
 
+    useEffect(() => {
+        async function fetchTimeBlocks() {
+            try {
+                const res = await api.get("/api/time-blocks/get/");
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);
+                const weekEnd = new Date(today);
+                weekEnd.setDate(today.getDate() + 7);
+
+                const blocks = res.data.map(block => ({
+                    id: block.id,
+                    name: block.description || block.block_type,
+                    datetime: `${block.date}T${block.start_time || "00:00"}`
+                }));
+
+                setOverdueTasks(blocks.filter(b => new Date(b.datetime) < today).sort(sortTasksByDate));
+
+                setTodayTasks(blocks.filter(b => {
+                    const d = new Date(b.datetime);
+                    return d >= today && d < tomorrow;
+                }).sort(sortTasksByDate));
+
+                setTomorrowTasks(blocks.filter(b => {
+                    const d = new Date(b.datetime);
+                    return d >= tomorrow && d < new Date(tomorrow.getTime() + 86400000);
+                }).sort(sortTasksByDate));
+
+                setWeekTasks(blocks.filter(b => {
+                    const d = new Date(b.datetime);
+                    return d >= new Date(tomorrow.getTime() + 86400000) && d <= weekEnd;
+                }).sort(sortTasksByDate));
+
+            } catch (err) {
+                if (err?.response?.status === 401) {
+                    nav("/login");
+                } else {
+                    setError("Failed to load tasks");
+                }
+            }
+        }
+        fetchTimeBlocks();
+    }, []);
+
     const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length;
 
     if (error) return <p>{error}</p>;
@@ -84,7 +120,7 @@ function Dashboard() {
                     <h1>{message}</h1>
                     <AddTaskButton/>
                     {totalTasks === 0 && (
-                        <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
+                        <p className="no-tasks-message">🎉 Congrats, you have no tasks for the next week!</p>
                     )}
                     <TaskGroup title="Overdue" tasks={overdueTasks} setTasks={setOverdueTasks} overdue={true}/>
                     <TaskGroup title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
@@ -94,9 +130,7 @@ function Dashboard() {
                         <LogoutButton/>
                     </div>
                 </div>
-                <div className="notes-section">
-                    <textarea placeholder="Notes"></textarea>
-                </div>
+                <NotesSection/>
             </div>
         </>
     );

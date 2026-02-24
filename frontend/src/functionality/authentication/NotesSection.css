@@ -1,0 +1,46 @@
+.notes-section {
+    width: 40%;
+    box-sizing: border-box;
+    margin-bottom: 48px;
+}
+
+.notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.save-status {
+    font-size: 0.8rem;
+    color: #acacac;
+    font-weight: normal;
+}
+
+.save-status.error {
+    color: #e74c3c;
+}
+
+.notes-section textarea {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    box-sizing: border-box;
+    resize: none;
+    padding: 8px;
+    background-color: #f4f4f4;
+    color: black;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .notes-section {
+        width: 100%;
+        min-width: 100%;
+        height: 40vh;
+        border-left: none;
+        flex-shrink: 0;
+        margin-top: 16px;
+    }
+}

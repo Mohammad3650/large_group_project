@@ -1,6 +1,7 @@
 import TaskItem from "./TaskItem.jsx";
 import { useState } from "react";
 import "./TaskGroup.css"
+import {api} from "../../api.js";
 
 /**
  * Displays a collapsible section of tasks grouped by day.
@@ -11,11 +12,13 @@ import "./TaskGroup.css"
  * @param {boolean} [overdue=false] - Whether the section represents overdue tasks
  * @returns {JSX.Element|null} The day section, or null if no tasks
  */
-function TaskGroup({ title, tasks, setTasks, overdue = false}) {
+function TaskGroup({ title, tasks = [], setTasks, overdue = false}) {
     const [isOpen, setIsOpen] = useState(true);
 
     function handleDelete(id) {
-        setTasks(t => t.filter(task => task.id !== id));
+        api.delete(`/api/time-blocks/${id}/`)
+            .then(() => setTasks(t => t.filter(task => task.id !== id)))
+            .catch(err => console.error("Failed to delete task", err));
     }
 
     if (tasks.length === 0) return null;

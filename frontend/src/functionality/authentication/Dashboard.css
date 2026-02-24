@@ -15,6 +15,7 @@ body.dashboard-page {
     box-sizing: border-box;
     padding: 0 32px 50px 32px;
     justify-content: space-between;
+    align-items: stretch;
 }
 
 .no-tasks-message {
@@ -33,28 +34,9 @@ body.dashboard-page {
     flex-direction: column;
 }
 
-.notes-section {
-    width: 40%;
-    box-sizing: border-box;
-    padding-bottom: 32px;
-}
-
-.notes-section textarea {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    box-sizing: border-box;
-    resize: none;
-    padding: 8px;
-    background-color: #f4f4f4;
-    color: black;
-    border: none;
-}
 
 .bottom-buttons {
     margin-top: auto;
-    padding-top: 32px;
-    padding-bottom: 16px;
 }
 
 @media (max-width: 768px) {
@@ -73,14 +55,5 @@ body.dashboard-page {
         width: 100%;
         max-height: none;
         overflow-y: visible;
-    }
-
-    .notes-section {
-        width: 100%;
-        min-width: 100%;
-        height: 40vh;
-        border-left: none;
-        flex-shrink: 0;
-        margin-top: 16px;
     }
 }
