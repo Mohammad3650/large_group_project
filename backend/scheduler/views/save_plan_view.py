@@ -53,6 +53,7 @@ class SaveWeeklyPlanView(APIView):
                     day=dp,
                     block_type=e["block_type"],
                     location=e.get("location", ""),
+                    description=e.get("description", ""),
                     is_fixed=e.get("is_fixed", True),
                     start_time=e["start_time"],
                     end_time=e["end_time"],
