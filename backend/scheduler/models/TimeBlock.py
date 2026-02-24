@@ -31,8 +31,8 @@ class TimeBlock(models.Model):
     is_fixed = models.BooleanField(default=False)
 
     # For fixed blocks/events
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
 
     # For flexible blocks/events
     duration = models.IntegerField(null=True, blank=True)
