@@ -23,6 +23,13 @@ class TimeBlock(models.Model):
         ("evening", "Evening"),
     ]
 
+    FREQUENCY_CHOICES = [
+        ("none", "One-time"),
+        ("weekly", "Weekly"),
+        ("biweekly", "Every other week"),
+        ("monthly", "Monthly"),
+    ]
+
     day = models.ForeignKey(
         DayPlan, on_delete=models.CASCADE, related_name="time_blocks"
     )
@@ -41,6 +48,10 @@ class TimeBlock(models.Model):
     )
 
     description = models.TextField(blank=True, null=True)
+
+    frequency = models.CharField(
+        max_length=10, choices=FREQUENCY_CHOICES, default="none"
+    )
 
     # add location field, remove day field , remove start and end time and keep it as just how many hours you want to spend, type :daily, weekly, monthly
     # create more models to inherit time block: academic (add modolue, module code)

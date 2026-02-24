@@ -1,6 +1,6 @@
 .time-block-form-btn{
     display: flex;
-    gap: 12px;          
+    gap: 12px;
     margin-top: 20px;
 }
 
@@ -23,7 +23,7 @@
 .time-block-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 5px;
     margin: 28px 0;
     padding: 18px;
     border: 1px solid hwb(0 82% 18%);
@@ -55,4 +55,11 @@
     color: white;
     border-radius: 10px;
     width: 250px;  
+}
+
+.error-text {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
