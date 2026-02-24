@@ -31,7 +31,8 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false}) {
                 <h5 className="number-of-tasks">({tasks.length})</h5>
             </div>
             {isOpen && tasks.map(task => (
-                <TaskItem key={task.id} name={task.name} datetime={task.datetime}
+                <TaskItem key={task.id} name={task.name} date={task.date}
+                          startTime={task.start_time} endTime={task.end_time}
                           onDelete={() => handleDelete(task.id)} overdue={overdue} />
             ))}
         </>

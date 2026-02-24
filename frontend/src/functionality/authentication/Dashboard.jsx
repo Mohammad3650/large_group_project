@@ -8,13 +8,21 @@ import AddTaskButton from "../../components/AddTaskButton.jsx";
 import NotesSection from "./NotesSection.jsx";
 import "./Dashboard.css";
 
+
+/**
+ * Converts a task object's date and start_time into a Date object for comparison.
+ * @param {Object} b - Task object with date and start_time fields
+ * @returns {Date} Combined date and time as a Date object
+ */
+const getDate = (b) => new Date(`${b.date}T${b.start_time}`);
+
 /**
  * Sorts tasks in ascending order by datetime.
  * @param {Object} a - First task object
  * @param {Object} b - Second task object
  * @returns {number} Negative if a comes first, positive if b comes first
  */
-const sortTasksByDate = (a, b) => new Date(a.datetime) - new Date(b.datetime);
+const sortTasksByDate = (a, b) => getDate(a) - getDate(b);
 
 
 /**
@@ -68,31 +76,24 @@ function Dashboard() {
                 today.setHours(0, 0, 0, 0);
                 const tomorrow = new Date(today);
                 tomorrow.setDate(today.getDate() + 1);
+                const dayAfterTomorrow = new Date(today);
+                dayAfterTomorrow.setDate(today.getDate() + 2);
                 const weekEnd = new Date(today);
                 weekEnd.setDate(today.getDate() + 7);
+
 
                 const blocks = res.data.map(block => ({
                     id: block.id,
                     name: block.name,
-                    datetime: `${block.date}T${block.start_time || "00:00"}`
+                    date: block.date,
+                    start_time: block.start_time || "00:00",
+                    end_time: block.end_time || "23:59",
                 }));
 
-                setOverdueTasks(blocks.filter(b => new Date(b.datetime) < today).sort(sortTasksByDate));
-
-                setTodayTasks(blocks.filter(b => {
-                    const d = new Date(b.datetime);
-                    return d >= today && d < tomorrow;
-                }).sort(sortTasksByDate));
-
-                setTomorrowTasks(blocks.filter(b => {
-                    const d = new Date(b.datetime);
-                    return d >= tomorrow && d < new Date(tomorrow.getTime() + 86400000);
-                }).sort(sortTasksByDate));
-
-                setWeekTasks(blocks.filter(b => {
-                    const d = new Date(b.datetime);
-                    return d >= new Date(tomorrow.getTime() + 86400000) && d <= weekEnd;
-                }).sort(sortTasksByDate));
+                setOverdueTasks(blocks.filter(b => getDate(b) < today).sort(sortTasksByDate));
+                setTodayTasks(blocks.filter(b => getDate(b) >= today && getDate(b) < tomorrow).sort(sortTasksByDate));
+                setTomorrowTasks(blocks.filter(b => getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow).sort(sortTasksByDate));
+                setWeekTasks(blocks.filter(b => getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd).sort(sortTasksByDate));
 
             } catch (err) {
                 if (err?.response?.status === 401) {
