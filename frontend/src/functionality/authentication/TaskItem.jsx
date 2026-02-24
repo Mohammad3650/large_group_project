@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Task.css";
+import "./TaskItem.css";
 
 /**
  * Plays the ding sound when the user completes a task.
@@ -34,7 +34,7 @@ function formatDatetime(datetime) {
  * @param {boolean} [props.overdue=false] - Whether the task is overdue
  * @returns {JSX.Element} A single task
  */
-function Task(props) {
+function TaskItem(props) {
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
 
@@ -55,4 +55,4 @@ function Task(props) {
     );
 }
 
-export default Task;
+export default TaskItem;

@@ -1,4 +1,4 @@
-import Task from "./Task.jsx";
+import TaskItem from "./TaskItem.jsx";
 import { useState } from "react";
 import "./DaySection.css"
 
@@ -28,8 +28,8 @@ function DaySection({ title, tasks, setTasks, overdue = false}) {
                 <h5 className="number-of-tasks">({tasks.length})</h5>
             </div>
             {isOpen && tasks.map(task => (
-                <Task key={task.id} name={task.name} datetime={task.datetime}
-                      onDelete={() => handleDelete(task.id)} overdue={overdue} />
+                <TaskItem key={task.id} name={task.name} datetime={task.datetime}
+                          onDelete={() => handleDelete(task.id)} overdue={overdue} />
             ))}
         </>
     );

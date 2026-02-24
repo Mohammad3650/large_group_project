@@ -4,9 +4,8 @@ import { api } from "../../api";
 import LogoutButton from "../../components/logoutButton";
 import NavBar from "../LandingPage/NavBar.jsx";
 import DaySection from "./DaySection.jsx";
+import AddTaskButton from "../../components/AddTaskButton.jsx";
 import "./Dashboard.css";
-
-import CreateScheduleButton from "../../components/CreateScheduleButton";
 
 /**
  * Sorts tasks in ascending order by datetime.
@@ -82,8 +81,8 @@ function Dashboard() {
             <NavBar/>
             <div className="dashboard-content">
                 <div className="task-section">
-                    <h1 className="title-message">{message}</h1>
-                    <button className="add-task-btn">+ Add Task</button>
+                    <h1>{message}</h1>
+                    <AddTaskButton/>
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
                     )}
@@ -93,7 +92,6 @@ function Dashboard() {
                     <DaySection title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
                     <div className="bottom-buttons">
                         <LogoutButton/>
-                        <CreateScheduleButton/>
                     </div>
                 </div>
                 <div className="notes-section">

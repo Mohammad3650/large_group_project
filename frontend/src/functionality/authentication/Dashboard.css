@@ -17,24 +17,6 @@ body.dashboard-page {
     justify-content: space-between;
 }
 
-.add-task-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #f4f4f4;
-    box-sizing: border-box;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    color: #555;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: background-color 0.2s;
-}
-
-.add-task-btn:hover {
-    background-color: #e0e0e0;
-}
-
 .no-tasks-message {
     color: #acacac;
     font-size: 2rem;
