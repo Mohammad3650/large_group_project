@@ -28,6 +28,7 @@ class UnscheduledSerializer(serializers.Serializer):
 
 
 class GenerateScheduleRequestSerializer(serializers.Serializer):
+    week_start = serializers.DateField()
     days = serializers.IntegerField(min_value=1, max_value=14)
     windows = WindowSerializer(many=True)
     scheduled = FixedEventSerializer(many=True, required=False, default=list)
