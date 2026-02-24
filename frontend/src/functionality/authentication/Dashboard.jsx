@@ -13,7 +13,7 @@ import "./Dashboard.css";
  * @param {Object} b - Second task object
  * @returns {number} Negative if a comes first, positive if b comes first
  */
-const sortTasksByDate = (a, b) => new Date(a.datetime) - new Date(b.datetime)
+const sortTasksByDate = (a, b) => new Date(a.datetime) - new Date(b.datetime);
 
 
 /**
