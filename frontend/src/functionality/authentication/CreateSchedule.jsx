@@ -7,7 +7,7 @@ import TimeBlockForm from "../../components/timeBlockForm";
 function CreateSchedule() {
 
     const navigate = useNavigate();
-    const [error, setError] = useState("");
+    const [serverErrors, setServerErrors] = useState({});
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -15,7 +15,7 @@ function CreateSchedule() {
 
         if (loading) return;
 
-        setError("");
+        setServerErrors({});
         setSuccess("");
         setLoading(true);
 
@@ -24,7 +24,7 @@ function CreateSchedule() {
             navigate("/successful-timeblock");
             return;
         } catch (err) {
-            setError("Failed to create time block");
+            setServerErrors(err.response?.data || {});  //if no errors just have default of nothing
         } finally {
             setLoading(false);
         }
@@ -34,13 +34,12 @@ function CreateSchedule() {
         <div className="page-center">
             <div className="time-block-form-card">
                 <h2>Create Time Block</h2>
-
-                {error && <p>{error}</p>}
                 {success && <p>{success}</p>}
 
                 <TimeBlockForm 
                     onSubmit={handleCreate}
                     loading={loading}
+                    serverErrors={serverErrors}
                 />
             </div>
         </div>

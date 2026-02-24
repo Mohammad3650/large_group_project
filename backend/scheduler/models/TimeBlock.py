@@ -33,13 +33,14 @@ class TimeBlock(models.Model):
     day = models.ForeignKey(
         DayPlan, on_delete=models.CASCADE, related_name="time_blocks"
     )
+    name = models.CharField(max_length=20, blank=True)
     block_type = models.CharField(max_length=20, choices=BLOCK_TYPE_CHOICES)
     location = models.CharField(max_length=255, blank=True)
     is_fixed = models.BooleanField(default=False)
 
     # For fixed blocks/events
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
 
     # For flexible blocks/events
     duration = models.IntegerField(null=True, blank=True)

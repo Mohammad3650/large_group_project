@@ -57,9 +57,17 @@
     width: 250px;  
 }
 
-.error-text {
+.error-text-date {
   color: red;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   margin-top: 2px;
   margin-bottom: 2px;
+}
+
+.error-text {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  text-align: left;
 }

@@ -14,7 +14,8 @@ class ScheduleService:
         parsed = self.parser.parse(validated_data)
 
         if not parsed.unscheduled:
-            return self.builder.build([])
+             week_start = validated_data["week_start"]
+             return self.builder.build([], week_start=week_start)
 
         engine = Scheduler(
             days=parsed.days,
@@ -33,4 +34,5 @@ class ScheduleService:
             engine.earlyBiasConstraints()
 
         solutions: List[Tuple[int, int, int, str]] = engine.solve()
-        return self.builder.build(solutions)
+        week_start = validated_data["week_start"]
+        return self.builder.build(solutions, week_start=week_start)
