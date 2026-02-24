@@ -1,26 +1,41 @@
 import axios from "axios";
 
 export function formatApiError(err) {
+  const out = { fieldErrors: {}, global: [] };
+
   if (!axios.isAxiosError(err)) {
-    return ["Something went wrong."];
+    out.global = ["Something went wrong."];
+    return out;
   }
 
   const data = err.response?.data;
-  if (!data) return ["No response from server."];
 
+  if (!data) {
+    out.global = ["No response from server."];
+    return out;
+  }
+
+  // DRF common: { detail: "..." }
   if (typeof data === "object" && typeof data.detail === "string") {
-    return [data.detail];
+    out.global = [data.detail];
+    return out;
   }
 
-  if (typeof data === "object") {
-    const parts = [];
+  if (typeof data === "object" && data !== null) {
     for (const [key, value] of Object.entries(data)) {
-      if (Array.isArray(value)) parts.push(...value);
-      else if (typeof value === "string") parts.push(value);
-      else parts.push(`${key}: ${JSON.stringify(value)}`);
+      if (key === "non_field_errors") {
+        out.global.push(...(Array.isArray(value) ? value : [String(value)]));
+      } else {
+        out.fieldErrors[key] = Array.isArray(value) ? value : [String(value)];
+      }
     }
-    if (parts.length) return parts;
+
+    if (!out.global.length && !Object.keys(out.fieldErrors).length) {
+      out.global = ["Request failed."];
+    }
+    return out;
   }
 
-  return [typeof data === "string" ? data : JSON.stringify(data)];
+  out.global = [typeof data === "string" ? data : "Request failed."];
+  return out;
 }
