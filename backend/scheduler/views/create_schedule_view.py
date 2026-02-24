@@ -6,16 +6,17 @@ from rest_framework import status, serializers
 from ..models import DayPlan, TimeBlock
 from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
-
 def validate_timeblock_payload(request):
-    # serializer = TimeBlockSerializer(data=request.data)
-    # serializer.is_valid(raise_exception=True)
-    # return serializer.validated_data
     serializer = TimeBlockSerializer(data=request.data)
-    if not serializer.is_valid():
-        print("SERIALIZER ERRORS:", serializer.errors)  # check your terminal
-        raise serializers.ValidationError(serializer.errors)
+    serializer.is_valid(raise_exception=True)
     return serializer.validated_data
+
+    # for testing
+    # serializer = TimeBlockSerializer(data=request.data)
+    # if not serializer.is_valid():
+    #     print("SERIALIZER ERRORS:", serializer.errors)
+    #     raise serializers.ValidationError(serializer.errors)
+    # return serializer.validated_data
 
 
 def get_or_create_dayplan(user, date):
@@ -26,6 +27,7 @@ def get_or_create_dayplan(user, date):
 def create_timeblock(dayplan, data):
     return TimeBlock.objects.create(
         day=dayplan,
+        name=data.get("name"),
         start_time=data.get(
             "start_time"
         ),  # the .get to ensure if no start time then None returned
@@ -43,6 +45,7 @@ def timeblock_response_payload(dayplan, time_block):
     return {
         "id": time_block.id,
         "date": str(dayplan.date),
+        "name": time_block.name,
         "start_time": str(time_block.start_time) if time_block.start_time else None,
         "end_time": str(time_block.end_time) if time_block.end_time else None,
         "location": time_block.location,

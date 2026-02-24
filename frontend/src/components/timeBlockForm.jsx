@@ -2,13 +2,14 @@ import { useState } from "react";
 import "../timeBlockFormStyle.css";
 
 
-function TimeBlockForm({ onSubmit, loading }) {
+function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
 
   const [date, setDate] = useState("");
 
   const [blocks, setBlocks] = useState([
     {
       date: "",
+      name: "",
       location: "",
       block_type: "study",
       description: "",
@@ -25,6 +26,7 @@ function TimeBlockForm({ onSubmit, loading }) {
       ...blocks,
       {
         date: "",
+        name: "",
         location: "",
         block_type: "study",
         description: "",
@@ -35,31 +37,35 @@ function TimeBlockForm({ onSubmit, loading }) {
         end_time: "",
       }
     ]);
+    clearErrors();
   }
 
   function updateBlock(index, field, value) {
     const updated = [...blocks];
     updated[index][field] = value;
     setBlocks(updated);
+    clearErrors();
   }
 
   function deleteBlock(indexToDelete) {
   setBlocks(blocks.filter((_, index) => index !== indexToDelete));
+  clearErrors();
+
   }
 
   function handleSubmit(e) {
     e.preventDefault();
   
     // Submit each block separately
-    blocks.forEach(block => {
+    const dataList = blocks.map(block => {
         const data = {
           date: date,
+          name: block.name,
           location: block.location,
           description: block.description,
           block_type: block.block_type,
           is_fixed: block.is_fixed,
         };
-
         if (block.is_fixed) {
           data.start_time = block.start_time;
           data.end_time = block.end_time;
@@ -67,31 +73,44 @@ function TimeBlockForm({ onSubmit, loading }) {
           data.duration = parseInt(block.duration);
           data.time_of_day_preference = block.time_of_day;  // note: renamed to match serializer
         }
-
-        onSubmit(data);
+        return data;
     });
+    onSubmit(dataList);
   }
 
   return (
     <form onSubmit={handleSubmit}>
 
       {/* Date once for whole schedule */}
+      {serverErrors[0]?.date && <p className="error-text-date">Date must be provided</p>}
       <input
         type="date"
         value={date}
         onChange={(e) => setDate(e.target.value)}
       />
 
+
       {blocks.map((block, index) => (
         <div key={index} className="time-block-section">
 
+          {serverErrors[index]?.name && <p className="error-text">A name for the event must be provided</p>}
           <input
-            placeholder="location"
+            placeholder="Name"
+            value={block.name}
+            onChange={(e) =>
+              updateBlock(index, "name", e.target.value)
+            }
+          />
+
+          {serverErrors[index]?.location && <p className="error-text">Location must be provided</p>}
+          <input
+            placeholder="Location"
             value={block.location}
             onChange={(e) =>
               updateBlock(index, "location", e.target.value)
             }
           />
+
 
           <select
             value={block.block_type}
@@ -124,6 +143,8 @@ function TimeBlockForm({ onSubmit, loading }) {
           { block.is_fixed ? (
               <>
 
+              {serverErrors[index]?.start_time && <p className="error-text">A start time must be provided</p>}
+              {serverErrors[index]?.non_field_errors && (<p className="error-text">A start time that is before the end time must be provided</p>)}
               <input
                   type="time"
                   value={block.start_time}
@@ -132,6 +153,7 @@ function TimeBlockForm({ onSubmit, loading }) {
                   }
                 />
 
+              {serverErrors[index]?.end_time && <p className="error-text">An end time must be provided</p>}
               <input
                   type="time"
                   value={block.end_time}
@@ -153,6 +175,7 @@ function TimeBlockForm({ onSubmit, loading }) {
                   }
               />
 
+               {serverErrors[index]?.time_of_day_preference && <p className="error-text">A preference for time of day must be provided</p>}
                <select
                   value={block.time_of_day}
                   onChange={(e) =>
@@ -188,7 +211,7 @@ function TimeBlockForm({ onSubmit, loading }) {
         </div>
       ))}
     <div className="time-block-form-btn">
-      <button className="btn btn-secondary btn" cltype="button" onClick={addBlock}>
+      <button className="btn btn-secondary btn" type="button" onClick={addBlock}>
         Add Another Event
       </button>
 
