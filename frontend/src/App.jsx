@@ -8,6 +8,7 @@ import Landing from "./functionality/LandingPage/Landing";
 
 import CreateSchedule from "./functionality/authentication/createSchedule";
 import { setAuthToken } from "./api";
+import SuccessfulTimeBlock from "./components/successfulTimeBlock";
 
 
 function App() {
@@ -33,6 +34,13 @@ function App() {
           <CreateSchedule />
         </ProtectedRoute>
       } />
+
+      <Route path="/successful-timeblock" element={
+        <ProtectedRoute>
+          <SuccessfulTimeBlock />
+        </ProtectedRoute>
+      }
+      />
 
     </Routes>
 
