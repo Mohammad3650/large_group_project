@@ -7,6 +7,7 @@ class TimeBlockSerializer(serializers.Serializer):
     end_time = serializers.TimeField()
     location = serializers.CharField(allow_blank=True, required=False)
     block_type = serializers.ChoiceField(choices=TimeBlock.BLOCK_TYPE_CHOICES)
+    description = serializers.CharField(allow_blank=True, required=False)
 
     def validate(self, attrs):
         if attrs["end_time"] <= attrs["start_time"]:

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../timeBlockFormStyle.css";
 
+
 function TimeBlockForm({ onSubmit, loading }) {
 
   const [date, setDate] = useState("");
@@ -56,6 +57,7 @@ function TimeBlockForm({ onSubmit, loading }) {
         start_time: block.start_time,
         end_time: block.end_time,
         location: block.location,
+        description: block.description,
         block_type: block.block_type
       });
     });
@@ -156,6 +158,13 @@ function TimeBlockForm({ onSubmit, loading }) {
                </>
 
               )}
+
+              <textarea
+                placeholder="Description (optional)"
+                value={block.description}
+                onChange={(e) => updateBlock(index, "description", e.target.value)}
+                className="description-input"
+              />
 
           {blocks.length > 1 && (
               <button

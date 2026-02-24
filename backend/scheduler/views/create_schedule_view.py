@@ -24,6 +24,7 @@ def create_timeblock(dayplan, data):
         end_time=data["end_time"],
         location=data.get("location", ""),
         block_type=data["block_type"],
+        description = data.get("description", ""),
     )
 
 
@@ -35,6 +36,7 @@ def timeblock_response_payload(dayplan, time_block):
         "end_time": str(time_block.end_time),
         "location": time_block.location,
         "block_type": time_block.block_type,
+        "description": time_block.description,
     }
 
 

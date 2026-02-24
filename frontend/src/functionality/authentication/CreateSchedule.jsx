@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import TimeBlockForm from "../../components/timeBlockForm";
 
+
 function CreateSchedule() {
 
+    const navigate = useNavigate();
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
@@ -18,7 +21,8 @@ function CreateSchedule() {
 
         try {
             await api.post("/api/time-blocks/", data);
-            setSuccess("Time block created successfully");
+            navigate("/successful-timeblock");
+            return;
         } catch (err) {
             setError("Failed to create time block");
         } finally {
