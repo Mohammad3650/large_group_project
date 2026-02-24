@@ -1,6 +1,6 @@
 import TaskItem from "./TaskItem.jsx";
 import { useState } from "react";
-import "./DaySection.css"
+import "./TaskGroup.css"
 
 /**
  * Displays a collapsible section of tasks grouped by day.
@@ -11,7 +11,7 @@ import "./DaySection.css"
  * @param {boolean} [overdue=false] - Whether the section represents overdue tasks
  * @returns {JSX.Element|null} The day section, or null if no tasks
  */
-function DaySection({ title, tasks, setTasks, overdue = false}) {
+function TaskGroup({ title, tasks, setTasks, overdue = false}) {
     const [isOpen, setIsOpen] = useState(true);
 
     function handleDelete(id) {
@@ -35,4 +35,4 @@ function DaySection({ title, tasks, setTasks, overdue = false}) {
     );
 }
 
-export default DaySection;
+export default TaskGroup;

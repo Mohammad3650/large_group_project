@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import LogoutButton from "../../components/logoutButton";
 import NavBar from "../LandingPage/NavBar.jsx";
-import DaySection from "./DaySection.jsx";
+import TaskGroup from "./TaskGroup.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
 import "./Dashboard.css";
 
@@ -86,10 +86,10 @@ function Dashboard() {
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
                     )}
-                    <DaySection title="Overdue" tasks={overdueTasks} setTasks={setOverdueTasks} overdue={true}/>
-                    <DaySection title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
-                    <DaySection title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
-                    <DaySection title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
+                    <TaskGroup title="Overdue" tasks={overdueTasks} setTasks={setOverdueTasks} overdue={true}/>
+                    <TaskGroup title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
+                    <TaskGroup title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
+                    <TaskGroup title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
                     <div className="bottom-buttons">
                         <LogoutButton/>
                     </div>

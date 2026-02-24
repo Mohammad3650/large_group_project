@@ -30,7 +30,7 @@ function formatDatetime(datetime) {
  *
  * @param {string} props.name - The task name
  * @param {string} props.datetime - ISO datetime string (e.g. "2026-02-19T09:00")
- * @param {Function} props.onDelete - Callback to the handleDelete function from the DaySection component
+ * @param {Function} props.onDelete - Callback to the handleDelete function from the TaskGroup component
  * @param {boolean} [props.overdue=false] - Whether the task is overdue
  * @returns {JSX.Element} A single task
  */
