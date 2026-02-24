@@ -6,6 +6,7 @@ import NavBar from "../LandingPage/NavBar.jsx";
 import DaySection from "./DaySection.jsx";
 import "./Dashboard.css";
 
+import CreateScheduleButton from "../../components/CreateScheduleButton";
 
 /**
  * Sorts tasks in ascending order by datetime.
@@ -92,6 +93,7 @@ function Dashboard() {
                     <DaySection title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
                     <div className="bottom-buttons">
                         <LogoutButton/>
+                        <CreateScheduleButton/>
                     </div>
                 </div>
                 <div className="notes-section">

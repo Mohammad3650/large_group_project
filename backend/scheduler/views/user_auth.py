@@ -8,6 +8,7 @@ from scheduler.serializer.users_serializer import (
     UserDetailsSerializer,
 )
 
+
 class UserRegistrationView(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserRegistrationSerializer
@@ -30,18 +31,18 @@ class UserRegistrationView(generics.CreateAPIView):
         )
 
 
-
 class UserDetailsView(generics.RetrieveUpdateAPIView):
     serializer_class = UserDetailsSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
-    
+
+
 class DashboardView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        return Response({"message": f"Welcome to your dashboard, {request.user.username}!"})
-    
-
+        return Response(
+            {"message": f"Welcome to your dashboard, {request.user.username}!"}
+        )
