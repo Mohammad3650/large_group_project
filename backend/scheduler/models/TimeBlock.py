@@ -48,8 +48,5 @@ class TimeBlock(models.Model):
     time_of_day_preference = models.CharField(
         max_length=20, choices=TIME_OF_DAY_PREFERENCES, null=True, blank=True
     )
-
-    description = models.TextField(blank=True, null=True)
-
     # add location field, remove day field , remove start and end time and keep it as just how many hours you want to spend, type :daily, weekly, monthly
     # create more models to inherit time block: academic (add module, module code)
