@@ -12,7 +12,7 @@ class ScheduleResponseBuilderTest(TestCase):
     
     def test_single_solution_response(self):
         """A tuple with one solution should mape to a correct event dict"""
-        result = self.builder.build([480, 540, 60, "Gym"])
+        result = self.builder.build([(480, 540, 60, "Gym")])
         self.assertEqual(result['count'], 1)
         self.assertEqual(result['events'][0], {
             "name": "Gym",
