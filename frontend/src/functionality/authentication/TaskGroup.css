@@ -1,0 +1,30 @@
+.day-section {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    user-select: none
+}
+
+.arrow {
+    font-size: 0.8rem;
+    transform: rotate(180deg);
+    transition: transform 0.2s;
+    color: #acacac;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: -3px;
+}
+
+.arrow.closed {
+    transform: rotate(90deg);
+}
+
+.overdue-title {
+    color: #e74c3c;
+}
+
+.number-of-tasks {
+    color: #acacac;
+}

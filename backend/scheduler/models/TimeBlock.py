@@ -52,4 +52,4 @@ class TimeBlock(models.Model):
     description = models.TextField(blank=True, null=True)
 
     # add location field, remove day field , remove start and end time and keep it as just how many hours you want to spend, type :daily, weekly, monthly
-    # create more models to inherit time block: academic (add modolue, module code)
+    # create more models to inherit time block: academic (add module, module code)
