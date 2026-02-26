@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "../SuccessPageStyle.css";
+import "./SuccessPageStyle.css";
 import tickImage from "../functionality/landingpage/photos/tick.png";
 
 
