@@ -1,0 +1,60 @@
+html,body
+{
+    height: 100%;
+}
+
+#root
+{
+    width: 100%;
+    
+}
+
+
+.maindiv {
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    min-height: 100vh;
+
+}
+
+
+
+.header {}
+
+
+
+.title {
+    /* margin-top: 80px;
+    margin-bottom: 30px; */
+    padding-top:20px;
+    /* font-family; */
+    font-weight: bold;
+    text-align: center;
+    font-size: 30px;
+
+}
+
+
+
+.actual-calendar {
+    height: 90vh;
+    width: 100%;
+    padding: 10px;
+    /* flex:10; */
+
+    max-width: 2000px;
+    box-shadow: 86cm;
+    box-sizing: border-box;
+    border-radius: 10px;
+
+
+}
+
+.actual-calendar>div {
+    width: 100%;
+    height: 100%;
+}
+
