@@ -81,16 +81,18 @@ describe("Succesful time block created", () => {
       <MemoryRouter initialEntries={["/success"]}>
         <Routes>
           <Route path="/success" element={<SuccessfulTimeBlock />} />
-          <Route path="/dashboard" element={<h1>Dashboard Page</h1>} />
+          <Route path="/dashboard" element={<p>🎉 Congrats, you have no tasks for the next week!</p>} />
         </Routes>
       </MemoryRouter>
     );
 
-    await user.click(
-      screen.getByRole("button", { name: /return to dashboard/i })
-    );
+    const dashboardButton = screen.getByRole("button", {
+      name: /Return To Dashboard/,
+    });
 
-    expect(screen.getByText("Dashboard Page")).toBeInTheDocument();
+    fireEvent.click(dashboardButton);
+
+    expect(screen.getByText("🎉 Congrats, you have no tasks for the next week!")).toBeInTheDocument();
   });
 });
 
