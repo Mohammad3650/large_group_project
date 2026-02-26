@@ -5,6 +5,7 @@ import Signup from "./functionality/authentication/Signup"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
 import Landing from "./functionality/LandingPage/Landing";
+import Calendar from "./functionality/CalendarView/calendar";
 
 import CreateSchedule from "./functionality/authentication/createSchedule";
 import { setAuthToken } from "./api";
@@ -42,6 +43,8 @@ function App() {
       }
       />
 
+
+      <Route path="/calendar" element={<Calendar/>} />
     </Routes>
 
   )
