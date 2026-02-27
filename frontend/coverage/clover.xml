@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1772194034211" clover="3.2.0">
+  <project timestamp="1772194034211" name="All files">
+    <metrics statements="40" coveredstatements="21" conditionals="22" coveredconditionals="12" methods="24" coveredmethods="13" elements="86" coveredelements="46" complexity="0" loc="40" ncloc="40" packages="2" files="6" classes="6"/>
+    <package name="components">
+      <metrics statements="40" coveredstatements="21" conditionals="22" coveredconditionals="12" methods="24" coveredmethods="13"/>
+      <file name="CreateScheduleButton.jsx" path="/Users/nabilahmed/large_group_project/frontend/src/components/CreateScheduleButton.jsx">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+      </file>
+      <file name="successPageStyle.css" path="/Users/nabilahmed/large_group_project/frontend/src/components/successPageStyle.css">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="successfulTimeBlock.jsx" path="/Users/nabilahmed/large_group_project/frontend/src/components/successfulTimeBlock.jsx">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+        <line num="8" count="5" type="stmt"/>
+        <line num="10" count="5" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+      </file>
+      <file name="timeBlockForm.jsx" path="/Users/nabilahmed/large_group_project/frontend/src/components/timeBlockForm.jsx">
+        <metrics statements="33" coveredstatements="14" conditionals="22" coveredconditionals="12" methods="19" coveredmethods="8"/>
+        <line num="7" count="6" type="stmt"/>
+        <line num="9" count="6" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="69" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="71" count="0" type="stmt"/>
+        <line num="73" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+        <line num="78" count="0" type="stmt"/>
+        <line num="81" count="6" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="94" count="7" type="stmt"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="110" count="0" type="stmt"/>
+        <line num="118" count="0" type="stmt"/>
+        <line num="136" count="1" type="stmt"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="161" count="0" type="stmt"/>
+        <line num="174" count="0" type="stmt"/>
+        <line num="182" count="0" type="stmt"/>
+        <line num="197" count="0" type="stmt"/>
+        <line num="204" count="1" type="stmt"/>
+      </file>
+      <file name="timeBlockFormStyle.css" path="/Users/nabilahmed/large_group_project/frontend/src/components/timeBlockFormStyle.css">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="functionality.LandingPage.photos">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="tick.png" path="/Users/nabilahmed/large_group_project/frontend/src/functionality/LandingPage/photos/tick.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+  </project>
+</coverage>
