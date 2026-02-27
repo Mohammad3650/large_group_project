@@ -67,11 +67,13 @@ function Calendar() {
         async function fetchTimeBlocks() {
             try {
                 const res = await api.get("/api/time-blocks/get/");
+                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                 const blocks = res.data.map(block => ({
                     id: block.id,
-                    title: block.name || block.block_type,
-                    start: `${block.date} ${block.start_time?.slice(0, 5) || "00:00"}`,
-                    end: `${block.date} ${block.end_time?.slice(0, 5) || "23:59"}`
+                    title: block.name,
+                    start: Temporal.ZonedDateTime.from(`${block.date}T${(block.start_time || "00:00").slice(0, 5)}[${timezone}]`),
+                    end: Temporal.ZonedDateTime.from(`${block.date}T${(block.end_time || "23:59").slice(0, 5)}[${timezone}]`),
+                    description: block.description
                 }));
                 setEvents(blocks);
             } catch (err) {
@@ -81,7 +83,6 @@ function Calendar() {
         fetchTimeBlocks();
     }, []);
 
-  
 
     const calendar = useCalendarApp({
         views:[ createViewWeek(), createViewMonthGrid(),  ],
@@ -102,7 +103,7 @@ function Calendar() {
         //     createEventModalPlugin(),
         //     createDragAndDropPlugin(),
         // ]
-        
+
     })
 
 
@@ -140,7 +141,7 @@ function Calendar() {
   return (
     <div className="calendardiv">
       <NavBar/>
-      
+
       <h1 className="title">Calendar</h1>
       <div className="actual-calendar sx-react-calendar-wrapper">
         <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />
