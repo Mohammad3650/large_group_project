@@ -15,6 +15,7 @@ function Landing() {
 
       <Features/>
 
+      <section className="testimonials">
       <h2>Student Testimonials</h2>
       <Card
         avatar="OK"
@@ -57,6 +58,8 @@ function Landing() {
         stars="⭐⭐⭐⭐⭐"
         review="“It’s really helped me balance lectures, coursework, and revision without feeling overwhelmed.”"
       />
+      </section>
+
       </div>
     </>
   );

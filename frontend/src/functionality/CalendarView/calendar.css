@@ -1,4 +1,4 @@
-html,body
+ /* html,body
 {
     height: 100%;
 }
@@ -7,54 +7,148 @@ html,body
 {
     width: 100%;
     
-}
+} */
 
 
-.maindiv {
-    padding: 20px;
-    flex-direction: column;
-    align-items: center;
-    display: flex;
-    gap: 10px;
-    min-height: 100vh;
+ .calendardiv {
+     padding: 20px;
+     width: 100%;
+     box-sizing: border-box;
+     flex-direction: column;
+     align-items: stretch;
+     display: flex;
+     gap: 10px;
+     min-height: 100vh;
 
-}
-
-
-
-.header {}
+ }
 
 
 
-.title {
-    /* margin-top: 80px;
+ .header {}
+
+
+
+ .title {
+     /* margin-top: 80px;
     margin-bottom: 30px; */
-    padding-top:20px;
-    /* font-family; */
-    font-weight: bold;
-    text-align: center;
-    font-size: 30px;
+     padding-top: 20px;
+     /* font-family; */
+     font-weight: bold;
+     text-align: center;
+     font-size: 30px;
 
-}
-
-
-
-.actual-calendar {
-    height: 90vh;
-    width: 100%;
-    padding: 10px;
-    /* flex:10; */
-
-    max-width: 2000px;
-    box-shadow: 86cm;
-    box-sizing: border-box;
-    border-radius: 10px;
+ }
 
 
-}
 
-.actual-calendar>div {
-    width: 100%;
-    height: 100%;
-}
+ .actual-calendar {
+     height: 90vh;
+     width: 100%;
+     padding: 10px;
+     /* flex:10; */
 
+     /* max-width: 2000px; */
+
+     /* box-shadow: 86cm; */
+     box-sizing: border-box;
+     border-radius: 10px;
+
+
+ }
+
+ .sx-react-calendar-wrapper {
+     width: 100%;
+     height: 100%;
+ }
+
+ .actual-calendar>div {
+     width: 100%;
+     height: 100%;
+ }
+
+
+
+ .sx__event-modal-default {
+     width: 500px;
+     height: 500px;
+     justify-content: center;
+     align-items: center;
+
+ }
+
+ .sx__event-modal-default>div {
+     padding: 10px;
+     overflow: auto;
+
+ }
+
+
+
+ .sx__event-modal__title {
+     font-size: 30px !important;
+     padding-bottom: 10px;
+     /* font-family: 'Courier New', Courier, monospace; */
+     /* font-weight: 300px; */
+     overflow-wrap: break-word;
+
+ }
+
+
+ .sx__event-modal__description {
+     font-size: 20px;
+     overflow-wrap: break-word;
+ }
+
+
+ .sx__event-modal__time {
+     font-size: 20px;
+ }
+
+ .sx__time-grid-event-title {
+     font-size: 25px;
+     padding-bottom: 7px;
+ }
+
+
+ .sx__time-grid-event:hover
+ {
+    box-shadow: 0 9px 10px rgba(0, 0, 0, 0.5);
+ }
+
+ .sx__time-grid-event-time {
+
+     font-size: 14px;
+     padding-bottom: 20px;
+
+ }
+
+
+ .buttons {
+     align-items: center;
+     justify-content: center;
+     padding-top: 20px;
+
+ }
+
+
+ .button {
+     background-color: black;
+     border: none;
+     color: white;
+     padding: 15px 32px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+     font-size: 16px;
+     cursor: pointer;
+     font-size: 25px;
+     border-radius: 4px;
+
+ }
+
+ .button:hover {
+     background-color: #4CAF50;
+     color: white;
+     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1)
+         /* transform: translateY(-2px) */
+ }
