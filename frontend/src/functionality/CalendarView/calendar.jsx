@@ -4,18 +4,24 @@ import {
   createViewWeek,
 } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
-import "@schedule-x/theme-default/dist/index.css";
 
 // import 'temporal-polyfill/global'
 // import {Temporal } from "temporal-polyfill"
 
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import "./calendar.css";
-import { useMemo } from "react";
 
+import { useMemo } from "react";
+import '@schedule-x/theme-default/dist/index.css'
+import 'temporal-polyfill/global'
+import NavBar from "../LandingPage/NavBar.jsx";
+
+import {useEffect, useState} from "react";
+import {api} from "../../api.js";
 
 
  
+
 const customComponents = {
   eventModal: ({ calendarEvent }) => {
     return (
@@ -34,10 +40,6 @@ const customComponents = {
         {calendarEvent.title}
         </div>
 
-        {/* <div className="sx__event-modal__time">
-        {calendarEvent.time}
-        </div> */}
-
 
         <div className="sx__event-modal__description">
         {calendarEvent.description}
@@ -55,34 +57,90 @@ const customComponents = {
 
 
 
+
+
+
 function Calendar() {
+    const [events, setEvents] = useState([]);
 
-  const calendar = useCalendarApp({
-    views: [
-      createViewWeek(),
-      createViewMonthGrid(),
-      // createViewDay()
-    ],
-    plugins: [createEventModalPlugin()],
-    events: [
-      {
-        id: 1,
-        title: "Event1",
-        start: Temporal.ZonedDateTime.from("2024-12-12T10:00[Europe/London]"),
-        end: Temporal.ZonedDateTime.from("2024-12-12T12:00[Europe/London]"),
-        description: "skkljashdjkfsdjkskajfkdjjksd;f;ajklfsfjklasfkdjl;ldjf",
-      },
+    useEffect(() => {
+        async function fetchTimeBlocks() {
+            try {
+                const res = await api.get("/api/time-blocks/get/");
+                const blocks = res.data.map(block => ({
+                    id: block.id,
+                    title: block.name || block.block_type,
+                    start: `${block.date} ${block.start_time?.slice(0, 5) || "00:00"}`,
+                    end: `${block.date} ${block.end_time?.slice(0, 5) || "23:59"}`
+                }));
+                setEvents(blocks);
+            } catch (err) {
+                console.error("Failed to load time blocks", err);
+            }
+        }
+        fetchTimeBlocks();
+    }, []);
 
-      
-    ],
-    selectedDate: Temporal.PlainDate.from("2024-12-12"),
-  });
+  
+
+    const calendar = useCalendarApp({
+        views:[ createViewWeek(), createViewMonthGrid(),  ],
+        plugins: [createEventModalPlugin()],
+        events: [
+            {
+                id: 1,
+                title: "event1",
+                start: Temporal.ZonedDateTime.from("2024-12-12T10:00[Europe/London]"),
+                end: Temporal.ZonedDateTime.from("2024-12-12T12:00[Europe/London]"),
+                // description: "skkljashdjkfsdjkskajfkdjjksd;f;ajklfsfjklasfkdjl;ldjf",
+            },
+            ...events,
+        ],
+        selectedDate: Temporal.PlainDate.from("2024-12-12"),
+        // plugins:
+        // [
+        //     createEventModalPlugin(),
+        //     createDragAndDropPlugin(),
+        // ]
+        
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // const customComponents = {};
 
   return (
     <div className="calendardiv">
-      <header className="header"></header>
+      <NavBar/>
+      
       <h1 className="title">Calendar</h1>
       <div className="actual-calendar sx-react-calendar-wrapper">
         <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />
