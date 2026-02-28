@@ -44,7 +44,12 @@ function App() {
       />
 
 
-      <Route path="/calendar" element={<Calendar/>} />
+      <Route path="/calendar" element={
+          <ProtectedRoute>
+            <Calendar/>
+          </ProtectedRoute>
+      }
+      />
     </Routes>
 
   )

@@ -57,6 +57,19 @@ function Calendar() {
 
 function CalendarView({ blocks, setBlocks }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
+    const [username, setUsername] = useState("");
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const res = await api.get("/api/user/");
+                setUsername(res.data.username);
+            } catch (err) {
+                console.error("Failed to load user", err);
+            }
+        }
+        fetchUser();
+    }, []);
 
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],
@@ -112,7 +125,7 @@ function CalendarView({ blocks, setBlocks }) {
         <>
             <NavBar/>
             <div className="calendar-content">
-                <h1>Welcome to your calendar, User!</h1>
+                <h1>Welcome to your calendar, {username}!</h1>
                 <AddTaskButton/>
                 <div className="actual-calendar sx-react-calendar-wrapper">
                     <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />
