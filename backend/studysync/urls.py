@@ -25,6 +25,7 @@ from scheduler.views.create_schedule_view import create_schedule
 from scheduler.views.get_schedule_view import get_schedule
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.note_view import get_note, save_note
+from scheduler.views.get_user_view import get_user_view
 
 from scheduler.views.user_auth import (
     UserRegistrationView,
@@ -48,5 +49,6 @@ urlpatterns = [
     path("api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"),
     path("api/notes/", get_note, name="api-get-note"),
     path("api/notes/save/", save_note, name="api-save-note"),
+    path("api/user/", get_user_view),
 ]
 
