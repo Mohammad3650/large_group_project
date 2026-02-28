@@ -2,13 +2,14 @@ import { createViewMonthGrid, createViewWeek } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
-import '@schedule-x/theme-default/dist/index.css'
-import 'temporal-polyfill/global'
 import NavBar from "../LandingPage/NavBar.jsx";
+import AddTaskButton from "../../components/AddTaskButton.jsx";
+import getUser from "../helpers/GetUser.js";
 import { useEffect, useState } from "react";
 import { api } from "../../api.js";
+import '@schedule-x/theme-default/dist/index.css'
+import 'temporal-polyfill/global'
 import "./calendar.css"
-import AddTaskButton from "../../components/AddTaskButton.jsx";
 
 
 const formatDate = (date) => {
@@ -57,19 +58,7 @@ function Calendar() {
 
 function CalendarView({ blocks, setBlocks }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
-    const [username, setUsername] = useState("");
-
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                const res = await api.get("/api/user/");
-                setUsername(res.data.username);
-            } catch (err) {
-                console.error("Failed to load user", err);
-            }
-        }
-        fetchUser();
-    }, []);
+    const username = getUser();
 
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],
