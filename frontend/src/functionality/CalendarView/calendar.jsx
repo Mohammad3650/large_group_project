@@ -8,10 +8,11 @@ import NavBar from "../LandingPage/NavBar.jsx";
 import { useEffect, useState } from "react";
 import { api } from "../../api.js";
 import "./calendar.css"
+import AddTaskButton from "../../components/AddTaskButton.jsx";
 
 
-const formatDate = (dateStr) => {
-    const [year, month, day] = dateStr.split("-");
+const formatDate = (date) => {
+    const [year, month, day] = date.split("-");
     return `${day}/${month}/${year}`;
 };
 
@@ -28,7 +29,12 @@ function Calendar() {
                     title: block.name,
                     start: Temporal.ZonedDateTime.from(`${block.date}T${(block.start_time || "00:00").slice(0, 5)}[${timezone}]`),
                     end: Temporal.ZonedDateTime.from(`${block.date}T${(block.end_time || "23:59").slice(0, 5)}[${timezone}]`),
-                    description: `Date: ${formatDate(block.date)}\nTime: ${(block.start_time || "00:00").slice(0, 5)} - ${(block.end_time || "23:59").slice(0, 5)}\nLocation: ${block.location || "N/A"}\nType: ${block.block_type}\nDescription: ${block.description || "N/A"}`,
+                    date: block.date,
+                    startTime: (block.start_time || "00:00").slice(0, 5),
+                    endTime: (block.end_time || "23:59").slice(0, 5),
+                    location: block.location || "N/A",
+                    blockType: block.block_type.charAt(0).toUpperCase() + block.block_type.slice(1),
+                    description: block.description || "N/A",
                 }));
                 setBlocks(timeBlocks);
             } catch (err) {
@@ -70,9 +76,30 @@ function CalendarView({ blocks, setBlocks }) {
 
     const customComponents = {
         eventModal: ({ calendarEvent }) => (
-            <div style={{ padding: "40px", color: "black", borderRadius: "10px", border: "1px solid black", fontSize: "24px", fontWeight: "bold" }}>
+            <div style={{ padding: "40px", color: "black", borderRadius: "10px", border: "1px solid black" }}>
                 <div className="sx__event-modal__title">{calendarEvent.title}</div>
-                <div style={{ whiteSpace: "pre-line" }}>{calendarEvent.description}</div>
+                <div className="sx__event-modal__description">
+                    <div className="event-detail">
+                        <img src="/calendar.png" alt="Date" className="event-detail-icon" />
+                        <span>{formatDate(calendarEvent.date)}</span>
+                    </div>
+                    <div className="event-detail">
+                        <img src="/time.png" alt="Time" className="event-detail-icon" />
+                        <span>{calendarEvent.startTime} - {calendarEvent.endTime}</span>
+                    </div>
+                    <div className="event-detail">
+                        <img src="/location.png" alt="Location" className="event-detail-icon" />
+                        <span>{calendarEvent.location}</span>
+                    </div>
+                    <div className="event-detail">
+                        <img src="/block_type.png" alt="Block Type" className="event-detail-icon" />
+                        <span>{calendarEvent.blockType}</span>
+                    </div>
+                    <div className="event-detail">
+                        <img src="/description.png" alt="Description" className="event-detail-icon" />
+                        <span>{calendarEvent.description}</span>
+                    </div>
+                </div>
                 <div className="buttons">
                     <button className="button">Edit</button>
                     <button className="button" onClick={() => handleDelete(calendarEvent.id)}>Delete</button>
@@ -82,13 +109,16 @@ function CalendarView({ blocks, setBlocks }) {
     };
 
     return (
-        <div className="calendardiv">
+        <>
             <NavBar/>
-            <h1 className="title">Calendar</h1>
-            <div className="actual-calendar sx-react-calendar-wrapper">
-                <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />
+            <div className="calendar-content">
+                <h1>Welcome to your calendar, User!</h1>
+                <AddTaskButton/>
+                <div className="actual-calendar sx-react-calendar-wrapper">
+                    <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
