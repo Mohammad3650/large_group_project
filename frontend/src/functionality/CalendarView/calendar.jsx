@@ -9,6 +9,12 @@ import { useEffect, useState } from "react";
 import { api } from "../../api.js";
 import "./calendar.css"
 
+
+const formatDate = (dateStr) => {
+    const [year, month, day] = dateStr.split("-");
+    return `${day}/${month}/${year}`;
+};
+
 function Calendar() {
     const [blocks, setBlocks] = useState(null);
 
@@ -22,7 +28,7 @@ function Calendar() {
                     title: block.name,
                     start: Temporal.ZonedDateTime.from(`${block.date}T${(block.start_time || "00:00").slice(0, 5)}[${timezone}]`),
                     end: Temporal.ZonedDateTime.from(`${block.date}T${(block.end_time || "23:59").slice(0, 5)}[${timezone}]`),
-                    description: block.description
+                    description: `Date: ${formatDate(block.date)}\nTime: ${(block.start_time || "00:00").slice(0, 5)} - ${(block.end_time || "23:59").slice(0, 5)}\nLocation: ${block.location || "N/A"}\nType: ${block.block_type}\nDescription: ${block.description || "N/A"}`,
                 }));
                 setBlocks(timeBlocks);
             } catch (err) {
@@ -66,7 +72,7 @@ function CalendarView({ blocks, setBlocks }) {
         eventModal: ({ calendarEvent }) => (
             <div style={{ padding: "40px", color: "black", borderRadius: "10px", border: "1px solid black", fontSize: "24px", fontWeight: "bold" }}>
                 <div className="sx__event-modal__title">{calendarEvent.title}</div>
-                <div className="sx__event-modal__description">{calendarEvent.description}</div>
+                <div style={{ whiteSpace: "pre-line" }}>{calendarEvent.description}</div>
                 <div className="buttons">
                     <button className="button">Edit</button>
                     <button className="button" onClick={() => handleDelete(calendarEvent.id)}>Delete</button>
