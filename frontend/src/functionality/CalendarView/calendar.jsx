@@ -57,7 +57,7 @@ function CalendarView({ blocks, setBlocks }) {
         api.delete(`/api/time-blocks/${id}/`)
             .then(() => {
                 eventsService.remove(id);
-                setBlocks(prev => prev.filter(b => b.id !== id));
+                setBlocks(b => b.filter(block => block.id !== id));
             })
             .catch(err => console.error("Failed to delete", err));
     }
