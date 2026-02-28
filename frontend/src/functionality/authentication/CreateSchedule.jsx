@@ -20,12 +20,15 @@ function CreateSchedule() {
 
         const errors = [];
         let allSuccess = true;
+        let createdBlockId = null;
 
         for (const data of dataList) {
             try {
-                await api.post("/api/time-blocks/", data);
+                const res = await api.post("/api/time-blocks/", data);
                 errors.push({});
+                if (!createdBlockId) createdBlockId = res.data.id;
             } catch (err) {
+                console.log("ERROR RESPONSE:", err.response?.data);
                 errors.push(err.response?.data || {});
                 allSuccess = false;
             }
@@ -34,7 +37,7 @@ function CreateSchedule() {
         setServerErrors(errors);
         setLoading(false);
 
-        if (allSuccess) navigate("/successful-timeblock");
+        if (allSuccess) navigate("/successful-timeblock", { state: { id: createdBlockId } });
     }
 
     return (

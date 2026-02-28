@@ -2,24 +2,38 @@ import { useState } from "react";
 import "../timeBlockFormStyle.css";
 
 
-function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
+function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialData=null }) {
 
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(initialData?.date || "");
 
-  const [blocks, setBlocks] = useState([
-    {
-      date: "",
-      name: "",
-      location: "",
-      block_type: "study",
-      description: "",
-      is_fixed: false,
-      duration: "",
-      time_of_day: "",
-      start_time: "",
-      end_time: "",
-    }
-  ]);
+  //Load initial data for timeblock and none if no data has been added(initial form entry)
+  const [blocks, setBlocks] = useState(
+    initialData
+        ? [{
+            id: initialData.id,
+            name: initialData.name,
+            location: initialData.location,
+            block_type: initialData.block_type,
+            description: initialData.description,
+            is_fixed: initialData.is_fixed,
+            duration: initialData.duration || "",
+            time_of_day: initialData.time_of_day_preference || "",
+            start_time: initialData.start_time || "",
+            end_time: initialData.end_time || "",
+          }]
+        : [{
+            date: "",
+            name: "",
+            location: "",
+            block_type: "study",
+            description: "",
+            is_fixed: false,
+            duration: "",
+            time_of_day: "",
+            start_time: "",
+            end_time: "",
+          }]
+  );
 
   function addBlock() {
     setBlocks([
@@ -59,6 +73,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
     // Submit each block separately
     const dataList = blocks.map(block => {
         const data = {
+          id: block.id,
           date: date,
           name: block.name,
           location: block.location,
@@ -166,6 +181,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
              ) : (
                <>
 
+               {serverErrors[index]?.duration && <p className="error-text">{serverErrors[index].duration[0]}</p>}
                <input
                   type="number"
                   placeholder="Duration (minutes)"
@@ -175,7 +191,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors }) {
                   }
               />
 
-               {serverErrors[index]?.time_of_day_preference && <p className="error-text">A preference for time of day must be provided</p>}
+               {serverErrors[index]?.time_of_day_preference && <p className="error-text">{serverErrors[index].time_of_day_preference[0]}</p>}
                <select
                   value={block.time_of_day}
                   onChange={(e) =>

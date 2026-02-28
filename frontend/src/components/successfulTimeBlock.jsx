@@ -1,11 +1,13 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../SuccessPageStyle.css";
 import tickImage from "../functionality/landingpage/photos/tick.png";
 
 
 
-function SuccessfulTimeBlock(){
+function SuccessfulTimeBlock({ block }){
     const nav = useNavigate();
+    const location = useLocation();
+    const blockId = location.state?.id;
 
     return(
         <>
@@ -26,6 +28,14 @@ function SuccessfulTimeBlock(){
                         >
                             New Time Block
                         </button>
+
+                        {blockId && (
+                        <button
+                            onClick={() => nav(`/timeblocks/${blockId}/edit`)}
+                        >
+                            Edit
+                        </button>
+                        )}
             
                         <button
                         className="go-dashboard-btn"
