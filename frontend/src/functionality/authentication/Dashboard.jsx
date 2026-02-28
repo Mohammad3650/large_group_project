@@ -124,9 +124,6 @@ function Dashboard() {
                     <TaskGroup title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
                     <TaskGroup title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
                     <TaskGroup title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
-                    <div className="bottom-buttons">
-                        <LogoutButton/>
-                    </div>
                 </div>
                 <NotesSection/>
             </div>
