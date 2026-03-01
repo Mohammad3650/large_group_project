@@ -7,10 +7,17 @@ from scheduler.services.schedule_service import ScheduleService
 class ScheduleServiceTests(TestCase):
     def setUp(self):
         self.service = ScheduleService()
+        self.week_start = "2026-02-23" 
 
+    @patch("scheduler.services.schedule_service.ScheduleResponseBuilder.build")
     @patch("scheduler.services.schedule_service.Scheduler")
-    def test_generate_returns_builder_empty_when_no_unscheduled(self, MockScheduler):
+    def test_generate_returns_builder_empty_when_no_unscheduled(
+        self,
+        MockScheduler,
+        mock_build,
+    ):
         validated_data = {
+            "week_start": "2026-02-23",
             "days": 7,
             "windows": [{"start_min": 540, "end_min": 1020}],
             "scheduled": [],
@@ -18,12 +25,13 @@ class ScheduleServiceTests(TestCase):
             "preference": "early",
         }
 
+        mock_build.return_value = {"week_start": "2026-02-23", "events": []}
+
         result = self.service.generate(validated_data)
 
-        # Should not instantiate the solver when there is nothing to schedule
         MockScheduler.assert_not_called()
-        # ResponseBuilder.build([]) output shape
-        self.assertIsInstance(result, dict)
+        mock_build.assert_called_once()
+        self.assertEqual(result["events"], [])
 
     @patch("scheduler.services.schedule_service.Scheduler")
     def test_generate_uses_early_bias_by_default(self, MockScheduler):
@@ -31,6 +39,7 @@ class ScheduleServiceTests(TestCase):
         engine.solve.return_value = [(480, 540, 60, "Gym")]
 
         validated_data = {
+            "week_start": self.week_start,
             "days": 7,
             "windows": [{"start_min": 540, "end_min": 1020}],
             "scheduled": [],
@@ -53,6 +62,7 @@ class ScheduleServiceTests(TestCase):
         engine.solve.return_value = [(480, 540, 60, "Gym")]
 
         validated_data = {
+            "week_start": self.week_start,
             "days": 7,
             "windows": [{"start_min": 540, "end_min": 1020}],
             "scheduled": [],
@@ -64,3 +74,4 @@ class ScheduleServiceTests(TestCase):
 
         engine.lateBiasConstraints.assert_called_once()
         engine.earlyBiasConstraints.assert_not_called()
+        engine.solve.assert_called_once()

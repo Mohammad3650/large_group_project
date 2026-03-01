@@ -31,6 +31,7 @@ class GenerateScheduleViewTests(APITestCase):
         MockService.return_value.generate.return_value = {"events": []}
 
         payload = {
+            "week_start": "2026-02-23",
             "days": 7,
             "windows": [{"start_min": 540, "end_min": 1020}],
             "scheduled": [],
