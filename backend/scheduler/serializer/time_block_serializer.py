@@ -38,6 +38,7 @@ from ..models import DayPlan, TimeBlock
 
 
 class TimeBlockSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = TimeBlock
         fields = [
@@ -55,21 +56,28 @@ class TimeBlockSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        is_fixed = attrs.get("is_fixed")
         errors = {}
 
-        if is_fixed and not attrs.get("start_time"):
-            errors["non_field_errors"] = "A start and end time are required in order."
-        elif is_fixed and not attrs.get("end_time"):
-            errors["non_field_errors"] = "A start and end time are required in order."
-        elif is_fixed and attrs.get("start_time") >= attrs.get("end_time"):
-            errors["non_field_errors"] = "Start time must be before end time."
-        if not is_fixed and attrs.get("duration") is None:
-            errors["duration"] = "Flexible blocks require duration."
-        if not is_fixed and not attrs.get("time_of_day_preference"):
-            errors["time_of_day_preference"] = (
+        if not attrs.get("name"):
+            errors["name"] = ["A name must be provided."]
+        if not attrs.get("location"):
+            errors["location"] = ["Location must be provided."]
+        if not attrs.get("is_fixed") and attrs.get("duration") is None:
+            errors["duration"] = ["Flexible blocks require duration."]
+        if not attrs.get("is_fixed") and not attrs.get("time_of_day_preference"):
+            errors["time_of_day_preference"] = [
                 "Flexible blocks require time of day preference."
-            )
+            ]
+        if attrs.get("is_fixed") and not attrs.get("start_time"):
+            errors["start_time"] = ["Fixed blocks require a start time."]
+        if attrs.get("is_fixed") and not attrs.get("end_time"):
+            errors["end_time"] = ["Fixed blocks require an end time."]
+        if (
+            attrs.get("start_time") is not None
+            and attrs.get("end_time") is not None
+            and attrs.get("start_time") >= attrs.get("end_time")
+        ):
+            errors["end_time"] = ["End time must be after start time."]
 
         if errors:
             raise serializers.ValidationError(errors)

@@ -31,9 +31,10 @@ function SuccessfulTimeBlock({ block }){
 
                         {blockId && (
                         <button
+                        className="edit-timeblock-btn"
                             onClick={() => nav(`/timeblocks/${blockId}/edit`)}
                         >
-                            Edit
+                            Edit Time Block
                         </button>
                         )}
             

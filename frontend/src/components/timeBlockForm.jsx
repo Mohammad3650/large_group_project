@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../timeBlockFormStyle.css";
 
 
@@ -17,7 +17,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
             description: initialData.description,
             is_fixed: initialData.is_fixed,
             duration: initialData.duration || "",
-            time_of_day: initialData.time_of_day_preference || "",
+            time_of_day: initialData.time_of_day || "",
             start_time: initialData.start_time || "",
             end_time: initialData.end_time || "",
           }]
@@ -34,6 +34,25 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
             end_time: "",
           }]
   );
+
+  useEffect(() => {
+  if (initialData) {
+    setDate(initialData.date || "");
+
+    setBlocks([{
+      id: initialData.id,
+      name: initialData.name,
+      location: initialData.location,
+      block_type: initialData.block_type,
+      description: initialData.description,
+      is_fixed: initialData.is_fixed,
+      duration: initialData.duration || "",
+      time_of_day: initialData.time_of_day || "",
+      start_time: initialData.start_time || "",
+      end_time: initialData.end_time || "",
+    }]);
+  }
+}, [initialData]);
 
   function addBlock() {
     setBlocks([
@@ -97,7 +116,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
     <form onSubmit={handleSubmit}>
 
       {/* Date once for whole schedule */}
-      {serverErrors[0]?.date && <p className="error-text-date">Date must be provided</p>}
+      {serverErrors[0]?.date && ( <p className="error-text-date"> {serverErrors[0].date[0]} </p> )}
       <input
         type="date"
         value={date}
@@ -108,7 +127,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
       {blocks.map((block, index) => (
         <div key={index} className="time-block-section">
 
-          {serverErrors[index]?.name && <p className="error-text">A name for the event must be provided</p>}
+          {serverErrors[index]?.name && <p className="error-text">{serverErrors[index].name[0]}</p>}
           <input
             placeholder="Name"
             value={block.name}
@@ -117,7 +136,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
             }
           />
 
-          {serverErrors[index]?.location && <p className="error-text">Location must be provided</p>}
+          {serverErrors[index]?.location && <p className="error-text">{serverErrors[index].location[0]}</p>}
           <input
             placeholder="Location"
             value={block.location}
@@ -158,8 +177,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
           { block.is_fixed ? (
               <>
 
-              {serverErrors[index]?.start_time && <p className="error-text">A start time must be provided</p>}
-              {serverErrors[index]?.non_field_errors && (<p className="error-text">A start time that is before the end time must be provided</p>)}
+              {serverErrors[index]?.start_time && <p className="error-text">{serverErrors[index].start_time[0]}</p>}
               <input
                   type="time"
                   value={block.start_time}
@@ -168,7 +186,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
                   }
                 />
 
-              {serverErrors[index]?.end_time && <p className="error-text">An end time must be provided</p>}
+              {serverErrors[index]?.end_time && <p className="error-text">{serverErrors[index].end_time[0]}</p>}
               <input
                   type="time"
                   value={block.end_time}
@@ -227,9 +245,11 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
         </div>
       ))}
     <div className="time-block-form-btn">
+    {!initialData && (
       <button className="btn btn-secondary btn" type="button" onClick={addBlock}>
         Add Another Event
       </button>
+    )}
 
       <button className="btn btn-primary" type="submit" disabled={loading}>
         {loading ? "Saving..." : "Create Schedule"}

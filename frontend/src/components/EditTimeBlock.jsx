@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import TimeBlockForm from "./TimeBlockForm";
 
 function EditTimeBlock() {
   const { id } = useParams();
   const [initialData, setInitialData] = useState(null);
+
+  const [serverErrors, setServerErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
   api.get(`/api/timeblocks/${id}/edit`)
@@ -29,12 +32,35 @@ function EditTimeBlock() {
     .catch(err => console.error(err));
 }, [id]);
 
-  function handleUpdate(dataList) {
-    api.patch(`/api/timeblocks/${id}/edit`, dataList[0])
-      .then(res => {
-        alert("Time block updated successfully!")
-      })
-      .catch(err => console.error(err));
+  const navigate = useNavigate();
+
+  async function handleUpdate(dataList) {
+
+      if (loading) return;
+
+      setServerErrors([]);
+      setLoading(true);
+
+      const block = dataList[0];
+
+      const cleanedData = {
+        ...block,
+        start_time: block.start_time === "" ? null : block.start_time,
+        end_time: block.end_time === "" ? null : block.end_time,
+      };
+
+      try {
+        await api.patch(`/api/timeblocks/${id}/edit`, cleanedData);
+
+        // redirect after success
+        navigate("/successful-timeblock", { state: { id: id } });
+
+      } catch (err) {
+        console.log("UPDATE ERROR:", err.response?.data);
+        setServerErrors([err.response?.data || {}]);
+      }
+
+      setLoading(false);
   }
 
   if (!initialData) return <p>Loading...</p>;
@@ -47,8 +73,8 @@ function EditTimeBlock() {
                 onSubmit={handleUpdate}
                 initialData={initialData}
                 loading={false}
-                serverErrors={[]}
-                clearErrors={() => {}}
+                serverErrors={serverErrors}
+                clearErrors={() => setServerErrors([])}
             />
         </div>
     </div>

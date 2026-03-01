@@ -23,8 +23,15 @@ function CreateSchedule() {
         let createdBlockId = null;
 
         for (const data of dataList) {
+            // ensure previousely allowed to be "" for start_time and end_time are now null for error handling
+            const cleanedData = {
+                ...data,
+                start_time: data.start_time === "" ? null : data.start_time,
+                end_time: data.end_time === "" ? null : data.end_time,
+            };
+
             try {
-                const res = await api.post("/api/time-blocks/", data);
+                const res = await api.post("/api/time-blocks/", cleanedData);
                 errors.push({});
                 if (!createdBlockId) createdBlockId = res.data.id;
             } catch (err) {

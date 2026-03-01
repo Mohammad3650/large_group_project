@@ -8,16 +8,16 @@ from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
 
 def validate_timeblock_payload(request):
-    serializer = TimeBlockSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    return serializer.validated_data
+    # serializer = TimeBlockSerializer(data=request.data)
+    # serializer.is_valid(raise_exception=True)
+    # return serializer.validated_data
 
     # for testing
-    # serializer = TimeBlockSerializer(data=request.data)
-    # if not serializer.is_valid():
-    #     print("SERIALIZER ERRORS:", serializer.errors)
-    #     raise serializers.ValidationError(serializer.errors)
-    # return serializer.validated_data
+    serializer = TimeBlockSerializer(data=request.data)
+    if not serializer.is_valid():
+        print("SERIALIZER ERRORS:", serializer.errors)
+        raise serializers.ValidationError(serializer.errors)
+    return serializer.validated_data
 
 
 def get_or_create_dayplan(user, date):
