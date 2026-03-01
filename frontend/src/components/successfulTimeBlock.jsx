@@ -44,6 +44,13 @@ function SuccessfulTimeBlock({ block }){
                         >
                             Return To Dashboard
                         </button>
+
+                        <button
+                        className="go-calendar-btn"
+                        onClick={() => nav("/calendar")}
+                        >
+                            View in Calendar
+                        </button>
                     </div>
                 </div>
             </div>

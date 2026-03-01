@@ -10,6 +10,18 @@
 
 }
 
+.go-calendar-btn{
+    background-color: red;
+    color: aliceblue;
+    border-radius: 10px;
+}
+
+.go-calendar-btn:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+
+}
+
 .go-timeblock-btn{
     background-color: cornflowerblue;
     color: aliceblue;
