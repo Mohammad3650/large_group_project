@@ -1,4 +1,4 @@
-import { createViewMonthGrid, createViewWeek } from "@schedule-x/calendar";
+import { createViewMonthGrid, createViewWeek, createViewDay } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
@@ -30,6 +30,10 @@ function Calendar() {
                     title: block.name,
                     start: Temporal.ZonedDateTime.from(`${block.date}T${(block.start_time || "00:00").slice(0, 5)}[${timezone}]`),
                     end: Temporal.ZonedDateTime.from(`${block.date}T${(block.end_time || "23:59").slice(0, 5)}[${timezone}]`),
+
+                    _options: {additionalClasses:[`sx-type-${block.block_type}`]},
+                    // className: `sx-type-${block.block_type}`,
+
                     date: block.date,
                     startTime: (block.start_time || "00:00").slice(0, 5),
                     endTime: (block.end_time || "23:59").slice(0, 5),

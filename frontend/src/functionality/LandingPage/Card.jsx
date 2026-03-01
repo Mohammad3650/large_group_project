@@ -8,8 +8,10 @@ function Card(props) {
 
         <div className="content">
           {/* <h2 className="title">{props.name}</h2> */}
+          {/* <div className="top"> */}
           <h5 className="stars">{props.stars}</h5>
           <p className="text">{props.review}</p>
+          {/* </div> */}
           <h4 className="title"> <i>{props.name} </i></h4>
         </div>
       </div>
