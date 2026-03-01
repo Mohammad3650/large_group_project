@@ -4,7 +4,7 @@ from ..serializer.time_block_serializer import TimeBlockSerializer
 
 class TimeBlockSerializerTest(TestCase):
 
-    def test_valid_data_with_description(self):
+    def test_valid_data_without_description(self):
         data = {
             "date": "2026-02-18",
             "name": "Study block",
@@ -16,7 +16,7 @@ class TimeBlockSerializerTest(TestCase):
         serializer = TimeBlockSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
 
-    def test_valid_data_without_description(self):
+    def test_valid_data_with_description(self):
         data = {
             "date": "2026-02-18",
             "name": "Study block",
