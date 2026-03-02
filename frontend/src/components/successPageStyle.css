@@ -10,6 +10,18 @@
 
 }
 
+.go-calendar-btn{
+    background-color: red;
+    color: aliceblue;
+    border-radius: 10px;
+}
+
+.go-calendar-btn:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+
+}
+
 .go-timeblock-btn{
     background-color: cornflowerblue;
     color: aliceblue;
@@ -21,6 +33,20 @@
     transform: translateY(-6px); 
     box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
 }
+
+
+.edit-timeblock-btn{
+    background-color: black;
+    color: aliceblue;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.edit-timeblock-btn:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+}
+
 
 .success-btns {
     margin-top: 30px;

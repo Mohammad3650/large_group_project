@@ -6,17 +6,18 @@ from rest_framework import status, serializers
 from ..models import DayPlan, TimeBlock
 from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
+
 def validate_timeblock_payload(request):
-    serializer = TimeBlockSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    return serializer.validated_data
+    # serializer = TimeBlockSerializer(data=request.data)
+    # serializer.is_valid(raise_exception=True)
+    # return serializer.validated_data
 
     # for testing
-    # serializer = TimeBlockSerializer(data=request.data)
-    # if not serializer.is_valid():
-    #     print("SERIALIZER ERRORS:", serializer.errors)
-    #     raise serializers.ValidationError(serializer.errors)
-    # return serializer.validated_data
+    serializer = TimeBlockSerializer(data=request.data)
+    if not serializer.is_valid():
+        print("SERIALIZER ERRORS:", serializer.errors)
+        raise serializers.ValidationError(serializer.errors)
+    return serializer.validated_data
 
 
 def get_or_create_dayplan(user, date):
@@ -57,12 +58,36 @@ def timeblock_response_payload(dayplan, time_block):
     }
 
 
+# @api_view(["POST"])
+# @permission_classes([IsAuthenticated])
+# def create_schedule(request):
+#     data = validate_timeblock_payload(request)
+#
+#     dayplan = get_or_create_dayplan(request.user, data["date"])
+#     time_block = create_timeblock(dayplan, data)
+#
+#     return Response(
+#         timeblock_response_payload(dayplan, time_block),
+#         status=status.HTTP_201_CREATED,
+#     )
+
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_schedule(request):
-    data = validate_timeblock_payload(request)
+    date = request.data.get("date")
+    if not date:
+        return Response({"date": ["Date must be provided."]}, status=400)
 
-    dayplan = get_or_create_dayplan(request.user, data["date"])
+    # Pass data without 'date' to the serializer
+    block_data = {k: v for k, v in request.data.items() if k != "date"}
+
+    serializer = TimeBlockSerializer(data=block_data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
+
+    data = serializer.validated_data
+    dayplan = get_or_create_dayplan(request.user, date)
     time_block = create_timeblock(dayplan, data)
 
     return Response(
