@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
@@ -22,7 +23,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from scheduler.views.create_schedule_view import create_schedule
-from scheduler.views.get_schedule_view import get_schedule
+from scheduler.views.get_schedule_view import get_schedule, edit_timeblock
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.note_view import get_note, save_note
 from scheduler.views.get_user_view import get_user_view
@@ -46,9 +47,11 @@ urlpatterns = [
     # path("", TokenVerifyView.as_view(), name="Landing_Page"),
     path("api/time-blocks/", create_schedule, name="api-create-timeblock"),
     path("api/time-blocks/get/", get_schedule, name="api-get-timeblocks"),
-    path("api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"),
+    path(
+        "api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"
+    ),
     path("api/notes/", get_note, name="api-get-note"),
     path("api/notes/save/", save_note, name="api-save-note"),
+    path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
     path("api/user/", get_user_view),
 ]
-

@@ -5,6 +5,7 @@ from scheduler.api.serializers import GenerateScheduleRequestSerializer
 class GenerateScheduleRequestSerializerTests(TestCase):
     def test_valid_payload_is_valid(self):
         payload = {
+            "week_start": "2026-02-23",
             "days": 7,
             "windows": [{"start_min": 540, "end_min": 1020}],
             "scheduled": [{"start_min": 600, "end_min": 660, "name": "Lecture"}],
@@ -15,13 +16,20 @@ class GenerateScheduleRequestSerializerTests(TestCase):
         self.assertTrue(s.is_valid(), s.errors)
 
     def test_missing_windows_fails(self):
-        payload = {"days": 7}
+        payload = {"week_start": "2026-02-23", "days": 7}
         s = GenerateScheduleRequestSerializer(data=payload)
         self.assertFalse(s.is_valid())
         self.assertIn("windows", s.errors)
 
+    def test_missing_week_start_fails(self):
+        payload = {"days": 7, "windows": [{"start_min": 540, "end_min": 1020}]}
+        s = GenerateScheduleRequestSerializer(data=payload)
+        self.assertFalse(s.is_valid())
+        self.assertIn("week_start", s.errors)
+
     def test_window_end_before_start_fails(self):
         payload = {
+            "week_start": "2026-02-23",
             "days": 7,
             "windows": [{"start_min": 1000, "end_min": 900}],
             "unscheduled": [{"duration_mins": 60, "name": "Gym"}],
@@ -33,6 +41,7 @@ class GenerateScheduleRequestSerializerTests(TestCase):
 
     def test_preference_must_be_early_or_late(self):
         payload = {
+            "week_start": "2026-02-23",
             "days": 7,
             "windows": [{"start_min": 540, "end_min": 1020}],
             "preference": "balanced",  # invalid (choices are only early/late)
@@ -42,7 +51,7 @@ class GenerateScheduleRequestSerializerTests(TestCase):
         self.assertIn("preference", s.errors)
 
     def test_unscheduled_defaults_to_empty_list(self):
-        payload = {"days": 7, "windows": [{"start_min": 540, "end_min": 1020}]}
+        payload = {"week_start": "2026-02-23", "days": 7, "windows": [{"start_min": 540, "end_min": 1020}]}
         s = GenerateScheduleRequestSerializer(data=payload)
         self.assertTrue(s.is_valid(), s.errors)
         self.assertEqual(s.validated_data["unscheduled"], [])

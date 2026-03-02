@@ -24,10 +24,13 @@ class CreateScheduleTest(APITestCase):
             url,
             {
                 "date": "2026-02-18",
+                "name": "Study Session",
                 "start_time": "09:00",
                 "end_time": "10:00",
                 "block_type": "study",
+                "is_fixed": True,
             },
+            format="json",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -41,11 +44,14 @@ class CreateScheduleTest(APITestCase):
             url,
             {
                 "date": "2026-02-18",
+                "name": "Study Session",
                 "start_time": "09:00",
                 "end_time": "10:00",
                 "block_type": "study",
                 "description": "work on course work",
+                "is_fixed": True,
             },
+            format="json",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -59,9 +65,12 @@ class CreateScheduleTest(APITestCase):
             url,
             {
                 "date": "2026-02-18",
+                # Missing name intentionally
                 "end_time": "10:00",
                 "block_type": "study",
+                "is_fixed": True,
             },
+            format="json",
         )
 
         self.assertEqual(response.status_code, 400)

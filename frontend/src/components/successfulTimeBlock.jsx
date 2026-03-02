@@ -1,11 +1,13 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../SuccessPageStyle.css";
 import tickImage from "../functionality/landingpage/photos/tick.png";
 
 
 
-function SuccessfulTimeBlock(){
+function SuccessfulTimeBlock({ block }){
     const nav = useNavigate();
+    const location = useLocation();
+    const blockId = location.state?.id;
 
     return(
         <>
@@ -26,12 +28,28 @@ function SuccessfulTimeBlock(){
                         >
                             New Time Block
                         </button>
+
+                        {blockId && (
+                        <button
+                        className="edit-timeblock-btn"
+                            onClick={() => nav(`/timeblocks/${blockId}/edit`)}
+                        >
+                            Edit Time Block
+                        </button>
+                        )}
             
                         <button
                         className="go-dashboard-btn"
                         onClick={() => nav("/dashboard")}
                         >
                             Return To Dashboard
+                        </button>
+
+                        <button
+                        className="go-calendar-btn"
+                        onClick={() => nav("/calendar")}
+                        >
+                            View in Calendar
                         </button>
                     </div>
                 </div>
