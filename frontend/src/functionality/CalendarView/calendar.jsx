@@ -74,7 +74,7 @@ function CalendarView({ blocks, setBlocks }) {
 });
 
     function handleDelete(id) {
-        if (!confirm("Are you sure you want to delete this time block?")) return;
+        if (!confirm("Are you sure you want to delete this event?")) return;
         api.delete(`/api/time-blocks/${id}/`)
             .then(() => {
                 eventsService.remove(id);
