@@ -4,7 +4,7 @@ import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
 import NavBar from "../LandingPage/NavBar.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
-import getUser from "../helpers/GetUser.js";
+import useUser from "../helpers/useUser.js";
 import { useEffect, useState } from "react";
 import { api } from "../../api.js";
 import '@schedule-x/theme-default/dist/index.css'
@@ -62,7 +62,7 @@ function Calendar() {
 
 function CalendarView({ blocks, setBlocks }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
-    const username = getUser();
+    const username = useUser(true);
 
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],

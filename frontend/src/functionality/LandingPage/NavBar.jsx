@@ -1,13 +1,22 @@
 import "./NavBar.css"
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import LogoutButton from "../../components/logoutButton.jsx";
-import getUser from "../helpers/GetUser.js";
+import useUser from "../helpers/useUser.js";
+import {isTokenValid} from "../../utils/authToken.js";
 
 function NavBar() {
-    const isLoggedIn = !!localStorage.getItem("access");
-    const username = getUser();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const username = useUser(isLoggedIn);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    useEffect(() => {
+        async function checkAuth() {
+            const valid = await isTokenValid();
+            setIsLoggedIn(valid);
+        }
+        checkAuth();
+    }, []);
 
     return (
         <header>
