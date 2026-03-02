@@ -24,21 +24,37 @@ describe("Succesful time block created", () => {
 
   it("renders the buttons for when a time block has been created successfully", () => {
     render(
-      <MemoryRouter>
-        <SuccessfulTimeBlock />
-      </MemoryRouter>
-    );
+      <MemoryRouter
+        initialEntries={[
+          { pathname: "/success", state: { id: 123 } }
+        ]}
+      >
+    <Routes>
+      <Route path="/success" element={<SuccessfulTimeBlock />} />
+    </Routes>
+  </MemoryRouter>
+);
 
     const newBlockButton = screen.getByRole("button", {
-      name: /New Time Block/,
+      name: /new time block/i,
+    });
+
+    const editTimeBlockButton = screen.getByRole("button", {
+      name: /edit time block/i,
     });
 
     const dashboardButton = screen.getByRole("button", {
-      name: /Return To Dashboard/,
+      name: /return to dashboard/i,
+    });
+
+    const viewInCalendarButton = screen.getByRole("button", {
+      name: /view in calendar/i,
     });
 
     expect(newBlockButton).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /edit time block/i })).toBeInTheDocument();
     expect(dashboardButton).toBeInTheDocument();
+    expect(viewInCalendarButton).toBeInTheDocument();
   });
 
   it("Tick image loads up on the screen", () => {
@@ -66,7 +82,7 @@ describe("Succesful time block created", () => {
     );
 
     const newBlockButton = screen.getByRole("button", {
-      name: /New Time Block/,
+      name: /new time block/i,
     });
 
     fireEvent.click(newBlockButton);
@@ -87,7 +103,7 @@ describe("Succesful time block created", () => {
     );
 
     const dashboardButton = screen.getByRole("button", {
-      name: /Return To Dashboard/,
+      name: /return to dashboard/i,
     });
 
     fireEvent.click(dashboardButton);
