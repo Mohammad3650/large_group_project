@@ -20,4 +20,4 @@ staticfiles/
 # Node / Frontend
 frontend/node_modules/
 frontend/package-lock.json
-frontend/coverage
+frontend/coverage/
