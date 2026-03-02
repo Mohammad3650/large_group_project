@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../timeBlockFormStyle.css";
+import "./timeBlockFormStyle.css";
 
 
 function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialData=null }) {

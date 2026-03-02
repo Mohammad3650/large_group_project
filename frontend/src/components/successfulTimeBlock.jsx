@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import "../SuccessPageStyle.css";
+import "./SuccessPageStyle.css";
 import tickImage from "../functionality/landingpage/photos/tick.png";
 
 
@@ -16,7 +16,7 @@ function SuccessfulTimeBlock({ block }){
                     <h1 className="success-text">Time Block Created Successfully</h1>
 
                     <div className="tick-image">
-                        <img className="photo" src={tickImage}></img>
+                        <img className="photo" src={tickImage} alt="Success tick icon"></img>
                     </div>
 
                     <h3>Your time block was created successfully. You can either create a new time block or return to your dashboard.</h3>
