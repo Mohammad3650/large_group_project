@@ -10,6 +10,7 @@ import { api } from "../../api.js";
 import '@schedule-x/theme-default/dist/index.css'
 import 'temporal-polyfill/global'
 import "./calendar.css"
+import {useNavigate} from "react-router-dom";
 
 
 const formatDate = (date) => {
@@ -63,6 +64,7 @@ function Calendar() {
 function CalendarView({ blocks, setBlocks }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
     const username = useUser(true);
+    const nav = useNavigate();
 
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],
@@ -72,6 +74,7 @@ function CalendarView({ blocks, setBlocks }) {
 });
 
     function handleDelete(id) {
+        if (!confirm("Are you sure you want to delete this time block?")) return;
         api.delete(`/api/time-blocks/${id}/`)
             .then(() => {
                 eventsService.remove(id);
@@ -107,7 +110,7 @@ function CalendarView({ blocks, setBlocks }) {
                     </div>
                 </div>
                 <div className="buttons">
-                    <button className="button">Edit</button>
+                    <button className="button" onClick={() => nav(`/timeblocks/${calendarEvent.id}/edit`)}>Edit</button>
                     <button className="button" onClick={() => handleDelete(calendarEvent.id)}>Delete</button>
                 </div>
             </div>

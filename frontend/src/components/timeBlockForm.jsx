@@ -161,7 +161,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
             <option value="exercise">Exercise</option>
             <option value="break">Break</option>
             <option value="work">Work</option>
-            <option value="extracurricular">extracurricular</option>
+            <option value="extracurricular">Extracurricular</option>
           </select>
 
           <select
