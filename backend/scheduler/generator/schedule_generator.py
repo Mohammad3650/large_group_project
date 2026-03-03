@@ -187,6 +187,20 @@ class Scheduler:
         self.model.Add(start_in_day == event[0] - day_idx * DAY_MINS)
         return weight * start_in_day
 
+    def applyConstraints(self, even_preference: bool, start_preference: str, include_scheduled: bool = False):
+        """Apply the configuration of constraints"""
+        objectives = []
+        
+        if start_preference == "early":
+            objectives.append(self.earlyBiasConstrains())
+        elif start_preference == "late":
+            objectives.append(self.lateBiasConstrains())
+        
+        if even_preference:
+            objectives.append(1440 * self.evenlySpreadOverRangeConstraint(include_scheduled))
+        
+        self.model.Minimize(sum(objectives))
+
     def _startSolver(self):
         """Instantiate and run the solver."""
         self.solver = cp_model.CpSolver()
