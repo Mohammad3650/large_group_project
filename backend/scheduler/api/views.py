@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from scheduler.api.serializers import GenerateScheduleRequestSerializer
+from backend.scheduler.serializer.generator_serializers import GenerateScheduleRequestSerializer
 from scheduler.services.schedule_service import ScheduleService
 
 
