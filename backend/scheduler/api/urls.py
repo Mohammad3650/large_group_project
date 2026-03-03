@@ -1,5 +1,5 @@
 from django.urls import path
-from backend.scheduler.views.generator_view import GenerateScheduleView
+from scheduler.views.generator_view import GenerateScheduleView
 from scheduler.views.save_plan_view import SaveWeeklyPlanView
 
 urlpatterns = [

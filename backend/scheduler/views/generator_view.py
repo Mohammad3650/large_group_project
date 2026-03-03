@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from backend.scheduler.serializer.generator_serializers import GenerateScheduleRequestSerializer
+from scheduler.serializer.generator_serializers import GenerateScheduleRequestSerializer
 from scheduler.services.schedule_service import ScheduleService
 
 
@@ -12,6 +12,6 @@ class GenerateScheduleView(APIView):
         serializer.is_valid(raise_exception=True)
 
         service = ScheduleService()
-        payload = service.generate(serializer.validated_data)
+        payload = service.generate(request.user, serializer.validated_data)
 
         return Response(payload, status=status.HTTP_200_OK)
