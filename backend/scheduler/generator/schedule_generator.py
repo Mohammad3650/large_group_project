@@ -12,7 +12,7 @@ class Scheduler:
             The solvers domain is [0, 24*60*days]
         
         windows - Allowed timed windows during which unscheduled events may start.
-            Format: (start_min, end_min) in absolute minutes since day 0.
+            Format: (start_min, end_min, daily) in absolute minutes since day 0.
             Example: If the user allows events scheduled between 9AM - 5PM on day 2 -> (1980, 2460)
         
         scheduled - Fixed events already placed on the calendar.
@@ -34,7 +34,7 @@ class Scheduler:
         - All unscheduled sessions must start within exactly one window
         - All intervals (scheduled and unscheduled) are non-overlapping
     """
-    def __init__(self, days: int, windows: List[Tuple[int, int]], scheduled: List[Tuple[int, int, str]], unscheduled: List[Tuple[int, str]]):
+    def __init__(self, days: int, windows: List[Tuple[int, int, bool]], scheduled: List[Tuple[int, int, str]], unscheduled: List[Tuple[int, str]]):
         # Problem inputs
         self.days = days
         self.windows = windows
@@ -48,6 +48,14 @@ class Scheduler:
         self.model = cp_model.CpModel()
         self.solver = None
         self.status = None
+
+    def create_daily_window(windows: List[Tuple], days: int):
+        new_windows = []
+        for i in range(0, days):
+            for w in windows:
+                if w[2]:
+                    new_windows.append((w[0] + (i * 1440), w[1] + (i * 1440)))
+        return new_windows
 
     def create_scheduled_intervals(self):
         """Create fixed intervals for pre-scheduled events."""
