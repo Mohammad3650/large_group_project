@@ -93,6 +93,53 @@ class Scheduler:
         """Bias the scheduler to select latest start times"""
         return -sum(s[0] for s in self.newSessions)
 
+    def evenlySpreadOverRangeConstraint(self, include_scheduled):
+        """
+        Evenly distribute sessions across days.
+        Calculates frequency of sessions per day and returns (max - min).
+        If include_scheduled is True, fixed scheduled sessions are also included in the daily counts.
+        """
+        DAY_MINS = 1440
+        n = len(self.newSessions) if not include_scheduled else (len(self.newSessions) + len(self.intervals))
+
+        # Get day number for each unscheduled event
+        day_idxs = []
+        for (start, _, _, name) in self.newSessions:
+            day_idx = self.model.NewIntVar(0, self.days - 1, f"{name}_day_idx")
+            self.model.AddDivisionEquality(day_idx, start, DAY_MINS)
+            day_idxs.append(day_idx)
+        
+        # Optional: Get day number for each scheduled event
+        if include_scheduled:
+            for (start, _, name) in self.scheduled:
+                day_idx = self.model.NewIntVar(0, self.days - 1, f"{name}_day_idx")
+                day = start//1440
+                self.model.Add(day_idx == day)
+                day_idxs.append(day_idx)
+
+        # Count number of sessions per day
+        counts = []
+        for day in range(self.days):
+            res = []
+            for i, day_idx in enumerate(day_idxs):
+                b = self.model.NewBoolVar(f"s{i}_is_day{day}")
+                self.model.Add(day_idx == day).OnlyEnforceIf(b)
+                self.model.Add(day_idx != day).OnlyEnforceIf(b.Not())
+                res.append(b)
+        
+            count_d = self.model.NewIntVar(0, n, f"count_day{day}")
+            self.model.Add(count_d == sum(res))
+            counts.append(count_d)
+        
+        # Find maximum and minimum counts
+        max_count = self.model.NewIntVar(0, n, "max_count")
+        min_count = self.model.NewIntVar(0, n, "min_count")
+        self.model.AddMaxEquality(max_count, counts)
+        self.model.AddMinEquality(min_count, counts)
+
+        # TODO: combine objectives
+        return (max_count - min_count)    
+
     def _startSolver(self):
         """Instantiate and run the solver."""
         self.solver = cp_model.CpSolver()
