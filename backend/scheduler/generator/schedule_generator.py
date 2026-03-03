@@ -87,11 +87,11 @@ class Scheduler:
 
     def earlyBiasConstraints(self):
         """Bias the scheduler to select earliest start times"""
-        self.model.Minimize(sum(s[0] for s in self.newSessions))
+        return sum(s[0] for s in self.newSessions)
     
     def lateBiasConstraints(self):
         """Bias the scheduler to select latest start times"""
-        self.model.Maximize(sum(s[0] for s in self.newSessions))
+        return -sum(s[0] for s in self.newSessions)
 
     def _startSolver(self):
         """Instantiate and run the solver."""
