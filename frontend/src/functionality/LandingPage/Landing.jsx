@@ -15,6 +15,8 @@ function Landing() {
 
       <Features/>
 
+      <div className="grid">
+      <section className="testimonials">
       <h2>Student Testimonials</h2>
       <Card
         avatar="OK"
@@ -34,7 +36,7 @@ function Landing() {
         avatar="HK"
         name="Hamza Khan"
         stars="⭐⭐⭐⭐⭐"
-        review="“Perfect for university life. I like that it focuses on planning, not distractions.”"
+        review="“Perfect for university life. I like that it focuses on planning, not distractions or unncessary clutter.”"
       />
 
       <Card
@@ -48,7 +50,7 @@ function Landing() {
         avatar="AS"
         name="Abdulrahman Sharif"
         stars="⭐⭐⭐⭐"
-        review="“Using StudySync made my weeks feel more organised and less chaotic.”"
+        review="“Using StudySync made my weeks feel more organised, and far less chaotic.”"
       />
 
       <Card
@@ -57,6 +59,9 @@ function Landing() {
         stars="⭐⭐⭐⭐⭐"
         review="“It’s really helped me balance lectures, coursework, and revision without feeling overwhelmed.”"
       />
+      </section>
+      </div>
+
       </div>
     </>
   );
