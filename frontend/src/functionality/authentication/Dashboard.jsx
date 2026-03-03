@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
-import LogoutButton from "../../components/logoutButton";
 import NavBar from "../LandingPage/NavBar.jsx";
 import TaskGroup from "./TaskGroup.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
@@ -68,6 +67,28 @@ function Dashboard() {
         fetchDashboard();
     }, [nav]);
 
+
+    useEffect(() => {
+        const today = new Date();
+        const dateStr = today.toISOString().split("T")[0];
+
+        const hardcodedBlocks = [
+            { id: 1, name: "Morning Lecture", date: dateStr, start_time: "09:00", end_time: "10:00" },
+            { id: 2, name: "Study Session", date: dateStr, start_time: "11:00", end_time: "13:00" },
+            { id: 3, name: "Lab", date: dateStr, start_time: "14:00", end_time: "16:00" },
+            { id: 4, name: "Tutorial", date: dateStr, start_time: "10:00", end_time: "11:00" },
+            { id: 5, name: "Gym", date: dateStr, start_time: "07:00", end_time: "08:30" },
+            { id: 6, name: "Team Meeting", date: dateStr, start_time: "13:00", end_time: "14:00" },
+            { id: 7, name: "Office Hours", date: dateStr, start_time: "16:00", end_time: "17:00" },
+            { id: 8, name: "Dinner with Friends", date: dateStr, start_time: "18:00", end_time: "20:00" },
+            { id: 9, name: "Revision", date: dateStr, start_time: "20:00", end_time: "22:00" },
+            { id: 10, name: "Sleep", date: dateStr, start_time: "23:00", end_time: "23:59" },
+        ];
+
+        setTodayTasks(hardcodedBlocks);
+    }, []);
+
+
     useEffect(() => {
         async function fetchTimeBlocks() {
             try {
@@ -91,7 +112,7 @@ function Dashboard() {
                 }));
 
                 setOverdueTasks(blocks.filter(b => getDate(b) < today).sort(sortTasksByDate));
-                setTodayTasks(blocks.filter(b => getDate(b) >= today && getDate(b) < tomorrow).sort(sortTasksByDate));
+            //    setTodayTasks(blocks.filter(b => getDate(b) >= today && getDate(b) < tomorrow).sort(sortTasksByDate));
                 setTomorrowTasks(blocks.filter(b => getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow).sort(sortTasksByDate));
                 setWeekTasks(blocks.filter(b => getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd).sort(sortTasksByDate));
 

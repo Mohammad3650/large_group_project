@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { api } from "../../api.js";
 
+/**
+ * Custom hook to fetch and return the current user's username from the API.
+ * Only fetches when the user is confirmed to be logged in.
+ *
+ * @param {boolean} isLoggedIn - Whether the user is currently authenticated
+ * @returns {string} The username of the currently logged-in user, or an empty string if not yet loaded
+ */
 function useUser(isLoggedIn) {
     const [username, setUsername] = useState("");
 
