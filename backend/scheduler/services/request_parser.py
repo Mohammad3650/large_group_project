@@ -1,22 +1,40 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple
+import datetime
 
 
 @dataclass(frozen=True)
 class ParsedScheduleRequest:
+    week_start: datetime.date
+    week_end: datetime.date
     days: int
-    windows: List[Tuple[int, int]]
-    scheduled: List[Tuple[int, int, str]]
-    unscheduled: List[Tuple[int, str]]
-    preference: str
+    even_spread: bool
+    include_scheduled: bool
+    windows: List[Tuple[int, int, bool]]
+    unscheduled: List[Tuple[int, str, int, bool, str, str]] # unscheduled: (duration, name, frequency, daily, start_time_preference, location)
 
 
 class ScheduleRequestParser:
     def parse(self, validated: Dict[str, Any]) -> ParsedScheduleRequest:
+        week_start = validated["week_start"]   # datetime.date
+        week_end = validated["week_end"]       # datetime.date
         days = validated["days"]
-        windows = [(w["start_min"], w["end_min"]) for w in validated["windows"]]
-        scheduled = [(e["start_min"], e["end_min"], e["name"]) for e in validated.get("scheduled", [])]
-        unscheduled = [(u["duration_mins"], u["name"]) for u in validated.get("unscheduled", [])]
-        preference = validated.get("preference", "early")
 
-        return ParsedScheduleRequest(days, windows, scheduled, unscheduled, preference)
+        even_spread = validated.get("even_spread", True)
+        include_scheduled = validated.get("include_scheduled", True)
+
+        windows = [(w["start_min"], w["end_min"], w.get("daily", False)) for w in validated["windows"]]
+        
+        unscheduled = [
+            (
+                u["duration"],
+                u["name"],
+                u.get("frequency", 1),
+                u["daily"],
+                u.get("start_time_preference", "None"),
+                u["location"],
+            )
+            for u in validated.get("unscheduled", [])
+        ]
+
+        return ParsedScheduleRequest( week_start, week_end, days, even_spread, include_scheduled, windows, unscheduled, )
