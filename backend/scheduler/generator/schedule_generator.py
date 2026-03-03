@@ -140,6 +140,39 @@ class Scheduler:
         # TODO: combine objectives
         return (max_count - min_count)    
 
+    def reccurOncePerDayConstraint(self, recurringEvents):
+        """Enforces that recurring events of one type must only appear once per day"""
+        DAY_MINS = 1440
+        n = len(recurringEvents)
+
+        if n > self.days:
+            print("Too many days")
+            return
+
+        # Get day number for each unscheduled event
+        day_idxs = []
+        for (start, _, _, name) in recurringEvents:
+            day_idx = self.model.NewIntVar(0, self.days - 1, f"{name}_day_idx")
+            self.model.AddDivisionEquality(day_idx, start, DAY_MINS)
+            day_idxs.append(day_idx)
+
+        # Count number of sessions per day
+        counts = []
+        for d in range(self.days):
+            # one boolean per session: (day_idx == d)
+            res = []
+            for i, day_idx in enumerate(day_idxs):
+                b = self.model.NewBoolVar(f"s{i}_is_day{d}")
+                self.model.Add(day_idx == d).OnlyEnforceIf(b)
+                self.model.Add(day_idx != d).OnlyEnforceIf(b.Not())
+                res.append(b)
+
+            count_d = self.model.NewIntVar(0, n, f"count_day{d}")
+            self.model.Add(count_d == sum(res))
+            self.model.Add(count_d <= 1)
+            counts.append(count_d)
+
+
     def _startSolver(self):
         """Instantiate and run the solver."""
         self.solver = cp_model.CpSolver()
