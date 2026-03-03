@@ -63,10 +63,15 @@ class Scheduler:
 
     def create_daily_window(self, windows):
         new_windows = []
-        for i in range(0, self.days):
-            for w in windows:
-                if w[2]:
-                    new_windows.append((w[0] + (i * 1440), w[1] + (i * 1440)))
+        for w in windows:
+            start, end, daily = w
+            if daily:
+                for i in range(self.days):
+                    offset = i * 1440
+                    new_windows.append((start + offset, end + offset))
+            else:
+                # Non-daily windows are assumed already absolute
+                new_windows.append((start, end))
         return new_windows
 
     def create_scheduled_intervals(self):
