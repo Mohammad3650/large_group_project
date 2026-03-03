@@ -11,46 +11,69 @@ import { setAuthToken } from "./api";
 import SuccessfulTimeBlock from "./components/successfulTimeBlock";
 import EditTimeBlock from "./components/EditTimeBlock";
 
+import "../AppTheme.css";
+import darkIcon from "./assets/darkmode.png";
+import lightIcon from "./assets/lightmode.png";
+
 
 function App() {
+
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access");
     if (token) setAuthToken(token);
 }, []);
+
+  const toggleDarkMode = () => {
+    setDarkMode(prev => ! prev);
+  }
   
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+    <div className={darkMode ? "app-dark" : "app-light"}>
 
-      <Route path="/dashboard" element={
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/create-schedule" element={
-        <ProtectedRoute>
-          <CreateSchedule />
-        </ProtectedRoute>
-      } />
+      <button onClick={toggleDarkMode} className="theme-toggle">
+        <img
+          src={darkMode ? lightIcon: darkIcon}
+          alt="Toggle theme"
+        />
+      </button>
 
-      <Route path="/successful-timeblock" element={
-        <ProtectedRoute>
-          <SuccessfulTimeBlock />
-        </ProtectedRoute>
-      }
-      />
+      <span className="tooltip">
+        {darkMode ? "Light Mode" : "Dark Mode"}
+      </span>
 
-      <Route path="/timeblocks/:id/edit" element={
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        <Route path="/dashboard" element={
           <ProtectedRoute>
-          <EditTimeBlock />
+            <Dashboard />
           </ProtectedRoute>
-      }
-      />
+        } />
 
-    </Routes>
+        <Route path="/create-schedule" element={
+          <ProtectedRoute>
+            <CreateSchedule />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/successful-timeblock" element={
+          <ProtectedRoute>
+            <SuccessfulTimeBlock />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/timeblocks/:id/edit" element={
+          <ProtectedRoute>
+            <EditTimeBlock />
+          </ProtectedRoute>
+        } />
+      </Routes>
+
+    </div>
 
   )
 }
