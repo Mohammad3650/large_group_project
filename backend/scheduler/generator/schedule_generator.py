@@ -85,14 +85,6 @@ class Scheduler:
         """Prevent any overlaps between all scheduled and newly created intervals."""
         self.model.AddNoOverlap(self.intervals)
 
-    def earlyBiasConstraints(self):
-        """Bias the scheduler to select earliest start times"""
-        return sum(s[0] for s in self.newSessions)
-    
-    def lateBiasConstraints(self):
-        """Bias the scheduler to select latest start times"""
-        return -sum(s[0] for s in self.newSessions)
-
     def evenlySpreadOverRangeConstraint(self, include_scheduled):
         """
         Evenly distribute sessions across days.
