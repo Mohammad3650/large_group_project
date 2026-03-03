@@ -172,6 +172,20 @@ class Scheduler:
             self.model.Add(count_d <= 1)
             counts.append(count_d)
 
+    def eventStartBiasConstrains(self, event, weight = 1):
+        """
+        Bias the scheduler to select latest start time for a given event
+        Positive weight - early, 
+        Negative weight = late
+        """
+        DAY_MINS = 1440
+        
+        day_idx = self.model.NewIntVar(0, self.days - 1, f"{event[3]}_day_idx")
+        self.model.AddDivisionEquality(day_idx, event[0], DAY_MINS)
+        
+        start_in_day = self.model.NewIntVar(0, DAY_MINS - 1, f"{event[3]}_start_in_day")
+        self.model.Add(start_in_day == event[0] - day_idx * DAY_MINS)
+        return weight * start_in_day
 
     def _startSolver(self):
         """Instantiate and run the solver."""
