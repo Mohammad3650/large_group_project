@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, time
 from typing import Any, Dict, List, Tuple
 
 MINUTES_PER_DAY = 24 * 60
@@ -27,11 +27,7 @@ class ScheduleResponseBuilder:
     }
     """
 
-    def build(
-        self,
-        solutions: List[Tuple[int, int, int, str]],
-        week_start: str,
-    ) -> Dict[str, Any]:
+    def build( self, solutions: List[Tuple[int, int, int, str]], week_start: str, ) -> Dict[str, Any]:
         events = []
         for (s, e, d, name) in solutions:
             date_s, start_time = self._abs_min_to_date_time(week_start, s)
@@ -42,19 +38,22 @@ class ScheduleResponseBuilder:
             # Keep the start date; if end spills over, still send end_time.
             block_type = self._guess_block_type(name)
 
+            if date_s != date_e:
+                raise ValueError( f"Event '{name}' crosses midnight: start={date_e} {start_time}, end={date_e} {end_time}." )
+
             events.append(
                 {
-                    "date": date_s,
-                    "start_time": start_time,
-                    "end_time": end_time,
+                    "date": date_s.isoformat(),
+                    "start_time": start_time.isoformat(timespec="seconds"),
+                    "end_time": end_time.isoformat(timespec="seconds"),
                     "block_type": block_type,
                     "location": "",
-                    "is_fixed": False,
+                    "name": name
                 }
             )
 
         return {
-            "week_start": str(week_start),
+            "week_start": str(week_start.isoformat()),
             "events": events,
         }
 
@@ -79,7 +78,7 @@ class ScheduleResponseBuilder:
         minute = mins_in_day % 60
 
         date_obj = base + timedelta(days=day_index)
-        return str(date_obj), f"{hour:02d}:{minute:02d}:00"
+        return date_obj, time(hour=hour, minute=minute, second=0)
 
     def _guess_block_type(self, name: str) -> str:
         n = (name or "").lower()
