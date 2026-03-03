@@ -1,6 +1,15 @@
 from ortools.sat.python import cp_model
 from typing import List, Tuple
 from .utils import TimeUtils
+from scheduler.services.request_parser import ParsedScheduleRequest
+
+# TODO: Fetch scheduled events from database - DONE
+# TODO: convert scheduled events into absolute minutes - DONE
+# TODO: use data from request param to apply constraints - DONE
+# TODO: Convert absolute minutes outputs into datetime objects - DONE
+# TODO: Update debugoutput method
+# TODO: Rewrite response builder. - DONE
+# TODO: Connect api to form (new or old)
 
 
 class Scheduler:
@@ -33,25 +42,28 @@ class Scheduler:
     Notes: 
         - All unscheduled sessions must start within exactly one window
         - All intervals (scheduled and unscheduled) are non-overlapping
-    """
-    def __init__(self, days: int, windows: List[Tuple[int, int, bool]], scheduled: List[Tuple[int, int, str]], unscheduled: List[Tuple[int, str]]):
+    """    
+    
+    def __init__(self, request: ParsedScheduleRequest, scheduled: List[Tuple[int, int, str]]):
         # Problem inputs
-        self.days = days
-        self.windows = windows
+        self.request = request
+        self.days = request.days
+        self.windows = self.create_daily_window(request.windows)
         self.scheduled = scheduled
-        self.unscheduled = unscheduled
+        self.unscheduled = request.unscheduled
 
         # Internal model state
-        self.intervals = [] # intervals are IntervalVar objects which represent scheduled time slots
+        self.intervals = [] # intervals are IntervalVar objects which represent scheduled and unscheduled time slots
         self.newSessions = [] # Tuples storing newly created IntervalVar objects from unscheduled events for debugging
+        self.objectives = []
 
         self.model = cp_model.CpModel()
         self.solver = None
         self.status = None
 
-    def create_daily_window(windows: List[Tuple], days: int):
+    def create_daily_window(self, windows):
         new_windows = []
-        for i in range(0, days):
+        for i in range(0, self.days):
             for w in windows:
                 if w[2]:
                     new_windows.append((w[0] + (i * 1440), w[1] + (i * 1440)))
@@ -64,30 +76,49 @@ class Scheduler:
             self.intervals.append(lecture)
 
     def create_unscheduled_intervals(self):
-        """Create decision intervals for sessions to be placed by the solver.
+        """Create decision intervals for unscheduled events to be placed by the solver.
             Decision intervals are IntervalVar objects with 'start' and 'end' 
             variables to be decided by the solver"""
         for ev in self.unscheduled:
-            # Decision variables
-            start = self.model.NewIntVar(0, 24 * 60 * self.days, f"{ev[1]}_start")
-            end = self.model.NewIntVar(0, 24 * 60 * self.days, f"{ev[1]}_end")
-            # self.model.Add(end == start + ev[0])
+            created = []
+            daily = ev[3]
+            frequency = ev[2]
+            preference = ev[4]
 
-            event = self.model.NewIntervalVar(start, ev[0], end, f"{ev[1]}_session")
-            self.intervals.append(event)
+            if daily:
+                frequency = self.days
+            
+            for i in range(frequency):
 
-            # Enforce that the session starts in only one allowed window
-            in_window = []
-            for w, (ws, we) in enumerate(self.windows):
-                b = self.model.NewBoolVar(f"{ev[1]}_inw{w}")
-                in_window.append(b)
+                # Decision variables
+                start = self.model.NewIntVar(0, 1440 * self.days, f"{ev[1]}_{i}_start")
+                end = self.model.NewIntVar(0, 1440 * self.days, f"{ev[1]}_{i}_end")
 
-                self.model.Add(start >= ws).OnlyEnforceIf(b)
-                self.model.Add(start <= we - ev[0]).OnlyEnforceIf(b)
+                event = self.model.NewIntervalVar(start, ev[0], end, f"{ev[1]}_{i}_session")
+                self.intervals.append(event)
 
-            self.model.Add(sum(in_window) == 1)
+                # Enforce that the session starts in only one allowed window
+                in_window = []
+                for w, (ws, we) in enumerate(self.windows):
+                    b = self.model.NewBoolVar(f"{ev[1]}_{i}_inw{w}")
+                    in_window.append(b)
 
-            self.newSessions.append((start, end, ev[0], ev[1]))
+                    self.model.Add(start >= ws).OnlyEnforceIf(b)
+                    self.model.Add(start <= we - ev[0]).OnlyEnforceIf(b)
+
+                self.model.Add(sum(in_window) == 1)
+
+                self.newSessions.append((start, end, ev[0], ev[1]))
+                created.append(self.newSessions[-1])
+                
+                if preference == "Early":
+                    self.eventStartBiasConstrains((start, end, ev[0], ev[1]), 1)
+                elif preference == "Late":
+                    self.objectives.append(self.eventStartBiasConstrains((start, end, ev[0], ev[1]), -1))
+            
+            if daily:
+                self.reccurOncePerDayConstraint(created)
+            
     
     def overlapConstraints(self):
         """Prevent any overlaps between all scheduled and newly created intervals."""
@@ -162,7 +193,7 @@ class Scheduler:
             # one boolean per session: (day_idx == d)
             res = []
             for i, day_idx in enumerate(day_idxs):
-                b = self.model.NewBoolVar(f"s{i}_is_day{d}")
+                b = self.model.NewBoolVar(f"{name}_{i}_is_day{d}")
                 self.model.Add(day_idx == d).OnlyEnforceIf(b)
                 self.model.Add(day_idx != d).OnlyEnforceIf(b.Not())
                 res.append(b)
@@ -187,19 +218,13 @@ class Scheduler:
         self.model.Add(start_in_day == event[0] - day_idx * DAY_MINS)
         return weight * start_in_day
 
-    def applyConstraints(self, even_preference: bool, start_preference: str, include_scheduled: bool = False):
+    def applyConstraints(self):
         """Apply the configuration of constraints"""
-        objectives = []
         
-        if start_preference == "early":
-            objectives.append(self.earlyBiasConstrains())
-        elif start_preference == "late":
-            objectives.append(self.lateBiasConstrains())
+        if self.request.even_spread:
+            self.objectives.append(1440 * self.evenlySpreadOverRangeConstraint(self.request.include_scheduled))
         
-        if even_preference:
-            objectives.append(1440 * self.evenlySpreadOverRangeConstraint(include_scheduled))
-        
-        self.model.Minimize(sum(objectives))
+        self.model.Minimize(sum(self.objectives))
 
     def _startSolver(self):
         """Instantiate and run the solver."""
