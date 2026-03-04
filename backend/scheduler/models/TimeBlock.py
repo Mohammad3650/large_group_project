@@ -23,22 +23,30 @@ class TimeBlock(models.Model):
         ("evening", "Evening"),
     ]
 
+    FREQUENCY_CHOICES = [
+        ("none", "One-time"),
+        ("weekly", "Weekly"),
+        ("biweekly", "Every other week"),
+        ("monthly", "Monthly"),
+    ]
+
     day = models.ForeignKey(
         DayPlan, on_delete=models.CASCADE, related_name="time_blocks"
     )
+    name = models.CharField(max_length=20, blank=True)
     block_type = models.CharField(max_length=20, choices=BLOCK_TYPE_CHOICES)
     location = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True, default="")
     is_fixed = models.BooleanField(default=False)
 
     # For fixed blocks/events
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
 
     # For flexible blocks/events
     duration = models.IntegerField(null=True, blank=True)
     time_of_day_preference = models.CharField(
         max_length=20, choices=TIME_OF_DAY_PREFERENCES, null=True, blank=True
     )
-
     # add location field, remove day field , remove start and end time and keep it as just how many hours you want to spend, type :daily, weekly, monthly
-    # create more models to inherit time block: academic (add modolue, module code)
+    # create more models to inherit time block: academic (add module, module code)

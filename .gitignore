@@ -16,3 +16,8 @@ staticfiles/
 .DS_Store
 .vscode/
 .idea/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/package-lock.json
+frontend/coverage/

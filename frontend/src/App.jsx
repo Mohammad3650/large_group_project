@@ -5,9 +5,12 @@ import Signup from "./functionality/authentication/Signup"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
 import Landing from "./functionality/LandingPage/Landing";
+import Calendar from "./functionality/CalendarView/calendar";
 
 import CreateSchedule from "./functionality/authentication/createSchedule";
 import { setAuthToken } from "./api";
+import SuccessfulTimeBlock from "./components/successfulTimeBlock";
+import EditTimeBlock from "./components/EditTimeBlock";
 
 
 function App() {
@@ -34,6 +37,27 @@ function App() {
         </ProtectedRoute>
       } />
 
+      <Route path="/successful-timeblock" element={
+        <ProtectedRoute>
+          <SuccessfulTimeBlock />
+        </ProtectedRoute>
+      }
+      />
+
+      <Route path="/timeblocks/:id/edit" element={
+          <ProtectedRoute>
+          <EditTimeBlock />
+          </ProtectedRoute>
+      }
+      />
+
+
+      <Route path="/calendar" element={
+          <ProtectedRoute>
+            <Calendar/>
+          </ProtectedRoute>
+      }
+      />
     </Routes>
 
   )

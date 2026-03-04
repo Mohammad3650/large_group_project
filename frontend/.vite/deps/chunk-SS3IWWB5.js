@@ -882,7 +882,7 @@ var require_react_development = __commonJS({
           reportGlobalError(error);
         } finally {
           null === prevTransition && currentTransition._updatedFibers && (scope = currentTransition._updatedFibers.size, currentTransition._updatedFibers.clear(), 10 < scope && console.warn(
-            "Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided hooks. Otherwise concurrent mode guarantees are off the table."
+            "Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided helpers. Otherwise concurrent mode guarantees are off the table."
           )), null !== prevTransition && null !== currentTransition.types && (null !== prevTransition.types && prevTransition.types !== currentTransition.types && console.error(
             "We expected inner Transitions to have transferred the outer types set and that you cannot add to the outer Transition while inside the inner.This is a bug in React."
           ), prevTransition.types = currentTransition.types), ReactSharedInternals.T = prevTransition;
