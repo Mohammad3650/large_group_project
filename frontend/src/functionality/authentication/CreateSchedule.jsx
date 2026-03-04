@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import TimeBlockForm from "../../components/timeBlockForm";
+import NavBar from "../LandingPage/NavBar";
 
 
 function CreateSchedule() {
@@ -48,17 +49,20 @@ function CreateSchedule() {
     }
 
     return (
-        <div className="page-center">
-            <div className="time-block-form-card">
-                <h2>Create Time Block</h2>
-                {success && <p>{success}</p>}
+        <div>
+            <NavBar />
+            <div className="page-center">
+                <div className="time-block-form-card">
+                    <h2>Create Time Block</h2>
+                    {success && <p>{success}</p>}
 
-                <TimeBlockForm 
-                    onSubmit={handleCreate}
-                    loading={loading}
-                    serverErrors={serverErrors}
-                    clearErrors={() => setServerErrors([])}
-                />
+                    <TimeBlockForm 
+                        onSubmit={handleCreate}
+                        loading={loading}
+                        serverErrors={serverErrors}
+                        clearErrors={() => setServerErrors([])}
+                    />
+                </div>
             </div>
         </div>
     );
