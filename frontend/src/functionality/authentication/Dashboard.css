@@ -35,12 +35,6 @@ body.dashboard-page {
     padding-right: 8px;
 }
 
-
-.bottom-buttons {
-    margin-top: auto;
-    padding-top: 16px;
-}
-
 @media (max-width: 768px) {
     body.dashboard-page {
         overflow: auto;

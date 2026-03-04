@@ -5947,7 +5947,7 @@ var require_react_dom_client_development = __commonJS({
         thenableState = null;
         if (didRenderTooFewHooks)
           throw Error(
-            "Rendered fewer hooks than expected. This may be caused by an accidental early return statement."
+            "Rendered fewer helpers than expected. This may be caused by an accidental early return statement."
           );
         null === current2 || didReceiveUpdate || (current2 = current2.dependencies, null !== current2 && checkIfContextChanged(current2) && (didReceiveUpdate = true));
         needsToResetSuspendedThenableDEV ? (needsToResetSuspendedThenableDEV = false, current2 = true) : current2 = false;
@@ -6041,7 +6041,7 @@ var require_react_dom_client_development = __commonJS({
               throw Error(
                 "Update hook called on initial render. This is likely a bug in React. Please file an issue."
               );
-            throw Error("Rendered more hooks than during the previous render.");
+            throw Error("Rendered more helpers than during the previous render.");
           }
           currentHook = nextCurrentHook;
           nextCurrentHook = {
@@ -6465,7 +6465,7 @@ var require_react_dom_client_development = __commonJS({
             null !== prevTransition && null !== currentTransition.types && (null !== prevTransition.types && prevTransition.types !== currentTransition.types && console.error(
               "We expected inner Transitions to have transferred the outer types set and that you cannot add to the outer Transition while inside the inner.This is a bug in React."
             ), prevTransition.types = currentTransition.types), ReactSharedInternals.T = prevTransition, null === prevTransition && currentTransition._updatedFibers && (actionQueue = currentTransition._updatedFibers.size, currentTransition._updatedFibers.clear(), 10 < actionQueue && console.warn(
-              "Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided hooks. Otherwise concurrent mode guarantees are off the table."
+              "Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided helpers. Otherwise concurrent mode guarantees are off the table."
             ));
           }
         } else
@@ -6893,7 +6893,7 @@ var require_react_dom_client_development = __commonJS({
           ReactDOMSharedInternals.p = previousPriority, null !== prevTransition && null !== currentTransition.types && (null !== prevTransition.types && prevTransition.types !== currentTransition.types && console.error(
             "We expected inner Transitions to have transferred the outer types set and that you cannot add to the outer Transition while inside the inner.This is a bug in React."
           ), prevTransition.types = currentTransition.types), ReactSharedInternals.T = prevTransition, null === prevTransition && currentTransition._updatedFibers && (fiber = currentTransition._updatedFibers.size, currentTransition._updatedFibers.clear(), 10 < fiber && console.warn(
-            "Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided hooks. Otherwise concurrent mode guarantees are off the table."
+            "Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided helpers. Otherwise concurrent mode guarantees are off the table."
           ));
         }
       }

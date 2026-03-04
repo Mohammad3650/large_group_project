@@ -1,13 +1,15 @@
 import { useState } from "react";
 import "./TaskItem.css";
 
+const ding = new Audio("/ding.mp3");
+ding.volume = 0.3;
+ding.load();
+
 /**
  * Plays the ding sound when the user completes a task.
- * Creates a new Audio instance each time to allow overlapping playback.
  */
 function playDing() {
-    const ding = new Audio("/ding.mp3");
-    ding.volume = 0.3;
+    ding.currentTime = 0;
     ding.play().catch(err => console.error("Audio failed:", err));
 }
 

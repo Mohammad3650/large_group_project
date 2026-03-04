@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
-import LogoutButton from "../../components/logoutButton";
 import NavBar from "../LandingPage/NavBar.jsx";
 import TaskGroup from "./TaskGroup.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
@@ -124,9 +123,6 @@ function Dashboard() {
                     <TaskGroup title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
                     <TaskGroup title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
                     <TaskGroup title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
-                    <div className="bottom-buttons">
-                        <LogoutButton/>
-                    </div>
                 </div>
                 <NotesSection/>
             </div>
