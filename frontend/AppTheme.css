@@ -61,22 +61,6 @@ button {
     justify-content: center;
 }
 
-.tooltip {
-  position: absolute;
-  right: 50px;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: var(--card-color);
-  color: var(--text-color);
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
 
-.theme-toggle:hover .tooltip {
-  opacity: 1;
-}
+
 

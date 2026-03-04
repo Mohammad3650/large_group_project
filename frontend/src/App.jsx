@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "./functionality/authentication/Login";
 import Signup from "./functionality/authentication/Signup"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
 import Landing from "./functionality/LandingPage/Landing";
+import Calendar from "./functionality/CalendarView/calendar";
+import NavBar from "./functionality/LandingPage/NavBar";
 
 import CreateSchedule from "./functionality/authentication/createSchedule";
 import { setAuthToken } from "./api";
 import SuccessfulTimeBlock from "./components/successfulTimeBlock";
 import EditTimeBlock from "./components/EditTimeBlock";
 
-import "../AppTheme.css";
-import darkIcon from "./assets/darkmode.png";
-import lightIcon from "./assets/lightmode.png";
 
 
 function App() {
@@ -30,18 +29,10 @@ function App() {
   }
   
   return (
-    <div className={darkMode ? "app-dark" : "app-light"}>
+    <div className={darkMode ? "app-light" : "app-dark"}>
 
-      <button onClick={toggleDarkMode} className="theme-toggle">
-        <img
-          src={darkMode ? lightIcon: darkIcon}
-          alt="Toggle theme"
-        />
-      </button>
+      <NavBar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
-      <span className="tooltip">
-        {darkMode ? "Light Mode" : "Dark Mode"}
-      </span>
 
       <Routes>
         <Route path="/" element={<Landing />} />
@@ -70,8 +61,17 @@ function App() {
           <ProtectedRoute>
             <EditTimeBlock />
           </ProtectedRoute>
-        } />
-      </Routes>
+      }
+      />
+
+
+      <Route path="/calendar" element={
+          <ProtectedRoute>
+            <Calendar/>
+          </ProtectedRoute>
+      }
+      />
+    </Routes>
 
     </div>
 

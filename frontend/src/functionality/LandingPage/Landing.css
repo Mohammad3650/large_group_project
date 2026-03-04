@@ -1,3 +1,22 @@
 /* .background {
     background: linear-gradient(to bottom, #f8f8f8, #efefef);
 } */
+
+.testimonials {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+
+
+.grid
+{
+    /* display: grid; */
+    
+}
+
+.top
+{
+    min-height: 100px;
+}
