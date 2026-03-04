@@ -46,7 +46,7 @@ function App() {
 
       <Route path="/timeblocks/:id/edit" element={
           <ProtectedRoute>
-          <EditTimeBlock />
+            <EditTimeBlock />
           </ProtectedRoute>
       }
       />
