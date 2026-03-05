@@ -3,13 +3,17 @@ from datetime import timedelta
 
 
 class WindowSerializer(serializers.Serializer):
-    start_min = serializers.IntegerField(min_value=0)
-    end_min = serializers.IntegerField(min_value=1)
+    start_min = serializers.TimeField()
+    end_min = serializers.TimeField()
     daily = serializers.BooleanField(required = False, default=False)
 
     def validate(self, attrs):
-        if attrs["end_min"] <= attrs["start_min"]:
-            raise serializers.ValidationError("end_min must be > start_min")
+        start = attrs["start_min"]
+        end = attrs["end_min"]
+
+        if start == end:
+            raise serializers.ValidationError("Wake up and sleep time cannot be the same.")
+
         return attrs
 
 

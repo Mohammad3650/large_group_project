@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from scheduler.views.create_schedule_view import create_schedule
+from scheduler.views.generator_view import GenerateScheduleView
 from scheduler.views.get_schedule_view import get_schedule, edit_timeblock
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.note_view import get_note, save_note
@@ -54,4 +55,6 @@ urlpatterns = [
     path("api/notes/save/", save_note, name="api-save-note"),
     path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
     path("api/user/", get_user_view),
+
+    path("schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"),
 ]

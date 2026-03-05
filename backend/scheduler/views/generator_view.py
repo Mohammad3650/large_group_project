@@ -8,8 +8,11 @@ from scheduler.services.schedule_service import ScheduleService
 
 class GenerateScheduleView(APIView):
     def post(self, request):
+        print(request.data)
+        print()
         serializer = GenerateScheduleRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        print(serializer.validated_data)
 
         service = ScheduleService()
         payload = service.generate(request.user, serializer.validated_data)
