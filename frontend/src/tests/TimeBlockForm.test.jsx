@@ -3,7 +3,7 @@ import {describe, it, expect, vi} from "vitest";
 import "@testing-library/jest-dom/vitest"
 import { MemoryRouter,Routes, Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-import TimeBlockForm from "../components/timeBlockForm";
+import TimeBlockForm from "../components/TimeBlockForm.jsx";
 
 describe("Test that all the functionality of the flexible time block form works and renders", () => {
     it("All form fields are rendered onto the screen", () => {

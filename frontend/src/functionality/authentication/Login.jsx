@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { publicApi } from "../../api"
 import { formatApiError } from "../../utils/errors";
 import { saveTokens, getAccessToken } from "../../utils/handleLocalStorage";
-import { isTokenValid } from "../../utils/authToken";
+import { isTokenValid } from "../../utils/authToken.js";
 
 
 function Login() {
