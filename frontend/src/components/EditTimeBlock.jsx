@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api";
-import TimeBlockForm from "./TimeBlockForm.jsx";
+import TimeBlockForm from "./TimeBlockForm";
 
 function EditTimeBlock() {
   const { id } = useParams();

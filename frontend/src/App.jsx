@@ -6,8 +6,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
 import Landing from "./functionality/LandingPage/Landing.jsx";
 import Calendar from "./functionality/CalendarView/Calendar.jsx";
+import PreviewCalendar from "./functionality/CalendarView/PreviewCalendar.jsx";
 
-import CreateSchedule from "./functionality/authentication/createSchedule";
+import CreateSchedule from "./functionality/authentication/CreateSchedule";
 import { setAuthToken } from "./api";
 import SuccessfulTimeBlock from "./components/SuccessfulTimeBlock.jsx";
 import EditTimeBlock from "./components/EditTimeBlock";
@@ -55,6 +56,13 @@ function App() {
       <Route path="/calendar" element={
           <ProtectedRoute>
             <Calendar/>
+          </ProtectedRoute>
+      }
+      />
+
+      <Route path="/preview-calendar" element={
+          <ProtectedRoute>
+            <PreviewCalendar/>
           </ProtectedRoute>
       }
       />

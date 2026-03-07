@@ -23,20 +23,23 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from scheduler.views.create_schedule_view import create_schedule
+from scheduler.views.generator_view import GenerateScheduleView
 from scheduler.views.get_schedule_view import get_schedule, edit_timeblock
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.note_view import get_note, save_note
 from scheduler.views.get_user_view import get_user_view
+from scheduler.views.save_plan_view import SaveWeeklyPlanView
 
 from scheduler.views.user_auth import (
     UserRegistrationView,
     UserDetailsView,
     DashboardView,
+    
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("scheduler.api.urls")),
+    # path("api/", include("scheduler.api.urls")),
     path("api-auth/", include("rest_framework.urls")),
     path("auth/signup/", UserRegistrationView.as_view(), name="user-signup"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
@@ -54,4 +57,7 @@ urlpatterns = [
     path("api/notes/save/", save_note, name="api-save-note"),
     path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
     path("api/user/", get_user_view),
+
+    path("schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"),
+    path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
 ]
