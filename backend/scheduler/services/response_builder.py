@@ -27,7 +27,7 @@ class ScheduleResponseBuilder:
     }
     """
 
-    def build( self, solutions: List[Tuple[int, int, int, str]], week_start: str, ) -> Dict[str, Any]:
+    def build( self, solutions: List[Tuple[int, int, int, str]], scheduled ,week_start: str, ) -> Dict[str, Any]:
         events = []
         for (s, e, d, name) in solutions:
             date_s, start_time = self._abs_min_to_date_time(week_start, s)
@@ -55,6 +55,7 @@ class ScheduleResponseBuilder:
         return {
             "week_start": str(week_start.isoformat()),
             "events": events,
+            "scheduled": scheduled
         }
 
     def _abs_min_to_date_time(self, week_start, abs_min: int) -> tuple[str, str]:
