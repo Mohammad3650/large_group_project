@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
-import TimeBlockForm from "../../components/timeBlockForm";
+import TimeBlockForm from "../../components/TimeBlockForm";
 import GeneratorForm from "../../components/generatorForm";
-import NavBar from "../LandingPage/NavBar";
+import NavBar from "../LandingPage/Navbar";
 
 const TABS = [
   { id: "timeblock", label: "Time Block" },
@@ -57,31 +57,42 @@ function CreateSchedule() {
 
 
     async function handleGenerate(data){
-        // TODO: If server response is successful but 'No feasible solution', display error on this page, do not navigate.
         
         if (loading) return;
         
-        setServerErrors([]);
+        setServerErrors({});
         setLoading(true);
 
-        const errors = [];
+        // const errors = [];
         let allSuccess = true;
         let response = null;
 
         try {
             response = await api.post("/schedule/generates/", data);
-            errors.push({});
+            const events = response.data?.events || [];
+
+            if (events.length === 0) {
+                setServerErrors({
+                    general: ["No feasible schedule could be generated with the given constraints."]
+                });
+                return;
+            }
+            setServerErrors({});
+			sessionStorage.setItem( "generatedSchedule", JSON.stringify(response.data));
+			navigate("/preview-calendar")
+            // errors.push({});
         } catch (err) {
             console.log("ERROR RESPONSE:", err.response?.data);
-            errors.push(err.response?.data || {});
+
+            setServerErrors(err.response?.data || {})
             allSuccess = false;
         } finally {
-            setServerErrors(errors);
+            // setServerErrors(errors);
             setLoading(false);
         }
         console.log(response)
 
-        // if (allSuccess) navigate("/preview-schedule", { state: { data: response } });
+        // if (allSuccess) navigate("/preview-calendar");
 
     }
 
@@ -123,7 +134,7 @@ function CreateSchedule() {
                 onSubmit={handleGenerate}
                 loading={loading}
                 serverErrors={serverErrors}
-                clearErrors={() => setServerErrors([])}
+                clearErrors={() => setServerErrors({})}
                 />
             </div>
           )}
