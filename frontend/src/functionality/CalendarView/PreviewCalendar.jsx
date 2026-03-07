@@ -105,6 +105,8 @@ function CalendarView({ blocks, setBlocks, schedule }) {
 
         const res = await api.post("/api/plans/save/", data);
         console.log(res)
+
+        nav("/dashboard")
         
     }
 
