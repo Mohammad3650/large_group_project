@@ -11,7 +11,10 @@ class GenerateScheduleView(APIView):
         print(request.data)
         print()
         serializer = GenerateScheduleRequestSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            print("ERRORS FOUND")
+            print(serializer.errors)
+            return Response(serializer.errors, status=400)
         print(serializer.validated_data)
 
         service = ScheduleService()
