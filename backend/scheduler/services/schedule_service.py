@@ -7,16 +7,15 @@ from scheduler.generator.schedule_generator import Scheduler
 from scheduler.models import TimeBlock
 from datetime import datetime, timedelta
 
+from django.db.models import F
+
 
 class ScheduleService:
     def __init__(self) -> None:
         self.parser = ScheduleRequestParser()
         self.builder = ScheduleResponseBuilder()
 
-    def fetch_scheduled_events(self, week_start, week_end, user):
-        
-        DAY_MINS = 1440
-
+    def fetch_scheduled_time_blocks(self, week_start, week_end, user):
         time_blocks = (
             TimeBlock.objects
             .filter(
@@ -24,7 +23,14 @@ class ScheduleService:
                 day__date__range=(week_start, week_end),
             )
             .select_related("day")
+            .annotate(date=F("day__date"))
         )
+
+        return time_blocks
+
+    def extract_scheduled_mins(self, time_blocks, week_start):
+        
+        DAY_MINS = 1440
 
         events = []
 
@@ -48,7 +54,8 @@ class ScheduleService:
              week_start = validated_data["week_start"]
              return self.builder.build([], week_start=week_start)
         
-        scheduled = self.fetch_scheduled_events(parsed.week_start, parsed.week_end, user)
+        time_blocks = self.fetch_scheduled_time_blocks(parsed.week_start, parsed.week_end, user)
+        scheduled = self.extract_scheduled_mins(time_blocks, parsed.week_start)
 
         engine = Scheduler( request=parsed, scheduled=scheduled )
 
@@ -59,4 +66,4 @@ class ScheduleService:
 
         solutions: List[Tuple[int, int, int, str]] = engine.solve()
         week_start = parsed.week_start
-        return self.builder.build(solutions, week_start=week_start)
+        return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start)
