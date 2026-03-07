@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./timeBlockFormStyle.css";
+import "./TimeBlockForm.css";
 
 function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
 
@@ -40,7 +40,7 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
             updated[index].frequency = value ? "1" : "";
         }
         setBlocks(updated);
-        clearErrors();
+        // clearErrors();
     }
 
     function updateWindow(field, value) {
@@ -77,7 +77,12 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
     
     return (
         <form onSubmit={handleSubmit}>
-            {serverErrors[0]?.date && ( <p className="error-text-date"> {serverErrors[0].date[0]} </p> )}
+
+            {serverErrors?.general && (<p className="error-text">{serverErrors.general[0]}</p>)}
+
+            {(serverErrors?.week_start || serverErrors?.week_end) && (
+            <p className="error-text-date">{serverErrors?.week_start?.[0] || serverErrors?.week_end?.[0]}</p>)}
+
             {/* Start and end dates */}
             <div className="range-box">
                 <label> Start
@@ -96,6 +101,9 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                 </label>
             </div>
 
+            {(serverErrors.windows?.[0]?.start_min || serverErrors.windows?.[0]?.end_min) && (
+            <p className="error-text-date">{serverErrors.windows?.[0]?.start_min?.[0] || serverErrors.windows?.[0]?.end_min?.[0]}</p>)}
+            
             <div className="range-box">
                 <label>
                     Wake Up
@@ -140,7 +148,7 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
 
             {blocks.map((block, index) => (
                 <div key={index} className="time-block-section">
-                    {serverErrors[index]?.name && <p className="error-text">{serverErrors[index].name[0]}</p>}
+                    {serverErrors.unscheduled?.[index]?.name && <p className="error-text">{serverErrors.unscheduled[index].name[0]}</p>}
                     <input
                         placeholder="Name"
                         value={block.name}
@@ -149,7 +157,7 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                         }
                     />
 
-                    {serverErrors[index]?.duration && <p className="error-text">{serverErrors[index].duration[0]}</p>}
+                    {serverErrors.unscheduled?.[index]?.duration && <p className="error-text">{serverErrors.unscheduled[index].duration[0]}</p>}
                     <input
                         type="number"
                         placeholder="Duration (minutes)"
@@ -160,6 +168,7 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                     />
 
                     {/* Daily checkbox + frequency */}
+                    {serverErrors.unscheduled?.[index]?.daily && <p className="error-text">{serverErrors.unscheduled[index].daily[0]}</p>}
                     <label className="checkbox-label">
                         <input
                             type="checkbox"
@@ -169,7 +178,7 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                         Daily
                     </label>
 
-                    {serverErrors?.[index]?.frequency && <p className="error-text">{serverErrors[index].frequency[0]}</p>}
+                    {serverErrors.unscheduled?.[index]?.frequency && <p className="error-text">{serverErrors.unscheduled[index].frequency[0]}</p>}
                     <input
                         type="number"
                         placeholder="Frequency (times per week)"
@@ -178,7 +187,7 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                         onChange={(e) => updateBlock(index, "frequency", e.target.value)}
                     />
 
-                    {serverErrors[index]?.start_time_preference && <p className="error-text">{serverErrors[index].start_time_preference[0]}</p>}
+                    {serverErrors.unscheduled?.[index]?.start_time_preference && <p className="error-text">{serverErrors.unscheduled[index].start_time_preference[0]}</p>}
                     <select
                         value={block.start_time_preference}
                         placeholder="Start time preference"
@@ -191,7 +200,7 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                         <option value="Late">Late</option>
                     </select>
 
-                    {serverErrors[index]?.location && <p className="error-text">{serverErrors[index].location[0]}</p>}
+                    {serverErrors.unscheduled?.[index]?.location && <p className="error-text">{serverErrors.unscheduled[index].location[0]}</p>}
                     <input
                         placeholder="Location"
                         value={block.location}
