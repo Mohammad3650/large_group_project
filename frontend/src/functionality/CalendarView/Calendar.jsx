@@ -2,14 +2,14 @@ import { createViewMonthGrid, createViewWeek, createViewDay } from "@schedule-x/
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
-import NavBar from "../LandingPage/NavBar.jsx";
+import Navbar from "../LandingPage/Navbar.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
 import useUser from "../helpers/useUser.js";
 import { useEffect, useState } from "react";
 import { api } from "../../api.js";
 import '@schedule-x/theme-default/dist/index.css'
 import 'temporal-polyfill/global'
-import "./calendar.css"
+import "./Calendar.css"
 import {useNavigate} from "react-router-dom";
 
 /**
@@ -57,7 +57,7 @@ function Calendar() {
 
     if (blocks === null) return (
         <div className="calendardiv">
-            <NavBar/>
+            <Navbar/>
             <h1 className="title">Calendar</h1>
         </div>
     );
@@ -123,7 +123,7 @@ function CalendarView({ blocks, setBlocks }) {
 
     return (
         <>
-            <NavBar/>
+            <Navbar/>
             <div className="calendar-content">
                 <h1>Welcome to your calendar, {username}!</h1>
                 <AddTaskButton/>

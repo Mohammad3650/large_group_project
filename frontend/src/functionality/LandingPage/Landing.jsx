@@ -1,4 +1,4 @@
-import NavBar from "./NavBar";
+import Navbar from "./Navbar.jsx";
 import Hero from "./Hero";
 import Card from "./Card";
 import Features from "./Features";
@@ -10,7 +10,7 @@ function Landing() {
   return (
     <>
     <div className="background">
-      <NavBar />
+      <Navbar />
       <Hero />
 
       <Features/>

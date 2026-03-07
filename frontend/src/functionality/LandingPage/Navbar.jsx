@@ -1,11 +1,11 @@
-import "./NavBar.css"
+import "./Navbar.css"
 import { Link } from "react-router-dom";
 import {useEffect, useState} from "react";
-import LogoutButton from "../../components/logoutButton.jsx";
+import LogoutButton from "../../components/LogoutButton.jsx";
 import useUser from "../helpers/useUser.js";
 import {isTokenValid} from "../../utils/authToken.js";
 
-function NavBar() {
+function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const username = useUser(isLoggedIn);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -63,4 +63,4 @@ function NavBar() {
     );
 }
 
-export default NavBar;
+export default Navbar;
