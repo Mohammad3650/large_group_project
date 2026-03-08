@@ -11,7 +11,7 @@ function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState("" );
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -53,9 +53,9 @@ return (
             </p>
           </div>
 
-          {error && (
-            <div className="alert alert-danger text-center">
-              {error}
+          {error && error.global && (
+            <div className="alert alert-danger text-center" role="alert">
+              {error.global}
             </div>
           )}
 
