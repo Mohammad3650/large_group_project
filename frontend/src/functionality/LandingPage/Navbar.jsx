@@ -50,6 +50,9 @@ function Navbar() {
                             {dropdownOpen && (
                                 <div className="user-dropdown">
                                     <span className="dropdown-username">{username}</span>
+                                    <Link to="/profile" className="dropdown-link" onClick={() => setDropdownOpen(false)}>
+                                        Profile
+                                    </Link>
                                     <LogoutButton/>
                                 </div>
                             )}

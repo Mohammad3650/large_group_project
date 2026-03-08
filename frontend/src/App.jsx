@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./functionality/authentication/Login";
 import Signup from "./functionality/authentication/Signup"
+import EditProfile from "./components/EditProfile.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
 import Landing from "./functionality/LandingPage/Landing.jsx";
@@ -65,6 +66,12 @@ function App() {
             <PreviewCalendar/>
           </ProtectedRoute>
       }
+      />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <EditProfile />
+        </ProtectedRoute>
+      } 
       />
     </Routes>
 
