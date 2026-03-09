@@ -10,25 +10,8 @@ from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 @permission_classes([IsAuthenticated])
 def get_schedule(request):
     time_blocks = TimeBlock.objects.filter(day__user=request.user).select_related("day")
-
-    data = [
-        {
-            "id": block.id,
-            "name": block.name,
-            "date": str(block.day.date),
-            "start_time": str(block.start_time) if block.start_time else None,
-            "end_time": str(block.end_time) if block.end_time else None,
-            "block_type": block.block_type,
-            "description": block.description,
-            "location": block.location,
-            "is_fixed": block.is_fixed,
-            "duration": block.duration,
-            "time_of_day_preference": block.time_of_day_preference,
-        }
-        for block in time_blocks
-    ]
-
-    return Response(data)
+    serializer = TimeBlockSerializer(time_blocks, many=True)
+    return Response(serializer.data)
 
 
 @api_view(["GET", "PATCH"])

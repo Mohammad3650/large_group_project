@@ -38,12 +38,17 @@ from ..models import DayPlan, TimeBlock
 
 
 class TimeBlockSerializer(serializers.ModelSerializer):
+    date = serializers.SerializerMethodField()
+
+    def get_date(self, obj):
+        return str(obj.day.date)
 
     class Meta:
         model = TimeBlock
         fields = [
             "id",
             "name",
+            "date",
             "location",
             "block_type",
             "description",
