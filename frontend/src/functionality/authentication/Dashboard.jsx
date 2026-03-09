@@ -13,7 +13,7 @@ import "./Dashboard.css";
  * @param {Object} b - Task object with date and start_time fields
  * @returns {Date} Combined date and time as a Date object
  */
-const getDate = (b) => new Date(`${b.date}T${b.start_time}`);
+const getDate = (b) => new Date(`${b.date}T${b.startTime}`);
 
 /**
  * Sorts tasks in ascending order by datetime.
@@ -86,8 +86,8 @@ function Dashboard() {
                     id: block.id,
                     name: block.name,
                     date: block.date,
-                    start_time: block.start_time || "00:00",
-                    end_time: block.end_time || "23:59",
+                    startTime: block.start_time || "00:00",
+                    endTime: block.end_time || "23:59",
                 }));
 
                 setOverdueTasks(blocks.filter(b => getDate(b) < today).sort(sortTasksByDate));

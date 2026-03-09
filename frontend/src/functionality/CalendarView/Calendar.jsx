@@ -1,4 +1,4 @@
-import { createViewMonthGrid, createViewWeek, createViewDay } from "@schedule-x/calendar";
+import { createViewMonthGrid, createViewWeek } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
@@ -11,17 +11,8 @@ import '@schedule-x/theme-default/dist/index.css'
 import 'temporal-polyfill/global'
 import "./Calendar.css"
 import {useNavigate} from "react-router-dom";
+import formatDate from "../helpers/formatDate.js";
 
-/**
- * Formats a date string from ISO format into British date format.
- *
- * @param {string} date - Date string in ISO format (e.g. "2026-02-19")
- * @returns {string} Formatted date string in British format (e.g. "19/02/2026")
- */
-const formatDate = (date) => {
-    const [year, month, day] = date.split("-");
-    return `${day}/${month}/${year}`;
-};
 
 function Calendar() {
     const [blocks, setBlocks] = useState(null);
