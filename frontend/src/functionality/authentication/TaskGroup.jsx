@@ -9,12 +9,11 @@ import {api} from "../../api.js";
  * @param {string} title - The section heading (e.g. "Today", "Tomorrow")
  * @param {Array} tasks - Array of task objects to display
  * @param {Function} setTasks - State setter to update the tasks array
- * @param {boolean} [beyondWeek=false] - Whether the section represents beyondWeek tasks (tasks which are in over 7 days)
  * @param {boolean} [overdue=false] - Whether the section represents overdue tasks
  * @returns {JSX.Element|null} The day section, or null if no tasks
  */
-function TaskGroup({ title, tasks = [], setTasks, beyondWeek = false, overdue = false}) {
-    const [isOpen, setIsOpen] = useState(!beyondWeek);
+function TaskGroup({ title, tasks = [], setTasks, overdue = false}) {
+    const [isOpen, setIsOpen] = useState(true);
 
     function handleDelete(id) {
         api.delete(`/api/time-blocks/${id}/`)

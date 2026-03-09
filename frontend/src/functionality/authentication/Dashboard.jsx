@@ -107,7 +107,7 @@ function Dashboard() {
         fetchTimeBlocks();
     }, []);
 
-    const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length;
+    const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length + beyondWeekTasks.length;
 
     if (error) return <p>{error}</p>;
 
@@ -119,13 +119,13 @@ function Dashboard() {
                     <h1>{message}</h1>
                     <AddTaskButton/>
                     {totalTasks === 0 && (
-                        <p className="no-tasks-message">🎉 Congrats, you have no tasks for the next week!</p>
+                        <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
                     )}
                     <TaskGroup title="Overdue" tasks={overdueTasks} setTasks={setOverdueTasks} overdue={true}/>
                     <TaskGroup title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
                     <TaskGroup title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
                     <TaskGroup title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
-                    <TaskGroup title="Beyond 7 Days" tasks={beyondWeekTasks} setTasks={setBeyondWeekTasks} future={true}/>
+                    <TaskGroup title="Beyond 7 Days" tasks={beyondWeekTasks} setTasks={setBeyondWeekTasks}/>
                 </div>
                 <NotesSection/>
             </div>
