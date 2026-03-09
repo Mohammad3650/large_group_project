@@ -21,4 +21,7 @@ def change_password(request):
     user.set_password(new_password)
     user.save()
 
-    return Response({"message": "Password updated successfully"})
+    return Response(
+        {"message": "Password updated successfully"},
+        status=status.HTTP_200_OK,
+    )
