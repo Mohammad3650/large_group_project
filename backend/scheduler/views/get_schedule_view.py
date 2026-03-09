@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from datetime import date, timedelta
 from ..models import TimeBlock
 from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
@@ -10,12 +9,7 @@ from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 @api_view(["GET", "PATCH"])
 @permission_classes([IsAuthenticated])
 def get_schedule(request):
-    today = date.today()
-    week_end = today + timedelta(days=7)
-
-    time_blocks = TimeBlock.objects.filter(
-        day__user=request.user, day__date__lte=week_end
-    ).select_related("day")
+    time_blocks = TimeBlock.objects.filter(day__user=request.user).select_related("day")
 
     data = [
         {

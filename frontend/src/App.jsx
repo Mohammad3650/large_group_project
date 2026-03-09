@@ -2,14 +2,16 @@ import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./functionality/authentication/Login";
 import Signup from "./functionality/authentication/Signup"
+import EditProfile from "./components/EditProfile.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./functionality/authentication/Dashboard";
-import Landing from "./functionality/LandingPage/Landing";
-import Calendar from "./functionality/CalendarView/calendar";
-
-import CreateSchedule from "./functionality/authentication/createSchedule";
+import Landing from "./functionality/LandingPage/Landing.jsx";
+import Calendar from "./functionality/CalendarView/Calendar.jsx";
+import PreviewCalendar from "./functionality/CalendarView/PreviewCalendar.jsx";
+import ChangePassword from "./components/ChangePassword";
+import CreateSchedule from "./functionality/authentication/CreateSchedule";
 import { setAuthToken } from "./api";
-import SuccessfulTimeBlock from "./components/successfulTimeBlock";
+import SuccessfulTimeBlock from "./components/SuccessfulTimeBlock.jsx";
 import EditTimeBlock from "./components/EditTimeBlock";
 
 
@@ -46,7 +48,7 @@ function App() {
 
       <Route path="/timeblocks/:id/edit" element={
           <ProtectedRoute>
-            <EditTimeBlock />
+          <EditTimeBlock />
           </ProtectedRoute>
       }
       />
@@ -58,8 +60,26 @@ function App() {
           </ProtectedRoute>
       }
       />
-    </Routes>
 
+      <Route path="/preview-calendar" element={
+          <ProtectedRoute>
+            <PreviewCalendar/>
+          </ProtectedRoute>
+      }
+      />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <EditProfile />
+        </ProtectedRoute>
+      } 
+      />
+      <Route path="/change-password" element={
+      <ProtectedRoute>
+      <ChangePassword/>
+      </ProtectedRoute>
+      }/>
+    </Routes>
+    
   )
 }
 

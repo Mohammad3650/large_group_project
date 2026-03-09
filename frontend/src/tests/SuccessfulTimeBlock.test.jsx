@@ -3,7 +3,7 @@ import {describe, it, expect} from "vitest";
 import "@testing-library/jest-dom/vitest"
 import { MemoryRouter,Routes, Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-import SuccessfulTimeBlock from "../components/successfulTimeBlock";
+import SuccessfulTimeBlock from "../components/SuccessfulTimeBlock.jsx";
 
 describe("Succesful time block created", () => {
   it("renders the text to show a time block has been created successfully", () => {
