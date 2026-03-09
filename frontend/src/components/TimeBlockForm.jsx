@@ -15,9 +15,6 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
             location: initialData.location,
             block_type: initialData.block_type,
             description: initialData.description,
-            is_fixed: initialData.is_fixed,
-            duration: initialData.duration || "",
-            time_of_day: initialData.time_of_day || "",
             start_time: initialData.start_time || "",
             end_time: initialData.end_time || "",
           }]
@@ -27,9 +24,6 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
             location: "",
             block_type: "study",
             description: "",
-            is_fixed: false,
-            duration: "",
-            time_of_day: "",
             start_time: "",
             end_time: "",
           }]
@@ -45,9 +39,6 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
       location: initialData.location,
       block_type: initialData.block_type,
       description: initialData.description,
-      is_fixed: initialData.is_fixed,
-      duration: initialData.duration || "",
-      time_of_day: initialData.time_of_day || "",
       start_time: initialData.start_time || "",
       end_time: initialData.end_time || "",
     }]);
@@ -63,9 +54,6 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
         location: "",
         block_type: "study",
         description: "",
-        is_fixed: false,
-        duration: "",
-        time_of_day: "",
         start_time: "",
         end_time: "",
       }
@@ -98,19 +86,13 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
           location: block.location,
           description: block.description,
           block_type: block.block_type,
-          is_fixed: block.is_fixed,
+          start_time: block.start_time,
+          end_time: block.end_time,
         };
-        if (block.is_fixed) {
-          data.start_time = block.start_time;
-          data.end_time = block.end_time;
-        } else {
-          data.duration = parseInt(block.duration);
-          data.time_of_day_preference = block.time_of_day;  // note: renamed to match serializer
-        }
         return data;
     });
     onSubmit(dataList);
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -164,73 +146,31 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
             <option value="extracurricular">Extracurricular</option>
           </select>
 
-          <select
-              value={block.is_fixed}
+
+          {serverErrors[index]?.start_time && <p className="error-text">{serverErrors[index].start_time[0]}</p>}
+          <input
+              type="time"
+              value={block.start_time}
               onChange={(e) =>
-                updateBlock(index, "is_fixed", e.target.value === "true")
+                updateBlock(index, "start_time", e.target.value)
               }
-          >
-              <option value="false"> Flexible </option>
-              <option value="true"> Fixed </option>
-          </select>
+            />
 
-          { block.is_fixed ? (
-              <>
+          {serverErrors[index]?.end_time && <p className="error-text">{serverErrors[index].end_time[0]}</p>}
+          <input
+              type="time"
+              value={block.end_time}
+              onChange={(e) =>
+                updateBlock(index, "end_time", e.target.value)
+              }
+          />
 
-              {serverErrors[index]?.start_time && <p className="error-text">{serverErrors[index].start_time[0]}</p>}
-              <input
-                  type="time"
-                  value={block.start_time}
-                  onChange={(e) =>
-                    updateBlock(index, "start_time", e.target.value)
-                  }
-                />
-
-              {serverErrors[index]?.end_time && <p className="error-text">{serverErrors[index].end_time[0]}</p>}
-              <input
-                  type="time"
-                  value={block.end_time}
-                  onChange={(e) =>
-                    updateBlock(index, "end_time", e.target.value)
-                  }
-              />
-
-              </>
-             ) : (
-               <>
-
-               {serverErrors[index]?.duration && <p className="error-text">{serverErrors[index].duration[0]}</p>}
-               <input
-                  type="number"
-                  placeholder="Duration (minutes)"
-                  value={block.duration}
-                  onChange={(e) =>
-                    updateBlock(index, "duration", e.target.value)
-                  }
-              />
-
-               {serverErrors[index]?.time_of_day_preference && <p className="error-text">{serverErrors[index].time_of_day_preference[0]}</p>}
-               <select
-                  value={block.time_of_day}
-                  onChange={(e) =>
-                    updateBlock(index, "time_of_day", e.target.value)
-                  }
-                >
-                  <option value="">Preferred Time of Day</option>
-                  <option value="morning">Morning</option>
-                  <option value="afternoon">Afternoon</option>
-                  <option value="evening">Evening</option>
-               </select>
-               </>
-
-              )}
-
-              <textarea
-                placeholder="Description (optional)"
-                value={block.description}
-                onChange={(e) => updateBlock(index, "description", e.target.value)}
-                className="description-input"
-              />
+          <textarea
+            placeholder="Description (optional)"
+            value={block.description}
+            onChange={(e) => updateBlock(index, "description", e.target.value)}
+            className="description-input"
+          />
 
           {blocks.length > 1 && (
               <button

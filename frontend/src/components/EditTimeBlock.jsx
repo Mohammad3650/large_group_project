@@ -22,9 +22,9 @@ function EditTimeBlock() {
         location: data.location,
         block_type: data.block_type,
         description: data.description,
-        is_fixed: data.is_fixed,
-        duration: data.duration || "",
-        time_of_day: data.time_of_day_preference || "",
+        //is_fixed: data.is_fixed,
+        //duration: data.duration || "",
+        //time_of_day: data.time_of_day_preference || "",
         start_time: data.start_time || "",
         end_time: data.end_time || "",
       });

@@ -8,16 +8,16 @@ from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
 
 def validate_timeblock_payload(request):
-    # serializer = TimeBlockSerializer(data=request.data)
-    # serializer.is_valid(raise_exception=True)
-    # return serializer.validated_data
+    serializer = TimeBlockSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return serializer.validated_data
 
     # for testing
-    serializer = TimeBlockSerializer(data=request.data)
-    if not serializer.is_valid():
-        print("SERIALIZER ERRORS:", serializer.errors)
-        raise serializers.ValidationError(serializer.errors)
-    return serializer.validated_data
+    # serializer = TimeBlockSerializer(data=request.data)
+    # if not serializer.is_valid():
+    #     print("SERIALIZER ERRORS:", serializer.errors)
+    #     raise serializers.ValidationError(serializer.errors)
+    # return serializer.validated_data
 
 
 def get_or_create_dayplan(user, date):
@@ -36,9 +36,6 @@ def create_timeblock(dayplan, data):
         location=data.get("location", ""),
         block_type=data["block_type"],
         description=data.get("description", ""),
-        is_fixed=data.get("is_fixed", False),
-        duration=data.get("duration"),
-        time_of_day_preference=data.get("time_of_day_preference"),
     )
 
 
@@ -52,24 +49,7 @@ def timeblock_response_payload(dayplan, time_block):
         "location": time_block.location,
         "block_type": time_block.block_type,
         "description": time_block.description,
-        "is_fixed": time_block.is_fixed,
-        "duration": time_block.duration,
-        "time_of_day_preference": time_block.time_of_day_preference,
     }
-
-
-# @api_view(["POST"])
-# @permission_classes([IsAuthenticated])
-# def create_schedule(request):
-#     data = validate_timeblock_payload(request)
-#
-#     dayplan = get_or_create_dayplan(request.user, data["date"])
-#     time_block = create_timeblock(dayplan, data)
-#
-#     return Response(
-#         timeblock_response_payload(dayplan, time_block),
-#         status=status.HTTP_201_CREATED,
-#     )
 
 
 @api_view(["POST"])
