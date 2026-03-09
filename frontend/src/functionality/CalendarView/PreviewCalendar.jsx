@@ -45,8 +45,8 @@ function PreviewCalendar() {
                     end: Temporal.ZonedDateTime.from(`${value.date}T${(value.end_time || "23:59").slice(0, 5)}[${timezone}]`),
 
                     date: value.date,
-                    startTime: (value.start_time || "00:00").slice(0, 5),
-                    endTime: (value.end_time || "23:59").slice(0, 5),
+                    startTime: (value.start_time).slice(0, 5),
+                    endTime: (value.end_time).slice(0, 5),
                     location: value.location || "N/A",
                     description: value.description || "N/A"
 

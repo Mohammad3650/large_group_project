@@ -32,8 +32,8 @@ function Calendar() {
                     // className: `sx-type-${block.block_type}`,
 
                     date: block.date,
-                    startTime: (block.start_time || "00:00").slice(0, 5),
-                    endTime: (block.end_time || "23:59").slice(0, 5),
+                    startTime: (block.start_time).slice(0, 5),
+                    endTime: (block.end_time).slice(0, 5),
                     location: block.location || "N/A",
                     blockType: block.block_type.charAt(0).toUpperCase() + block.block_type.slice(1),
                     description: block.description || "N/A",
