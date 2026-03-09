@@ -27,9 +27,6 @@ def get_schedule(request):
             "block_type": block.block_type,
             "description": block.description,
             "location": block.location,
-            "is_fixed": block.is_fixed,
-            "duration": block.duration,
-            "time_of_day_preference": block.time_of_day_preference,
         }
         for block in time_blocks
     ]
