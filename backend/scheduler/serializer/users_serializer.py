@@ -29,7 +29,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+
     class Meta:
         model = User
         fields = ("email", "username", "first_name", "last_name", "phone_number")
-        read_only_fields = ("email",)  # usually you don't want email changed casually
+
+    def validate_email(self, value):
+        user = self.instance
+        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            raise serializers.ValidationError("Email is already in use.")
+        return value

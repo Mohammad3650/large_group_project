@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { isTokenValid } from "../utils/authToken";
+import { isTokenValid } from "../utils/authToken.js";
 
 function ProtectedRoute({ children }) {
     const [allowed, setAllowed] = useState(null);

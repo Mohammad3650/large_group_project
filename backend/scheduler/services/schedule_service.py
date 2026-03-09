@@ -4,35 +4,66 @@ from scheduler.services.request_parser import ScheduleRequestParser
 from scheduler.services.response_builder import ScheduleResponseBuilder
 from scheduler.generator.schedule_generator import Scheduler
 
+from scheduler.models import TimeBlock
+from datetime import datetime, timedelta
+
+from django.db.models import F
+
 
 class ScheduleService:
     def __init__(self) -> None:
         self.parser = ScheduleRequestParser()
         self.builder = ScheduleResponseBuilder()
 
-    def generate(self, validated_data: Dict[str, Any]) -> Dict[str, Any]:
+    def fetch_scheduled_time_blocks(self, week_start, week_end, user):
+        time_blocks = (
+            TimeBlock.objects
+            .filter(
+                day__user=user,
+                day__date__range=(week_start, week_end),
+            )
+            .select_related("day")
+            .annotate(date=F("day__date"))
+        )
+
+        return time_blocks
+
+    def extract_scheduled_mins(self, time_blocks, week_start):
+        
+        DAY_MINS = 1440
+
+        events = []
+
+        for tb in time_blocks:
+
+            day_offset = (tb.day.date - week_start).days
+            start_minutes = tb.start_time.hour * 60 + tb.start_time.minute
+            end_minutes = tb.end_time.hour * 60 + tb.end_time.minute
+
+            start_min = day_offset * DAY_MINS + start_minutes
+            end_min = day_offset * DAY_MINS + end_minutes
+
+            events.append((start_min, end_min, tb.name))
+        
+        return events
+
+    def generate(self, user, validated_data: Dict[str, Any]) -> Dict[str, Any]:
         parsed = self.parser.parse(validated_data)
 
         if not parsed.unscheduled:
              week_start = validated_data["week_start"]
              return self.builder.build([], week_start=week_start)
+        
+        time_blocks = self.fetch_scheduled_time_blocks(parsed.week_start, parsed.week_end, user)
+        scheduled = self.extract_scheduled_mins(time_blocks, parsed.week_start)
 
-        engine = Scheduler(
-            days=parsed.days,
-            windows=parsed.windows,
-            scheduled=parsed.scheduled,
-            unscheduled=parsed.unscheduled,
-        )
+        engine = Scheduler( request=parsed, scheduled=scheduled )
 
         engine.create_scheduled_intervals()
         engine.create_unscheduled_intervals()
         engine.overlapConstraints()
-
-        if parsed.preference == "late":
-            engine.lateBiasConstraints()
-        else:
-            engine.earlyBiasConstraints()
+        engine.applyConstraints()
 
         solutions: List[Tuple[int, int, int, str]] = engine.solve()
-        week_start = validated_data["week_start"]
-        return self.builder.build(solutions, week_start=week_start)
+        week_start = parsed.week_start
+        return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start)

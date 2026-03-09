@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "./SuccessPageStyle.css";
-import tickImage from "../functionality/landingpage/photos/tick.png";
-import NavBar from "../functionality/LandingPage/NavBar";
+import tickImage from "../functionality/LandingPage/photos/tick.png";
+import NavBar from "../functionality/LandingPage/Navbar";
 
 
 
@@ -12,7 +12,6 @@ function SuccessfulTimeBlock({ block }){
 
     return(
         <>
-        <NavBar />
             <div className="success-page">
                 <div className="succes-card">
                     <h1 className="success-text">Time Block Created Successfully</h1>
