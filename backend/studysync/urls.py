@@ -28,6 +28,8 @@ from scheduler.views.get_schedule_view import get_schedule, edit_timeblock
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.note_view import get_note, save_note
 from scheduler.views.save_plan_view import SaveWeeklyPlanView
+from scheduler.views.change_password_view import change_password
+from scheduler.views.delete_user_view import delete_user
 
 from scheduler.views.user_auth import (
     UserRegistrationView,
@@ -58,4 +60,6 @@ urlpatterns = [
     path("api/user/", UserDetailsView.as_view(), name="user-details"),
     path("schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"),
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
+    path("api/user/change-password/", change_password),
+    path("api/user/delete/", delete_user),
 ]
