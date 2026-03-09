@@ -8,7 +8,7 @@ import Dashboard from "./functionality/authentication/Dashboard";
 import Landing from "./functionality/LandingPage/Landing.jsx";
 import Calendar from "./functionality/CalendarView/Calendar.jsx";
 import PreviewCalendar from "./functionality/CalendarView/PreviewCalendar.jsx";
-
+import ChangePassword from "./components/ChangePassword";
 import CreateSchedule from "./functionality/authentication/CreateSchedule";
 import { setAuthToken } from "./api";
 import SuccessfulTimeBlock from "./components/SuccessfulTimeBlock.jsx";
@@ -73,8 +73,13 @@ function App() {
         </ProtectedRoute>
       } 
       />
+      <Route path="/change-password" element={
+      <ProtectedRoute>
+      <ChangePassword/>
+      </ProtectedRoute>
+      }/>
     </Routes>
-
+    
   )
 }
 
