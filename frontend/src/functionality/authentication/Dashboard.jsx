@@ -38,6 +38,7 @@ function Dashboard() {
     const [todayTasks, setTodayTasks] = useState([]);
     const [tomorrowTasks, setTomorrowTasks] = useState([]);
     const [weekTasks, setWeekTasks] = useState([]);
+    const [futureTasks, setFutureTasks] = useState([]);
 
     useEffect(() => {
         document.body.classList.add("dashboard-page");
@@ -93,6 +94,7 @@ function Dashboard() {
                 setTodayTasks(blocks.filter(b => getDate(b) >= today && getDate(b) < tomorrow).sort(sortTasksByDate));
                 setTomorrowTasks(blocks.filter(b => getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow).sort(sortTasksByDate));
                 setWeekTasks(blocks.filter(b => getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd).sort(sortTasksByDate));
+                setFutureTasks(blocks.filter(b => getDate(b) > weekEnd).sort(sortTasksByDate));
 
             } catch (err) {
                 if (err?.response?.status === 401) {
@@ -123,6 +125,7 @@ function Dashboard() {
                     <TaskGroup title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
                     <TaskGroup title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
                     <TaskGroup title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
+                    <TaskGroup title="Beyond 7 Days" tasks={futureTasks} setTasks={setFutureTasks} future={true}/>
                 </div>
                 <NotesSection/>
             </div>
