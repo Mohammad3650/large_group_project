@@ -6,6 +6,7 @@ import TaskGroup from "./TaskGroup.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
 import NotesSection from "./NotesSection.jsx";
 import "./stylesheets/Dashboard.css";
+import useTimeBlocks from "../../utils/useTimeBlocks.js";
 
 
 /**
@@ -68,44 +69,25 @@ function Dashboard() {
         fetchDashboard();
     }, [nav]);
 
+    const { blocks } = useTimeBlocks();
+
     useEffect(() => {
-        async function fetchTimeBlocks() {
-            try {
-                const res = await api.get("/api/time-blocks/get/");
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const tomorrow = new Date(today);
-                tomorrow.setDate(today.getDate() + 1);
-                const dayAfterTomorrow = new Date(today);
-                dayAfterTomorrow.setDate(today.getDate() + 2);
-                const weekEnd = new Date(today);
-                weekEnd.setDate(today.getDate() + 7);
+        if (blocks === null) return;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const dayAfterTomorrow = new Date(today);
+        dayAfterTomorrow.setDate(today.getDate() + 2);
+        const weekEnd = new Date(today);
+        weekEnd.setDate(today.getDate() + 7);
 
-
-                const blocks = res.data.map(block => ({
-                    id: block.id,
-                    name: block.name,
-                    date: block.date,
-                    startTime: block.start_time,
-                    endTime: block.end_time,
-                }));
-
-                setOverdueTasks(blocks.filter(b => getDate(b) < today).sort(sortTasksByDate));
-                setTodayTasks(blocks.filter(b => getDate(b) >= today && getDate(b) < tomorrow).sort(sortTasksByDate));
-                setTomorrowTasks(blocks.filter(b => getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow).sort(sortTasksByDate));
-                setWeekTasks(blocks.filter(b => getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd).sort(sortTasksByDate));
-                setBeyondWeekTasks(blocks.filter(b => getDate(b) > weekEnd).sort(sortTasksByDate));
-
-            } catch (err) {
-                if (err?.response?.status === 401) {
-                    nav("/login");
-                } else {
-                    setError("Failed to load tasks");
-                }
-            }
-        }
-        fetchTimeBlocks();
-    }, []);
+        setOverdueTasks(blocks.filter(b => getDate(b) < today).sort(sortTasksByDate));
+        setTodayTasks(blocks.filter(b => getDate(b) >= today && getDate(b) < tomorrow).sort(sortTasksByDate));
+        setTomorrowTasks(blocks.filter(b => getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow).sort(sortTasksByDate));
+        setWeekTasks(blocks.filter(b => getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd).sort(sortTasksByDate));
+        setBeyondWeekTasks(blocks.filter(b => getDate(b) > weekEnd).sort(sortTasksByDate));
+    }, [blocks]);
 
     const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length + beyondWeekTasks.length;
 

@@ -4,13 +4,14 @@ import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
 import Navbar from "../../components/Navbar.jsx";
 // import AddTaskButton from "../../components/AddTaskButton.jsx";
-import useUser from "../../utils/useUser.js";
+import useUsername from "../../utils/useUsername.js";
 import { useEffect, useState } from "react";
 import { api } from "../../api.js";
 import '@schedule-x/theme-default/dist/index.css'
 import 'temporal-polyfill/global'
 import "./stylesheets/Calendar.css"
 import {useNavigate} from "react-router-dom";
+import formatDate from "../../utils/formatDate.js";
 
 import blockTypeIcon from "../../assets/CalendarEvent/block_type_icon.png"
 import calendarIcon from "../../assets/calendar_icon.png"
@@ -19,21 +20,9 @@ import locationIcon from "../../assets/CalendarEvent/location_icon.png"
 import timeIcon from "../../assets/CalendarEvent/time_icon.png"
 
 
-/**
- * Formats a date string from ISO format into British date format.
- *
- * @param {string} date - Date string in ISO format (e.g. "2026-02-19")
- * @returns {string} Formatted date string in British format (e.g. "19/02/2026")
- */
-const formatDate = (date) => {
-    const [year, month, day] = date.split("-");
-    return `${day}/${month}/${year}`;
-};
-
 function PreviewCalendar() {
     const [blocks, setBlocks] = useState(null);
     const [schedule, setSchedule] = useState(null);
-
 
 
     useEffect(() => {
@@ -57,12 +46,12 @@ function PreviewCalendar() {
                     
                     id: index,
                     title: value.name,
-                    start: Temporal.ZonedDateTime.from(`${value.date}T${(value.start_time || "00:00").slice(0, 5)}[${timezone}]`),
-                    end: Temporal.ZonedDateTime.from(`${value.date}T${(value.end_time || "23:59").slice(0, 5)}[${timezone}]`),
+                    start: Temporal.ZonedDateTime.from(`${value.date}T${(value.start_time).slice(0, 5)}[${timezone}]`),
+                    end: Temporal.ZonedDateTime.from(`${value.date}T${(value.end_time).slice(0, 5)}[${timezone}]`),
 
                     date: value.date,
-                    startTime: (value.start_time || "00:00").slice(0, 5),
-                    endTime: (value.end_time || "23:59").slice(0, 5),
+                    startTime: (value.start_time).slice(0, 5),
+                    endTime: (value.end_time).slice(0, 5),
                     location: value.location || "N/A",
                     description: value.description || "N/A"
 
@@ -88,7 +77,7 @@ function PreviewCalendar() {
 
 function CalendarView({ blocks, setBlocks, schedule }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
-    const username = useUser(true);
+    const username = useUsername(true);
     const nav = useNavigate();
 
     const calendar = useCalendarApp({
