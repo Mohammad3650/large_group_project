@@ -1,55 +1,208 @@
-* {
-    scrollbar-color: #e0e0e0 white;
-    scrollbar-width: thin;
-}
-
-body.dashboard-page {
-    display: block;
-    overflow: hidden;
-}
-
 .dashboard-content {
-    display: flex;
-    width: 100vw;
-    height: calc(100vh - 75px - 16px);
-    box-sizing: border-box;
-    padding: 0 32px 50px 32px;
-    justify-content: space-between;
-    align-items: stretch;
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 120px);
+  box-sizing: border-box;
+  gap: 24px;
+  align-items: stretch;
 }
 
 .no-tasks-message {
-    color: #acacac;
-    font-size: 2rem;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  color: var(--text-soft);
+  font-size: 2rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .task-section {
-    width: 58%;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    padding-right: 8px;
+  width: 58%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-right: 8px;
+}
+
+.notes-section {
+  width: 40%;
+  box-sizing: border-box;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.save-status {
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  font-weight: normal;
+}
+
+.save-status.error {
+  color: var(--danger);
+}
+
+.notes-section textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  resize: none;
+  padding: 12px;
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.add-task-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--surface-muted);
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  color: var(--text);
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-task-btn:hover {
+  background-color: var(--surface-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.day-section {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  color: var(--text);
+}
+
+.arrow {
+  font-size: 0.8rem;
+  transform: rotate(180deg);
+  transition: transform 0.2s;
+  color: var(--text-soft);
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  top: -3px;
+}
+
+.arrow.closed {
+  transform: rotate(90deg);
+}
+
+.overdue-title {
+  color: var(--danger);
+}
+
+.number-of-tasks {
+  color: var(--text-soft);
+}
+
+.task-item {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px !important;
+  margin-left: 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 1s;
+  opacity: 1;
+  width: calc(100% - 16px);
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.task-item .form-check-input {
+  flex-shrink: 0;
+  margin: 0 !important;
+  width: 1.2rem;
+  height: 1.2rem;
+  position: static !important;
+}
+
+.task-item * {
+  cursor: pointer;
+}
+
+.task-item .form-check-label {
+  flex: 1;
+  padding-left: 8px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  color: var(--text);
+}
+
+.task-item:hover {
+  background-color: var(--surface-muted);
+}
+
+.task-item.checked {
+  background-color: rgba(34, 197, 94, 0.15);
+}
+
+.task-item.fading {
+  opacity: 0;
+}
+
+.overdue-text {
+  color: var(--danger);
+}
+
+.task-datetime {
+  color: var(--info);
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
-    body.dashboard-page {
-        overflow: auto;
-    }
+  body.dashboard-page {
+    overflow: auto;
+  }
 
-    .dashboard-content {
-        flex-direction: column;
-        height: auto;
-        overflow-y: auto;
-        padding: 0 16px;
-    }
+  .dashboard-content {
+    flex-direction: column;
+    height: auto;
+    overflow-y: auto;
+  }
 
-    .task-section {
-        width: 100%;
-        max-height: none;
-        overflow-y: visible;
-    }
+  .task-section,
+  .notes-section {
+    width: 100%;
+  }
+
+  .task-section {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .notes-section {
+    min-width: 100%;
+    height: 40vh;
+    margin-top: 16px;
+  }
 }
