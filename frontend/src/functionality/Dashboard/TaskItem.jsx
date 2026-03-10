@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "./stylesheets/TaskItem.css";
+import dingSound from "../../assets/Dashboard/ding.mp3"
 
-const ding = new Audio("/ding.mp3");
+const ding = new Audio(dingSound);
 ding.volume = 0.3;
 ding.load();
 
