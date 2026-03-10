@@ -125,7 +125,7 @@ function Dashboard() {
                     <TaskGroup title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
                     <TaskGroup title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
                     <TaskGroup title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
-                    <TaskGroup title="Beyond 7 Days" tasks={beyondWeekTasks} setTasks={setBeyondWeekTasks}/>
+                    <TaskGroup title="After Next 7 Days" tasks={beyondWeekTasks} setTasks={setBeyondWeekTasks}/>
                 </div>
                 <NotesSection/>
             </div>

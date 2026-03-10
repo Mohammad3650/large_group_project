@@ -54,7 +54,7 @@ urlpatterns = [
     path(
         "api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"
     ),
-    path("api/notes/", get_note, name="api-get-note"),
+    path("api/notes/get", get_note, name="api-get-note"),
     path("api/notes/save/", save_note, name="api-save-note"),
     path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
     path("api/user/", UserDetailsView.as_view(), name="user-details"),
