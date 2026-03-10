@@ -5,8 +5,8 @@ import Navbar from "../../components/Navbar.jsx";
 import TaskGroup from "./TaskGroup.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
 import NotesSection from "./NotesSection.jsx";
-import "./stylesheets/Dashboard.css";
 import useTimeBlocks from "../../utils/useTimeBlocks.js";
+import "./stylesheets/Dashboard.css";
 
 
 /**
@@ -34,6 +34,8 @@ function Dashboard() {
     const nav = useNavigate();
     const [message, setMessage] = useState("Loading...");
     const [error, setError] = useState("");
+
+    const { blocks } = useTimeBlocks();
 
     const [overdueTasks, setOverdueTasks] = useState([]);
     const [todayTasks, setTodayTasks] = useState([]);
@@ -68,8 +70,6 @@ function Dashboard() {
         }
         fetchDashboard();
     }, [nav]);
-
-    const { blocks } = useTimeBlocks();
 
     useEffect(() => {
         if (blocks === null) return;

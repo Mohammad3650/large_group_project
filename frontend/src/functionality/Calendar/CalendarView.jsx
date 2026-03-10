@@ -3,8 +3,6 @@ import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
 import { useState } from "react";
-import {useNavigate} from "react-router-dom";
-import { api } from "../../api.js";
 import '@schedule-x/theme-default/dist/index.css'
 import 'temporal-polyfill/global'
 import "./stylesheets/Calendar.css"
@@ -14,15 +12,23 @@ import calendarIcon from "../../assets/calendar_icon.png"
 import descriptionIcon from "../../assets/CalendarEvent/description_icon.png"
 import locationIcon from "../../assets/CalendarEvent/location_icon.png"
 import timeIcon from "../../assets/CalendarEvent/time_icon.png"
-import formatDate from "../../utils/formatDate.js";
 import Navbar from "../../components/Navbar.jsx";
-import AddTaskButton from "../../components/AddTaskButton.jsx";
-import useUsername from "../../utils/useUsername.js";
+import deleteTimeBlock from "../../utils/deleteTimeBlock.js";
 
-function CalendarView({ blocks, setBlocks }) {
+
+/**
+ * Formats a date string from ISO format into British date format.
+ *
+ * @param {string} date - Date string in ISO format (e.g. "2026-02-19")
+ * @returns {string} Formatted date string in British format (e.g. "19/02/2026")
+ */
+const formatDate = (date) => {
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+};
+
+function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
-    const username = useUsername(true);
-    const nav = useNavigate();
 
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],
@@ -33,7 +39,7 @@ function CalendarView({ blocks, setBlocks }) {
 
     function handleDelete(id) {
         if (!confirm("Are you sure you want to delete this event?")) return;
-        api.delete(`/api/time-blocks/${id}/`)
+        deleteTimeBlock(id)
             .then(() => {
                 eventsService.remove(id);
                 setBlocks(b => b.filter(block => block.id !== id));
@@ -68,8 +74,7 @@ function CalendarView({ blocks, setBlocks }) {
                     </div>
                 </div>
                 <div className="buttons">
-                    <button className="button" onClick={() => nav(`/timeblocks/${calendarEvent.id}/edit`)}>Edit</button>
-                    <button className="button" onClick={() => handleDelete(calendarEvent.id)}>Delete</button>
+                    {eventButtons ? eventButtons(calendarEvent, handleDelete) : null}
                 </div>
             </div>
         )
@@ -79,8 +84,8 @@ function CalendarView({ blocks, setBlocks }) {
         <>
             <Navbar/>
             <div className="calendar-content">
-                <h1>Welcome to your calendar, {username}!</h1>
-                <AddTaskButton/>
+                <h1>{title}</h1>
+                {headerButtons}
                 <div className="actual-calendar sx-react-calendar-wrapper">
                     <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />
                 </div>
@@ -89,4 +94,4 @@ function CalendarView({ blocks, setBlocks }) {
     );
 }
 
-export default CalendarView
+export default CalendarView;
