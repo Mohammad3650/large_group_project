@@ -136,7 +136,11 @@ function Dashboard() {
                     <h1>{message}</h1>
                     <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
                         <AddTaskButton />
-                        <button type="button" onClick={handleExportCsv}>
+                        <button
+                            type="button"
+                            className="export-csv-button"
+                            onClick={handleExportCsv}
+                        >
                             Export CSV
                         </button>
                     </div>
