@@ -1,4 +1,4 @@
-import "./Card.css";
+import "./stylesheets/Card.css";
 
 function Card(props) {
   return (

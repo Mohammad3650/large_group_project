@@ -1,9 +1,9 @@
-import "./Features.css";
-import calendarImg from "./photos/calendar.png";
-import settingsImg from "./photos/settings-64.png";
-import balancedStudyImg from "./photos/balancedstudy.png";
-import checklistImg from "./photos/checklist-59.png";
-import timelineImg from "./photos/timeline-74.png";
+import "./stylesheets/Features.css";
+import calendarImg from "../../assets/LandingPage/calendar.png";
+import settingsImg from "../../assets/LandingPage/settings-64.png";
+import balancedStudyImg from "../../assets/LandingPage/balancedstudy.png";
+import checklistImg from "../../assets/LandingPage/checklist-59.png";
+import timelineImg from "../../assets/LandingPage/timeline-74.png";
 
 function Features() {
   return (

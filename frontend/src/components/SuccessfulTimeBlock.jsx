@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import "./SuccessPageStyle.css";
-import tickImage from "../functionality/LandingPage/photos/tick.png";
-import NavBar from "../functionality/LandingPage/Navbar";
+import "./stylesheets/SuccessfulTimeBlock.css";
+import tickImage from "../assets/TimeBlock/tick.png";
+import NavBar from "./Navbar.jsx";
 
 
 

@@ -31,7 +31,7 @@ from scheduler.views.save_plan_view import SaveWeeklyPlanView
 from scheduler.views.change_password_view import change_password
 from scheduler.views.delete_user_view import delete_user
 
-from scheduler.views.user_auth import (
+from scheduler.views.user_auth_view import (
     UserRegistrationView,
     UserDetailsView,
     DashboardView,

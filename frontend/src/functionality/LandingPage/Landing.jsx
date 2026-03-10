@@ -1,9 +1,9 @@
-import Navbar from "./Navbar.jsx";
+import Navbar from "../../components/Navbar.jsx";
 import Hero from "./Hero";
 import Card from "./Card";
 import Features from "./Features";
 
-import "./Landing.css";
+import "./stylesheets/Landing.css";
 
 
 function Landing() {
