@@ -52,7 +52,7 @@ class ScheduleService:
 
         if not parsed.unscheduled:
              week_start = validated_data["week_start"]
-             return self.builder.build([], week_start=week_start)
+             return self.builder.build([], scheduled=[], week_start=week_start)
         
         time_blocks = self.fetch_scheduled_time_blocks(parsed.week_start, parsed.week_end, user)
         scheduled = self.extract_scheduled_mins(time_blocks, parsed.week_start)
@@ -64,6 +64,6 @@ class ScheduleService:
         engine.overlapConstraints()
         engine.applyConstraints()
 
-        solutions: List[Tuple[int, int, int, str]] = engine.solve()
+        solutions: List[Tuple[int, int, int, str, str, str, str]] = engine.solve()
         week_start = parsed.week_start
         return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start)

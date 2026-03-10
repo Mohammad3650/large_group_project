@@ -79,10 +79,29 @@ class UnscheduledSerializer(serializers.Serializer):
         },
     )
     location = serializers.CharField(
-        allow_blank=False,
+        allow_blank=True,
+        default="",
         error_messages={
             "required": "Location must be provided.",
             "blank": "Location must be provided.",
+        },
+    )
+
+    block_type = serializers.ChoiceField(
+        choices=["sleep", "study", "lecture", "lab", "tutorial", "commute", "exercise", "break", "work", "extracurricular"],
+        default="study",
+        error_messages={
+            "required": "Block type must be provided.",
+            "invalid_choice": "Block type must be one of sleep, study, lecture, lab, tutorial, commute, exercise, break, work, or extracurricular.",
+        },
+    )
+
+    description = serializers.CharField(
+        allow_blank=True, 
+        default="",
+        error_messages={
+            "required": "Description must be provided.",
+            "blank": "Description must be provided.",
         },
     )
 

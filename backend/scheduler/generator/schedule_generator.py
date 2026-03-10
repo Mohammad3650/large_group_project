@@ -89,6 +89,9 @@ class Scheduler:
             daily = ev[3]
             frequency = ev[2]
             preference = ev[4]
+            location = ev[5]
+            block_type = ev[6]
+            description = ev[7]
 
             if daily:
                 frequency = self.days
@@ -113,13 +116,13 @@ class Scheduler:
 
                 self.model.Add(sum(in_window) == 1)
 
-                self.newSessions.append((start, end, ev[0], ev[1]))
+                self.newSessions.append((start, end, ev[0], ev[1], location, block_type, description))
                 created.append(self.newSessions[-1])
                 
                 if preference == "Early":
-                    self.eventStartBiasConstrains((start, end, ev[0], ev[1]), 1)
+                    self.eventStartBiasConstrains((start, end, ev[0], ev[1], location, block_type, description), 1)
                 elif preference == "Late":
-                    self.objectives.append(self.eventStartBiasConstrains((start, end, ev[0], ev[1]), -1))
+                    self.objectives.append(self.eventStartBiasConstrains((start, end, ev[0], ev[1], location, block_type, description), -1))
             
             if daily:
                 self.reccurOncePerDayConstraint(created)
@@ -245,7 +248,7 @@ class Scheduler:
             print("No feasible schedule.")
             return []
         else:
-            return [(self.solver.Value(s), self.solver.Value(e), d, n) for (s, e, d, n) in self.newSessions]
+            return [ ( self.solver.Value(s), self.solver.Value(e), d, n, loc, bt, desc) for (s, e, d, n, loc, bt, desc) in self.newSessions ]
     
     def debugOutput(self):
         """Verbose output of newly created sessions"""
@@ -253,10 +256,10 @@ class Scheduler:
             print("Status -> None")
             return
 
-        for i, (start, end, duration, name) in enumerate(self.newSessions):
+        for i, (start, end, duration, name, location, block_type, description) in enumerate(self.newSessions):
             s = self.solver.Value(start)
             e = self.solver.Value(end)
-            print(f"Session {i+1} ; {name}: {s} - {e} ; {duration}")
+            print(f"Session {i+1} ; {name} @ {location} ({block_type}): {s} - {e} ; {duration}")
 
 #EXAMPLE USEAGE
 # days = 1

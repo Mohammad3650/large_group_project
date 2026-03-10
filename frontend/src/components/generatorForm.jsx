@@ -15,7 +15,9 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
         frequency: "",
         daily: false,
         start_time_preference: "None",
-        location: ""
+        location: "",
+        block_type: "study",
+        description: ""
     }])
 
     function addBlock() {
@@ -27,7 +29,9 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
             frequency: "",
             daily: false,
             start_time_preference: "None",
-            location: ""
+            location: "",
+            block_type: "study",
+            description: ""
         }
         ]);
         clearErrors();
@@ -209,6 +213,32 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                         }
                     />
 
+                    {serverErrors.unscheduled?.[index]?.block_type && <p className="error-text">{serverErrors.unscheduled[index].block_type[0]}</p>}
+                    <select
+                        value={block.block_type}
+                        onChange={(e) =>
+                        updateBlock(index, "block_type", e.target.value)
+                        }
+                    >
+                        <option value="sleep">Sleep</option>
+                        <option value="study">Study</option>
+                        <option value="lecture">Lecture</option>
+                        <option value="lab">Lab</option>
+                        <option value="tutorial">Tutorial</option>
+                        <option value="commute">Commute</option>
+                        <option value="exercise">Exercise</option>
+                        <option value="break">Break</option>
+                        <option value="work">Work</option>
+                        <option value="extracurricular">Extracurricular</option>
+                    </select>
+
+                    <textarea
+                        placeholder="Description (optional)"
+                        value={block.description}
+                        onChange={(e) => updateBlock(index, "description", e.target.value)}
+                        className="description-input"
+                    />
+
                     {blocks.length > 1 && (
                         <button
                             type="button"
@@ -239,21 +269,5 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
     )
 
 }
-{/* <select
-                        value={block.block_type}
-                        onChange={(e) =>
-                        updateBlock(index, "block_type", e.target.value)
-                        }
-                    >
-                        <option value="sleep">Sleep</option>
-                        <option value="study">Study</option>
-                        <option value="lecture">Lecture</option>
-                        <option value="lab">Lab</option>
-                        <option value="tutorial">Tutorial</option>
-                        <option value="commute">Commute</option>
-                        <option value="exercise">Exercise</option>
-                        <option value="break">Break</option>
-                        <option value="work">Work</option>
-                        <option value="extracurricular">Extracurricular</option>
-                    </select> */}
+
 export default GeneratorForm

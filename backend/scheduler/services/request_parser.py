@@ -11,7 +11,7 @@ class ParsedScheduleRequest:
     even_spread: bool
     include_scheduled: bool
     windows: List[Tuple[int, int, bool]]
-    unscheduled: List[Tuple[int, str, int, bool, str, str]] # unscheduled: (duration, name, frequency, daily, start_time_preference, location)
+    unscheduled: List[Tuple[int, str, int, bool, str, str, str, str]] # unscheduled: (duration, name, frequency, daily, start_time_preference, location, block_type, description)
 
 
 class ScheduleRequestParser:
@@ -57,7 +57,9 @@ class ScheduleRequestParser:
                 u.get("frequency", 1),
                 u["daily"],
                 u.get("start_time_preference", "None"),
-                u["location"],
+                u.get("location", ""),
+                u.get("block_type", "study"),
+                u.get("description", ""),
             )
             for u in validated.get("unscheduled", [])
         ]

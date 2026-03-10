@@ -57,6 +57,7 @@ function PreviewCalendar() {
                     startTime: (value.start_time || "00:00").slice(0, 5),
                     endTime: (value.end_time || "23:59").slice(0, 5),
                     location: value.location || "N/A",
+                    blockType: value.block_type || "N/A",
                     description: value.description || "N/A"
 
                 }))
