@@ -1,8 +1,8 @@
 .featuresmaincard {
-    padding: 100px 20px;
+    padding: 100px var(--space-xl);
     margin-top: 0px;
     border-bottom: 1px solid #e6e6ef;
-    background: #ffffff;
+    background: var(--bg-main);
 
     animation-name: text-appear;
     animation-duration: 9s;
@@ -39,14 +39,12 @@
 }
 
 
-.card
-{
-    padding: 30px 40px;
-    border-radius: 10px;
+.card {
+    padding: var(--space-2xl) 40px;
+    border-radius: var(--radius-lg);
     box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.06);
-    border: 1px solid hsl(0, 0%, 80%);
-    background: #f7f8fb;
-
+    border: 1px solid var(--border-soft);
+    background: var(--bg-feature);
     display: flex;
     flex-direction: column;
     cursor: pointer;

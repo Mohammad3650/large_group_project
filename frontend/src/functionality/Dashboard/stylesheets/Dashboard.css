@@ -1,5 +1,5 @@
 * {
-    scrollbar-color: #e0e0e0 white;
+    scrollbar-color: var(--bg-soft-hover) var(--bg-main);
     scrollbar-width: thin;
 }
 
@@ -19,7 +19,7 @@ body.dashboard-page {
 }
 
 .no-tasks-message {
-    color: #acacac;
+    color: var(--text-light);
     font-size: 2rem;
     flex: 1;
     display: flex;
