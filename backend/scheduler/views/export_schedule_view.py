@@ -35,8 +35,8 @@ def export_schedule_csv(request):
             block.day.date,
             block.name,
             block.block_type,
-            block.start_time if block.start_time else "",
-            block.end_time if block.end_time else "",
+            str(block.start_time) if block.start_time else "",
+            str(block.end_time) if block.end_time else "",
             block.location,
             block.description,
         ])
