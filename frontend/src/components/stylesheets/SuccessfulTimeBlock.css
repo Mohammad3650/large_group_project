@@ -1,75 +1,81 @@
-.success-page {
-  width: 100%;
+.go-dashboard-btn{
+    background-color: darkgreen;
+    color: aliceblue;
+    border-radius: 10px;
 }
 
-.success-card {
-  padding: 50px 60px;
-  text-align: center;
-  max-width: 500px;
-  width: 90%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+.go-dashboard-btn:hover{
+    transform: translateY(-6px); 
+    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+
+}
+
+.go-calendar-btn{
+    background-color: red;
+    color: aliceblue;
+    border-radius: 10px;
+}
+
+.go-calendar-btn:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+
+}
+
+.go-timeblock-btn{
+    background-color: cornflowerblue;
+    color: aliceblue;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.go-timeblock-btn:hover{
+    transform: translateY(-6px); 
+    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+}
+
+
+.edit-timeblock-btn{
+    background-color: black;
+    color: aliceblue;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.edit-timeblock-btn:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+}
+
+
+.success-btns {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
 }
 
 .success-text {
-  font-weight: bold;
-  text-align: center;
-  color: var(--text);
+    font-weight: bold;
+    text-align: center;
 }
 
-.success-btns {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
+.success-page {
+    min-height: fit-content;
+    width: 100vw;              
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+    overflow-y: auto;
 }
 
-.go-dashboard-btn,
-.go-calendar-btn,
-.go-timeblock-btn,
-.edit-timeblock-btn {
-  padding: 10px 16px;
-  border-radius: var(--radius-sm);
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.go-dashboard-btn {
-  background-color: var(--success);
-}
-
-.go-dashboard-btn:hover {
-  background-color: var(--success-hover);
-  box-shadow: var(--shadow-sm);
-}
-
-.go-calendar-btn {
-  background-color: var(--danger);
-}
-
-.go-calendar-btn:hover {
-  background-color: var(--danger-hover);
-  box-shadow: var(--shadow-sm);
-}
-
-.go-timeblock-btn {
-  background-color: var(--info);
-}
-
-.go-timeblock-btn:hover {
-  background-color: var(--info-hover);
-  box-shadow: var(--shadow-sm);
-}
-
-.edit-timeblock-btn {
-  background-color: #111827;
-}
-
-.edit-timeblock-btn:hover {
-  background-color: #1f2937;
-  box-shadow: var(--shadow-sm);
+.success-card {
+    background: white;
+    padding: 50px 60px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
 }
