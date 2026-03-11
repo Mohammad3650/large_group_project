@@ -10,21 +10,6 @@ class ScheduleResponseBuilder:
     """
     Converts solver output (start_min, end_min, duration, name)
     into the same structure expected by the SaveWeeklyPlan endpoint.
-
-    Output format:
-    {
-      "week_start": "YYYY-MM-DD",
-      "events": [
-        {
-          "date": "YYYY-MM-DD",
-          "start_time": "HH:MM:SS",
-          "end_time": "HH:MM:SS",
-          "block_type": "study|lecture|lab|tutorial|...",
-          "location": "",
-          "is_fixed": False
-        }
-      ]
-    }
     """
 
     def build( self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled ,week_start: str, ) -> Dict[str, Any]:

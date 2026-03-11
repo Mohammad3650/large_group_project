@@ -5,7 +5,6 @@ from scheduler.services.response_builder import ScheduleResponseBuilder
 from scheduler.services.schedule_generator import Scheduler
 
 from scheduler.models import TimeBlock
-from datetime import datetime, timedelta
 
 from django.db.models import F
 

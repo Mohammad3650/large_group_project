@@ -33,14 +33,13 @@ class ScheduleRequestParser:
                 new_windows.append({"start_min": start, "end_min": end, "daily": daily})
                 
             else:
-                new_windows.append({"start_min": 1, "end_min": end, "daily": daily})
+                new_windows.append({"start_min": 0, "end_min": end, "daily": daily})
                 new_windows.append({"start_min": start, "end_min": 1440, "daily": daily})
         
         return new_windows
 
 
     def parse(self, validated: Dict[str, Any]) -> ParsedScheduleRequest:
-        print("validated: ", validated)
         week_start = validated["week_start"]   # datetime.date
         week_end = validated["week_end"]       # datetime.date
         days = validated["days"]

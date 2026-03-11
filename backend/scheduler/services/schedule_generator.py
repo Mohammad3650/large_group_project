@@ -112,7 +112,7 @@ class Scheduler:
                 created.append(self.newSessions[-1])
                 
                 if preference == "Early":
-                    self.eventStartBiasConstrains((start, end, ev[0], ev[1], location, block_type, description), 1)
+                    self.objectives.append(self.eventStartBiasConstrains((start, end, ev[0], ev[1], location, block_type, description), 1))
                 elif preference == "Late":
                     self.objectives.append(self.eventStartBiasConstrains((start, end, ev[0], ev[1], location, block_type, description), -1))
             
@@ -236,7 +236,6 @@ class Scheduler:
         self._startSolver()
 
         if self.status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-            print("No feasible schedule.")
             return []
         else:
             return [ ( self.solver.Value(s), self.solver.Value(e), d, n, loc, bt, desc) for (s, e, d, n, loc, bt, desc) in self.newSessions ]
