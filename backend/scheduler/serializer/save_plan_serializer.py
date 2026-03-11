@@ -8,8 +8,8 @@ from scheduler.models import DayPlan, TimeBlock
 class SaveTimeBlockSerializer(serializers.Serializer):
     # Accept either (date + times) or (start_datetime/end_datetime)
     date = serializers.DateField(
-    required=False,
-    input_formats=["%Y-%m-%d", "%d/%m/%Y"]
+        required=False,
+        input_formats=["%Y-%m-%d", "%d/%m/%Y"]
     )
     name = serializers.CharField()
     start_time = serializers.TimeField(required=False)
@@ -37,4 +37,4 @@ class SaveTimeBlockSerializer(serializers.Serializer):
 class SaveWeeklyPlanSerializer(serializers.Serializer):
     # Monday of the week
     week_start = serializers.DateField(input_formats=["%Y-%m-%d", "%d/%m/%Y"])
-    events = SaveTimeBlockSerializer(many=True)
+    events = SaveTimeBlockSerializer(many=True, allow_empty=False)
