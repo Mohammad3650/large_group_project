@@ -18,14 +18,14 @@
 
 .profile-form-row label {
     font-weight: 600;
-    color: #333;
+    color: var(--text-dark);
 }
 
 .profile-form-row input {
     width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #cfcfcf;
-    border-radius: 6px;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-sm);
     font-size: 0.95rem;
     box-sizing: border-box;
 }
@@ -38,11 +38,11 @@
 }
 
 .delete-account-button {
-    background: red;
-    color: white;
+    background: var(--danger);
+    color: var(--text-white);
     border: none;
-    padding: 10px 14px;
-    border-radius: 6px;
+    padding: var(--space-md) 14px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
 }
 

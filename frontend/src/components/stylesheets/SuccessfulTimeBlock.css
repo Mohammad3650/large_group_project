@@ -1,58 +1,52 @@
-.go-dashboard-btn{
-    background-color: darkgreen;
-    color: aliceblue;
-    border-radius: 10px;
+.go-dashboard-btn {
+    background-color: var(--success);
+    color: var(--text-white);
+    border-radius: var(--radius-lg);
 }
 
-.go-dashboard-btn:hover{
-    transform: translateY(-6px); 
-    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
-
+.go-dashboard-btn:hover {
+    box-shadow: var(--shadow-xl);
 }
 
-.go-calendar-btn{
-    background-color: red;
-    color: aliceblue;
-    border-radius: 10px;
+.go-calendar-btn {
+    background-color: var(--danger);
+    color: var(--text-white);
+    border-radius: var(--radius-lg);
 }
 
-.go-calendar-btn:hover{
-    transform: translateY(-6px);
-    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
-
+.go-calendar-btn:hover {
+    box-shadow: var(--shadow-xl);
 }
 
-.go-timeblock-btn{
+.go-timeblock-btn {
     background-color: cornflowerblue;
-    color: aliceblue;
-    padding: 10px;
-    border-radius: 10px;
+    color: var(--text-white);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
 }
 
-.go-timeblock-btn:hover{
-    transform: translateY(-6px); 
-    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+.go-timeblock-btn:hover {
+    box-shadow: var(--shadow-xl);
 }
 
-
-.edit-timeblock-btn{
+.edit-timeblock-btn {
     background-color: black;
-    color: aliceblue;
-    padding: 10px;
-    border-radius: 10px;
+    color: var(--text-white);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
 }
 
-.edit-timeblock-btn:hover{
-    transform: translateY(-6px);
-    box-shadow: 0 12px 25px hsla(0, 0%, 0%, 0.12);
+.edit-timeblock-btn:hover {
+    box-shadow: var(--shadow-xl);
 }
-
 
 .success-btns {
-    margin-top: 30px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 30px;
+    gap: 16px;
+    margin-top: 10px;
+    min-width: 150px;
 }
 
 .success-text {
@@ -61,21 +55,28 @@
 }
 
 .success-page {
-    min-height: fit-content;
-    width: 100vw;              
+    min-height: 90vh;
+    width: 100vw;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     padding: 40px 16px;
-    overflow-y: auto;
 }
 
+
 .success-card {
-    background: white;
-    padding: 50px 60px;
-    border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    background: var(--bg-main);
+    padding: 60px 80px;
+    border-radius: var(--radius-xl);
     text-align: center;
-    max-width: 500px;
+    max-width: 1000px;
     width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+.tick-image {
+    margin: 10px 0 5px 0;
 }

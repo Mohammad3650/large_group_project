@@ -1,5 +1,5 @@
 * {
-    scrollbar-color: #e0e0e0 white;
+    scrollbar-color: var(--bg-soft-hover) var(--bg-main);
     scrollbar-width: thin;
 }
 
@@ -19,7 +19,7 @@ body.dashboard-page {
 }
 
 .no-tasks-message {
-    color: #acacac;
+    color: var(--text-light);
     font-size: 2rem;
     flex: 1;
     display: flex;
@@ -33,6 +33,17 @@ body.dashboard-page {
     display: flex;
     flex-direction: column;
     padding-right: 8px;
+}
+
+.export-csv-button {
+    padding: 6px 18px;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+}
+
+.export-csv-button:hover {
+    background: var(--bg-);
+    box-shadow: var(--shadow-sm);
 }
 
 @media (max-width: 768px) {

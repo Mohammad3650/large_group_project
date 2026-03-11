@@ -14,22 +14,22 @@
 
 .save-status {
     font-size: 0.8rem;
-    color: #acacac;
+    color: var(--text-light);
     font-weight: normal;
 }
 
 .save-status.error {
-    color: #e74c3c;
+    color: var(--danger-soft);
 }
 
 .notes-section textarea {
     width: 100%;
     height: 100%;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     box-sizing: border-box;
     resize: none;
-    padding: 8px;
-    background-color: #f4f4f4;
+    padding: var(--space-sm);
+    background-color: var(--bg-soft);
     color: black;
     border: none;
 }
