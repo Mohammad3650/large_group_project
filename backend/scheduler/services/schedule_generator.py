@@ -2,13 +2,6 @@ from ortools.sat.python import cp_model
 from typing import List, Tuple
 from scheduler.services.request_parser import ParsedScheduleRequest
 
-# TODO: Fetch scheduled events from database - DONE
-# TODO: convert scheduled events into absolute minutes - DONE
-# TODO: use data from request param to apply constraints - DONE
-# TODO: Convert absolute minutes outputs into datetime objects - DONE
-# TODO: Update debugoutput method
-# TODO: Rewrite response builder. - DONE
-# TODO: Connect api to form (new or old)
 
 
 class Scheduler:
@@ -142,7 +135,7 @@ class Scheduler:
 
         # Get day number for each unscheduled event
         day_idxs = []
-        for (start, _, _, name) in self.newSessions:
+        for (start, _, _, name, _, _, _) in self.newSessions:
             day_idx = self.model.NewIntVar(0, self.days - 1, f"{name}_day_idx")
             self.model.AddDivisionEquality(day_idx, start, DAY_MINS)
             day_idxs.append(day_idx)
@@ -175,7 +168,6 @@ class Scheduler:
         self.model.AddMaxEquality(max_count, counts)
         self.model.AddMinEquality(min_count, counts)
 
-        # TODO: combine objectives
         return (max_count - min_count)    
 
     def reccurOncePerDayConstraint(self, recurringEvents):
@@ -189,7 +181,7 @@ class Scheduler:
 
         # Get day number for each unscheduled event
         day_idxs = []
-        for (start, _, _, name) in recurringEvents:
+        for (start, _, _, name, _, _, _) in recurringEvents:
             day_idx = self.model.NewIntVar(0, self.days - 1, f"{name}_day_idx")
             self.model.AddDivisionEquality(day_idx, start, DAY_MINS)
             day_idxs.append(day_idx)

@@ -33,9 +33,6 @@ class ScheduleResponseBuilder:
             date_s, start_time = self._abs_min_to_date_time(week_start, start)
             date_e, end_time = self._abs_min_to_date_time(week_start, end)
 
-            # Sanity: if solver somehow crosses midnight, keep end_date separate
-            # Save serializer likely expects a single "date" per event though.
-            # Keep the start date; if end spills over, still send end_time.
             if not block_type:
                 block_type = self._guess_block_type(name)
 
