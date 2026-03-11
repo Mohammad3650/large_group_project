@@ -35,6 +35,17 @@ body.dashboard-page {
     padding-right: 8px;
 }
 
+.export-csv-button {
+    padding: 6px 18px;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+}
+
+.export-csv-button:hover {
+    background: var(--bg-);
+    box-shadow: var(--shadow-sm);
+}
+
 @media (max-width: 768px) {
     body.dashboard-page {
         overflow: auto;
@@ -51,17 +62,5 @@ body.dashboard-page {
         width: 100%;
         max-height: none;
         overflow-y: visible;
-    }
-
-    .export-csv-button {
-    padding: 6px 12px;
-    border: 1px solid #d0d0d0;
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
-    }
-
-    .export-csv-button:hover {
-    background: #f5f5f5;
     }
 }

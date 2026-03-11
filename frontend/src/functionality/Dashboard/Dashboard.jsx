@@ -138,7 +138,7 @@ function Dashboard() {
                         <AddTaskButton />
                         <button
                             type="button"
-                            className="export-csv-button"
+                            className="btn btn-primary export-csv-button"
                             onClick={handleExportCsv}
                         >
                             Export CSV

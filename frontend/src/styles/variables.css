@@ -32,6 +32,9 @@
   --blue: #2563eb;
   --link-blue: #4a90d9;
 
+  --bootstrap-secondary: #6c757d;
+  --bootstrap-secondary-hover: #5c636a;
+
   /* radii */
   --radius-sm: 6px;
   --radius-md: 8px;
