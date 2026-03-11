@@ -8,7 +8,7 @@ import { api } from "../api.js";
  * @param {boolean} isLoggedIn - Whether the user is currently authenticated
  * @returns {string} The username of the currently logged-in user, or an empty string if not yet loaded
  */
-function useUser(isLoggedIn) {
+function useUsername(isLoggedIn) {
     const [username, setUsername] = useState("");
 
     useEffect(() => {
@@ -27,4 +27,4 @@ function useUser(isLoggedIn) {
     return username;
 }
 
-export default useUser;
+export default useUsername;

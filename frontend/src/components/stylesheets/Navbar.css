@@ -104,3 +104,9 @@
     color: var(--text-main);
     background-color: #f7f7f7;
 }
+
+@media (max-width: 768px) {
+    .navbar-link span {
+        display: none;
+    }
+}
