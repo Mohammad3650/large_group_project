@@ -7,6 +7,7 @@ import AddTaskButton from "../../components/AddTaskButton.jsx";
 import NotesSection from "./NotesSection.jsx";
 import useTimeBlocks from "../../utils/useTimeBlocks.js";
 import "./stylesheets/Dashboard.css";
+import handleExportCsv from "../../utils/handleExportCsv.js";
 
 
 /**
@@ -35,13 +36,13 @@ function Dashboard() {
     const [message, setMessage] = useState("Loading...");
     const [error, setError] = useState("");
 
-    const { blocks } = useTimeBlocks();
-
     const [overdueTasks, setOverdueTasks] = useState([]);
     const [todayTasks, setTodayTasks] = useState([]);
     const [tomorrowTasks, setTomorrowTasks] = useState([]);
     const [weekTasks, setWeekTasks] = useState([]);
     const [beyondWeekTasks, setBeyondWeekTasks] = useState([]);
+
+    const { blocks } = useTimeBlocks();
 
     useEffect(() => {
         document.body.classList.add("dashboard-page");
@@ -89,26 +90,7 @@ function Dashboard() {
         setBeyondWeekTasks(blocks.filter(b => getDate(b) > weekEnd).sort(sortTasksByDate));
     }, [blocks]);
 
-async function handleExportCsv() {
-    try {
-        const response = await api.get("/api/time-blocks/export/csv/", {
-            responseType: "blob",
-        });
-
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "studysync_schedule.csv");
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(url);
-    } catch (err) {
-        setError("Failed to export CSV");
-    }
-}
     const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length + beyondWeekTasks.length;
-
 
     if (error) return <p>{error}</p>;
 
@@ -123,7 +105,7 @@ async function handleExportCsv() {
                         <button
                             type="button"
                             className="btn btn-primary export-csv-button"
-                            onClick={handleExportCsv}
+                            onClick={() => handleExportCsv(setError)}
                         >
                             Export CSV
                         </button>
