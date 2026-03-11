@@ -103,7 +103,26 @@ function Dashboard() {
             }
         }
         fetchTimeBlocks();
-    }, []);
+    }, [nav]);
+
+    async function handleExportCsv() {
+    try {
+        const response = await api.get("/api/time-blocks/export/csv/", {
+            responseType: "blob",
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "studysync_schedule.csv");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (err) {
+        setError("Failed to export CSV");
+    }
+}
 
     const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length;
 
@@ -115,7 +134,16 @@ function Dashboard() {
             <div className="dashboard-content">
                 <div className="task-section">
                     <h1>{message}</h1>
-                    <AddTaskButton/>
+                    <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
+                        <AddTaskButton />
+                        <button
+                            type="button"
+                            className="export-csv-button"
+                            onClick={handleExportCsv}
+                        >
+                            Export CSV
+                        </button>
+                    </div>
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks for the next week!</p>
                     )}
