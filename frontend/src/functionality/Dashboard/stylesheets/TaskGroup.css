@@ -10,7 +10,7 @@
     font-size: 0.8rem;
     transform: rotate(180deg);
     transition: transform 0.2s;
-    color: #acacac;
+    color: var(--text-light);
     display: inline-block;
     vertical-align: middle;
     position: relative;
@@ -22,9 +22,9 @@
 }
 
 .overdue-title {
-    color: #e74c3c;
+    color: var(--danger-soft);
 }
 
 .number-of-tasks {
-    color: #acacac;
+    color: var(--text-light);
 }

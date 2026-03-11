@@ -1,52 +1,38 @@
 .card1 {
     margin-top: 20px;
-    /* overflow: hidden; */
     display: inline-block;
-
-
-
 }
 
-
-
 .card2 {
-    padding: 30px 40px;
-    border-radius: 10px;
-    box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
-    border: 1px solid hsl(0, 0%, 80%);
-    margin: 20px;
+    padding: var(--space-2xl) 40px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-soft);
+    margin: var(--space-xl);
     height: 200px;
     gap: 24px;
-
     overflow: visible;
     display: inline-block;
     width: 500px;
-
     align-items: center;
     display: flex;
-
-    justify-content: flex-start ;
-
+    justify-content: flex-start;
 }
 
 
-.title
-{
+.title {
     font-family: Arial, sans-serif;
     margin: 0;
-    color: hsl(0, 0%, 20%);
+    color: var(--text-dark);
     font-size: large;
-    /* font-size: 2px; */
-    
 }
 
 .text {
     font-family: Arial, sans-serif;
     margin: 0;
-    color: hsl(0, 0%, 20%);
+    color: var(--text-dark);
     font-size: 18px;
     line-height: 1;
-    
 }
 
 
