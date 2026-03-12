@@ -63,4 +63,30 @@ body.dashboard-page {
         max-height: none;
         overflow-y: visible;
     }
+
+        .dashboard-header-actions {
+        position: relative;
+    }
+
+    .export-buttons {
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: flex;
+        gap: 10px;
+    }
+
+    .export-csv-button {
+        padding: 6px 18px;
+        border-radius: var(--radius-lg);
+        font-size: 0.9rem;
+        background: var(--bg-soft);
+        border: none;
+        cursor: pointer;
+    }
+
+    .export-csv-button:hover {
+        background: var(--bg-soft-hover);
+        box-shadow: var(--shadow-sm);
+    }
 }
