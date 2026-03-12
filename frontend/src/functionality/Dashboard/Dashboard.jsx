@@ -90,6 +90,26 @@ function Dashboard() {
         setBeyondWeekTasks(blocks.filter(b => getDate(b) > weekEnd).sort(sortTasksByDate));
     }, [blocks]);
 
+
+    async function handleExportIcs() {
+        try {
+            const response = await api.get("/api/time-blocks/export/ics/", {
+                responseType: "blob",
+            });
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "studysync_schedule.ics");
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            setError("Failed to export ICS");
+        }
+    }
+
     const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length + beyondWeekTasks.length;
 
     if (error) return <p>{error}</p>;
@@ -100,15 +120,27 @@ function Dashboard() {
             <div className="dashboard-content">
                 <div className="task-section">
                     <h1>{message}</h1>
-                    <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
+
+                    <div className="dashboard-header-actions">
                         <AddTaskButton />
-                        <button
-                            type="button"
-                            className="btn btn-primary export-csv-button"
-                            onClick={() => handleExportCsv(setError)}
-                        >
-                            Export CSV
-                        </button>
+
+                        <div className="export-buttons">
+                            <button
+                                type="button"
+                                className="export-csv-button"
+                                onClick={handleExportCsv}
+                            >
+                                Export CSV
+                            </button>
+
+                            <button
+                                type="button"
+                                className="export-csv-button"
+                                onClick={handleExportIcs}
+                            >
+                                Export ICS
+                            </button>
+                        </div>
                     </div>
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
