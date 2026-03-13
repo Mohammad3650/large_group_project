@@ -35,15 +35,36 @@ body.dashboard-page {
     padding-right: 8px;
 }
 
+.dashboard-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: var(--space-md);
+}
+
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
 .export-csv-button {
     padding: 6px 18px;
     border-radius: var(--radius-lg);
     font-size: 0.9rem;
+    background: var(--blue);
+    color: var(--text-white);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .export-csv-button:hover {
-    background: var(--bg-);
-    box-shadow: var(--shadow-sm);
+    background: var(--link-blue);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
@@ -62,5 +83,15 @@ body.dashboard-page {
         width: 100%;
         max-height: none;
         overflow-y: visible;
+    }
+
+    .dashboard-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .export-buttons {
+        justify-content: flex-end;
+        flex-wrap: wrap;
     }
 }
