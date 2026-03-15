@@ -6,26 +6,13 @@ from ..models import TimeBlock
 from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
 
-@api_view(["GET", "PATCH"])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_schedule(request):
     time_blocks = TimeBlock.objects.filter(day__user=request.user).select_related("day")
+    serializer = TimeBlockSerializer(time_blocks, many=True)
 
-    data = [
-        {
-            "id": block.id,
-            "name": block.name,
-            "date": str(block.day.date),
-            "start_time": str(block.start_time) if block.start_time else None,
-            "end_time": str(block.end_time) if block.end_time else None,
-            "block_type": block.block_type,
-            "description": block.description,
-            "location": block.location,
-        }
-        for block in time_blocks
-    ]
-
-    return Response(data)
+    return Response(serializer.data)
 
 
 @api_view(["GET", "PATCH"])
@@ -40,10 +27,9 @@ def edit_timeblock(request, id):
         data["date"] = str(block.day.date)
         return Response(data)
 
-    elif request.method == "PATCH":
-        serializer = TimeBlockSerializer(block, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+    serializer = TimeBlockSerializer(block, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
 
-        return Response(serializer.errors, status=400)
+    return Response(serializer.errors, status=400)

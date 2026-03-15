@@ -8,16 +8,22 @@ from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
 
 def validate_timeblock_payload(request):
-    serializer = TimeBlockSerializer(data=request.data)
+    # Pass data without 'date' to the serializer(as that is the timeblock data)
+
+    block_data = {k: v for k, v in request.data.items() if k != "date"}
+
+    serializer = TimeBlockSerializer(data=block_data)
     serializer.is_valid(raise_exception=True)
     return serializer.validated_data
 
-    # for testing
-    # serializer = TimeBlockSerializer(data=request.data)
-    # if not serializer.is_valid():
-    #     print("SERIALIZER ERRORS:", serializer.errors)
-    #     raise serializers.ValidationError(serializer.errors)
-    # return serializer.validated_data
+
+def validate_date(request):
+    date = request.data.get("date")
+
+    if not date:
+        raise serializers.ValidationError({"date": ["Date must be provided."]})
+
+    return date
 
 
 def get_or_create_dayplan(user, date):
@@ -55,18 +61,9 @@ def timeblock_response_payload(dayplan, time_block):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_schedule(request):
-    date = request.data.get("date")
-    if not date:
-        return Response({"date": ["Date must be provided."]}, status=400)
+    date = validate_date(request)
 
-    # Pass data without 'date' to the serializer
-    block_data = {k: v for k, v in request.data.items() if k != "date"}
-
-    serializer = TimeBlockSerializer(data=block_data)
-    if not serializer.is_valid():
-        return Response(serializer.errors, status=400)
-
-    data = serializer.validated_data
+    data = validate_timeblock_payload(request)
     dayplan = get_or_create_dayplan(request.user, date)
     time_block = create_timeblock(dayplan, data)
 
