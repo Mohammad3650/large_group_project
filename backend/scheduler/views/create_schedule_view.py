@@ -46,6 +46,16 @@ def create_timeblock(dayplan, data):
 
 
 def timeblock_response_payload(dayplan, time_block):
+    """
+    Generate a standardized response payload for a TimeBlock.
+
+    Args:
+        dayplan (DayPlan): The parent DayPlan of the time block.
+        time_block (TimeBlock): The TimeBlock instance to serialize.
+
+    Returns:
+        dict: Serialized time block data including its ID and associated date.
+    """
     return {
         "id": time_block.id,
         "date": str(dayplan.date),
@@ -61,6 +71,23 @@ def timeblock_response_payload(dayplan, time_block):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_schedule(request):
+    """
+    Create a new schedule entry (TimeBlock) for the authenticated user.
+
+    This endpoint validates the request payload, ensures a DayPlan exists for the given date,
+    creates a TimeBlock, and returns a standardized response payload.
+
+    Args:
+        request (Request): DRF Request object containing the schedule payload.
+
+    Returns:
+        Response: DRF Response containing:
+            - status 201 CREATED
+            - JSON payload of the newly created time block (via timeblock_response_payload)
+
+    Raises:
+        serializers.ValidationError: If the payload is invalid or missing required fields.
+    """
     date = validate_date(request)
 
     data = validate_timeblock_payload(request)
