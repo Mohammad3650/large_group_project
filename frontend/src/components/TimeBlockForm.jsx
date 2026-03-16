@@ -2,6 +2,16 @@ import { useState, useEffect } from "react";
 import "./stylesheets/TimeBlockForm.css";
 
 
+/**
+ * TimeBlockForm
+ * Handles creation and editing of multiple time blocks for a schedule.
+ * Props:
+ * - onSubmit: function to submit data to parent component
+ * - loading: boolean indicating if server call is in progress
+ * - serverErrors: array of server validation errors per block
+ * - clearErrors: function to clear server errors
+ * - initialData: optional object for editing an existing block
+ */
 function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialData=null }) {
 
   const [date, setDate] = useState(initialData?.date || "");

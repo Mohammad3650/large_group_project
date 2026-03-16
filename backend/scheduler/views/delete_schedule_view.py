@@ -8,6 +8,17 @@ from ..models import TimeBlock
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def delete_schedule(request, block_id):
+    """
+    Delete a time block for the authenticated user.
+
+    Args:
+        request: DRF Request object.
+        block_id: ID of the TimeBlock to delete.
+
+    Returns:
+        204 NO CONTENT if successful.
+        404 NOT FOUND if the block does not exist or does not belong to the user.
+    """
     try:
         block = TimeBlock.objects.get(id=block_id, day__user=request.user)
         block.delete()
