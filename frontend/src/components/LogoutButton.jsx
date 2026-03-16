@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { logout } from "../utils/handleLocalStorage";
-import "./LogoutButton.css"
+import "./stylesheets/LogoutButton.css"
 
 function LogoutButton() {
     const nav = useNavigate();

@@ -1,5 +1,5 @@
 from django.db import models
-from .users import User
+from .User import User
 
 
 class DayPlan(models.Model):

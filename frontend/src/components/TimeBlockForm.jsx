@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./TimeBlockForm.css";
+import "./stylesheets/TimeBlockForm.css";
 
 
 function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialData=null }) {
@@ -107,7 +107,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
 
 
       {blocks.map((block, index) => (
-        <div key={index} className="time-block-section">
+        <div key={index} className="time-block-section app-card">
 
           {serverErrors[index]?.name && <p className="error-text">{serverErrors[index].name[0]}</p>}
           <input

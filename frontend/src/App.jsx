@@ -1,18 +1,20 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./functionality/authentication/Login";
-import Signup from "./functionality/authentication/Signup"
-import EditProfile from "./components/EditProfile.jsx";
+import Login from "./functionality/Authentication/Login";
+import Signup from "./functionality/Authentication/Signup"
+import EditProfile from "./functionality/UserProfile/EditProfile.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./functionality/authentication/Dashboard";
+import Dashboard from "./functionality/Dashboard/Dashboard.jsx";
 import Landing from "./functionality/LandingPage/Landing.jsx";
-import Calendar from "./functionality/CalendarView/Calendar.jsx";
-import PreviewCalendar from "./functionality/CalendarView/PreviewCalendar.jsx";
-import ChangePassword from "./components/ChangePassword";
-import CreateSchedule from "./functionality/authentication/CreateSchedule";
+import Calendar from "./functionality/Calendar/Calendar.jsx";
+import PreviewCalendar from "./functionality/Calendar/PreviewCalendar.jsx";
+import ChangePassword from "./functionality/UserProfile/ChangePassword.jsx";
+import CreateSchedule from "./functionality/Authentication/CreateSchedule";
 import { setAuthToken } from "./api";
 import SuccessfulTimeBlock from "./components/SuccessfulTimeBlock.jsx";
 import EditTimeBlock from "./components/EditTimeBlock";
+import "./styles/variables.css"
+
 
 
 function App() {
@@ -75,7 +77,7 @@ function App() {
       />
       <Route path="/change-password" element={
       <ProtectedRoute>
-      <ChangePassword/>
+        <ChangePassword/>
       </ProtectedRoute>
       }/>
     </Routes>

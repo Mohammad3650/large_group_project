@@ -30,8 +30,10 @@ from scheduler.views.note_view import get_note, save_note
 from scheduler.views.save_plan_view import SaveWeeklyPlanView
 from scheduler.views.change_password_view import change_password
 from scheduler.views.delete_user_view import delete_user
+from scheduler.views.export_schedule_view import export_schedule_csv
+from scheduler.views.export_ics_view import export_schedule_ics
 
-from scheduler.views.user_auth import (
+from scheduler.views.user_auth_view import (
     UserRegistrationView,
     UserDetailsView,
     DashboardView,
@@ -54,7 +56,7 @@ urlpatterns = [
     path(
         "api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"
     ),
-    path("api/notes/", get_note, name="api-get-note"),
+    path("api/notes/get", get_note, name="api-get-note"),
     path("api/notes/save/", save_note, name="api-save-note"),
     path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
     path("api/user/", UserDetailsView.as_view(), name="user-details"),
@@ -62,4 +64,6 @@ urlpatterns = [
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
     path("api/user/change-password/", change_password),
     path("api/user/delete/", delete_user),
+    path("api/time-blocks/export/csv/", export_schedule_csv, name="api-export-timeblocks-csv"),
+    path("api/time-blocks/export/ics/", export_schedule_ics, name="api-export-timeblocks-ics"),
 ]

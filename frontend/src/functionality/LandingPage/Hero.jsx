@@ -1,5 +1,5 @@
-import "./Hero.css";
-import heropic from "./photos/heropicture.png";
+import "./stylesheets/Hero.css";
+import heropic from "../../assets/LandingPage/heropicture.png";
 import { useNavigate } from "react-router-dom";
 
 function Hero() {

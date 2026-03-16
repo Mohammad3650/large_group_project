@@ -1,0 +1,112 @@
+.maindiv {
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-family: var(--font-main);
+    padding: var(--space-lg) 32px;
+    margin-bottom: var(--space-3xl);
+    border-bottom: 6px solid var(--border-light);
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.navbar-title {
+    text-decoration: none !important;
+    color: var(--text-main) !important;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.navbar-title:hover {
+    color: var(--text-dark) !important;
+}
+
+.navbar-link {
+    display: flex !important;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none !important;
+    color: var(--text-muted) !important;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.navbar-link:hover {
+    color: var(--text-main) !important;
+}
+
+.navbar-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+
+.rightspan {
+    font-size: 15px;
+    color: grey;
+}
+
+.navbar-right {
+    position: relative;
+}
+
+.navbar-user {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.user-icon {
+    cursor: pointer;
+    width: 45px;
+    height: 45px;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-width: 160px;
+    z-index: 100;
+}
+
+.dropdown-username {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    font-weight: normal;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--space-sm);
+}
+
+.dropdown-link {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    padding: 6px 0;
+    border-radius: 4px;
+}
+
+.dropdown-link:hover {
+    color: var(--text-main);
+    background-color: #f7f7f7;
+}
+
+@media (max-width: 768px) {
+    .navbar-link span {
+        display: none;
+    }
+}
