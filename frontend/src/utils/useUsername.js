@@ -13,7 +13,7 @@ function useUsername(isLoggedIn) {
 
     useEffect(() => {
         if (!isLoggedIn) return;
-        async function fetchUser() {
+        async function fetchUsername() {
             try {
                 const res = await api.get("/api/user/");
                 setUsername(res.data.username);
@@ -21,7 +21,7 @@ function useUsername(isLoggedIn) {
                 console.error("Failed to load user", err);
             }
         }
-        fetchUser();
+        fetchUsername();
     }, [isLoggedIn]);
 
     return username;
