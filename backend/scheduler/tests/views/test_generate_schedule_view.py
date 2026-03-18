@@ -1,54 +1,100 @@
-# from django.contrib.auth import get_user_model
-# from django.urls import reverse
-# from rest_framework.test import APITestCase
-# from rest_framework_simplejwt.tokens import RefreshToken
-# from unittest.mock import patch
-#
-#
-# class GenerateScheduleViewTests(APITestCase):
-#     def setUp(self):
-#         self.url = reverse("schedule-generate")
-#
-#         # Create user + authenticate using JWT
-#         User = get_user_model()
-#         self.user = User.objects.create_user(username="testuser", password="pass12345")
-#
-#         refresh = RefreshToken.for_user(self.user)
-#         access_token = str(refresh.access_token)
-#
-#         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
-#
-#     def test_get_not_allowed(self):
-#         res = self.client.get(self.url)
-#         self.assertEqual(res.status_code, 405)
-#
-#     def test_post_invalid_returns_400(self):
-#         res = self.client.post(self.url, {"days": 7}, format="json")  # windows missing
-#         self.assertEqual(res.status_code, 400)
-#         self.assertIn("windows", res.data)
-#
-#     @patch("scheduler.services.schedule_service.ScheduleService")
-#     def test_post_valid_returns_200_and_calls_service(self, MockService):
-#         MockService.return_value.generate.return_value = {"events": []}
-#
-#         payload = {
-#             "week_start": "2026-02-23",
-#             "week_end": "2026-03-01",
-#             "windows": [{"start_min": "09:00", "end_min": "17:00"}],
-#             "scheduled": [],
-#             "unscheduled": [
-#                 {"name": "Gym", "duration": 60, "daily": False, "location": "Gym"}
-#             ],
-#             "preference": "early",
-#         }
-#
-#         res = self.client.post(self.url, payload, format="json")
-#         self.assertEqual(res.status_code, 200, res.data)
-#
-#         MockService.return_value.generate.assert_called_once()
-#
-#     def test_generate_schedule_requires_authentication(self):
-#         self.client.credentials()  # no longer authenticated
-#
-#         res = self.client.post(self.url, {})
-#         self.assertEqual(res.status_code, 401)
+from unittest.mock import MagicMock, patch
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase, APIClient
+
+User = get_user_model()
+
+
+class GenerateScheduleViewTests(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="testpass")
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+        self.url = reverse("schedule-generate")
+        self.valid_payload = {"week_start": "2024-01-01", "week_end": "2024-01-07"}
+
+    def test_unauthenticated_request_returns_401(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.post(self.url, self.valid_payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_invalid_data_returns_400(self, MockSerializer):
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = False
+        mock_serializer.errors = {"week_start": ["This field is required."]}
+        MockSerializer.return_value = mock_serializer
+
+        response = self.client.post(self.url, {}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_invalid_data_returns_serializer_errors_in_body(self, MockSerializer):
+        errors = {"week_start": ["This field is required."]}
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = False
+        mock_serializer.errors = errors
+        MockSerializer.return_value = mock_serializer
+
+        response = self.client.post(self.url, {}, format="json")
+
+        self.assertEqual(response.data, errors)
+
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_service_not_called_when_serializer_invalid(self, MockSerializer):
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = False
+        mock_serializer.errors = {}
+        MockSerializer.return_value = mock_serializer
+
+        with patch("scheduler.views.generator_view.ScheduleService") as MockService:
+            self.client.post(self.url, {}, format="json")
+            MockService.return_value.generate.assert_not_called()
+
+    @patch("scheduler.views.generator_view.ScheduleService")
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_valid_request_returns_200(self, MockSerializer, MockService):
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = True
+        mock_serializer.validated_data = self.valid_payload
+        MockSerializer.return_value = mock_serializer
+
+        MockService.return_value.generate.return_value = {"slots": []}
+
+        response = self.client.post(self.url, self.valid_payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @patch("scheduler.views.generator_view.ScheduleService")
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_response_body_matches_service_output(self, MockSerializer, MockService):
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = True
+        mock_serializer.validated_data = self.valid_payload
+        MockSerializer.return_value = mock_serializer
+
+        fake_payload = {"slots": [{"day": 0, "start": 540, "end": 600}]}
+        MockService.return_value.generate.return_value = fake_payload
+
+        response = self.client.post(self.url, self.valid_payload, format="json")
+
+        self.assertEqual(response.data, fake_payload)
+
+    @patch("scheduler.views.generator_view.ScheduleService")
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_service_called_with_request_user_and_validated_data(self, MockSerializer, MockService):
+        validated = {**self.valid_payload}
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = True
+        mock_serializer.validated_data = validated
+        MockSerializer.return_value = mock_serializer
+
+        MockService.return_value.generate.return_value = {}
+
+        self.client.post(self.url, self.valid_payload, format="json")
+
+        MockService.return_value.generate.assert_called_once_with(self.user, validated)
