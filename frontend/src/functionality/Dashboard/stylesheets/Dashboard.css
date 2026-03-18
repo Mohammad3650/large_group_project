@@ -1,5 +1,5 @@
 * {
-    scrollbar-color: #e0e0e0 white;
+    scrollbar-color: var(--bg-soft-hover) var(--bg-main);
     scrollbar-width: thin;
 }
 
@@ -19,7 +19,7 @@ body.dashboard-page {
 }
 
 .no-tasks-message {
-    color: #acacac;
+    color: var(--text-light);
     font-size: 2rem;
     flex: 1;
     display: flex;
@@ -33,6 +33,38 @@ body.dashboard-page {
     display: flex;
     flex-direction: column;
     padding-right: 8px;
+}
+
+.dashboard-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: var(--space-md);
+}
+
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.export-csv-button {
+    padding: 6px 18px;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    background: var(--blue);
+    color: var(--text-white);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.export-csv-button:hover {
+    background: var(--link-blue);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
@@ -53,15 +85,13 @@ body.dashboard-page {
         overflow-y: visible;
     }
 
-    .export-csv-button {
-    padding: 6px 12px;
-    border: 1px solid #d0d0d0;
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
+    .dashboard-header-actions {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .export-csv-button:hover {
-    background: #f5f5f5;
+    .export-buttons {
+        justify-content: flex-end;
+        flex-wrap: wrap;
     }
 }

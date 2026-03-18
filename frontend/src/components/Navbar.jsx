@@ -2,7 +2,7 @@ import "./stylesheets/Navbar.css"
 import { Link } from "react-router-dom";
 import {useEffect, useState} from "react";
 import LogoutButton from "./LogoutButton.jsx";
-import useUser from "../utils/useUser.js";
+import useUsername from "../utils/useUsername.js";
 import {isTokenValid} from "../utils/authToken.js";
 
 import userIcon from  "../assets/Navbar/user.png"
@@ -11,7 +11,7 @@ import calendarIcon from  "../assets/calendar_icon.png"
 
 function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const username = useUser(isLoggedIn);
+    const username = useUsername(isLoggedIn);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {

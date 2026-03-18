@@ -1,8 +1,8 @@
 .featuresmaincard {
-    padding: 100px 20px;
+    padding: 100px var(--space-xl);
     margin-top: 0px;
     border-bottom: 1px solid #e6e6ef;
-    background: #ffffff;
+    background: var(--bg-main);
 
     animation-name: text-appear;
     animation-duration: 9s;
@@ -39,14 +39,12 @@
 }
 
 
-.card
-{
-    padding: 30px 40px;
-    border-radius: 10px;
+.card {
+    padding: var(--space-2xl) 40px;
+    border-radius: var(--radius-lg);
     box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.06);
-    border: 1px solid hsl(0, 0%, 80%);
-    background: #f7f8fb;
-
+    border: 1px solid var(--border-soft);
+    background: var(--bg-feature);
     display: flex;
     flex-direction: column;
     cursor: pointer;
@@ -60,14 +58,14 @@
 
 .card h2
 {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, sans-serif;
 }
 
 
 .card p
 {
     font-size: 15px;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, sans-serif;
     margin-top: auto;
     opacity: 0.5;
 }
@@ -104,7 +102,7 @@
 
 .MainHeader h1 {
     font-size: 80px;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, sans-serif;
     align-items: center;
     margin-bottom: 2px;
     margin-top: 5px;
@@ -112,7 +110,7 @@
 
 .MainHeader p
 {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: system-ui, sans-serif;
     font-size: 20px;
     text-align: center;
     opacity: 0.75;

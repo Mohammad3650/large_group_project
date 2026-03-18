@@ -13,14 +13,14 @@ function SuccessfulTimeBlock({ block }){
     return(
         <>
             <div className="success-page">
-                <div className="succes-card">
+                <div className="success-card">
                     <h1 className="success-text">Time Block Created Successfully</h1>
 
                     <div className="tick-image">
                         <img className="photo" src={tickImage} alt="Success tick icon"></img>
                     </div>
 
-                    <h3>Your time block was created successfully. You can either create a new time block or return to your dashboard.</h3>
+                    <h3>Your time block was created successfully</h3>
                 
                     <div className="success-btns">
                         <button

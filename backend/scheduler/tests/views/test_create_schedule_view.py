@@ -1,6 +1,6 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
-from scheduler.models.users import User
+from scheduler.models.User import User
 
 
 class CreateScheduleTest(APITestCase):
@@ -15,6 +15,24 @@ class CreateScheduleTest(APITestCase):
             phone_number="01122334455",
         )
 
+    def test_create_timeblock_requires_authentication(self):
+        url = reverse("api-create-timeblock")
+
+        response = self.client.post(
+            url,
+            {
+                "date": "2026-02-18",
+                "name": "Study Session",
+                "location": "Online",
+                "start_time": "09:00",
+                "end_time": "10:00",
+                "block_type": "study",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 401)
+
     def test_create_timeblock_without_description(self):
         self.client.force_authenticate(user=self.user)
 
@@ -25,10 +43,10 @@ class CreateScheduleTest(APITestCase):
             {
                 "date": "2026-02-18",
                 "name": "Study Session",
+                "location": "Online",
                 "start_time": "09:00",
                 "end_time": "10:00",
                 "block_type": "study",
-                "is_fixed": True,
             },
             format="json",
         )
@@ -45,11 +63,11 @@ class CreateScheduleTest(APITestCase):
             {
                 "date": "2026-02-18",
                 "name": "Study Session",
+                "location": "Online",
                 "start_time": "09:00",
                 "end_time": "10:00",
                 "block_type": "study",
                 "description": "work on course work",
-                "is_fixed": True,
             },
             format="json",
         )
@@ -68,7 +86,26 @@ class CreateScheduleTest(APITestCase):
                 # Missing name intentionally
                 "end_time": "10:00",
                 "block_type": "study",
-                "is_fixed": True,
+                "location": "Online",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_timeblock_invalid_time_order(self):
+        self.client.force_authenticate(user=self.user)
+        url = reverse("api-create-timeblock")
+
+        response = self.client.post(
+            url,
+            {
+                "date": "2026-02-18",
+                "name": "Study Session",
+                "location": "Online",
+                "start_time": "10:00",
+                "end_time": "09:00",
+                "block_type": "study",
             },
             format="json",
         )

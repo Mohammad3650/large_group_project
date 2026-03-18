@@ -1,7 +1,7 @@
 import TaskItem from "./TaskItem.jsx";
 import { useState } from "react";
 import "./stylesheets/TaskGroup.css"
-import {api} from "../../api.js";
+import deleteTimeBlock from "../../utils/deleteTimeBlock.js";
 
 /**
  * Displays a collapsible section of tasks grouped by day.
@@ -16,7 +16,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false}) {
     const [isOpen, setIsOpen] = useState(true);
 
     function handleDelete(id) {
-        api.delete(`/api/time-blocks/${id}/`)
+        deleteTimeBlock(id)
             .then(() => setTasks(t => t.filter(task => task.id !== id)))
             .catch(err => console.error("Failed to delete task", err));
     }
@@ -32,7 +32,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false}) {
             </div>
             {isOpen && tasks.map(task => (
                 <TaskItem key={task.id} name={task.name} date={task.date}
-                          startTime={task.start_time} endTime={task.end_time}
+                          startTime={task.startTime} endTime={task.endTime}
                           onDelete={() => handleDelete(task.id)} overdue={overdue} />
             ))}
         </>

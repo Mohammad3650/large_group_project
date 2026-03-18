@@ -2,9 +2,9 @@
     display: flex !important;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px !important;
-    margin-left: 16px;
-    border-radius: 8px;
+    padding: var(--space-sm) 12px !important;
+    margin-left: var(--space-lg);
+    border-radius: var(--radius-md);
     cursor: pointer;
     transition: background-color 0.2s, opacity 1s;
     opacity: 1;
@@ -36,11 +36,11 @@
 }
 
 .task-item:hover {
-    background-color: #e0e0e0;
+    background-color: var(--bg-soft-hover);
 }
 
 .task-item.checked {
-    background-color: #c8f0c8;
+    background-color: var(--success-soft);
 }
 
 .task-item.fading {
@@ -48,11 +48,11 @@
 }
 
 .overdue-text {
-    color: #e74c3c;
+    color: var(--danger-soft);
 }
 
 .task-datetime {
-    color: #4a90d9;
+    color: var(--link-blue);
     font-size: 0.85rem;
     white-space: nowrap;
 }
