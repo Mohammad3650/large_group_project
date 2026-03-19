@@ -3,7 +3,7 @@ from datetime import date, time
 
 from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
-from scheduler.models.users import User
+from scheduler.models.User import User
 
 
 class TimeBlockModelTest(TestCase):
@@ -18,38 +18,20 @@ class TimeBlockModelTest(TestCase):
         block = TimeBlock.objects.create(
             day=self.day_plan,
             block_type="lecture",
-            is_fixed=True,
             start_time=time(9, 0),
             end_time=time(10, 0),
-            description=""
+            description="",
         )
 
         self.assertEqual(block.block_type, "lecture")
-        self.assertTrue(block.is_fixed)
         self.assertEqual(block.start_time, time(9, 0))
         self.assertEqual(block.end_time, time(10, 0))
         self.assertEqual(block.description, "")
-
-    def test_create_flexible_time_block(self):
-        block = TimeBlock.objects.create(
-            day=self.day_plan,
-            block_type="study",
-            is_fixed=False,
-            duration=120,
-            time_of_day_preference="morning",
-            start_time=time(0, 0),  # required by model
-            end_time=time(0, 0),  # required by model
-        )
-
-        self.assertEqual(block.duration, 120)
-        self.assertEqual(block.time_of_day_preference, "morning")
-        self.assertFalse(block.is_fixed)
 
     def test_dayplan_has_time_blocks(self):
         block = TimeBlock.objects.create(
             day=self.day_plan,
             block_type="study",
-            is_fixed=True,
             start_time=time(14, 0),
             end_time=time(16, 0),
         )
@@ -57,11 +39,8 @@ class TimeBlockModelTest(TestCase):
         block2 = TimeBlock.objects.create(
             day=self.day_plan,
             block_type="commute",
-            is_fixed=False,
-            duration=120,
-            time_of_day_preference="morning",
-            start_time=time(0, 0),  # required by model
-            end_time=time(0, 0),  # required by model
+            start_time=time(16, 0),
+            end_time=time(18, 0),
         )
 
         self.assertEqual(self.day_plan.time_blocks.count(), 2)
@@ -71,7 +50,6 @@ class TimeBlockModelTest(TestCase):
         block = TimeBlock(
             day=self.day_plan,
             block_type="invalid_type",
-            is_fixed=True,
             start_time=time(9, 0),
             end_time=time(10, 0),
         )
@@ -79,18 +57,16 @@ class TimeBlockModelTest(TestCase):
         with self.assertRaises(Exception):
             block.full_clean()
 
-    def test_create_fixed_time_block_with_description(self):
+    def test_create_block_with_description(self):
         block = TimeBlock.objects.create(
             day=self.day_plan,
             block_type="lecture",
-            is_fixed=True,
             start_time=time(9, 0),
             end_time=time(10, 0),
             description="attend SEG lecture on campus",
         )
 
         self.assertEqual(block.block_type, "lecture")
-        self.assertTrue(block.is_fixed)
         self.assertEqual(block.start_time, time(9, 0))
         self.assertEqual(block.end_time, time(10, 0))
-        self.assertEqual(block.description,"attend SEG lecture on campus")
+        self.assertEqual(block.description, "attend SEG lecture on campus")

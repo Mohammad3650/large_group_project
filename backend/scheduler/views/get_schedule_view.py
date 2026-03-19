@@ -24,6 +24,7 @@ from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 def get_schedule(request):
     time_blocks = TimeBlock.objects.filter(day__user=request.user).select_related("day")
     serializer = TimeBlockSerializer(time_blocks, many=True)
+
     return Response(serializer.data)
 
 

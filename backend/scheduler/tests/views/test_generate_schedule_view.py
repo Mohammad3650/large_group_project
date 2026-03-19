@@ -1,45 +1,100 @@
+from unittest.mock import MagicMock, patch
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase
-from rest_framework_simplejwt.tokens import RefreshToken
-from unittest.mock import patch
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase, APIClient
+
+User = get_user_model()
 
 
-# class GenerateScheduleViewTests(APITestCase):
-#     def setUp(self):
-#         self.url = "/api/schedule/generate/"
+class GenerateScheduleViewTests(APITestCase):
 
-#         # Create user + authenticate using JWT
-#         User = get_user_model()
-#         self.user = User.objects.create_user(username="testuser", password="pass12345")
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="testpass")
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+        self.url = reverse("schedule-generate")
+        self.valid_payload = {"week_start": "2024-01-01", "week_end": "2024-01-07"}
 
-#         refresh = RefreshToken.for_user(self.user)
-#         access_token = str(refresh.access_token)
+    def test_unauthenticated_request_returns_401(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.post(self.url, self.valid_payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-#         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_invalid_data_returns_400(self, MockSerializer):
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = False
+        mock_serializer.errors = {"week_start": ["This field is required."]}
+        MockSerializer.return_value = mock_serializer
 
-#     def test_get_not_allowed(self):
-#         res = self.client.get(self.url)
-#         self.assertEqual(res.status_code, 405)
+        response = self.client.post(self.url, {}, format="json")
 
-#     def test_post_invalid_returns_400(self):
-#         res = self.client.post(self.url, {"days": 7}, format="json")  # windows missing
-#         self.assertEqual(res.status_code, 400)
-#         self.assertIn("windows", res.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-#     @patch("scheduler.api.views.ScheduleService")
-#     def test_post_valid_returns_200_and_calls_service(self, MockService):
-#         MockService.return_value.generate.return_value = {"events": []}
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_invalid_data_returns_serializer_errors_in_body(self, MockSerializer):
+        errors = {"week_start": ["This field is required."]}
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = False
+        mock_serializer.errors = errors
+        MockSerializer.return_value = mock_serializer
 
-#         payload = {
-#             "week_start": "2026-02-23",
-#             "days": 7,
-#             "windows": [{"start_min": 540, "end_min": 1020}],
-#             "scheduled": [],
-#             "unscheduled": [{"duration_mins": 60, "name": "Gym"}],
-#             "preference": "early",
-#         }
+        response = self.client.post(self.url, {}, format="json")
 
-#         res = self.client.post(self.url, payload, format="json")
-#         self.assertEqual(res.status_code, 200, res.data)
+        self.assertEqual(response.data, errors)
 
-#         MockService.return_value.generate.assert_called_once()
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_service_not_called_when_serializer_invalid(self, MockSerializer):
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = False
+        mock_serializer.errors = {}
+        MockSerializer.return_value = mock_serializer
+
+        with patch("scheduler.views.generator_view.ScheduleService") as MockService:
+            self.client.post(self.url, {}, format="json")
+            MockService.return_value.generate.assert_not_called()
+
+    @patch("scheduler.views.generator_view.ScheduleService")
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_valid_request_returns_200(self, MockSerializer, MockService):
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = True
+        mock_serializer.validated_data = self.valid_payload
+        MockSerializer.return_value = mock_serializer
+
+        MockService.return_value.generate.return_value = {"slots": []}
+
+        response = self.client.post(self.url, self.valid_payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @patch("scheduler.views.generator_view.ScheduleService")
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_response_body_matches_service_output(self, MockSerializer, MockService):
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = True
+        mock_serializer.validated_data = self.valid_payload
+        MockSerializer.return_value = mock_serializer
+
+        fake_payload = {"slots": [{"day": 0, "start": 540, "end": 600}]}
+        MockService.return_value.generate.return_value = fake_payload
+
+        response = self.client.post(self.url, self.valid_payload, format="json")
+
+        self.assertEqual(response.data, fake_payload)
+
+    @patch("scheduler.views.generator_view.ScheduleService")
+    @patch("scheduler.views.generator_view.GenerateScheduleRequestSerializer")
+    def test_service_called_with_request_user_and_validated_data(self, MockSerializer, MockService):
+        validated = {**self.valid_payload}
+        mock_serializer = MagicMock()
+        mock_serializer.is_valid.return_value = True
+        mock_serializer.validated_data = validated
+        MockSerializer.return_value = mock_serializer
+
+        MockService.return_value.generate.return_value = {}
+
+        self.client.post(self.url, self.valid_payload, format="json")
+
+        MockService.return_value.generate.assert_called_once_with(self.user, validated)

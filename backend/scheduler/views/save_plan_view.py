@@ -32,9 +32,6 @@ class SaveWeeklyPlanView(APIView):
 
 
         return Response(
-            {
-                "message": "Weekly plan saved",
-                "events_saved": len(created)
-            },
+            { "message": "Weekly plan saved", "events_saved": len(created) },
             status=status.HTTP_201_CREATED,
         )

@@ -1,44 +1,96 @@
-# from django.test import TestCase
-# from scheduler.services.response_builder import ScheduleResponseBuilder
+from django.test import TestCase
+from scheduler.services.response_builder import ScheduleResponseBuilder
+from datetime import date, time
 
-# class ScheduleResponseBuilderTest(TestCase):
-#     def setUp(self):
-#         self.builder = ScheduleResponseBuilder()
-#         self.week_start = "2026-02-23"  # Monday
-    
-#     def test_empty_solutions_test(self):
-#         """Infeasible solutions return []. build should return week_start + events=[]"""
-#         result = self.builder.build([], week_start=self.week_start)
-#         self.assertEqual(result, {"week_start": self.week_start, "events": []})
-    
-#     def test_single_solution_response(self):
-#         """A tuple with one solution should mape to a correct event dict"""
-#         result = self.builder.build([(480, 540, 60, "Gym")], week_start=self.week_start)
+class ScheduleResponseBuilderTest(TestCase):
 
-#         self.assertEqual(result["week_start"], self.week_start)
-#         self.assertEqual(len(result["events"]), 1)
+    def setUp(self):
+        self.builder = ScheduleResponseBuilder()
 
-#         ev = result["events"][0]
-#         # 480 min = 08:00 on day 0
-#         self.assertEqual(ev["date"], "2026-02-23")
-#         self.assertEqual(ev["start_time"], "08:00:00")
-#         self.assertEqual(ev["end_time"], "09:00:00")
+    def test_abs_min_to_date_time_same_day(self):
+        d, t = self.builder._abs_min_to_date_time(date(2026, 3, 9), 150)
+        self.assertEqual(d, date(2026, 3, 9))
+        self.assertEqual(t, time(2, 30, 0))
 
-#         self.assertIn(ev["block_type"], ["exercise", "study"])  # The guesser may map gym to exercise
-#         self.assertEqual(ev["location"], "")
-#         self.assertEqual(ev["is_fixed"], False)
-        
-#     def test_multiple_solutions_count_matches_events_length(self):
-#         """Count field should match len(events)"""
-#         solutions = [(480, 540, 60, "Gym"), (600, 690, 90, "Revision")]
-#         result = self.builder.build(solutions, week_start=self.week_start)
-        
-#         self.assertEqual(result["week_start"], self.week_start)
-#         self.assertEqual(len(result["events"]), 2)
+    def test_abs_min_to_date_time_next_day(self):
+        d, t = self.builder._abs_min_to_date_time(date(2026, 3, 9), 1500)
+        self.assertEqual(d, date(2026, 3, 10))
+        self.assertEqual(t, time(1, 0, 0))
 
-#     def test_event_field_names_match_save_serializer(self):
-#         result = self.builder.build([(480, 540, 60, "Gym")], week_start=self.week_start)
-#         ev = result["events"][0]
+    def test_abs_min_to_date_time_string_week_start(self):
+        d, t = self.builder._abs_min_to_date_time("2026-03-09", 540)
+        self.assertEqual(d, date(2026, 3, 9))
+        self.assertEqual(t, time(9, 0, 0))
 
-#         expected_keys = {"date", "start_time", "end_time", "block_type", "location", "is_fixed"}
-#         self.assertSetEqual(set(ev.keys()), expected_keys)
+    def test_guess_block_type_lecture(self):
+        self.assertEqual(self.builder._guess_block_type("Math Lecture"), "lecture")
+
+    def test_guess_block_type_lab(self):
+        self.assertEqual(self.builder._guess_block_type("Chemistry Lab"), "lab")
+
+    def test_guess_block_type_tutorial(self):
+        self.assertEqual(self.builder._guess_block_type("CS Tutorial"), "tutorial")
+
+    def test_guess_block_type_commute(self):
+        self.assertEqual(self.builder._guess_block_type("Travel to campus"), "commute")
+
+    def test_guess_block_type_work(self):
+        self.assertEqual(self.builder._guess_block_type("Work shift"), "work")
+
+    def test_guess_block_type_exercise(self):
+        self.assertEqual(self.builder._guess_block_type("Gym session"), "exercise")
+
+    def test_guess_block_type_default(self):
+        self.assertEqual(self.builder._guess_block_type("Revision"), "study")
+
+    def test_build_basic_event(self):
+        solutions = [ (540, 600, 60, "Maths Revision", "Library", "study", "Chapter 1") ]
+        scheduled = []
+
+        result = self.builder.build(solutions, scheduled, date(2026, 3, 9))
+
+        expected = {
+            "week_start": "2026-03-09",
+            "events": [
+                {
+                    "date": "2026-03-09",
+                    "start_time": "09:00:00",
+                    "end_time": "10:00:00",
+                    "block_type": "study",
+                    "location": "Library",
+                    "name": "Maths Revision",
+                    "description": "Chapter 1",
+                }
+            ],
+            "scheduled": []
+        }
+
+        self.assertEqual(result, expected)
+
+    def test_build_guesses_block_type_when_missing(self):
+        solutions = [ (600, 660, 60, "Physics Lecture", "", "", "") ]
+        scheduled = []
+        result = self.builder.build(solutions, scheduled, date(2026, 3, 9))
+        self.assertEqual(result["events"][0]["block_type"], "lecture")
+        self.assertEqual(result["events"][0]["location"], "")
+        self.assertEqual(result["events"][0]["description"], "")
+
+    def test_build_multiple_events(self):
+        solutions = [
+            (540, 600, 60, "Maths Revision", "Library", "study", "Algebra"),
+            (660, 720, 60, "Gym session", "Gym", "exercise", "Leg day"),
+        ]
+        scheduled = [{"name": "Fixed lecture"}]
+        result = self.builder.build(solutions, scheduled, date(2026, 3, 9))
+        self.assertEqual(result["week_start"], "2026-03-09")
+        self.assertEqual(len(result["events"]), 2)
+        self.assertEqual(result["scheduled"], scheduled)
+        self.assertEqual(result["events"][0]["date"], "2026-03-09")
+        self.assertEqual(result["events"][1]["start_time"], "11:00:00")
+
+    def test_build_raises_if_event_crosses_midnight(self):
+        solutions = [ (1430, 1450, 20, "Late study", "Home", "study", "Test") ]
+        scheduled = []
+        with self.assertRaises(ValueError) as cm:
+            self.builder.build(solutions, scheduled, date(2026, 3, 9))
+        self.assertIn("crosses midnight", str(cm.exception))

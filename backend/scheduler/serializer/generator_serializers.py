@@ -79,10 +79,29 @@ class UnscheduledSerializer(serializers.Serializer):
         },
     )
     location = serializers.CharField(
-        allow_blank=False,
+        allow_blank=True,
+        default="",
         error_messages={
             "required": "Location must be provided.",
             "blank": "Location must be provided.",
+        },
+    )
+
+    block_type = serializers.ChoiceField(
+        choices=["sleep", "study", "lecture", "lab", "tutorial", "commute", "exercise", "break", "work", "extracurricular"],
+        default="study",
+        error_messages={
+            "required": "Block type must be provided.",
+            "invalid_choice": "Block type must be one of sleep, study, lecture, lab, tutorial, commute, exercise, break, work, or extracurricular.",
+        },
+    )
+
+    description = serializers.CharField(
+        allow_blank=True, 
+        default="",
+        error_messages={
+            "required": "Description must be provided.",
+            "blank": "Description must be provided.",
         },
     )
 
@@ -150,3 +169,41 @@ class GenerateScheduleRequestSerializer(serializers.Serializer):
         
         return attrs
     
+
+# Example object
+
+# {
+#     "week_start": "2026-03-16",
+#     "week_end": "2026-03-21",
+#     "even_spread": true,
+#     "include_scheduled": false,
+#     "windows": [
+#         {
+#             "start_min": "07:30",
+#             "end_min": "23:00",
+#             "daily": true
+#         }
+#     ],
+#     "unscheduled": [
+#         {
+#             "name": "Gym",
+#             "duration": "45",
+#             "frequency": "3",
+#             "daily": false,
+#             "start_time_preference": "Late",
+#             "location": "Gym",
+#             "block_type": "exercise",
+#             "description": "Go to gym"
+#         },
+#         {
+#             "name": "Revision",
+#             "duration": "120",
+#             "frequency": "1",
+#             "daily": true,
+#             "start_time_preference": "None",
+#             "location": "Library",
+#             "block_type": "study",
+#             "description": "Revision of modules"
+#         }
+#     ]
+# }
