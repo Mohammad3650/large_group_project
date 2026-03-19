@@ -5,6 +5,16 @@ import Features from "./Features";
 
 import "./stylesheets/Landing.css";
 
+/*
+  Landing Page
+
+  - Entry page for new users; introduces StudySync and drives sign-up.
+  - Composed of modular sections: Navbar, Hero (CTA), Features, Testimonials.
+  - Uses reusable components (e.g. Card) for consistency and scalability.
+  - Static content for now; can be replaced with API data later.
+  - Presentational only (no state or side effects).
+*/
+
 
 function Landing() {
   return (

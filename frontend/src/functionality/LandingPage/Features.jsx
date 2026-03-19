@@ -1,3 +1,4 @@
+//Import images used for each feature card
 import "./stylesheets/Features.css";
 import calendarImg from "../../assets/LandingPage/calendar.png";
 import settingsImg from "../../assets/LandingPage/settings-64.png";
@@ -5,14 +6,20 @@ import balancedStudyImg from "../../assets/LandingPage/balancedstudy.png";
 import checklistImg from "../../assets/LandingPage/checklist-59.png";
 import timelineImg from "../../assets/LandingPage/timeline-74.png";
 
+/*
+  Features Component
 
-
-
+  - Displays key features of StudySync in a grid layout.
+  - Helps communicate the system’s value to users.
+  - Uses static content and imported assets.
+  - Presentational only (no state or logic).
+*/
 
 
 function Features() {
   return (
     <div className="features">
+      {/* Main container for layout and width control */}
       <div className="features_container">
         <div className="features_header">
           <h1>Why StudySync?</h1>
@@ -28,7 +35,10 @@ function Features() {
 
 
 
+      {/* Grid layout containing individual feature cards */}
         <div className="features_grid">
+
+          {/* Feature 1 */}
           <div className="features_card">
             <img className="features_card_image" src={calendarImg} alt="Calendar feature"></img>
             <h2 className="features_card_title">Constraint-Aware Weekly Calendar</h2>
@@ -39,6 +49,7 @@ function Features() {
           </div>
 
 
+        {/* Feature 2 */}
           <div className="features_card">
             <img className="features_card_image" src={settingsImg} alt="Calendar feature"></img>
             <h2 className="features_card_title">Set-Up Preferences</h2>
@@ -49,6 +60,7 @@ function Features() {
           </div>
 
 
+        {/* Feature 3 */}
           <div className="features_card">
             <img className="features_card_image" src={balancedStudyImg} alt="Calendar feature"></img>
             <h2 className="features_card_title">Balanced Study Allocation</h2>
@@ -60,6 +72,7 @@ function Features() {
 
 
 
+        {/* Feature 4 */}
           <div className="features_card">
             <img className="features_card_image" src={checklistImg} alt="Calendar feature"></img>
             <h2 className="features_card_title">One-Click Replanning</h2>
@@ -69,6 +82,7 @@ function Features() {
             </p>
           </div>
 
+        {/* Feature 5 */}
           <div className="features_card">
             <img className="features_card_image" src={timelineImg} alt="Calendar feature"></img>
             <h2 className="features_card_title">Plan History by Week</h2>
