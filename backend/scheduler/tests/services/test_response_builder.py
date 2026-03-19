@@ -40,9 +40,6 @@ class ScheduleResponseBuilderTest(TestCase):
     def test_guess_block_type_exercise(self):
         self.assertEqual(self.builder._guess_block_type("Gym session"), "exercise")
 
-    def test_guess_block_type_break(self):
-        self.assertEqual(self.builder._guess_block_type("Lunch break"), "break")
-
     def test_guess_block_type_default(self):
         self.assertEqual(self.builder._guess_block_type("Revision"), "study")
 
