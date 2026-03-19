@@ -15,18 +15,18 @@ class ScheduleResponseBuilder:
     def build( self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled ,week_start: str, ) -> Dict[str, Any]:
         events = []
         for (start, end, duration, name, location, block_type, description) in solutions:
-            date_s, start_time = self._abs_min_to_date_time(week_start, start)
-            date_e, end_time = self._abs_min_to_date_time(week_start, end)
+            date_start, start_time = self._abs_min_to_date_time(week_start, start)
+            date_end, end_time = self._abs_min_to_date_time(week_start, end)
 
             if not block_type:
                 block_type = self._guess_block_type(name)
 
-            if date_s != date_e:
-                raise ValueError( f"Event '{name}' crosses midnight: start={date_e} {start_time}, end={date_e} {end_time}." )
+            if date_start != date_end:
+                raise ValueError( f"Event '{name}' crosses midnight: start={date_end} {start_time}, end={date_end} {end_time}." )
 
             events.append(
                 {
-                    "date": date_s.isoformat(),
+                    "date": date_start.isoformat(),
                     "start_time": start_time.isoformat(timespec="seconds"),
                     "end_time": end_time.isoformat(timespec="seconds"),
                     "block_type": block_type,
@@ -36,11 +36,7 @@ class ScheduleResponseBuilder:
                 }
             )
 
-        return {
-            "week_start": str(week_start.isoformat()),
-            "events": events,
-            "scheduled": scheduled
-        }
+        return { "week_start": str(week_start.isoformat()), "events": events, "scheduled": scheduled }
 
     def _abs_min_to_date_time(self, week_start, abs_min: int) -> tuple[str, str]:
         """
@@ -79,6 +75,4 @@ class ScheduleResponseBuilder:
             return "work"
         if "exercise" in n or "gym" in n:
             return "exercise"
-        if "break" in n:
-            return "break"
         return "study"

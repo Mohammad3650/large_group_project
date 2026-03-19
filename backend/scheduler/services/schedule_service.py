@@ -60,8 +60,8 @@ class ScheduleService:
 
         engine.create_scheduled_intervals()
         engine.create_unscheduled_intervals()
-        engine.overlapConstraints()
-        engine.applyConstraints()
+        engine.overlap_constraints()
+        engine.apply_constraints()
 
         solutions: List[Tuple[int, int, int, str, str, str, str]] = engine.solve()
         week_start = parsed.week_start
