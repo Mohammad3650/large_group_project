@@ -4,28 +4,34 @@ from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
 
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         validators=[
             UniqueValidator(
                 queryset=User.objects.all(),
-                message="Email is already in use."
+                message="Email is already in use.",
             )
         ]
     )
-    
     password = serializers.CharField(write_only=True, min_length=8)
 
     class Meta:
         model = User
-        fields = ("email", "password", "username", "first_name", "last_name", "phone_number")
+        fields = (
+            "email",
+            "password",
+            "username",
+            "first_name",
+            "last_name",
+            "phone_number",
+        )
+
+    def validate_email(self, value):
+        return value.strip().lower()
 
     def create(self, validated_data):
-        password = validated_data.pop("password")
-        user = User(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
+        return User.objects.create_user(**validated_data)
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
@@ -33,10 +39,23 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("email", "username", "first_name", "last_name", "phone_number")
+        fields = (
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "phone_number",
+        )
 
     def validate_email(self, value):
+        normalised_email = value.strip().lower()
         user = self.instance
-        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+
+        email_in_use = User.objects.exclude(pk=user.pk).filter(
+            email=normalised_email
+        ).exists()
+
+        if email_in_use:
             raise serializers.ValidationError("Email is already in use.")
-        return value
+
+        return normalised_email

@@ -1,155 +1,144 @@
-import { render, screen, waitFor } from "@testing-library/react"
-import Login from "../Login.jsx"
-import { describe, it, expect, vi, beforeEach } from "vitest"
-import { MemoryRouter, Routes, Route } from "react-router-dom"
-import userEvent from "@testing-library/user-event"
-import "@testing-library/jest-dom/vitest"
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom/vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-vi.mock("../../utils/authToken", () => ({
-    isTokenValid: vi.fn(),
+import Login from "../Login.jsx";
+import { publicApi } from "../../../api";
+import { isTokenValid } from "../../../utils/authToken";
+import { saveTokens } from "../../../utils/handleLocalStorage";
+
+vi.mock("../../../utils/authToken", () => ({
+  isTokenValid: vi.fn(),
 }));
 
-vi.mock("../../utils/handleLocalStorage", () => ({
-    saveTokens: vi.fn(),
-    getAccessToken: vi.fn(),
+vi.mock("../../../utils/handleLocalStorage", () => ({
+  saveTokens: vi.fn(),
 }));
 
-vi.mock("../../api", () => ({
-    publicApi: {
-        post: vi.fn(),
-    },
-}))
+vi.mock("../../../api", () => ({
+  publicApi: {
+    post: vi.fn(),
+  },
+}));
 
+function renderLoginWithRoutes() {
+  return render(
+    <MemoryRouter initialEntries={["/login"]}>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<h2>Dashboard Page</h2>} />
+      </Routes>
+    </MemoryRouter>
+  );
+}
 
-import { publicApi } from "../../../api.js";
-import { isTokenValid } from "../../../utils/authToken.js"
-import { saveTokens } from "../../../utils/handleLocalStorage.js"
+async function fillLoginForm(user, overrides = {}) {
+  const values = {
+    email: "test@gmail.com",
+    password: "password123",
+    ...overrides,
+  };
 
-beforeEach(() => {
-    vi.clearAllMocks();
-})
+  await user.type(screen.getByPlaceholderText("you@example.com"), values.email);
+  await user.type(
+    screen.getByPlaceholderText("Enter your password..."),
+    values.password
+  );
+}
 
 describe("Login page", () => {
-    it("renders email, password and login btn", async () => {
-        isTokenValid.mockResolvedValue(false);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    isTokenValid.mockResolvedValue(false);
+  });
 
-        render(
-            <MemoryRouter>
-                <Login />
-            </MemoryRouter>
-        );
+  it("renders the login form fields and submit button", () => {
+    renderLoginWithRoutes();
 
-        expect(screen.getByPlaceholderText("you@example.com")).toBeInTheDocument();
-        expect(screen.getByPlaceholderText("Enter your password...")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("you@example.com")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Enter your password...")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /log in/i })
+    ).toBeInTheDocument();
+  });
 
-        expect(screen.getByRole("button", { name: /log in/i })).toBeInTheDocument();
-    })
+  it("redirects authenticated users to the dashboard", async () => {
+    isTokenValid.mockResolvedValue(true);
 
-
-
-
-    it("calls API with email and password when form submitted", async () => {
-        const user = userEvent.setup();
-
-        isTokenValid.mockResolvedValue(false);
-
-        publicApi.post.mockResolvedValue({
-            data: { access: "A", refresh: "R"},
-        });
-
-        render(
-            <MemoryRouter>
-                <Login />
-            </MemoryRouter>
-        );
-
-    const emailInput = await screen.findByPlaceholderText("you@example.com");
-    const passwordInput = await screen.findByPlaceholderText("Enter your password...");
-    const submitBtn = screen.getByRole("button", { name: /log in/i });
-
-    await user.type(emailInput, "test@gmail.com");
-    await user.type(passwordInput, "password123");
-
-    await user.click(submitBtn);
+    renderLoginWithRoutes();
 
     await waitFor(() => {
-            expect(publicApi.post).toHaveBeenCalledWith("/api/token/", {
-                email: "test@gmail.com",
-                password: "password123"
-            });
+      expect(screen.getByText("Dashboard Page")).toBeInTheDocument();
+    });
+  });
+
+  it("submits login credentials, stores tokens, and redirects on success", async () => {
+    const user = userEvent.setup();
+
+    publicApi.post.mockResolvedValue({
+      data: { access: "A", refresh: "R" },
     });
 
+    renderLoginWithRoutes();
+    await fillLoginForm(user);
 
-    })
+    await user.click(screen.getByRole("button", { name: /log in/i }));
 
-    it("redirects to dashboard after successful login", async () => {
-        const user = userEvent.setup();
-        isTokenValid.mockResolvedValue(false);
+    await waitFor(() => {
+      expect(publicApi.post).toHaveBeenCalledWith("/api/token/", {
+        email: "test@gmail.com",
+        password: "password123",
+      });
+    });
 
-        publicApi.post.mockResolvedValue({
-            data: { access: "A", refresh: "R" }
-        });
+    expect(saveTokens).toHaveBeenCalledWith("A", "R");
+    expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
+  });
 
-        render(
-            <MemoryRouter initialEntries={["/login"]}>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/dashboard" element={<h2>Dashboard Page</h2>}/>
-                </Routes>
-            </MemoryRouter>
-        );
+  it("shows validation errors and does not submit when fields are empty", async () => {
+    const user = userEvent.setup();
 
-        await user.type(
-            screen.getByPlaceholderText("you@example.com"),
-            "test@gmail.com"
-        )
+    renderLoginWithRoutes();
 
-        await user.type(
-            screen.getByPlaceholderText("Enter your password..."),
-            "password123"
-        )
+    await user.click(screen.getByRole("button", { name: /log in/i }));
 
-        await user.click(
-            screen.getByRole("button", { name: /log in/i})
-        )
+    expect(await screen.findByText("Email is required.")).toBeInTheDocument();
+    expect(screen.getByText("Password is required.")).toBeInTheDocument();
+    expect(publicApi.post).not.toHaveBeenCalled();
+  });
 
-        expect(
-            await screen.findByText(/dashboard/i)
-        ).toBeInTheDocument()
+  it("shows a global error message when login fails", async () => {
+    const user = userEvent.setup();
 
-    })
+    publicApi.post.mockRejectedValue(new Error("login failed"));
 
+    renderLoginWithRoutes();
+    await fillLoginForm(user);
 
-    it("shows error when login fails", async () => {
-        const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: /log in/i }));
 
-        isTokenValid.mockResolvedValue(false);
+    expect(
+      await screen.findByText(/something went wrong/i)
+    ).toBeInTheDocument();
+  });
 
-        publicApi.post.mockRejectedValue(new Error("login failed"));
+  it("does not submit the form again while the request is loading", async () => {
+    const user = userEvent.setup();
 
-        render(
-            <MemoryRouter>
-                <Login />
-            </MemoryRouter>
-        )
+    publicApi.post.mockImplementation(() => new Promise(() => {}));
 
-        await user.type(
-            screen.getByPlaceholderText("you@example.com"),
-            "wrong@gmail.com"
-            
-        )
+    renderLoginWithRoutes();
+    await fillLoginForm(user);
 
-        await user.type(
-            screen.getByPlaceholderText("Enter your password..."),
-            "wrongpassword"
-        )
+    const button = screen.getByRole("button", { name: /log in/i });
 
-        await user.click(
-            screen.getByRole("button", { name: /log in/i})
-        );
+    await user.click(button);
+    await user.click(button);
 
-        expect(
-            await screen.findByText(/something went wrong/i)
-        ).toBeInTheDocument();
-    })
-})
+    expect(publicApi.post).toHaveBeenCalledTimes(1);
+  });
+});

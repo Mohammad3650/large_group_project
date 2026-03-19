@@ -1,127 +1,121 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom"
-import { publicApi } from "../../api"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { publicApi } from "../../api";
 import { formatApiError } from "../../utils/errors";
-import { saveTokens, getAccessToken } from "../../utils/handleLocalStorage";
-import { isTokenValid } from "../../utils/authToken.js";
+import { saveTokens } from "../../utils/handleLocalStorage";
+import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
+import AuthCard from "../../components/AuthCard";
+import AuthField from "../../components/AuthField";
 
+const initialErrors = {
+  fieldErrors: {},
+  global: [],
+};
 
 function Login() {
-    const nav = useNavigate();
+  const nav = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState(initialErrors);
+  const [loading, setLoading] = useState(false);
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("" );
-    const [loading, setLoading] = useState(false)
+  useRedirectIfAuthenticated(nav);
 
-    useEffect(() => {
-      (async () => {
-        const ok = await isTokenValid();
-        if (ok) nav("/dashboard");
-      })()
-    }, [nav]);
+  function validateLoginForm() {
+    const fieldErrors = {};
 
-    async function handleLogin() {
-        if (loading) return;
+    if (!email.trim()) fieldErrors.email = "Email is required.";
+    if (!password) fieldErrors.password = "Password is required.";
 
-        setError("");
-        setLoading(true);
+    return fieldErrors;
+  }
 
-        try {
-            const res = await publicApi.post("/api/token/", { email, password });
+  async function submitLogin() {
+    const res = await publicApi.post("/api/token/", { email, password });
+    saveTokens(res.data.access, res.data.refresh);
+    nav("/dashboard");
+  }
 
-            saveTokens(res.data.access, res.data.refresh);
+  async function handleLogin(event) {
+    event.preventDefault();
+    if (loading) return;
 
-            nav("/dashboard");
-        } catch (err) {
-            setError(formatApiError(err));
-        } finally {
-            setLoading(false);
-        }
+    const fieldErrors = validateLoginForm();
+    if (Object.keys(fieldErrors).length) {
+      setErrors({ fieldErrors, global: [] });
+      return;
     }
 
-return (
-  <div className="bg-light min-vh-100 d-flex align-items-center justify-content-center">
-    <div className="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
-      <div className="card shadow-lg border-0 rounded-4">
+    setErrors(initialErrors);
+    setLoading(true);
 
-        <div className="card-body p-4 p-md-5">
-          <div className="text-center mb-4">
-            <h3 className="fw-bold mb-1">Welcome Back</h3>
-            <p className="text-muted mb-0">
-              Log in to continue to StudySync
-            </p>
-          </div>
+    try {
+      await submitLogin();
+    } catch (err) {
+      setErrors(formatApiError(err));
+    } finally {
+      setLoading(false);
+    }
+  }
 
-          {error && error.global && (
-            <div className="alert alert-danger text-center" role="alert">
-              {error.global}
-            </div>
-          )}
+  return (
+    <AuthCard
+      title="Welcome Back"
+      subtitle="Log in to continue to StudySync"
+      footerText="No account?"
+      footerLinkText="Sign up"
+      footerLinkTo="/signup"
+    >
+      {errors.global.length > 0 && (
+        <div className="alert alert-danger text-center" role="alert">
+          {errors.global.map((message) => (
+            <div key={message}>{message}</div>
+          ))}
+        </div>
+      )}
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
+      <form onSubmit={handleLogin} noValidate>
+        <div className="row g-3">
+          <AuthField
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={setEmail}
+            error={errors.fieldErrors.email}
+          />
+
+          <AuthField
+            name="password"
+            label="Password"
+            type="password"
+            placeholder="Enter your password..."
+            value={password}
+            onChange={setPassword}
+            error={errors.fieldErrors.password}
+          />
+        </div>
+
+        <div className="d-grid mt-4">
+          <button
+            className="btn btn-dark btn-lg rounded-3"
+            disabled={loading}
+            type="submit"
           >
-            <div className="mb-3">
-              <label className="form-label fw-semibold">Email</label>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                className="form-control"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="form-label fw-semibold">Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password..."
-                className="form-control"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <div className="d-grid">
-              <button
-                className="btn btn-dark btn-lg rounded-3"
-                disabled={loading}
-                type="submit"
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                    Logging in...
-                  </>
-                ) : (
-                  "Log in"
-                )}
-              </button>
-            </div>
-          </form>
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" />
+                Logging in...
+              </>
+            ) : (
+              "Log in"
+            )}
+          </button>
         </div>
-
-        <div className="card-footer bg-white text-center py-3 border-0 rounded-bottom-4">
-          <small className="text-muted">
-            No account?{" "}
-            <Link
-              to="/signup"
-              className="fw-semibold text-decoration-none ms-1"
-            >
-              Sign up
-            </Link>
-          </small>
-        </div>
-
-      </div>
-    </div>
-  </div>
-);
+      </form>
+    </AuthCard>
+  );
 }
 
 export default Login;
