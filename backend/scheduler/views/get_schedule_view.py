@@ -32,25 +32,25 @@ def get_schedule(request):
 @permission_classes([IsAuthenticated])
 def edit_timeblock(request, id):
     """
-        Retrieve or partially update a TimeBlock belonging to the authenticated user.
+    Retrieve or partially update a TimeBlock belonging to the authenticated user.
 
-        GET:
-            - Fetches the time block data, including the associated date.
+    GET:
+        - Fetches the time block data, including the associated date.
 
-        PATCH:
-            - Allows partial updates to one or more fields of the TimeBlock.
-            - Validates fields via TimeBlockSerializer before saving.
+    PATCH:
+        - Allows partial updates to one or more fields of the TimeBlock.
+        - Validates fields via TimeBlockSerializer before saving.
 
-        Args:
-            request (Request): DRF Request object.
-            id (int): ID of the TimeBlock to retrieve or update.
+    Args:
+        request (Request): DRF Request object.
+        id (int): ID of the TimeBlock to retrieve or update.
 
-        Returns:
-            Response:
-                - GET: 200 OK with serialized time block data
-                - PATCH: 200 OK with updated serialized data
-                - 400 BAD REQUEST if validation fails
-                - 404 NOT FOUND if the time block does not belong to the user or does not exist
+    Returns:
+        Response:
+            - GET: 200 OK with serialized time block data
+            - PATCH: 200 OK with updated serialized data
+            - 400 BAD REQUEST if validation fails
+            - 404 NOT FOUND if the time block does not belong to the user or does not exist
     """
     block = get_object_or_404(TimeBlock, id=id, day__user=request.user)
 
