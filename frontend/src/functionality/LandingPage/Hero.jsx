@@ -2,26 +2,28 @@ import "./stylesheets/Hero.css";
 import heropic from "../../assets/LandingPage/heropicture.png";
 import { useNavigate } from "react-router-dom";
 
+
+
 function Hero() {
     const nav = useNavigate();
   return (
-    <div className="main">
-      <div className="hero-content">
-        <div className="left">
-          <div className="quote">
-            <span className="toptext">Plan your study.</span>
+    <div className="hero">
+      <div className="hero_content">
+        <div className="hero_left">
+          <div className="hero_quote">
+            <span className="hero_text_top">Plan your study.</span>
             <br></br>
-            <span className="bottomtext">Live your life.</span>
+            <span className="hero_text_bottom">Live your life.</span>
           </div>
 
-          <div className="buttons">
-            <button className="signup" onClick={() => nav("/signup")}>Sign Up</button>
-            <button className="login" onClick={() => nav("/login")}>Login</button>
+          <div className="hero_buttons">
+            <button className="hero_button signup" onClick={() => nav("/signup")}>Sign Up</button>
+            <button className="hero_button login" onClick={() => nav("/login")}>Login</button>
           </div>
         </div>
 
-        <div className="right">
-          <img src={heropic}></img>
+        <div className="hero_right">
+          <img className="hero_image" src={heropic} alt="StudySync hero"></img>
         </div>
       </div>
     </div>
