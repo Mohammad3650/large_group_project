@@ -8,16 +8,16 @@ import "./stylesheets/Landing.css";
 
 function Landing() {
   return (
-    <>
-    <div className="background">
+    
+    <div className="landing">
       <Navbar />
       <Hero />
 
       <Features/>
 
-      <div className="grid">
-      <section className="testimonials">
-      <h2>Student Testimonials</h2>
+      <div className="landing_testimonials_wrapper">
+      <section className="landing_testimonials">
+      <h2 className="landing_testimonials_title">Student Testimonials</h2>
       <Card
         avatar="OK"
         name="Omar Kassam"
@@ -63,7 +63,7 @@ function Landing() {
       </div>
 
       </div>
-    </>
+    
   );
 }
 
