@@ -22,8 +22,8 @@ class SchedulerTests(SimpleTestCase):
         scheduler = Scheduler(request, scheduled or [])
         scheduler.create_scheduled_intervals()
         scheduler.create_unscheduled_intervals()
-        scheduler.overlapConstraints()
-        scheduler.applyConstraints()
+        scheduler.overlap_constraints()
+        scheduler.apply_constraints()
         result = scheduler.solve()
         return scheduler, result
 

@@ -9,21 +9,21 @@ class TestScheduleRequestParser(TestCase):
         self.parser = ScheduleRequestParser()
 
     def test_time_to_abs_min_none(self):
-        self.assertIsNone(self.parser.timeToAbsMin(None))
+        self.assertIsNone(self.parser._time_to_abs_min(None))
 
     def test_time_to_abs_min_regular_time(self):
         t = time(2, 30)
-        self.assertEqual(self.parser.timeToAbsMin(t), 150)
+        self.assertEqual(self.parser._time_to_abs_min(t), 150)
 
     def test_create_windows_normal_window(self):
         windows = [ { "start_min": time(9, 0), "end_min": time(12, 0), "daily": True } ]
-        result = self.parser.createWindows(windows)
+        result = self.parser.create_windows(windows)
         expected = [ {"start_min": 540, "end_min": 720, "daily": True} ]
         self.assertEqual(result, expected)
 
     def test_create_windows_overnight_window(self):
         windows = [ { "start_min": time(22, 0), "end_min": time(2, 0), "daily": False } ]
-        result = self.parser.createWindows(windows)
+        result = self.parser.create_windows(windows)
         expected = [ {"start_min": 0, "end_min": 120, "daily": False}, {"start_min": 1320, "end_min": 1440, "daily": False} ]
         self.assertEqual(result, expected)
 
