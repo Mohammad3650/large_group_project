@@ -22,6 +22,12 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+
+from scheduler.views.calendar_subscription_view import (
+    calendar_subscriptions,
+    delete_calendar_subscription,
+    refresh_calendar_subscription,
+)
 from scheduler.views.create_schedule_view import create_schedule
 from scheduler.views.generator_view import GenerateScheduleView
 from scheduler.views.get_schedule_view import get_schedule, edit_timeblock
@@ -32,13 +38,7 @@ from scheduler.views.change_password_view import change_password
 from scheduler.views.delete_user_view import delete_user
 from scheduler.views.export_schedule_view import export_schedule_csv
 from scheduler.views.export_ics_view import export_schedule_ics
-
-from scheduler.views.user_auth_view import (
-    UserRegistrationView,
-    UserDetailsView,
-    DashboardView,
-    
-)
+from scheduler.views.user_auth_view import (UserRegistrationView, UserDetailsView, DashboardView,)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -66,4 +66,7 @@ urlpatterns = [
     path("api/user/delete/", delete_user),
     path("api/time-blocks/export/csv/", export_schedule_csv, name="api-export-timeblocks-csv"),
     path("api/time-blocks/export/ics/", export_schedule_ics, name="api-export-timeblocks-ics"),
+    path("api/calendar-subscriptions/", calendar_subscriptions, name="api-calendar-subscriptions"),
+    path("api/calendar-subscriptions/<int:subscription_id>/refresh/", refresh_calendar_subscription, name="api-refresh-calendar-subscription"),
+    path("api/calendar-subscriptions/<int:subscription_id>/", delete_calendar_subscription, name="api-delete-calendar-subscription"), 
 ]

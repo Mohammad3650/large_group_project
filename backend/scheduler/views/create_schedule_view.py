@@ -3,9 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, serializers
 
-from ..models import DayPlan, TimeBlock
 from scheduler.serializer.time_block_serializer import TimeBlockSerializer
-
+from scheduler.services.timeblock_service import create_timeblock, get_or_create_dayplan
 
 def validate_timeblock_payload(request):
     """
@@ -42,23 +41,7 @@ def validate_date(request):
     return date
 
 
-def get_or_create_dayplan(user, date):
-    dayplan, _ = DayPlan.objects.get_or_create(user=user, date=date)
-    return dayplan
 
-
-def create_timeblock(dayplan, data):
-    return TimeBlock.objects.create(
-        day=dayplan,
-        name=data.get("name"),
-        start_time=data.get(
-            "start_time"
-        ),  # the .get to ensure if no start time then None returned
-        end_time=data.get("end_time"),
-        location=data.get("location", ""),
-        block_type=data["block_type"],
-        description=data.get("description", ""),
-    )
 
 
 def timeblock_response_payload(dayplan, time_block):
