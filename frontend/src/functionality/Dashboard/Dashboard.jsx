@@ -8,6 +8,13 @@ import NotesSection from "./NotesSection.jsx";
 import useTimeBlocks from "../../utils/useTimeBlocks.js";
 import "./stylesheets/Dashboard.css";
 import handleExportCsv from "../../utils/handleExportCsv.js";
+import SubscriptionForm from "./SubscriptionForm.jsx";
+import SubscriptionList from "./SubscriptionList.jsx";
+import createCalendarSubscription from "../../utils/createCalendarSubscription.js";
+import deleteCalendarSubscription from "../../utils/deleteCalendarSubscription.js";
+import getCalendarSubscriptions from "../../utils/getCalendarSubscriptions.js";
+import handleExportIcs from "../../utils/handleExportIcs.js";
+import refreshCalendarSubscription from "../../utils/refreshCalendarSubscription.js";
 
 
 /**
@@ -35,6 +42,7 @@ function Dashboard() {
     const nav = useNavigate();
     const [message, setMessage] = useState("Loading...");
     const [error, setError] = useState("");
+    const [subscriptions, setSubscriptions] = useState([]);
 
     const [overdueTasks, setOverdueTasks] = useState([]);
     const [todayTasks, setTodayTasks] = useState([]);
@@ -42,7 +50,7 @@ function Dashboard() {
     const [weekTasks, setWeekTasks] = useState([]);
     const [beyondWeekTasks, setBeyondWeekTasks] = useState([]);
 
-    const { blocks } = useTimeBlocks();
+    const { blocks, refetchBlocks, error: blocksError, } = useTimeBlocks();
 
     useEffect(() => {
         document.body.classList.add("dashboard-page");
@@ -59,9 +67,9 @@ function Dashboard() {
     useEffect(() => {
         async function fetchDashboard() {
             try {
-                const res = await api.get("/dashboard/");
+                const response = await api.get("/dashboard/");
                 setMessage(res.data.message);
-            } catch (err) {
+            } catch (requestError) {
                 if (err?.response?.status === 401) {
                     nav("/login"); // token missing / expired
                 } else {
@@ -71,6 +79,19 @@ function Dashboard() {
         }
         fetchDashboard();
     }, [nav]);
+
+    useEffect(() => {
+        async function fetchSubscriptions() {
+            try {
+                const data = await getCalendarSubscriptions();
+                setSubscriptions(data);
+            } catch {
+                setError("Failed to load calendar subscriptions");
+            }
+        }
+
+        fetchSubscriptions();
+    }, []);
 
     useEffect(() => {
         if (blocks === null) return;
@@ -90,29 +111,64 @@ function Dashboard() {
         setBeyondWeekTasks(blocks.filter(b => getDate(b) > weekEnd).sort(sortTasksByDate));
     }, [blocks]);
 
-
-    async function handleExportIcs() {
+    async function handleImportSubscription(payload) {
         try {
-            const response = await api.get("/api/time-blocks/export/ics/", {
-                responseType: "blob",
-            });
+            setError("");
+            const responseData = await createCalendarSubscription(payload);
+            setSubscriptions((currentSubscriptions) => [
+                responseData.subscription,
+                ...currentSubscriptions,
+            ]);
+            await refetchBlocks();
+        } catch (requestError) {
+            const detail =
+                requestError?.response?.data?.source_url?.[0] ||
+                requestError?.response?.data?.name?.[0] ||
+                requestError?.response?.data?.message ||
+                "Failed to import timetable";
+            setError(detail);
+        }
+    }
 
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", "studysync_schedule.ics");
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            window.URL.revokeObjectURL(url);
-        } catch (err) {
-            setError("Failed to export ICS");
+    async function handleRefreshSubscription(subscriptionId) {
+        try {
+            setError("");
+            const responseData = await refreshCalendarSubscription(subscriptionId);
+
+            setSubscriptions((currentSubscriptions) =>
+                currentSubscriptions.map((subscription) =>
+                    subscription.id === subscriptionId
+                        ? responseData.subscription
+                        : subscription,
+                ),
+            );
+
+            await refetchBlocks();
+        } catch {
+            setError("Failed to refresh timetable subscription");
+        }
+    }
+
+    async function handleDeleteSubscription(subscriptionId) {
+        try {
+            setError("");
+            await deleteCalendarSubscription(subscriptionId);
+
+            setSubscriptions((currentSubscriptions) =>
+                currentSubscriptions.filter(
+                    (subscription) => subscription.id !== subscriptionId,
+                ),
+            );
+        } catch {
+            setError("Failed to delete timetable subscription");
         }
     }
 
     const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length + beyondWeekTasks.length;
 
-    if (error) return <p>{error}</p>;
+    if (error || blocksError) {
+    return <p>{error || blocksError}</p>;
+    }
 
     return (
         <>
@@ -128,7 +184,7 @@ function Dashboard() {
                             <button
                                 type="button"
                                 className="export-csv-button"
-                                onClick={handleExportCsv}
+                                onClick={() => handleExportCsv(setError)}
                             >
                                 Export CSV
                             </button>
@@ -136,11 +192,20 @@ function Dashboard() {
                             <button
                                 type="button"
                                 className="export-csv-button"
-                                onClick={handleExportIcs}
+                                onClick={() => handleExportIcs(setError)}
                             >
                                 Export ICS
                             </button>
                         </div>
+                    </div>
+
+                    <div className="subscription-section">
+                        <SubscriptionForm onImport={handleImportSubscription} />
+                        <SubscriptionList
+                            subscriptions={subscriptions}
+                            onRefresh={handleRefreshSubscription}
+                            onDelete={handleDeleteSubscription}
+                        />
                     </div>
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
