@@ -8,8 +8,15 @@ from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
 
 def validate_timeblock_payload(request):
-    # Pass data without 'date' to the serializer(as that is the timeblock data)
+    """
+    Validate incoming time block data excluding the date field.
 
+    Args:
+        request (Request): DRF request object.
+
+    Returns:
+        dict: Validated serializer data.
+    """
     block_data = {k: v for k, v in request.data.items() if k != "date"}
 
     serializer = TimeBlockSerializer(data=block_data)
@@ -18,6 +25,15 @@ def validate_timeblock_payload(request):
 
 
 def validate_date(request):
+    """
+    Validate that a date value is present in the request.
+
+    Args:
+        request (Request): DRF request object.
+
+    Returns:
+        str: Date string from the request payload.
+    """
     date = request.data.get("date")
 
     if not date:
