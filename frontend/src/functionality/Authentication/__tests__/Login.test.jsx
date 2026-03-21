@@ -1,13 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom/vitest";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-
-import Login from "../Login.jsx";
-import { publicApi } from "../../../api";
-import { isTokenValid } from "../../../utils/authToken";
-import { saveTokens } from "../../../utils/handleLocalStorage";
+import { render, screen, waitFor } from "@testing-library/react"
+import Login from "../Login.jsx"
+import { describe, it, expect, vi, beforeEach } from "vitest"
+import { MemoryRouter, Routes, Route } from "react-router-dom"
+import userEvent from "@testing-library/user-event"
+import "@testing-library/jest-dom/vitest"
 
 vi.mock("../../../utils/authToken.js", () => ({
     isTokenValid: vi.fn(),
@@ -23,7 +19,6 @@ vi.mock("../../../api.js", () => ({
         post: vi.fn(),
     },
 }))
-
 
 import { publicApi } from "../../../api.js";
 import { isTokenValid } from "../../../utils/authToken.js"
