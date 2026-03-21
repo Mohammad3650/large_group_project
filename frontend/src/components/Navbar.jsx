@@ -9,6 +9,14 @@ import userIcon from  "../assets/Navbar/user.png"
 import taskList from "../assets/Navbar/task_list.png";
 import calendarIcon from  "../assets/calendar_icon.png"
 
+
+/**
+ * Navbar component - site-wide navigation header.
+ * Displays the app title, navigation links, and user account controls.
+ * Shows dashboard and calendar links when the user is logged in,
+ * and a user dropdown (with username, profile link, and logout) on authentication.
+ * @returns {JSX.Element} The navigation header
+ */
 function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const username = useUsername(isLoggedIn);

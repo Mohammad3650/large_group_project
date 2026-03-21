@@ -9,47 +9,27 @@ import { publicApi } from "../../../api";
 import { isTokenValid } from "../../../utils/authToken";
 import { saveTokens } from "../../../utils/handleLocalStorage";
 
-vi.mock("../../../utils/authToken", () => ({
-  isTokenValid: vi.fn(),
+vi.mock("../../../utils/authToken.js", () => ({
+    isTokenValid: vi.fn(),
 }));
 
-vi.mock("../../../utils/handleLocalStorage", () => ({
-  saveTokens: vi.fn(),
+vi.mock("../../../utils/handleLocalStorage.js", () => ({
+    saveTokens: vi.fn(),
+    getAccessToken: vi.fn(),
 }));
 
-vi.mock("../../../api", () => ({
-  publicApi: {
-    post: vi.fn(),
-  },
-}));
+vi.mock("../../../api.js", () => ({
+    publicApi: {
+        post: vi.fn(),
+    },
+}))
 
-function renderLoginWithRoutes() {
-  return render(
-    <MemoryRouter initialEntries={["/login"]}>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<h2>Dashboard Page</h2>} />
-      </Routes>
-    </MemoryRouter>
-  );
-}
 
-async function fillLoginForm(user, overrides = {}) {
-  const values = {
-    email: "test@gmail.com",
-    password: "password123",
-    ...overrides,
-  };
+import { publicApi } from "../../../api.js";
+import { isTokenValid } from "../../../utils/authToken.js"
+import { saveTokens } from "../../../utils/handleLocalStorage.js"
 
-  await user.type(screen.getByPlaceholderText("you@example.com"), values.email);
-  await user.type(
-    screen.getByPlaceholderText("Enter your password..."),
-    values.password
-  );
-}
-
-describe("Login page", () => {
-  beforeEach(() => {
+beforeEach(() => {
     vi.clearAllMocks();
     isTokenValid.mockResolvedValue(false);
   });

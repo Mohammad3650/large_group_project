@@ -20,64 +20,24 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-vi.mock("../../../utils/authToken", () => ({
-  isTokenValid: vi.fn(),
+vi.mock("../../../utils/authToken.js", () => ({
+    isTokenValid: vi.fn(),
 }));
 
-vi.mock("../../../api", () => ({
-  publicApi: {
-    post: vi.fn(),
-  },
+vi.mock("../../../api.js", () => ({
+    publicApi: {
+        post: vi.fn(),
+    },
 }));
 
-vi.mock("../../../utils/handleLocalStorage", () => ({
-  saveTokens: vi.fn(),
+vi.mock("../../../utils/handleLocalStorage.js", () => ({
+    saveTokens: vi.fn(),
 }));
 
-vi.mock("../../../utils/errors", () => ({
-  formatApiError: vi.fn(),
-}));
+vi.mock("../../../utils/errors.js", () => ({
+    formatApiError: vi.fn(),
+}))
 
-function renderSignup() {
-  return render(
-    <MemoryRouter>
-      <Signup />
-    </MemoryRouter>
-  );
-}
-
-async function fillSignupForm(user, overrides = {}) {
-  const values = {
-    email: "test@example.com",
-    username: "testuser",
-    firstName: "Test",
-    lastName: "User",
-    phoneNumber: "07123456789",
-    password: "Password123!",
-    confirmPassword: "Password123!",
-    ...overrides,
-  };
-
-  await user.type(screen.getByPlaceholderText("you@example.com"), values.email);
-  await user.type(
-    screen.getByPlaceholderText("Choose a username"),
-    values.username
-  );
-  await user.type(screen.getByPlaceholderText("First name"), values.firstName);
-  await user.type(screen.getByPlaceholderText("Last name"), values.lastName);
-  await user.type(
-    screen.getByPlaceholderText("e.g. 07123 456 789"),
-    values.phoneNumber
-  );
-  await user.type(
-    screen.getByPlaceholderText("Create a password"),
-    values.password
-  );
-  await user.type(
-    screen.getByPlaceholderText("Confirm password"),
-    values.confirmPassword
-  );
-}
 
 describe("Signup page", () => {
   beforeEach(() => {
