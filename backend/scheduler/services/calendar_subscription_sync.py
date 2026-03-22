@@ -14,7 +14,7 @@ from scheduler.services.timeblock_service import (
 
 
 DEFAULT_BLOCK_TYPE = "lecture"
-LECTURE_NAME_LIMIT = 20
+LECTURE_NAME_LIMIT = 100
 LOCAL_TIMEZONE = ZoneInfo("Europe/London")
 
 
