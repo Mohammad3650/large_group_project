@@ -8,8 +8,21 @@ from scheduler.serializer.time_block_serializer import TimeBlockSerializer
 
 
 def validate_timeblock_payload(request):
-    # Pass data without 'date' to the serializer(as that is the timeblock data)
+    """
+    Validates the incoming time block data from the request.
 
+    Extracts all fields except 'date' and passes them to the serializer
+    for validation.
+
+    Args:
+        request (Request): DRF request object containing input data.
+
+    Returns:
+        dict: Validated time block data ready for creation.
+
+    Raises:
+        serializers.ValidationError: If validation fails.
+    """
     block_data = {k: v for k, v in request.data.items() if k != "date"}
 
     serializer = TimeBlockSerializer(data=block_data)
@@ -18,6 +31,18 @@ def validate_timeblock_payload(request):
 
 
 def validate_date(request):
+    """
+    Validates that a date is provided in the request.
+
+    Args:
+        request (Request): DRF request object containing input data.
+
+    Returns:
+        str: The provided date value.
+
+    Raises:
+        serializers.ValidationError: If no date is provided.
+    """
     date = request.data.get("date")
 
     if not date:
@@ -27,11 +52,25 @@ def validate_date(request):
 
 
 def get_or_create_dayplan(user, date):
+    """
+    Returns:
+        DayPlan: The retrieved or newly created DayPlan instance.
+    """
     dayplan, _ = DayPlan.objects.get_or_create(user=user, date=date)
     return dayplan
 
 
 def create_timeblock(dayplan, data):
+    """
+    Creates a new TimeBlock associated with a given DayPlan.
+
+    Args:
+        dayplan (DayPlan): The DayPlan to associate the TimeBlock with.
+        data (dict): Validated data for the TimeBlock.
+
+    Returns:
+        TimeBlock: The newly created TimeBlock instance.
+    """
     return TimeBlock.objects.create(
         day=dayplan,
         name=data.get("name"),
