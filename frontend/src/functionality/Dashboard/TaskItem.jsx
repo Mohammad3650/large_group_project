@@ -2,14 +2,12 @@ import { useState } from "react";
 import "./stylesheets/TaskItem.css";
 import dingSound from "../../assets/Dashboard/ding.mp3"
 
-const ding = new Audio(dingSound);
-ding.volume = 0.3;
-ding.load();
-
 /**
  * Plays the ding sound when the user completes a task.
  */
 function playDing() {
+    const ding = new Audio(dingSound);
+    ding.volume = 0.3;
     ding.currentTime = 0;
     ding.play().catch(err => console.error("Audio failed:", err));
 }

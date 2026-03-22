@@ -1,9 +1,9 @@
-.card1 {
+.card {
     margin-top: 20px;
     display: inline-block;
 }
 
-.card2 {
+.card_container {
     padding: var(--space-2xl) 40px;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
@@ -12,39 +12,37 @@
     height: 200px;
     gap: 24px;
     overflow: visible;
-    display: inline-block;
     width: 500px;
     align-items: center;
     display: flex;
     justify-content: flex-start;
 }
 
-
-.title {
-    font-family: Arial, sans-serif;
+.card_title,
+.card_text,
+.card_stars
+{
     margin: 0;
-    color: var(--text-dark);
+}
+
+
+.card_title {
     font-size: large;
 }
 
-.text {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    color: var(--text-dark);
+.card_text {
     font-size: 18px;
     line-height: 1;
 }
 
 
-.stars {
+.card_stars {
     font-size: 25px;
-    margin: 0;
     line-height: 1;
-    /* padding: auto; */
 }
 
 
-.avatar {
+.card_avatar {
     width: 85px;
     height: 85px;
     flex: 0 0 auto;
@@ -54,7 +52,6 @@
     box-shadow:
         0 8px 20px rgba(79, 70, 229, 0.35),
         inset 0 0 0 2px rgba(255, 255, 255, 0.4);
-    /* margin-left: auto; */
 
     display: flex;
     align-items: center;
@@ -68,7 +65,7 @@
 
 }
 
-.content
+.card_content
 {
     display: flex;
     flex-direction: column;
@@ -79,4 +76,6 @@
     gap: 10px;
     margin-left: 0;
     min-width: 0;
+    font-family: Arial, sans-serif;
+    color: var(--text-dark);
 }
