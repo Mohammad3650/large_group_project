@@ -1,10 +1,11 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from scheduler.models import CalendarSubscription
+from scheduler.models import CalendarSubscription, TimeBlock
 from scheduler.serializer.calendar_subscription_serializer import (
     CalendarSubscriptionSerializer,
 )
@@ -89,7 +90,7 @@ def refresh_calendar_subscription(request, subscription_id):
 @permission_classes([IsAuthenticated])
 def delete_calendar_subscription(request, subscription_id):
     """
-    Delete a saved calendar subscription for the authenticated user.
+    Delete a saved calendar subscription and its imported time blocks.
 
     Returns:
         Response: Success message after deletion.
@@ -99,7 +100,17 @@ def delete_calendar_subscription(request, subscription_id):
         id=subscription_id,
         user=request.user,
     )
-    subscription.delete()
+
+    imported_event_qs = subscription.imported_events.select_related("time_block")
+    time_block_ids = [event.time_block_id for event in imported_event_qs]
+
+    with transaction.atomic():
+        imported_event_qs.delete()
+        TimeBlock.objects.filter(
+            id__in=time_block_ids,
+            day__user=request.user,
+        ).delete()
+        subscription.delete()
 
     return Response(
         {"message": "Calendar subscription deleted successfully."},

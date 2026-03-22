@@ -1,24 +1,28 @@
 from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
-from django.utils import timezone
 from icalendar import Calendar
+
+
+LOCAL_TIMEZONE = ZoneInfo("Europe/London")
 
 
 def _normalise_datetime(value):
     """
-    Convert an ICS date or datetime value into a timezone-aware datetime.
+    Convert an ICS date or datetime value into a Europe/London datetime.
 
     Args:
         value (date | datetime): The raw ICS date/datetime value.
 
     Returns:
-        datetime | None: A timezone-aware datetime, or None if the value
+        datetime | None: A timezone-aware local datetime, or None if the value
         is not suitable for timed events.
     """
     if isinstance(value, datetime):
-        if timezone.is_naive(value):
-            value = timezone.make_aware(value, timezone.get_current_timezone())
-        return timezone.localtime(value)
+        if value.tzinfo is None:
+            return value.replace(tzinfo=LOCAL_TIMEZONE)
+
+        return value.astimezone(LOCAL_TIMEZONE)
 
     if isinstance(value, date):
         return None
@@ -38,6 +42,7 @@ def _safe_text(value):
     """
     if value is None:
         return ""
+
     return str(value).strip()
 
 

@@ -30,11 +30,14 @@ const formatDate = (date) => {
 function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
 
+    const CALENDAR_TIMEZONE = "Europe/London";
+
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],
         plugins: [createEventModalPlugin(), eventsService],
         events: blocks,
-        selectedDate: Temporal.Now.plainDateISO(),
+        timezone: CALENDAR_TIMEZONE,
+        selectedDate: Temporal.Now.plainDateISO(CALENDAR_TIMEZONE),
     });
 
     function handleDelete(id) {

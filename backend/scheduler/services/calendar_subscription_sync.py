@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 from django.db import transaction
 from django.utils import timezone
 
@@ -13,6 +15,7 @@ from scheduler.services.timeblock_service import (
 
 DEFAULT_BLOCK_TYPE = "lecture"
 LECTURE_NAME_LIMIT = 20
+LOCAL_TIMEZONE = ZoneInfo("Europe/London")
 
 
 def classify_block_type(summary):
@@ -33,6 +36,43 @@ def classify_block_type(summary):
         return "lab"
 
     return DEFAULT_BLOCK_TYPE
+
+
+def clean_event_description(description):
+    """
+    Remove repeated metadata lines from imported calendar descriptions.
+
+    Args:
+        description (str): Raw imported description.
+
+    Returns:
+        str: Cleaned description.
+    """
+    if not description:
+        return ""
+
+    ignored_prefixes = (
+        "date:",
+        "time:",
+        "location:",
+        "venue:",
+        "event type:",
+    )
+
+    cleaned_lines = []
+
+    for raw_line in description.splitlines():
+        line = raw_line.strip()
+
+        if not line:
+            continue
+
+        if any(line.lower().startswith(prefix) for prefix in ignored_prefixes):
+            continue
+
+        cleaned_lines.append(line)
+
+    return "\n".join(cleaned_lines)
 
 
 def build_external_event_uid(event):
@@ -67,13 +107,16 @@ def build_timeblock_data(event):
     """
     summary = (event["summary"] or "Imported Event").strip()
 
+    local_start = event["start_datetime"].astimezone(LOCAL_TIMEZONE)
+    local_end = event["end_datetime"].astimezone(LOCAL_TIMEZONE)
+
     return {
         "name": summary[:LECTURE_NAME_LIMIT],
-        "start_time": event["start_datetime"].time(),
-        "end_time": event["end_datetime"].time(),
+        "start_time": local_start.time().replace(tzinfo=None),
+        "end_time": local_end.time().replace(tzinfo=None),
         "location": event["location"],
         "block_type": classify_block_type(summary),
-        "description": event["description"],
+        "description": clean_event_description(event["description"]),
     }
 
 
@@ -114,7 +157,10 @@ def sync_calendar_subscription(subscription):
             continue
 
         external_event_uid = build_external_event_uid(event)
-        event_date = event["start_datetime"].date()
+
+        local_start = event["start_datetime"].astimezone(LOCAL_TIMEZONE)
+        event_date = local_start.date()
+
         dayplan = get_or_create_dayplan(subscription.user, event_date)
         timeblock_data = build_timeblock_data(event)
 

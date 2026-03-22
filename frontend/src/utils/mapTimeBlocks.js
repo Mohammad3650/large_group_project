@@ -1,4 +1,20 @@
 /**
+ * Build a local Temporal.ZonedDateTime from a YYYY-MM-DD date and HH:MM[:SS] time.
+ *
+ * @param {string} date - Event date
+ * @param {string} time - Event time
+ * @param {string} timezone - Browser timezone
+ * @returns {Temporal.ZonedDateTime} Local zoned datetime
+ */
+function buildLocalZonedDateTime(date, time, timezone) {
+    const trimmedTime = time.slice(0, 5);
+
+    return Temporal.PlainDateTime
+        .from(`${date}T${trimmedTime}:00`)
+        .toZonedDateTime(timezone);
+}
+
+/**
  * Maps raw time block data into the standard format used by the calendar and dashboard.
  *
  * @param {Array} blocks - Raw time block data
@@ -6,6 +22,7 @@
  */
 function mapTimeBlocks(blocks) {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     return blocks.map((block, index) => ({
         id: block.id ?? index,
         name: block.name,
@@ -13,8 +30,8 @@ function mapTimeBlocks(blocks) {
         date: block.date,
         startTime: block.start_time.slice(0, 5),
         endTime: block.end_time.slice(0, 5),
-        start: Temporal.ZonedDateTime.from(`${block.date}T${block.start_time.slice(0, 5)}[${timezone}]`),
-        end: Temporal.ZonedDateTime.from(`${block.date}T${block.end_time.slice(0, 5)}[${timezone}]`),
+        start: buildLocalZonedDateTime(block.date, block.start_time, timezone),
+        end: buildLocalZonedDateTime(block.date, block.end_time, timezone),
         location: block.location,
         blockType: block.block_type ? block.block_type.charAt(0).toUpperCase() + block.block_type.slice(1) : "N/A",
         description: block.description || "N/A",
