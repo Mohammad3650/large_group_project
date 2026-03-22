@@ -4,9 +4,18 @@ import { MemoryRouter, Routes, Route } from "react-router-dom"
 import ProtectedRoute from "../ProtectedRoute.jsx"
 import { isTokenValid } from "../../utils/authToken.js"
 
-vi.mock("../utils/authToken", () => ({
+
+/**
+ * Mock the authToken utility to control authentication behaviour in tests.
+ */
+vi.mock("../../utils/authToken.js", () => ({
     isTokenValid: vi.fn(),
 }));
+
+/**
+ * Test for ProtectedRoute component
+ * Ensures users are either allowed access or redirected to Login page based on token validity
+ */
 
 describe("ProtectedRoute", () => {
     beforeEach(() => {

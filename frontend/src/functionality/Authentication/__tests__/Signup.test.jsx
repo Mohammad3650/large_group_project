@@ -19,21 +19,21 @@ vi.mock("react-router-dom", async () => {
     };
 });
 
-vi.mock("../../utils/authToken", () => ({
+vi.mock("../../../utils/authToken.js", () => ({
     isTokenValid: vi.fn(),
 }));
 
-vi.mock("../../api", () => ({
+vi.mock("../../../api.js", () => ({
     publicApi: {
         post: vi.fn(),
     },
 }));
 
-vi.mock("../../utils/handleLocalStorage", () => ({
+vi.mock("../../../utils/handleLocalStorage.js", () => ({
     saveTokens: vi.fn(),
 }));
 
-vi.mock("../../utils/errors", () => ({
+vi.mock("../../../utils/errors.js", () => ({
     formatApiError: vi.fn(),
 }))
 
