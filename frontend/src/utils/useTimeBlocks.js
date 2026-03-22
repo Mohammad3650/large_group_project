@@ -1,4 +1,4 @@
-import { useEffect, useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "../api.js";
 import mapTimeBlocks from "./mapTimeBlocks.js";
 

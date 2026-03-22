@@ -11,6 +11,7 @@ export async function isTokenValid() {
         return true;
     } catch {
         logout();
+        window.location.href = "/login"; // Redirect back to login page on token failure
         return false;
     }
     

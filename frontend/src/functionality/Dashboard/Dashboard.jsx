@@ -68,15 +68,16 @@ function Dashboard() {
         async function fetchDashboard() {
             try {
                 const response = await api.get("/dashboard/");
-                setMessage(res.data.message);
-            } catch (requestError) {
+                setMessage(response.data.message);
+            } catch (err) {
                 if (err?.response?.status === 401) {
-                    nav("/login"); // token missing / expired
+                    nav("/login");
                 } else {
                     setError("Failed to load dashboard");
                 }
             }
         }
+
         fetchDashboard();
     }, [nav]);
 
