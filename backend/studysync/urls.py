@@ -26,7 +26,8 @@ from scheduler.views.create_schedule_view import create_schedule
 from scheduler.views.generator_view import GenerateScheduleView
 from scheduler.views.get_schedule_view import get_schedule, edit_timeblock
 from scheduler.views.delete_schedule_view import delete_schedule
-from scheduler.views.note_view import get_note, save_note
+from scheduler.views.get_note_view import get_note
+from scheduler.views.save_note_view import save_note
 from scheduler.views.save_plan_view import SaveWeeklyPlanView
 from scheduler.views.change_password_view import change_password
 from scheduler.views.delete_user_view import delete_user
