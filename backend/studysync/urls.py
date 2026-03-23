@@ -24,7 +24,8 @@ from rest_framework_simplejwt.views import (
 )
 from scheduler.views.create_schedule_view import create_schedule
 from scheduler.views.generator_view import GenerateScheduleView
-from scheduler.views.get_schedule_view import get_schedule, edit_timeblock
+from scheduler.views.get_schedule_view import get_schedule
+from scheduler.views.edit_schedule_view import edit_timeblock
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.note_view import get_note, save_note
 from scheduler.views.save_plan_view import SaveWeeklyPlanView
@@ -37,7 +38,6 @@ from scheduler.views.user_auth_view import (
     UserRegistrationView,
     UserDetailsView,
     DashboardView,
-    
 )
 
 urlpatterns = [
@@ -60,10 +60,20 @@ urlpatterns = [
     path("api/notes/save/", save_note, name="api-save-note"),
     path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
     path("api/user/", UserDetailsView.as_view(), name="user-details"),
-    path("schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"),
+    path(
+        "schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"
+    ),
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
     path("api/user/change-password/", change_password),
     path("api/user/delete/", delete_user),
-    path("api/time-blocks/export/csv/", export_schedule_csv, name="api-export-timeblocks-csv"),
-    path("api/time-blocks/export/ics/", export_schedule_ics, name="api-export-timeblocks-ics"),
+    path(
+        "api/time-blocks/export/csv/",
+        export_schedule_csv,
+        name="api-export-timeblocks-csv",
+    ),
+    path(
+        "api/time-blocks/export/ics/",
+        export_schedule_ics,
+        name="api-export-timeblocks-ics",
+    ),
 ]
