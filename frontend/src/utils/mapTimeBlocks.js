@@ -1,3 +1,5 @@
+import toLocalDateTime from "./toLocalDateTime.js";
+
 /**
  * Maps raw time block data into the standard format used by the calendar and dashboard.
  *
@@ -5,22 +7,9 @@
  * @returns {Array} The mapped time blocks
  */
 function mapTimeBlocks(blocks) {
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
     return blocks.map((block, index) => {
-        // Interpret stored times as UTC then convert to user's local timezone
-        const start = Temporal.ZonedDateTime.from(
-            `${block.date}T${block.start_time.slice(0, 5)}[UTC]`
-        ).withTimeZone(userTimezone);
-
-        const end = Temporal.ZonedDateTime.from(
-            `${block.date}T${block.end_time.slice(0, 5)}[UTC]`
-        ).withTimeZone(userTimezone);
-
-        // Recalculate date from converted start time in case UTC conversion crossed midnight
-        const localDate = start.toPlainDate().toString();
-        const startTime = `${String(start.hour).padStart(2, "0")}:${String(start.minute).padStart(2, "0")}`;
-        const endTime = `${String(end.hour).padStart(2, "0")}:${String(end.minute).padStart(2, "0")}`;
+        const { zonedDateTime: start, localDate, localTime: startTime } = toLocalDateTime(block.date, block.start_time);
+        const { zonedDateTime: end, localTime: endTime } = toLocalDateTime(block.date, block.end_time);
 
         return {
             id: block.id ?? index,

@@ -14,6 +14,7 @@ import locationIcon from "../../assets/CalendarEvent/location_icon.png"
 import timeIcon from "../../assets/CalendarEvent/time_icon.png"
 import Navbar from "../../components/Navbar.jsx";
 import deleteTimeBlock from "../../utils/deleteTimeBlock.js";
+import getUserTimezone from "../../utils/getUserTimezone.js";
 
 
 /**
@@ -35,7 +36,7 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
         plugins: [createEventModalPlugin(), eventsService],
         events: blocks,
         selectedDate: Temporal.Now.plainDateISO(),
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezone: getUserTimezone(),
     });
 
     function handleDelete(id) {

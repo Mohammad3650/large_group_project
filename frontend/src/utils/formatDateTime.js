@@ -6,7 +6,7 @@
  * @param {string} endTime - End time string (e.g. "10:00:00")
  * @returns {string} Formatted string (e.g. "09:00 - 10:00 19 Feb")
  */
-function formatDatetime(date, startTime, endTime) {
+function formatDateTime(date, startTime, endTime) {
     const dateObj = new Date(`${date}T${startTime}`);
     const endObj = new Date(`${date}T${endTime}`);
     const day = dateObj.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
@@ -15,4 +15,4 @@ function formatDatetime(date, startTime, endTime) {
     return `${start} - ${end} ${day}`;
 }
 
-export default formatDatetime;
+export default formatDateTime;

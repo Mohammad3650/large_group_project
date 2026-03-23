@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./stylesheets/TimeBlockForm.css";
+import getUserTimezone from "../utils/getUserTimezone.js";
 
 
 /**
@@ -86,7 +87,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
 
   function handleSubmit(e) {
     e.preventDefault();
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const timezone = getUserTimezone();
 
     // Submit each block separately
     const dataList = blocks.map(block => {

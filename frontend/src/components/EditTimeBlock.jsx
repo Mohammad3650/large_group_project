@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import TimeBlockForm from "./TimeBlockForm";
+import toLocalDateTime from "../utils/toLocalDateTime.js";
+import getUserTimezone from "../utils/getUserTimezone.js";
 
 function EditTimeBlock() {
   const { id } = useParams();
@@ -14,20 +16,10 @@ function EditTimeBlock() {
   api.get(`/api/timeblocks/${id}/edit`)
     .then(res => {
         const data = res.data;
-        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const { localDate, localTime: startTime } = toLocalDateTime(data.date, data.start_time);
+        const { localTime: endTime } = toLocalDateTime(data.date, data.end_time);
 
-        // Convert UTC times to local time for display in the form
-        const start = Temporal.ZonedDateTime.from(
-            `${data.date}T${data.start_time.slice(0, 5)}[UTC]`
-        ).withTimeZone(userTimezone);
-        const end = Temporal.ZonedDateTime.from(
-            `${data.date}T${data.end_time.slice(0, 5)}[UTC]`
-        ).withTimeZone(userTimezone);
-
-        const localDate = start.toPlainDate().toString();
-        const startTime = `${String(start.hour).padStart(2, "0")}:${String(start.minute).padStart(2, "0")}`;
-        const endTime = `${String(end.hour).padStart(2, "0")}:${String(end.minute).padStart(2, "0")}`;
-      setInitialData({
+        setInitialData({
         id: data.id,
         date: localDate,
         name: data.name,
@@ -59,7 +51,7 @@ function EditTimeBlock() {
         ...block,
         start_time: block.start_time === "" ? null : block.start_time,
         end_time: block.end_time === "" ? null : block.end_time,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezone: getUserTimezone(),
       };
 
       try {

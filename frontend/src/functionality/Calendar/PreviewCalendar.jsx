@@ -7,6 +7,7 @@ import "./stylesheets/Calendar.css"
 import CalendarView from "./CalendarView.jsx";
 import CalendarPlaceholder from "./CalendarPlaceholder.jsx";
 import mapTimeBlocks from "../../utils/mapTimeBlocks.js";
+import getUserTimezone from "../../utils/getUserTimezone.js";
 
 function PreviewCalendar() {
     const [blocks, setBlocks] = useState(null);
@@ -36,7 +37,7 @@ function PreviewCalendar() {
         const data = {
             week_start: schedule.week_start,
             events: schedule.events,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            timezone: getUserTimezone(),
         };
         await api.post("/api/plans/save/", data);
         nav("/dashboard");
