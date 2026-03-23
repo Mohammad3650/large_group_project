@@ -1,4 +1,4 @@
-# StudySync
+# StudySync by Raza's Crew
  
 ## Description
 
