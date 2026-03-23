@@ -158,6 +158,7 @@ describe("TimeBlockForm tests", () => {
         block_type: "study",
         start_time: "09:00",
         end_time: "11:00",
+        timezone: "Europe/London",
       },
     ]);
   });
@@ -323,6 +324,7 @@ describe("TimeBlockForm tests", () => {
         block_type: "study",
         start_time: "09:00",
         end_time: "10:00",
+        timezone: "Europe/London",
       },
       {
         id: undefined,
@@ -333,6 +335,7 @@ describe("TimeBlockForm tests", () => {
         block_type: "study",
         start_time: "18:00",
         end_time: "19:00",
+        timezone: "Europe/London",
       },
     ]);
   });
