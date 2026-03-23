@@ -1,16 +1,15 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import mapTimeBlocks from "../mapTimeBlocks";
 
-// Mock Intl.DateTimeFormat to return a predictable timezone
-beforeEach(() => {
-    vi.spyOn(Intl, "DateTimeFormat").mockReturnValue({
-        resolvedOptions: () => ({ timeZone: "Europe/London" }),
-    });
-});
+vi.mock("../toLocalDateTime.js", () => ({
+    default: vi.fn((date, time) => {
+        const localTime = time.slice(0, 5);
+        const zonedDateTime = `${date}T${localTime}[Europe/London]`;
+        return { zonedDateTime, localDate: date, localTime };
+    }),
+}));
 
-// Mock the Temporal API
-const mockZonedDateTime = { from: vi.fn((str) => str) };
-global.Temporal = { ZonedDateTime: mockZonedDateTime };
+import toLocalDateTime from "../toLocalDateTime.js";
 
 const baseBlock = {
     id: 1,
@@ -35,6 +34,8 @@ describe("mapTimeBlocks", () => {
             date: "2024-03-18",
             startTime: "09:00",
             endTime: "10:00",
+            start: "2024-03-18T09:00[Europe/London]",
+            end: "2024-03-18T10:00[Europe/London]",
             location: "Room 101",
             blockType: "Lecture",
             description: "Introduction to testing",
@@ -42,31 +43,40 @@ describe("mapTimeBlocks", () => {
         });
     });
 
-    it("slices start_time and end_time to HH:MM format", () => {
-        const result = mapTimeBlocks([baseBlock]);
-        expect(result[0].startTime).toBe("09:00");
-        expect(result[0].endTime).toBe("10:00");
-    });
-
-    it("constructs the correct Temporal.ZonedDateTime strings", () => {
+    it("calls toLocalDateTime with date + start_time and date + end_time", () => {
+        vi.clearAllMocks();
         mapTimeBlocks([baseBlock]);
-        expect(mockZonedDateTime.from).toHaveBeenCalledWith("2024-03-18T09:00[Europe/London]");
-        expect(mockZonedDateTime.from).toHaveBeenCalledWith("2024-03-18T10:00[Europe/London]");
+
+        expect(toLocalDateTime).toHaveBeenCalledWith("2024-03-18", "09:00:00");
+        expect(toLocalDateTime).toHaveBeenCalledWith("2024-03-18", "10:00:00");
+        expect(toLocalDateTime).toHaveBeenCalledTimes(2);
     });
 
-    it("uses the array index as the ID when block.id is null", () => {
-        const block = { ...baseBlock, id: null };
-        const result = mapTimeBlocks([block]);
+    it("uses the block id when present", () => {
+        const result = mapTimeBlocks([{ ...baseBlock, id: 42 }]);
+        expect(result[0].id).toBe(42);
+    });
+
+    it("uses the array index as the id when block.id is null", () => {
+        const result = mapTimeBlocks([{ ...baseBlock, id: null }]);
         expect(result[0].id).toBe(0);
     });
 
-    it("uses the array index as the ID when block.id is undefined", () => {
-        const block = { ...baseBlock, id: undefined };
-        const result = mapTimeBlocks([block]);
+    it("uses the array index as the id when block.id is undefined", () => {
+        const result = mapTimeBlocks([{ ...baseBlock, id: undefined }]);
         expect(result[0].id).toBe(0);
     });
 
-    it("capitalises the block_type correctly", () => {
+    it("assigns correct indexes as ids when multiple blocks lack ids", () => {
+        const result = mapTimeBlocks([
+            { ...baseBlock, id: undefined },
+            { ...baseBlock, id: undefined },
+        ]);
+        expect(result[0].id).toBe(0);
+        expect(result[1].id).toBe(1);
+    });
+
+    it("capitalises block_type for blockType", () => {
         const result = mapTimeBlocks([{ ...baseBlock, block_type: "seminar" }]);
         expect(result[0].blockType).toBe("Seminar");
     });
@@ -91,19 +101,29 @@ describe("mapTimeBlocks", () => {
         expect(result[0].description).toBe("N/A");
     });
 
-    it("maps multiple blocks correctly", () => {
-        const blocks = [
+    it("sets description to 'N/A' when description is undefined", () => {
+        const result = mapTimeBlocks([{ ...baseBlock, description: undefined }]);
+        expect(result[0].description).toBe("N/A");
+    });
+
+    it("preserves a non-empty description", () => {
+        const result = mapTimeBlocks([{ ...baseBlock, description: "Deep dive" }]);
+        expect(result[0].description).toBe("Deep dive");
+    });
+
+    it("maps multiple blocks and preserves order", () => {
+        const result = mapTimeBlocks([
             baseBlock,
             { ...baseBlock, id: 2, name: "Seminar", block_type: "seminar" },
-        ];
-        const result = mapTimeBlocks(blocks);
+        ]);
+
         expect(result).toHaveLength(2);
+        expect(result[0].name).toBe("Lecture");
         expect(result[1].name).toBe("Seminar");
         expect(result[1].blockType).toBe("Seminar");
     });
 
     it("returns an empty array when given an empty array", () => {
-        const result = mapTimeBlocks([]);
-        expect(result).toEqual([]);
+        expect(mapTimeBlocks([])).toEqual([]);
     });
 });

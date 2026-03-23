@@ -5,6 +5,7 @@ from rest_framework import status, serializers
 
 from ..models import DayPlan, TimeBlock
 from scheduler.serializer.time_block_serializer import TimeBlockSerializer
+from scheduler.utils.to_utc import to_utc
 
 
 def validate_timeblock_payload(request):
@@ -60,7 +61,7 @@ def get_or_create_dayplan(user, date):
     return dayplan
 
 
-def create_timeblock(dayplan, data):
+def create_timeblock(dayplan, data, original_date):
     """
     Creates a new TimeBlock associated with a given DayPlan.
 
@@ -71,16 +72,27 @@ def create_timeblock(dayplan, data):
     Returns:
         TimeBlock: The newly created TimeBlock instance.
     """
+    timezone = data.get("timezone", "UTC")
+
+    start_time_utc, start_date_utc = to_utc(
+        str(data.get("start_time")), original_date, timezone
+    )
+    end_time_utc, _ = to_utc(
+        str(data.get("end_time")), original_date, timezone
+    )
+
+    if str(start_date_utc) != original_date:
+        dayplan = get_or_create_dayplan(dayplan.user, start_date_utc)
+
     return TimeBlock.objects.create(
         day=dayplan,
         name=data.get("name"),
-        start_time=data.get(
-            "start_time"
-        ),  # the .get to ensure if no start time then None returned
-        end_time=data.get("end_time"),
+        start_time=start_time_utc,
+        end_time=end_time_utc,
         location=data.get("location", ""),
         block_type=data["block_type"],
         description=data.get("description", ""),
+        timezone=timezone,
     )
 
 
@@ -104,6 +116,7 @@ def timeblock_response_payload(dayplan, time_block):
         "location": time_block.location,
         "block_type": time_block.block_type,
         "description": time_block.description,
+        "timezone": time_block.timezone,
     }
 
 
@@ -131,7 +144,7 @@ def create_schedule(request):
 
     data = validate_timeblock_payload(request)
     dayplan = get_or_create_dayplan(request.user, date)
-    time_block = create_timeblock(dayplan, data)
+    time_block = create_timeblock(dayplan, data, date)
 
     return Response(
         timeblock_response_payload(dayplan, time_block),
