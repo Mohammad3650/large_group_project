@@ -21,6 +21,10 @@ The members of this team are:
 
 Live URL: [currently not available]
 
+## Demo Accounts 
+
+[Not available yet]
+
 ## Features
 
 - Authentication & User Management
@@ -28,6 +32,22 @@ Live URL: [currently not available]
 - Schedule Generation
 - Interactive Timetable
 - Dashboard
+
+## Tech Stack
+
+### Frontend
+- React (Vite)
+- JavaScript (ES6+)
+- Bootstrap
+
+### Backend
+- Django
+- Django REST Framework
+
+### Tooling & Development Environment
+- Git & Github - version control & collaboration
+- npm - frontend dependency management
+- Python virtal environment (venv) - backend dependency isolation
 
 ## Setup Instructions (Quick Start)
 
@@ -48,7 +68,11 @@ cd backend
 Create a virtual environment for the backend and activate it:
 ```
 python -m venv venv
+# Windows
 venv\Scripts\Activate
+
+# Mac/Linux
+source venv\bin\activate
 ```
 Install the backend dependencies:
 ```
@@ -56,14 +80,14 @@ pip install -r requirements.txt
 ```
 Apply the database migrations:
 ```
-python manage.py seed
+python manage.py migrate
 ```
 Start the backend server:
 ```
 python manage.py runserver
 ```
 
-#### 2.1 Frontend setup
+#### 2.2 Frontend setup
 
 Open a new terminal and go to the frontend folder:
 ```
@@ -78,4 +102,15 @@ Run the frontend development server
 npm run dev
 ```
 
+## Testing
 
+Run tests using:
+
+- For backend: `python manage.py test`
+- For frontend: `npm test`
+
+## External Resources
+- React - https://react.dev/
+- Django - https://www.djangoproject.com/
+- Django REST Framework - https://www.django-rest-framework.org/
+- Bootstrap - https://getbootstrap.com/
