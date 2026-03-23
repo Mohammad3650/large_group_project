@@ -10,14 +10,26 @@ function EditTimeBlock() {
   const [serverErrors, setServerErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+    useEffect(() => {
   api.get(`/api/timeblocks/${id}/edit`)
     .then(res => {
-      console.log("GET response:", res.data);
-      const data = res.data;
+        const data = res.data;
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        // Convert UTC times to local time for display in the form
+        const start = Temporal.ZonedDateTime.from(
+            `${data.date}T${data.start_time.slice(0, 5)}[UTC]`
+        ).withTimeZone(userTimezone);
+        const end = Temporal.ZonedDateTime.from(
+            `${data.date}T${data.end_time.slice(0, 5)}[UTC]`
+        ).withTimeZone(userTimezone);
+
+        const localDate = start.toPlainDate().toString();
+        const startTime = `${String(start.hour).padStart(2, "0")}:${String(start.minute).padStart(2, "0")}`;
+        const endTime = `${String(end.hour).padStart(2, "0")}:${String(end.minute).padStart(2, "0")}`;
       setInitialData({
         id: data.id,
-        date: data.date || "",   // ← ADD THIS
+        date: localDate,
         name: data.name,
         location: data.location,
         block_type: data.block_type,
@@ -25,8 +37,8 @@ function EditTimeBlock() {
         //is_fixed: data.is_fixed,
         //duration: data.duration || "",
         //time_of_day: data.time_of_day_preference || "",
-        start_time: data.start_time || "",
-        end_time: data.end_time || "",
+        start_time: startTime,
+        end_time: endTime,
       });
     })
     .catch(err => console.error(err));
@@ -47,6 +59,7 @@ function EditTimeBlock() {
         ...block,
         start_time: block.start_time === "" ? null : block.start_time,
         end_time: block.end_time === "" ? null : block.end_time,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       };
 
       try {

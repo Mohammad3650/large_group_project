@@ -33,7 +33,11 @@ function PreviewCalendar() {
     }, []);
 
     async function save() {
-        const data = { week_start: schedule.week_start, events: schedule.events };
+        const data = {
+            week_start: schedule.week_start,
+            events: schedule.events,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        };
         await api.post("/api/plans/save/", data);
         nav("/dashboard");
     }
