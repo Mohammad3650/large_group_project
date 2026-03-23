@@ -5,16 +5,16 @@ import { MemoryRouter, Routes, Route } from "react-router-dom"
 import userEvent from "@testing-library/user-event"
 import "@testing-library/jest-dom/vitest"
 
-vi.mock("../../utils/authToken", () => ({
+vi.mock("../../../utils/authToken.js", () => ({
     isTokenValid: vi.fn(),
 }));
 
-vi.mock("../../utils/handleLocalStorage", () => ({
+vi.mock("../../../utils/handleLocalStorage.js", () => ({
     saveTokens: vi.fn(),
     getAccessToken: vi.fn(),
 }));
 
-vi.mock("../../api", () => ({
+vi.mock("../../../api.js", () => ({
     publicApi: {
         post: vi.fn(),
     },
