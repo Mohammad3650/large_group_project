@@ -8,17 +8,20 @@ import CalendarView from "./CalendarView.jsx";
 import CalendarPlaceholder from "./CalendarPlaceholder.jsx";
 import mapTimeBlocks from "../../utils/mapTimeBlocks.js";
 
+// Component for previewing a generated schedule before saving
 function PreviewCalendar() {
     const [blocks, setBlocks] = useState(null);
     const [schedule, setSchedule] = useState(null);
     const nav = useNavigate();
 
+    // Fetch and process the generated schedule from sessionStorage
     useEffect(() => {
         async function fetchTimeBlocks() {
             try {
                 const stored = sessionStorage.getItem("generatedSchedule");
 
                 const schedule = JSON.parse(stored);
+                if (!schedule) return;
                 setSchedule(schedule);
 
                 const events = schedule["events"];
@@ -32,12 +35,14 @@ function PreviewCalendar() {
         fetchTimeBlocks();
     }, []);
 
+    // Save the schedule to the backend and navigate to dashboard
     async function save() {
         const data = { week_start: schedule.week_start, events: schedule.events };
         await api.post("/api/plans/save/", data);
         nav("/dashboard");
     }
 
+    // Discard the schedule and return to dashboard
     function leave() {
         sessionStorage.removeItem("generatedSchedule");
         nav("/dashboard");
