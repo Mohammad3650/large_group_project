@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicApi } from "../../api";
 import { formatApiError } from "../../utils/errors";
-import { saveTokens } from "../../utils/handleLocalStorage";
+import { saveTokens } from "../../utils/authStorage";
 import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
 import AuthCard from "../../components/AuthCard";
 import AuthField from "../../components/AuthField";

@@ -7,7 +7,7 @@ import "@testing-library/jest-dom/vitest";
 import Signup from "../Signup";
 import { isTokenValid } from "../../../utils/authToken";
 import { publicApi } from "../../../api";
-import { saveTokens } from "../../../utils/handleLocalStorage";
+import { saveTokens } from "../../../utils/authStorage";
 import { formatApiError } from "../../../utils/errors";
 
 const mockNavigate = vi.fn();

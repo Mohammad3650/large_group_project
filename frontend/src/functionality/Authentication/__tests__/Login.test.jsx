@@ -7,7 +7,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import Login from "../Login";
 import { publicApi } from "../../../api";
 import { isTokenValid } from "../../../utils/authToken";
-import { saveTokens } from "../../../utils/handleLocalStorage";
+import { saveTokens } from "../../../utils/authStorage";
 
 vi.mock("../../../utils/authToken", () => ({
   isTokenValid: vi.fn(),

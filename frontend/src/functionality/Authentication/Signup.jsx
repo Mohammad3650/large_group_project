@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicApi } from "../../api";
-import { saveTokens } from "../../utils/handleLocalStorage";
+import { saveTokens } from "../../utils/authStorage";
 import { formatApiError } from "../../utils/errors";
 import { validateSignupForm } from "../../utils/signupValidation";
 import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";

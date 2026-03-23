@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { logout } from "../utils/handleLocalStorage";
+import { logout } from "../utils/authStorage";
 import "./stylesheets/LogoutButton.css"
 
 /**
