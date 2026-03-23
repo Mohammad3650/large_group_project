@@ -1,12 +1,22 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import {describe, it, expect} from "vitest";
-import "@testing-library/jest-dom/vitest"
-import { MemoryRouter,Routes, Route } from "react-router-dom";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import "@testing-library/jest-dom/vitest";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
+
+//Mock api.js to prevent it from executing its top-level localStorage.getItem call on module load
+vi.mock("../../api.js", () => ({
+  default: {},
+}));
+
 import SuccessfulTimeBlock from "../SuccessfulTimeBlock.jsx";
 
 describe("Succesful time block created", () => {
-  it("renders the text to show a time block has been created successfully", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("Renders the text to show a time block has been created successfully", () => {
     render(
       <MemoryRouter>
         <SuccessfulTimeBlock />
@@ -18,11 +28,11 @@ describe("Succesful time block created", () => {
       .toBeInTheDocument();
 
     expect(
-      screen.getByText("Your time block was created successfully. You can either create a new time block or return to your dashboard."))
+      screen.getByText("Your time block was created successfully"))
       .toBeInTheDocument();
   });
 
-  it("renders the buttons for when a time block has been created successfully", () => {
+  it("Renders the buttons for when a time block has been created successfully", () => {
     render(
       <MemoryRouter
         initialEntries={[
@@ -109,6 +119,60 @@ describe("Succesful time block created", () => {
     fireEvent.click(dashboardButton);
 
     expect(screen.getByText("🎉 Congrats, you have no tasks for the next week!")).toBeInTheDocument();
+  });
+
+  it("Does not render the Edit Time Block button when blockId is missing", () => {
+    render(
+      <MemoryRouter initialEntries={["/success"]}>
+        <Routes>
+          <Route path="/success" element={<SuccessfulTimeBlock />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /edit time block/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it("Edit Time Block button navigates to the edit page when blockId exists", () => {
+    render(
+      <MemoryRouter
+        initialEntries={[{ pathname: "/success", state: { id: 123 } }]}
+      >
+        <Routes>
+          <Route path="/success" element={<SuccessfulTimeBlock />} />
+          <Route path="/timeblocks/123/edit" element={<h2>Edit Time Block Page</h2>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const editButton = screen.getByRole("button", {
+      name: /edit time block/i,
+    });
+
+    fireEvent.click(editButton);
+
+    expect(screen.getByText("Edit Time Block Page")).toBeInTheDocument();
+  });
+
+  it("View in Calendar button navigates to the calendar page", () => {
+    render(
+      <MemoryRouter initialEntries={["/success"]}>
+        <Routes>
+          <Route path="/success" element={<SuccessfulTimeBlock />} />
+          <Route path="/calendar" element={<h2>Calendar Page</h2>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const calendarButton = screen.getByRole("button", {
+      name: /view in calendar/i,
+    });
+
+    fireEvent.click(calendarButton);
+
+    expect(screen.getByText("Calendar Page")).toBeInTheDocument();
   });
 });
 

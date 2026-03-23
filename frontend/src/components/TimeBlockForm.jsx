@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./stylesheets/TimeBlockForm.css";
+import getUserTimezone from "../utils/getUserTimezone.js";
 
 
 /**
@@ -86,7 +87,8 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
 
   function handleSubmit(e) {
     e.preventDefault();
-  
+    const timezone = getUserTimezone();
+
     // Submit each block separately
     const dataList = blocks.map(block => {
         const data = {
@@ -98,6 +100,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
           block_type: block.block_type,
           start_time: block.start_time,
           end_time: block.end_time,
+          timezone: timezone,
         };
         return data;
     });
@@ -202,7 +205,9 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
     )}
 
       <button className="btn btn-primary" type="submit" disabled={loading}>
-        {loading ? "Saving..." : "Create Schedule"}
+        {loading && "Saving..."}
+        {!loading && initialData && "Edit Schedule"}
+        {!loading && !initialData && "Create Schedule"}
       </button>
     </div>
 

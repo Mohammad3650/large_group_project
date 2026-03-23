@@ -12,6 +12,7 @@ class TimeBlockSerializerTest(TestCase):
             "end_time": "10:00",
             "location": "Online",
             "block_type": "study",
+            "timezone": "Europe/London",
         }
         serializer = TimeBlockSerializer(data=data)
         self.assertTrue(serializer.is_valid(), serializer.errors)
@@ -25,6 +26,7 @@ class TimeBlockSerializerTest(TestCase):
             "location": "Online",
             "block_type": "study",
             "description": "Revision",
+            "timezone": "Europe/London",
         }
 
         serializer = TimeBlockSerializer(data=data)
@@ -80,3 +82,16 @@ class TimeBlockSerializerTest(TestCase):
         serializer = TimeBlockSerializer(data=data)
         self.assertFalse(serializer.is_valid())
         self.assertIn("start_time", serializer.errors)
+
+    def test_invalid_without_location(self):
+        data = {
+            "date": "2026-02-18",
+            "name": "Study block",
+            "start_time": "09:00",
+            "end_time": "10:00",
+            "block_type": "study",
+        }
+
+        serializer = TimeBlockSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn("location", serializer.errors)

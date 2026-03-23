@@ -1,20 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
-import TaskItem from "../TaskItem";
 
-vi.mock("../../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
+vi.mock("../../../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
 vi.mock("../stylesheets/TaskItem.css", () => ({}));
+vi.mock("../../../utils/playDing.js", () => ({ default: vi.fn() }));
+vi.mock("../../../utils/formatDateTime.js", () => ({
+    default: vi.fn(() => "09:00 - 10:00 18 Mar"),
+}));
 
-const mockPlay = vi.fn().mockResolvedValue(undefined);
-
-class MockAudio {
-    constructor() {
-        this.play = mockPlay;
-        this.currentTime = 0;
-        this.volume = 0;
-    }
-}
-vi.stubGlobal("Audio", MockAudio);
+import TaskItem from "../TaskItem";
+import * as playDingModule from "../../../utils/playDing.js";
 
 const defaultProps = {
     name: "Finish coursework",
@@ -28,7 +23,6 @@ const defaultProps = {
 describe("TaskItem", () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        mockPlay.mockResolvedValue(undefined);
         vi.useFakeTimers();
     });
 
@@ -43,7 +37,7 @@ describe("TaskItem", () => {
 
     it("renders the formatted date and time", () => {
         render(<TaskItem {...defaultProps} />);
-        expect(screen.getByText(/09:00 - 10:00 18 Mar/)).toBeInTheDocument();
+        expect(screen.getByText("09:00 - 10:00 18 Mar")).toBeInTheDocument();
     });
 
     it("renders the checkbox as unchecked by default", () => {
@@ -87,35 +81,20 @@ describe("TaskItem", () => {
 
         await act(async () => { fireEvent.click(div); });
         await act(async () => { vi.advanceTimersByTime(500); });
-        const playCallCount = mockPlay.mock.calls.length;
+        const playCallCount = playDingModule.default.mock.calls.length;
 
         await act(async () => { fireEvent.click(div); });
         await act(async () => { vi.advanceTimersByTime(500); });
 
         expect(defaultProps.onDelete).toHaveBeenCalledTimes(1);
-        expect(mockPlay.mock.calls.length).toBe(playCallCount);
+        expect(playDingModule.default.mock.calls.length).toBe(playCallCount);
     });
 
-    it("plays the ding sound when clicked", async () => {
+    it("calls playDing when clicked", async () => {
         render(<TaskItem {...defaultProps} />);
         await act(async () => {
             fireEvent.click(screen.getByRole("checkbox").closest("div"));
         });
-        expect(mockPlay).toHaveBeenCalled();
-    });
-
-    it("logs an error when the audio fails to play", async () => {
-        const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-        mockPlay.mockRejectedValue(new Error("Audio error"));
-
-        render(<TaskItem {...defaultProps} />);
-        await act(async () => {
-            fireEvent.click(screen.getByRole("checkbox").closest("div"));
-        });
-
-        await act(async () => { vi.advanceTimersByTime(500); });
-
-        expect(consoleSpy).toHaveBeenCalledWith("Audio failed:", expect.any(Error));
-        consoleSpy.mockRestore();
+        expect(playDingModule.default).toHaveBeenCalled();
     });
 });
