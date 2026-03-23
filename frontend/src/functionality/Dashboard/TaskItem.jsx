@@ -1,33 +1,8 @@
 import { useState } from "react";
 import "./stylesheets/TaskItem.css";
-import dingSound from "../../assets/Dashboard/ding.mp3"
+import formatDateTime from "../../utils/formatDateTime.js";
+import playDing from "../../utils/playDing.js";
 
-/**
- * Plays the ding sound when the user completes a task.
- */
-function playDing() {
-    const ding = new Audio(dingSound);
-    ding.volume = 0.3;
-    ding.currentTime = 0;
-    ding.play().catch(err => console.error("Audio failed:", err));
-}
-
-/**
- * Formats date and time strings into a human-readable format.
- *
- * @param {string} date - Date string (e.g. "2026-02-19")
- * @param {string} startTime - Start time string (e.g. "09:00:00")
- * @param {string} endTime - End time string (e.g. "10:00:00")
- * @returns {string} Formatted string (e.g. "09:00 - 10:00 19 Feb")
- */
-function formatDatetime(date, startTime, endTime) {
-    const dateObj = new Date(`${date}T${startTime}`);
-    const endObj = new Date(`${date}T${endTime}`);
-    const day = dateObj.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-    const start = dateObj.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-    const end = endObj.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-    return `${start} - ${end} ${day}`;
-}
 
 /**
  * Displays a single task item with a checkbox, name, start time and end time.
@@ -57,7 +32,7 @@ function TaskItem(props) {
         <div className={`form-check task-item ${checked ? "checked" : ""} ${fading ? "fading" : ""}`} onClick={handleClick}>
             <input className="form-check-input" type="checkbox" readOnly checked={checked} />
             <label className={`form-check-label ${props.overdue ? "overdue-text" : ""}`}>{props.name}</label>
-            <span className="task-datetime">{formatDatetime(props.date, props.startTime, props.endTime)}</span>
+            <span className="task-datetime">{formatDateTime(props.date, props.startTime, props.endTime)}</span>
         </div>
     );
 }

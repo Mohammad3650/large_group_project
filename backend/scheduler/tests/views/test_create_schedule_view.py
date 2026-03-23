@@ -47,6 +47,7 @@ class CreateScheduleTest(APITestCase):
                 "start_time": "09:00",
                 "end_time": "10:00",
                 "block_type": "study",
+                "timezone": "Europe/London",
             },
             format="json",
         )
@@ -68,6 +69,7 @@ class CreateScheduleTest(APITestCase):
                 "end_time": "10:00",
                 "block_type": "study",
                 "description": "work on course work",
+                "timezone": "Europe/London",
             },
             format="json",
         )
@@ -106,6 +108,24 @@ class CreateScheduleTest(APITestCase):
                 "start_time": "10:00",
                 "end_time": "09:00",
                 "block_type": "study",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_block_missing_date_field(self):
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("api-create-timeblock")
+
+        response = self.client.post(
+            url,
+            {
+                "name": "No Date Block",
+                "end_time": "10:00",
+                "block_type": "study",
+                "location": "Online",
             },
             format="json",
         )

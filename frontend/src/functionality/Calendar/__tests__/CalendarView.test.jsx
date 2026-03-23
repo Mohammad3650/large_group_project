@@ -55,6 +55,7 @@ vi.mock("../../../utils/deleteTimeBlock.js", () => ({
 }));
 
 import CalendarView from "../CalendarView";
+import getUserTimezone from "../../../utils/getUserTimezone.js";
 
 describe("CalendarView", () => {
   const blocks = [
@@ -108,6 +109,7 @@ describe("CalendarView", () => {
       plugins: ["event-modal-plugin", { remove: mockRemove }],
       events: blocks,
       selectedDate: Temporal.Now.plainDateISO(),
+      timezone: getUserTimezone(),
     });
   });
 

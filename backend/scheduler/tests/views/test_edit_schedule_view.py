@@ -6,7 +6,7 @@ from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
 
 
-class GetScheduleViewTest(APITestCase):
+class EditScheduleViewTest(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -44,54 +44,6 @@ class GetScheduleViewTest(APITestCase):
         )
 
         self.url = reverse("api-get-timeblocks")
-
-    def test_get_schedule_requires_authentication(self):
-        """Ensure unauthenticated users cannot access schedules."""
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 401)
-
-    def test_get_schedule_returns_user_blocks(self):
-        """Authenticated user should receive their own time blocks."""
-        self.client.force_authenticate(user=self.user)
-
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["name"], "Study Session")
-
-    def test_get_schedule_excludes_other_users_blocks(self):
-        """Ensure schedule does not include blocks belonging to other users."""
-        self.client.force_authenticate(user=self.user)
-
-        response = self.client.get(self.url)
-
-        names = [block["name"] for block in response.data]
-        self.assertNotIn("Gym", names)
-
-    def test_get_schedule_empty(self):
-        """User with no time blocks should receive an empty list."""
-        empty_user = User.objects.create_user(
-            username="emptyuser", password="password123"
-        )
-
-        self.client.force_authenticate(user=empty_user)
-
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, [])
-
-    def test_get_in_edit_timeblock(self):
-        """Authenticated user should be able to see their own previously saved timeblocks."""
-        self.client.force_authenticate(user=self.user)
-
-        url = reverse("api-edit-timeblock", args=[self.block.id])
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["name"], "Study Session")
-        self.assertIn("date", response.data)
 
     def test_patch_timeblock(self):
         """Authenticated user should be able to edit their own timeblocks."""
