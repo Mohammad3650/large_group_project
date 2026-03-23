@@ -4,6 +4,7 @@ import { api } from "../../api";
 import TimeBlockForm from "../../components/TimeBlockForm";
 import GeneratorForm from "../../components/GeneratorForm.jsx";
 import NavBar from "../../components/Navbar.jsx";
+import generateSchedule from "../../utils/generateSchedule.js";
 
 const TABS = [
   { id: "timeblock", label: "Time Block" },
@@ -11,6 +12,10 @@ const TABS = [
 ];
 
 
+/**
+ * CreateSchedule component with tabs for manual time block creation or schedule generation.
+ * @returns {JSX.Element}
+ */
 function CreateSchedule() {
 
     const navigate = useNavigate();
@@ -56,6 +61,10 @@ function CreateSchedule() {
     }
 
 
+    /**
+     * Generate schedule via API, store result in session, and navigate to preview.
+     * @param {object} data
+     */
     async function handleGenerate(data){
         
         if (loading) return;
@@ -63,12 +72,12 @@ function CreateSchedule() {
         setServerErrors({});
         setLoading(true);
 
-        // const errors = [];
         let allSuccess = true;
         let response = null;
 
         try {
-            response = await api.post("/schedule/generates/", data);
+            response = await generateSchedule(data);
+			
             const events = response.data?.events || [];
 
             if (events.length === 0) {
@@ -80,19 +89,15 @@ function CreateSchedule() {
             setServerErrors({});
 			sessionStorage.setItem( "generatedSchedule", JSON.stringify(response.data));
 			navigate("/preview-calendar")
-            // errors.push({});
         } catch (err) {
             console.log("ERROR RESPONSE:", err.response?.data);
 
             setServerErrors(err.response?.data || {})
             allSuccess = false;
         } finally {
-            // setServerErrors(errors);
             setLoading(false);
         }
         console.log(response)
-
-        // if (allSuccess) navigate("/preview-calendar");
 
     }
 
