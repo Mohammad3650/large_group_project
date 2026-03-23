@@ -5,12 +5,12 @@ const {
     mockNavigate,
     mockHandleDelete,
     mockMapTimeBlocks,
-    mockApiPost,
+    mockSavePlan,
 } = vi.hoisted(() => ({
     mockNavigate: vi.fn(),
     mockHandleDelete: vi.fn(),
     mockMapTimeBlocks: vi.fn(),
-    mockApiPost: vi.fn(),
+    mockSavePlan: vi.fn(),
 }));
  
 vi.mock("react-router-dom", () => ({
@@ -38,8 +38,8 @@ vi.mock("../CalendarView.jsx", () => ({
     ),
 }));
  
-vi.mock("../../../api.js", () => ({
-    api: { post: mockApiPost },
+vi.mock("../../../utils/savePlan.js", () => ({
+    default: mockSavePlan,
 }));
 
 import PreviewCalendar from "../PreviewCalendar";
@@ -103,7 +103,7 @@ describe("PreviewCalendar", () => {
     it("saves schedule and navigates to dashboard", async () => {
         sessionStorage.setItem("generatedSchedule", JSON.stringify(mockSchedule));
         mockMapTimeBlocks.mockReturnValue(mappedBlocks);
-        mockApiPost.mockResolvedValue({});
+        mockSavePlan.mockResolvedValue({});
  
         render(<PreviewCalendar />);
  
@@ -114,9 +114,10 @@ describe("PreviewCalendar", () => {
         fireEvent.click(screen.getByText("Save Schedule"));
  
         await waitFor(() => {
-            expect(mockApiPost).toHaveBeenCalledWith("/api/plans/save/", {
+            expect(mockSavePlan).toHaveBeenCalledWith({
                 week_start: mockSchedule.week_start,
                 events: mockSchedule.events,
+                timezone: expect.any(String),
             });
         });
  
