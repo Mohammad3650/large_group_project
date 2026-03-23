@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {useEffect, useState} from "react";
 import LogoutButton from "./LogoutButton.jsx";
 import useUsername from "../utils/useUsername.js";
-import {isTokenValid} from "../utils/authToken.js";
+import useAuthStatus from "../utils/authStatus";
 
 import userIcon from  "../assets/Navbar/user.png"
 import taskList from "../assets/Navbar/task_list.png";
@@ -17,18 +17,11 @@ import calendarIcon from  "../assets/calendar_icon.png"
  * and a user dropdown (with username, profile link, and logout) on authentication.
  * @returns {JSX.Element} The navigation header
  */
+
 function Navbar() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const isLoggedIn = useAuthStatus();
     const username = useUsername(isLoggedIn);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-
-    useEffect(() => {
-        async function checkAuth() {
-            const valid = await isTokenValid();
-            setIsLoggedIn(valid);
-        }
-        checkAuth();
-    }, []);
 
     return (
         <header>

@@ -1,3 +1,23 @@
+/**
+ * Reusable input field component for authentication forms.
+ *
+ * Responsibilities:
+ * - renders a label and input element
+ * - supports different input types
+ * - displays validation styling when an error exists
+ * - shows an inline error message below the input
+ *
+ * @param {Object} props - Component props
+ * @param {string} props.label - Text shown in the field label
+ * @param {string} [props.type="text"] - HTML input type
+ * @param {string} props.placeholder - Placeholder text shown inside the input
+ * @param {string} props.value - Current input value
+ * @param {Function} props.onChange - Called when the input value changes
+ * @param {string} [props.error] - Validation message for the field
+ * @param {string} props.name - Input name and id used for accessibility
+ * @returns {JSX.Element} Reusable authentication input field
+ */
+
 function AuthField({
   label,
   type = "text",
@@ -7,13 +27,16 @@ function AuthField({
   error,
   name,
 }) {
+  // Adds Bootstrap invalid styling when an error is present
   const inputClass = `form-control ${error ? "is-invalid" : ""}`;
 
   return (
     <div className="col-12">
+      {/* Label is linked to the input using htmlFor/id */}
       <label htmlFor={name} className="form-label fw-semibold">
         {label}
       </label>
+
       <input
         id={name}
         name={name}
@@ -23,9 +46,11 @@ function AuthField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
+
+      {/* Inline validation message shown only when an error exists */}
       {error && <div className="invalid-feedback">{error}</div>}
     </div>
   );
 }
 
-export default AuthField; 
+export default AuthField;
