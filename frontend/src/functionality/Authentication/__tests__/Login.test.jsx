@@ -1,30 +1,55 @@
-import { render, screen, waitFor } from "@testing-library/react"
-import Login from "../Login.jsx"
-import { describe, it, expect, vi, beforeEach } from "vitest"
-import { MemoryRouter, Routes, Route } from "react-router-dom"
-import userEvent from "@testing-library/user-event"
-import "@testing-library/jest-dom/vitest"
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom/vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-vi.mock("../../../utils/authToken.js", () => ({
-    isTokenValid: vi.fn(),
+import Login from "../Login";
+import { publicApi } from "../../../api";
+import { isTokenValid } from "../../../utils/authToken";
+import { saveTokens } from "../../../utils/handleLocalStorage";
+
+vi.mock("../../../utils/authToken", () => ({
+  isTokenValid: vi.fn(),
 }));
 
-vi.mock("../../../utils/handleLocalStorage.js", () => ({
-    saveTokens: vi.fn(),
-    getAccessToken: vi.fn(),
+vi.mock("../../../utils/handleLocalStorage", () => ({
+  saveTokens: vi.fn(),
 }));
 
-vi.mock("../../../api.js", () => ({
-    publicApi: {
-        post: vi.fn(),
-    },
-}))
+vi.mock("../../../api", () => ({
+  publicApi: {
+    post: vi.fn(),
+  },
+}));
 
-import { publicApi } from "../../../api.js";
-import { isTokenValid } from "../../../utils/authToken.js"
-import { saveTokens } from "../../../utils/handleLocalStorage.js"
+function renderLoginWithRoutes() {
+  return render(
+    <MemoryRouter initialEntries={["/login"]}>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<h2>Dashboard Page</h2>} />
+      </Routes>
+    </MemoryRouter>
+  );
+}
 
-beforeEach(() => {
+async function fillLoginForm(user, overrides = {}) {
+  const values = {
+    email: "test@gmail.com",
+    password: "password123",
+    ...overrides,
+  };
+
+  await user.type(screen.getByPlaceholderText("you@example.com"), values.email);
+  await user.type(
+    screen.getByPlaceholderText("Enter your password..."),
+    values.password
+  );
+}
+
+describe("Login page", () => {
+  beforeEach(() => {
     vi.clearAllMocks();
     isTokenValid.mockResolvedValue(false);
   });
