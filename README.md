@@ -27,10 +27,10 @@ Live URL: [currently not available]
 
 ## Features
 
-- Authentication & User Management
+- Authentication & Profile Management
 - User Preferences & Inputs
 - Schedule Generation
-- Interactive Timetable
+- Interactive Calender
 - Dashboard
 
 ## Tech Stack
@@ -68,6 +68,7 @@ cd backend
 Create a virtual environment for the backend and activate it:
 ```
 python -m venv venv
+
 # Windows
 venv\Scripts\Activate
 
@@ -110,6 +111,8 @@ Run tests using:
 - For frontend: `npm test`
 
 ## External Resources
+
+The project relies on several external frameworks and libraries:
 - React - https://react.dev/
 - Django - https://www.djangoproject.com/
 - Django REST Framework - https://www.django-rest-framework.org/
