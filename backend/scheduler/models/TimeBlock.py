@@ -3,6 +3,13 @@ from .DayPlan import DayPlan
 
 
 class TimeBlock(models.Model):
+    """
+    Represents an individual scheduled activity within a DayPlan.
+
+    A TimeBlock can represent events such as study sessions,
+    lectures, or exercise. It stores details including the activity name, type,
+    location, and time constraints (start and end times).
+    """
 
     BLOCK_TYPE_CHOICES = [
         ("sleep", "Sleep"),
@@ -37,5 +44,6 @@ class TimeBlock(models.Model):
     block_type = models.CharField(max_length=20, choices=BLOCK_TYPE_CHOICES)
     location = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True, default="")
+    timezone = models.CharField(max_length=50, default="UTC")
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)

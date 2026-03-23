@@ -7,6 +7,7 @@ import "./stylesheets/Calendar.css"
 import CalendarView from "./CalendarView.jsx";
 import CalendarPlaceholder from "./CalendarPlaceholder.jsx";
 import mapTimeBlocks from "../../utils/mapTimeBlocks.js";
+import getUserTimezone from "../../utils/getUserTimezone.js";
 import savePlan from "../../utils/savePlan.js";
 
 // Component for previewing a generated schedule before saving
@@ -38,7 +39,11 @@ function PreviewCalendar() {
 
     // Save the schedule to the backend and navigate to dashboard
     async function save() {
-        const data = { week_start: schedule.week_start, events: schedule.events };
+        const data = {
+            week_start: schedule.week_start,
+            events: schedule.events,
+            timezone: getUserTimezone(),
+        };
         await savePlan(data);
         nav("/dashboard");
     }
