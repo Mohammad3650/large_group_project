@@ -102,7 +102,7 @@ function Login() {
   async function handleLogin(event) {
 
     event.preventDefault();
-    //prevents the browser from reloading the page on form submission
+    // Prevents the browser from reloading the page on form submission
     if (loading) return;
 
     // Run client-side validation and show errors if any
@@ -114,17 +114,17 @@ function Login() {
       return;
     }
 
-    //clear the previous errors before making the new requests 
+    // Clears the previous errors before making the new requests 
     setErrors(initialErrors);
     setLoading(true);
 
     try {
       await submitLogin();
     } catch (err) {
-      //convert backend errors to be able to be displayed in the UI accordingly 
+      // Convert backend errors to be able to be displayed in the UI accordingly 
       setErrors(formatApiError(err));
     } finally {
-      //Re-enable the form whether the request failed or succeedded 
+      // Re-enable the form whether the request failed or succeedded 
       setLoading(false);
     }
   }
