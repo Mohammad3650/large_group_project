@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from scheduler.serializer.user_registration_serializer import UserRegistrationSerializer
+from scheduler.serializer.user_details_serializer import UserDetailsSerializer
 
 
 class UserRegistrationView(generics.CreateAPIView):

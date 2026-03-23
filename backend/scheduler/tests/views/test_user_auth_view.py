@@ -17,7 +17,7 @@ class UserRegistrationViewTestCase(APITestCase):
             "password": "Password123!",
         }
 
-        response = self.client.post(reverse("signup"), payload, format="json")
+        response = self.client.post(reverse("user-signup"), payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("access", response.data)
@@ -45,7 +45,7 @@ class UserRegistrationViewTestCase(APITestCase):
             "password": "Password123!",
         }
 
-        response = self.client.post(reverse("signup"), payload, format="json")
+        response = self.client.post(reverse("user-signup"), payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("email", response.data)
@@ -65,7 +65,7 @@ class UserDetailsViewTestCase(APITestCase):
     def test_authenticated_user_can_retrieve_their_details(self):
         self.client.force_authenticate(user=self.user)
 
-        response = self.client.get(reverse("user_details"))
+        response = self.client.get(reverse("user-details"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["email"], self.user.email)
@@ -82,7 +82,7 @@ class UserDetailsViewTestCase(APITestCase):
             "phone_number": "07123456789",
         }
 
-        response = self.client.put(reverse("user_details"), payload, format="json")
+        response = self.client.put(reverse("user-details"), payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.user.refresh_from_db()
@@ -90,7 +90,7 @@ class UserDetailsViewTestCase(APITestCase):
         self.assertEqual(self.user.username, "updateduser")
 
     def test_unauthenticated_user_cannot_access_user_details(self):
-        response = self.client.get(reverse("user_details"))
+        response = self.client.get(reverse("user-details"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 

@@ -64,7 +64,7 @@ urlpatterns = [
     ),
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
     path("api/user/change-password/", change_password),
-    path("api/user/delete/", delete_user),
+    path("api/user/delete/", delete_user, name="delete_user_view"),
     path(
         "api/time-blocks/export/csv/",
         export_schedule_csv,
