@@ -35,6 +35,7 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
         plugins: [createEventModalPlugin(), eventsService],
         events: blocks,
         selectedDate: Temporal.Now.plainDateISO(),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
 
     function handleDelete(id) {

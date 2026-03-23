@@ -86,7 +86,8 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
 
   function handleSubmit(e) {
     e.preventDefault();
-  
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     // Submit each block separately
     const dataList = blocks.map(block => {
         const data = {
@@ -98,6 +99,7 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
           block_type: block.block_type,
           start_time: block.start_time,
           end_time: block.end_time,
+          timezone: timezone,
         };
         return data;
     });

@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from ..models import TimeBlock
 from scheduler.serializer.time_block_serializer import TimeBlockSerializer
+from ..utils.to_utc import to_utc
 
 """
     Retrieve all time blocks for the authenticated user.
@@ -61,8 +62,19 @@ def edit_timeblock(request, id):
         return Response(data)
 
     serializer = TimeBlockSerializer(block, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
 
-    return Response(serializer.errors, status=400)
+    timezone = request.data.get("timezone", block.timezone)
+    date = request.data.get("date", str(block.day.date))
+
+    if "start_time" in request.data:
+        start_time_utc, _ = to_utc(request.data["start_time"], date, timezone)
+        serializer.validated_data["start_time"] = start_time_utc
+
+    if "end_time" in request.data:
+        end_time_utc, _ = to_utc(request.data["end_time"], date, timezone)
+        serializer.validated_data["end_time"] = end_time_utc
+
+    serializer.save()
+    return Response(serializer.data)

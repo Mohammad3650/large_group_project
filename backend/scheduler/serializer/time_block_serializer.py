@@ -17,6 +17,7 @@ class TimeBlockSerializer(serializers.ModelSerializer):
             "location",
             "block_type",
             "description",
+            "timezone",
             "start_time",
             "end_time",
         ]
@@ -32,6 +33,8 @@ class TimeBlockSerializer(serializers.ModelSerializer):
             errors["start_time"] = ["Start time must be provided."]
         if not attrs.get("end_time"):
             errors["end_time"] = ["End time must be provided."]
+        if not attrs.get("timezone"):
+            errors["timezone"] = ["Timezone must be provided."]
         if (
             attrs.get("start_time") is not None
             and attrs.get("end_time") is not None
