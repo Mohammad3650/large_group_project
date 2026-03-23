@@ -205,7 +205,9 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
     )}
 
       <button className="btn btn-primary" type="submit" disabled={loading}>
-        {loading ? "Saving..." : "Create Schedule"}
+        {loading && "Saving..."}
+        {!loading && initialData && "Edit Schedule"}
+        {!loading && !initialData && "Create Schedule"}
       </button>
     </div>
 
