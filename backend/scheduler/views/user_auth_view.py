@@ -4,14 +4,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from scheduler.serializer.users_serializer import (
-    UserDetailsSerializer,
-    UserRegistrationSerializer,
-)
+from scheduler.serializer.user_registration_serializer import UserRegistrationSerializer
+from scheduler.serializer.user_details_serializer import UserDetailsSerializer
 
 
 class UserRegistrationView(generics.CreateAPIView):
-    
     """
     API view for registering a new user.
 
@@ -21,7 +18,7 @@ class UserRegistrationView(generics.CreateAPIView):
     - generates refresh and access tokens
     - returns tokens and user details in the response
     """
-    
+
     permission_classes = [AllowAny]
     serializer_class = UserRegistrationSerializer
 
@@ -41,31 +38,28 @@ class UserRegistrationView(generics.CreateAPIView):
 
 
 class UserDetailsView(generics.RetrieveUpdateAPIView):
-    
     """
     API view for retrieving and updating the authenticated user's profile.
     """
-    
+
     serializer_class = UserDetailsSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        
         """
         Returns the currently authenticated user.
         """
-        
+
         return self.request.user
 
 
 class DashboardView(APIView):
-    
     """
-    
+
     Protected dashboard endpoint.
 
     """
-    
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
