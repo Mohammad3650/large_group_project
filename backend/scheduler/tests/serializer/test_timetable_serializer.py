@@ -1,5 +1,7 @@
 from django.test import TestCase
-from scheduler.serializer.generator_serializers import WindowSerializer, UnscheduledSerializer, GenerateScheduleRequestSerializer
+from backend.scheduler.serializer.UnscheduledSerializer import UnscheduledSerializer
+from backend.scheduler.serializer.WindowSerializer import WindowSerializer
+from scheduler.serializer.generator_serializers import GenerateScheduleRequestSerializer
 
 class TestWindowSerializer(TestCase):
 
