@@ -8,6 +8,13 @@ import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
 import AuthCard from "../../components/AuthCard";
 import AuthField from "../../components/AuthField";
 
+/**
+ * Initial form state used when the component loads.
+ * Stores all input values required for user registration.
+ * Signup form fields are stored differently to login as there are more 
+ * and they are easier to manage and validate.
+ */
+
 const initialForm = {
   email: "",
   username: "",
@@ -18,22 +25,70 @@ const initialForm = {
   confirmPassword: "",
 };
 
+/**
+ * Initial error state used when the form first loads
+ * or when errors need to be reset before a new submission.
+ *
+ * Structure:
+ * - fieldErrors: validation errors linked to specific inputs e.g email or password
+ * - global: general errors not tied to one field e.g. "Invalid credentials"
+ */
+
 const initialErrors = {
   fieldErrors: {},
   global: [],
 };
 
+/**
+ * Signup page component.
+ *
+ * Responsibilities:
+ * - manages form input state for user registration
+ * - validates form data using a separate validation helper function
+ * - sends signup request to backend API
+ * - stores authentication tokens on success
+ * - redirects users after successful signup or if already authenticated
+ *
+ * @returns {JSX.Element} Signup form UI
+ */
+
 function Signup() {
   const nav = useNavigate();
+  // Stores the values of all form inputs in a single state object
   const [form, setForm] = useState(initialForm);
+  // Stores validation and API error messages
   const [errors, setErrors] = useState(initialErrors);
+  // Indicates whether a signup request is in progress to prevent multiple submissions
   const [loading, setLoading] = useState(false);
 
   useRedirectIfAuthenticated(nav);
+ 
+  /**
+   * Updates a specific field in the form state.
+   *
+   * Uses a functional update to ensure state is updated safely.
+   *
+   * @param {string} name - The name of the field to update
+   * @param {string} value - The new value for the field
+   */  
 
   function updateField(name, value) {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
+
+  /**
+   * Runs client-side validation on the form.
+   *
+   * Uses the validateSignupForm helper function to check:
+   * - required fields
+   * - password confirmation match
+   *
+   * If validation errors exist:
+   * - updates error state
+   * - returns true to indicate failure
+   *
+   * @returns {boolean} True if validation errors exist, otherwise false
+   */
 
   function showValidationErrors() {
     const fieldErrors = validateSignupForm(form);
@@ -42,6 +97,19 @@ function Signup() {
     setErrors({ fieldErrors, global: [] });
     return true;
   }
+
+
+  /**
+   * Sends the signup request to the backend API.
+   *
+   * Flow:
+   * - maps frontend form fields to backend expected payload format
+   * - sends POST request to signup endpoint
+   * - stores returned JWT tokens
+   * - redirects user to dashboard on success
+   *
+   * @returns {Promise<void>}
+   */
 
   async function submitSignup() {
     const payload = {
@@ -78,6 +146,7 @@ function Signup() {
   return (
     <AuthCard
       title="Create your account"
+      subtitle="Sign up to get started with StudySync"
       footerText="Already have an account?"
       footerLinkText="Log in"
       footerLinkTo="/login"
