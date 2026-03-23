@@ -13,7 +13,6 @@ import CreateSchedule from "./functionality/Authentication/CreateSchedule";
 import { setAuthToken } from "./api";
 import SuccessfulTimeBlock from "./components/SuccessfulTimeBlock.jsx";
 import EditTimeBlock from "./components/EditTimeBlock";
-import "./styles/variables.css"
 
 
 
