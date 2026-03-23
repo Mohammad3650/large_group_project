@@ -97,6 +97,25 @@ describe("formatApiError", () => {
     });
   });
 
+  it("converts non-array non_field_errors into an array", () => {
+    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+
+    const error = {
+      response: {
+        data: {
+          non_field_errors: "General validation failure.",
+        },
+      },
+    };
+
+    const result = formatApiError(error);
+
+    expect(result).toEqual({
+      fieldErrors: {},
+      global: ["General validation failure."],
+    });
+  });
+
   it("returns a fallback message when the error object is empty", () => {
     vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
 

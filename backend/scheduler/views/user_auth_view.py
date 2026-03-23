@@ -11,6 +11,17 @@ from scheduler.serializer.users_serializer import (
 
 
 class UserRegistrationView(generics.CreateAPIView):
+    
+    """
+    API view for registering a new user.
+
+    Flow:
+    - validates incoming registration data
+    - creates the user
+    - generates refresh and access tokens
+    - returns tokens and user details in the response
+    """
+    
     permission_classes = [AllowAny]
     serializer_class = UserRegistrationSerializer
 
@@ -30,14 +41,31 @@ class UserRegistrationView(generics.CreateAPIView):
 
 
 class UserDetailsView(generics.RetrieveUpdateAPIView):
+    
+    """
+    API view for retrieving and updating the authenticated user's profile.
+    """
+    
     serializer_class = UserDetailsSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
+        
+        """
+        Returns the currently authenticated user.
+        """
+        
         return self.request.user
 
 
 class DashboardView(APIView):
+    
+    """
+    
+    Protected dashboard endpoint.
+
+    """
+    
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

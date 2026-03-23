@@ -1,5 +1,8 @@
 import { setAuthToken } from "../api";
 
+const ACCESS_KEY = "access";
+const REFRESH_KEY = "refresh";
+
 /**
  * Retrieves the stored access token from localStorage.
  *
@@ -7,7 +10,7 @@ import { setAuthToken } from "../api";
  */
 
 export function getAccessToken() {
-  return localStorage.getItem("access");
+  return localStorage.getItem(ACCESS_KEY);
 }
 
 /**
@@ -17,7 +20,7 @@ export function getAccessToken() {
  */
 
 export function getRefreshToken() {
-  return localStorage.getItem("refresh");
+  return localStorage.getItem(REFRESH_KEY);
 }
 
 /**
@@ -27,8 +30,8 @@ export function getRefreshToken() {
  */
 
 export function logout() {
-  localStorage.removeItem("access");
-  localStorage.removeItem("refresh");
+  localStorage.removeItem(ACCESS_KEY);
+  localStorage.removeItem(REFRESH_KEY);
 
   // Remove auth header from future API requests
   setAuthToken(null);
@@ -46,8 +49,8 @@ export function logout() {
  */
 
 export function saveTokens(access, refresh) {
-  localStorage.setItem("access", access);
-  localStorage.setItem("refresh", refresh);
+  localStorage.setItem(ACCESS_KEY, access);
+  localStorage.setItem(REFRESH_KEY, refresh);
 
   // Set auth header for subsequent API calls
   setAuthToken(access);
