@@ -26,6 +26,13 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         """
         Normalises the email and prevents users from changing their email
         to one that already belongs to another account.
+
+        Args:
+            value (str): The email address provided by the user.
+        Returns:
+            str: The normalised email address (trimmed and converted to lowercase),
+                 provided it is not already associated with another user account.
+
         """
         normalised_email = value.strip().lower()
         user = self.instance

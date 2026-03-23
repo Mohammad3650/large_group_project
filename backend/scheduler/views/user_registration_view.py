@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from scheduler.serializer.user_registration_serializer import UserRegistrationSerializer
-from scheduler.serializer.user_details_serializer import UserDetailsSerializer
 
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -35,33 +34,3 @@ class UserRegistrationView(generics.CreateAPIView):
             "user": UserDetailsSerializer(user).data,
         }
         return Response(response_data, status=status.HTTP_201_CREATED)
-
-
-class UserDetailsView(generics.RetrieveUpdateAPIView):
-    """
-    API view for retrieving and updating the authenticated user's profile.
-    """
-
-    serializer_class = UserDetailsSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        """
-        Returns the currently authenticated user.
-        """
-
-        return self.request.user
-
-
-class DashboardView(APIView):
-    """
-
-    Protected dashboard endpoint.
-
-    """
-
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        message = f"Welcome to your dashboard, {request.user.username}!"
-        return Response({"message": message})

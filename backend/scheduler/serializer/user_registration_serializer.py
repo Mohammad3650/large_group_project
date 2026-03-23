@@ -42,6 +42,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         """
         Normalises email input before saving it.
+
+        Args:
+            value (str): The email address provided by the user.
+
+        Returns:
+            str: The normalised email address in lowercase with surrounding whitespace removed.
         """
         return value.strip().lower()
 
@@ -49,5 +55,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         """
         Creates a new user using Django's built-in create_user method,
         which handles password hashing correctly.
+
+        Args:
+            validated_data (dict): A dictionary containing validated user registration data.
+
+        Returns:
+            User: The newly created user instance.
         """
         return User.objects.create_user(**validated_data)
