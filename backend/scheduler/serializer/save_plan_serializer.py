@@ -1,11 +1,14 @@
-from datetime import datetime
 from typing import Any, Dict
 
 from rest_framework import serializers
-from scheduler.models import DayPlan, TimeBlock
+from scheduler.models import TimeBlock
 
 
 class SaveTimeBlockSerializer(serializers.Serializer):
+    """
+    Serializer for saving individual time blocks with validation for dates and times.
+    """
+
     # Accept either (date + times) or (start_datetime/end_datetime)
     date = serializers.DateField( required=False, input_formats=["%Y-%m-%d", "%d/%m/%Y"] )
     name = serializers.CharField()
@@ -18,6 +21,11 @@ class SaveTimeBlockSerializer(serializers.Serializer):
 
 
     def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Validate required fields and ensure end_time is after start_time.
+        @param attrs: Input attributes dict
+        @return: Validated attributes dict
+        """
         has_date_times = all(k in attrs for k in ("date", "start_time", "end_time"))
 
         if not has_date_times:
@@ -30,5 +38,9 @@ class SaveTimeBlockSerializer(serializers.Serializer):
 
 
 class SaveWeeklyPlanSerializer(serializers.Serializer):
+    """
+    Serializer for saving weekly plans with multiple time block events.
+    """
+
     week_start = serializers.DateField(input_formats=["%Y-%m-%d", "%d/%m/%Y"])
     events = SaveTimeBlockSerializer(many=True, allow_empty=False)

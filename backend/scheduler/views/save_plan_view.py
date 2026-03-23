@@ -1,23 +1,28 @@
-from datetime import timedelta
-from typing import Dict, Tuple
-
 from django.db import transaction
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from scheduler.models import DayPlan, TimeBlock
 from scheduler.serializer.save_plan_serializer import SaveWeeklyPlanSerializer
 
 from scheduler.views.create_schedule_view import get_or_create_dayplan, create_timeblock
 
 
 class SaveWeeklyPlanView(APIView):
+    """
+    API endpoint for saving a weekly plan with multiple time block events.
+    """
+
     permission_classes = [IsAuthenticated]
 
     @transaction.atomic
     def post(self, request):
+        """
+        Save weekly plan events as time blocks for authenticated user.
+        @param request: HTTP request with validated weekly plan data
+        @return: Response with saved event count and 201 status
+        """
         serializer = SaveWeeklyPlanSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -25,10 +30,10 @@ class SaveWeeklyPlanView(APIView):
         events = serializer.validated_data["events"]
         created = []
 
-        for ev in events:
-            date = ev["date"]
+        for event in events:
+            date = event["date"]
             dayplan = get_or_create_dayplan(user, date)
-            created.append(create_timeblock(dayplan, ev))
+            created.append(create_timeblock(dayplan, event))
 
 
         return Response(
