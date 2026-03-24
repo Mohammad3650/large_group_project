@@ -12,12 +12,12 @@ function CreateScheduleButton(){
 
     return (
     <button
-      className="btn btn-primary me-2"
-      onClick={() => nav("/create-schedule")}
+        className="btn btn-primary me-2"
+        onClick={() => nav("/create-schedule")}
     >
-      Create Schedule
+        Create Schedule
     </button>
-  );
+    );
 }
 
 export default CreateScheduleButton;
