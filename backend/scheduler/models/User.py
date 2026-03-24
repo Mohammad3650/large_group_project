@@ -14,15 +14,21 @@ phone_validator = RegexValidator(
 
 class User(AbstractUser):
     """
-    Custom user model for the application.
+    Custom user model extending Django's AbstractUser.
 
-    Extends Django's AbstractUser and customises authentication so that:
-    - email is used as the login field
-    - additional required user details are stored
-    - phone numbers are validated using a UK phone format
+    This model uses email as the unique identifier for authentication
+    instead of username. It also includes additional required fields
+    such as first name, last name, and phone number with validation.
+
+    Attributes:
+        username (str): Non-unique username field.
+        email (str): Unique email address used for login.
+        first_name (str): User's first name.
+        last_name (str): User's last name.
+        phone_number (str): User's phone number validated against UK format.
     """
-
-    # Email is unique because it is used for authentication
+    
+    username = models.CharField(max_length=150, unique=False, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
     # Username is still stored as a required display/identity field

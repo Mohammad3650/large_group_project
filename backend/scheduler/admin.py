@@ -13,6 +13,3 @@ admin.site.register(TimeBlock)
 admin.site.register(DayPlan)
 admin.site.register(User)
 
-
-
-# Register your models here.
