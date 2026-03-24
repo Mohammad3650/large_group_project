@@ -18,29 +18,29 @@ class GetNoteViewTest(TestCase):
 
     def test_get_note_returns_200(self):
         """Verify the view returns a 200 status code for an authenticated user."""
-        response = self.client.get("/api/notes/get")
+        response = self.client.get("/api/notes/get/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_note_returns_correct_content(self):
         """Verify the view returns the correct note content."""
         Note.objects.create(user=self.user, content="Test note content")
-        response = self.client.get("/api/notes/get")
+        response = self.client.get("/api/notes/get/")
         self.assertEqual(response.data["content"], "Test note content")
 
     def test_get_note_creates_note_if_not_exists(self):
         """Verify a new empty note is created if the user does not already have one."""
         self.assertFalse(Note.objects.filter(user=self.user).exists())
-        response = self.client.get("/api/notes/get")
+        response = self.client.get("/api/notes/get/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(Note.objects.filter(user=self.user).exists())
 
     def test_get_note_returns_empty_content_for_new_note(self):
         """Verify a newly created note has empty content."""
-        response = self.client.get("/api/notes/get")
+        response = self.client.get("/api/notes/get/")
         self.assertEqual(response.data["content"], "")
 
     def test_get_note_requires_authentication(self):
         """Verify the view returns a 401 status code for an unauthenticated request."""
         self.client.force_authenticate(user=None)
-        response = self.client.get("/api/notes/get")
+        response = self.client.get("/api/notes/get/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
