@@ -1,7 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "./stylesheets/SuccessfulTimeBlock.css";
 import tickImage from "../assets/TimeBlock/tick.png";
-import NavBar from "./Navbar.jsx";
 
 
 

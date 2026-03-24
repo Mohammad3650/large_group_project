@@ -53,13 +53,13 @@
 }
 
 .navbar-right {
-    position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .navbar-user {
-    position: relative;
-    display: flex;
-    align-items: center;
+  position: relative;
 }
 
 .user-icon {
@@ -69,19 +69,21 @@
 }
 
 .user-dropdown {
-    position: absolute;
-    top: calc(100% + 12px);
-    right: 0;
-    background: var(--bg-main);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    min-width: 160px;
-    z-index: 100;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+  padding: 10px;
+}
+
+.theme-toggle-btn {
+  background: var(--bg-soft);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
 }
 
 .dropdown-username {

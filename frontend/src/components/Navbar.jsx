@@ -1,74 +1,88 @@
-import "./stylesheets/Navbar.css"
+import "./stylesheets/Navbar.css";
 import { Link } from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useState } from "react";
 import LogoutButton from "./LogoutButton.jsx";
 import useUsername from "../utils/useUsername.js";
 import useAuthStatus from "../utils/authStatus";
+import ToggleDarkMode from "./ToggleDarkMode.jsx";
 
-import userIcon from  "../assets/Navbar/user.png"
+import userIcon from "../assets/Navbar/user.png";
 import taskList from "../assets/Navbar/task_list.png";
-import calendarIcon from  "../assets/calendar_icon.png"
-
+import calendarIcon from "../assets/calendar_icon.png";
 
 /**
  * Navbar component - site-wide navigation header.
- * Displays the app title, navigation links, and user account controls.
+ * Displays the app title, navigation links, theme toggle, and user account controls.
  * Shows dashboard and calendar links when the user is logged in,
  * and a user dropdown (with username, profile link, and logout) on authentication.
+ *
+ * @param {Object} props
+ * @param {string} props.theme - Current theme mode
+ * @param {Function} props.toggleTheme - Function to switch theme
  * @returns {JSX.Element} The navigation header
  */
 
-function Navbar() {
-    const isLoggedIn = useAuthStatus();
-    const username = useUsername(isLoggedIn);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+function Navbar({ theme, toggleTheme }) {
+  const isLoggedIn = useAuthStatus();
+  const username = useUsername(isLoggedIn);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-    return (
-        <header>
-            <div className="maindiv">
-                <div className="navbar-left">
-                    <Link to="/" className="navbar-title">
-                        <span className="title">StudySync</span>
-                    </Link>
-                    {isLoggedIn && (
-                        <>
-                            <Link to="/dashboard" className="navbar-link">
-                                <img src={taskList} alt="Dashboard" className="navbar-icon" />
-                                <span>Dashboard</span>
-                            </Link>
-                            <Link to="/calendar" className="navbar-link">
-                                <img src={calendarIcon} alt="Calendar" className="navbar-icon" />
-                                <span>Calendar</span>
-                            </Link>
-                        </>
-                    )}
+  return (
+    <header>
+      <div className="maindiv">
+        <div className="navbar-left">
+          <Link to="/" className="navbar-title">
+            <span className="title">StudySync</span>
+          </Link>
+
+          {isLoggedIn && (
+            <>
+              <Link to="/dashboard" className="navbar-link">
+                <img src={taskList} alt="Dashboard" className="navbar-icon" />
+                <span>Dashboard</span>
+              </Link>
+
+              <Link to="/calendar" className="navbar-link">
+                <img src={calendarIcon} alt="Calendar" className="navbar-icon" />
+                <span>Calendar</span>
+              </Link>
+            </>
+          )}
+        </div>
+
+        <div className="navbar-right">
+          <ToggleDarkMode theme={theme} toggleTheme={toggleTheme} />
+
+          {isLoggedIn ? (
+            <div className="navbar-user">
+              <img
+                src={userIcon}
+                alt="User"
+                className="navbar-icon user-icon"
+                onClick={() => setDropdownOpen((prev) => !prev)}
+              />
+
+              {dropdownOpen && (
+                <div className="user-dropdown">
+                  <span className="dropdown-username">{username}</span>
+                  <Link
+                    to="/profile"
+                    className="dropdown-link"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <LogoutButton />
                 </div>
-                <div className="navbar-right">
-                    {isLoggedIn ? (
-                        <div className="navbar-user">
-                            <img
-                                src={userIcon}
-                                alt="User"
-                                className="navbar-icon user-icon"
-                                onClick={() => setDropdownOpen(prev => !prev)}
-                            />
-                            {dropdownOpen && (
-                                <div className="user-dropdown">
-                                    <span className="dropdown-username">{username}</span>
-                                    <Link to="/profile" className="dropdown-link" onClick={() => setDropdownOpen(false)}>
-                                        Profile
-                                    </Link>
-                                    <LogoutButton/>
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <span className="rightspan">Built for Students</span>
-                    )}
-                </div>
+              )}
             </div>
-        </header>
-    );
+          ) : (
+            <span className="rightspan">Built for Students</span>
+          )}
+        </div>
+      </div>
+    </header>
+  );
 }
 
 export default Navbar;

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import TimeBlockForm from "../../components/TimeBlockForm";
 import GeneratorForm from "../../components/GeneratorForm.jsx";
-import NavBar from "../../components/Navbar.jsx";
 import generateSchedule from "../../utils/generateSchedule.js";
 
 const TABS = [
@@ -103,7 +102,6 @@ function CreateSchedule() {
 
     return (
     <div>
-      <NavBar />
       <div className="page-center">
         <div className="time-block-form-card">
           <h2>Create Schedule</h2>

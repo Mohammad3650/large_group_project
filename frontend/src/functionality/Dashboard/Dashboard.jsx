@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api.js";
-import Navbar from "../../components/Navbar.jsx";
 import TaskGroup from "./TaskGroup.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
 import NotesSection from "./NotesSection.jsx";
@@ -66,7 +65,6 @@ function Dashboard() {
 
     return (
         <>
-            <Navbar/>
             <div className="dashboard-content">
                 <div className="task-section">
                     <h1>{message}</h1>

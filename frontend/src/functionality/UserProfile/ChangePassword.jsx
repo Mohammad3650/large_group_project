@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { api } from "../../api.js";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar.jsx";
 
 function ChangePassword() {
     const navigate = useNavigate();
@@ -31,7 +30,6 @@ function ChangePassword() {
 
     return (
         <>
-        <Navbar/>
         <div className="page-center">
             <div className="time-block-form-card">
 

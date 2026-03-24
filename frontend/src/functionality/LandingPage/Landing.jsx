@@ -1,4 +1,3 @@
-import Navbar from "../../components/Navbar.jsx";
 import Hero from "./Hero";
 import Card from "./Card";
 import Features from "./Features";
@@ -8,9 +7,8 @@ import "./stylesheets/Landing.css";
 
 function Landing() {
   return (
-    
+
     <div className="landing">
-      <Navbar />
       <Hero />
 
       <Features/>

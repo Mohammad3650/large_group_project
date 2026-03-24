@@ -12,7 +12,6 @@ import calendarIcon from "../../assets/calendar_icon.png"
 import descriptionIcon from "../../assets/CalendarEvent/description_icon.png"
 import locationIcon from "../../assets/CalendarEvent/location_icon.png"
 import timeIcon from "../../assets/CalendarEvent/time_icon.png"
-import Navbar from "../../components/Navbar.jsx";
 import deleteTimeBlock from "../../utils/deleteTimeBlock.js";
 import getUserTimezone from "../../utils/getUserTimezone.js";
 
@@ -84,7 +83,6 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
 
     return (
         <>
-            <Navbar/>
             <div className="calendar-content">
                 <h1>{title}</h1>
                 {headerButtons}

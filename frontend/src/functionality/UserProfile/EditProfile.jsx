@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api.js";
-import Navbar from "../../components/Navbar.jsx";
 import "./stylesheets/EditProfile.css";
 
 function EditProfile() {
@@ -110,7 +109,6 @@ function EditProfile() {
   if (loading) {
     return (
       <>
-        <Navbar />
         <div className="page-center">
           <div className="time-block-form-card edit-profile-card">
             <p>Loading profile...</p>
@@ -122,7 +120,6 @@ function EditProfile() {
 
   return (
     <>
-      <Navbar />
       <div className="page-center">
         <div className="time-block-form-card edit-profile-card">
           <h2>Edit Profile</h2>
