@@ -1,0 +1,58 @@
+.task-item {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) 12px !important;
+    margin-left: var(--space-lg);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 1s;
+    opacity: 1;
+    width: calc(100% - 16px);
+    box-sizing: border-box;
+}
+
+.task-item .form-check-input {
+    flex-shrink: 0;
+    margin: 0 !important;
+    width: 1.2rem;
+    height: 1.2rem;
+    position: static !important;
+}
+
+.task-item * {
+    cursor: pointer;
+}
+
+
+.task-item .form-check-label {
+    flex: 1;
+    padding-left: 8px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.task-item:hover {
+    background-color: var(--bg-soft-hover);
+}
+
+.task-item.checked {
+    background-color: var(--success-soft);
+}
+
+.task-item.fading {
+    opacity: 0;
+}
+
+.overdue-text {
+    color: var(--danger-soft);
+}
+
+.task-datetime {
+    color: var(--link-blue);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}

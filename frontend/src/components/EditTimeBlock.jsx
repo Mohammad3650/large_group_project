@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api";
 import TimeBlockForm from "./TimeBlockForm";
+import toLocalDateTime from "../utils/toLocalDateTime.js";
+import getUserTimezone from "../utils/getUserTimezone.js";
 
 function EditTimeBlock() {
   const { id } = useParams();
@@ -10,23 +12,25 @@ function EditTimeBlock() {
   const [serverErrors, setServerErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+    useEffect(() => {
   api.get(`/api/timeblocks/${id}/edit`)
     .then(res => {
-      console.log("GET response:", res.data);
-      const data = res.data;
-      setInitialData({
+        const data = res.data;
+        const { localDate, localTime: startTime } = toLocalDateTime(data.date, data.start_time);
+        const { localTime: endTime } = toLocalDateTime(data.date, data.end_time);
+
+        setInitialData({
         id: data.id,
-        date: data.date || "",   // ← ADD THIS
+        date: localDate,
         name: data.name,
         location: data.location,
         block_type: data.block_type,
         description: data.description,
-        is_fixed: data.is_fixed,
-        duration: data.duration || "",
-        time_of_day: data.time_of_day_preference || "",
-        start_time: data.start_time || "",
-        end_time: data.end_time || "",
+        //is_fixed: data.is_fixed,
+        //duration: data.duration || "",
+        //time_of_day: data.time_of_day_preference || "",
+        start_time: startTime,
+        end_time: endTime,
       });
     })
     .catch(err => console.error(err));
@@ -47,6 +51,7 @@ function EditTimeBlock() {
         ...block,
         start_time: block.start_time === "" ? null : block.start_time,
         end_time: block.end_time === "" ? null : block.end_time,
+        timezone: getUserTimezone(),
       };
 
       try {

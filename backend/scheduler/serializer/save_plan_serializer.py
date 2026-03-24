@@ -1,51 +1,35 @@
-from datetime import datetime
 from typing import Any, Dict
 
 from rest_framework import serializers
-from scheduler.models import DayPlan, TimeBlock
+from scheduler.models import TimeBlock
 
 
 class SaveTimeBlockSerializer(serializers.Serializer):
+    """
+    Serializer for saving individual time blocks with validation for dates and times.
+    """
+
     # Accept either (date + times) or (start_datetime/end_datetime)
-    date = serializers.DateField(
-    required=False,
-    input_formats=["%Y-%m-%d", "%d/%m/%Y"]
-    )
+    date = serializers.DateField( required=False, input_formats=["%Y-%m-%d", "%d/%m/%Y"] )
+    name = serializers.CharField()
     start_time = serializers.TimeField(required=False)
     end_time = serializers.TimeField(required=False)
-
-    start_datetime = serializers.DateTimeField(required=False)
-    end_datetime = serializers.DateTimeField(required=False)
 
     block_type = serializers.ChoiceField(choices=[c[0] for c in TimeBlock.BLOCK_TYPE_CHOICES])
     location = serializers.CharField(required=False, allow_blank=True, default="")
     description = serializers.CharField(required=False, allow_blank=True, default="")
-    is_fixed = serializers.BooleanField(required=False, default=True)
 
-    duration = serializers.IntegerField(required=False, allow_null=True)
-    time_of_day_preference = serializers.ChoiceField(
-        required=False,
-        allow_null=True,
-        choices=[c[0] for c in TimeBlock.TIME_OF_DAY_PREFERENCES],
-    )
 
     def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Validate required fields and ensure end_time is after start_time.
+        @param attrs: Input attributes dict
+        @return: Validated attributes dict
+        """
         has_date_times = all(k in attrs for k in ("date", "start_time", "end_time"))
-        has_datetimes = all(k in attrs for k in ("start_datetime", "end_datetime"))
 
-        if not (has_date_times or has_datetimes):
-            raise serializers.ValidationError(
-                "Provide either (date, start_time, end_time) OR (start_datetime, end_datetime)."
-            )
-
-        if has_datetimes:
-            if attrs["end_datetime"] <= attrs["start_datetime"]:
-                raise serializers.ValidationError("end_datetime must be after start_datetime")
-
-            # Convert to date + time for DB fields
-            attrs["date"] = attrs["start_datetime"].date()
-            attrs["start_time"] = attrs["start_datetime"].time()
-            attrs["end_time"] = attrs["end_datetime"].time()
+        if not has_date_times:
+            raise serializers.ValidationError( "Each event must include date, start_time, and end_time." )
 
         if attrs["end_time"] <= attrs["start_time"]:
             raise serializers.ValidationError("end_time must be after start_time")
@@ -54,13 +38,9 @@ class SaveTimeBlockSerializer(serializers.Serializer):
 
 
 class SaveWeeklyPlanSerializer(serializers.Serializer):
-    # Monday of the week
-    week_start = serializers.DateField(input_formats=["%Y-%m-%d", "%d/%m/%Y"])
-    events = SaveTimeBlockSerializer(many=True)
-    overwrite = serializers.BooleanField(required=False, default=True)
+    """
+    Serializer for saving weekly plans with multiple time block events.
+    """
 
-    def validate_week_start(self, value):
-        # enforce Monday
-        if value.weekday() != 0:
-            raise serializers.ValidationError("week_start must be a Monday date.")
-        return value
+    week_start = serializers.DateField(input_formats=["%Y-%m-%d", "%d/%m/%Y"])
+    events = SaveTimeBlockSerializer(many=True, allow_empty=False)

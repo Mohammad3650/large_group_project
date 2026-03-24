@@ -1,0 +1,18 @@
+.add-task-btn {
+    width: 100%;
+    padding: var(--space-md);
+    background-color: var(--bg-soft);
+    box-sizing: border-box;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-top: var(--space-md);
+    margin-bottom: 25px;
+    transition: background-color 0.2s;
+}
+
+.add-task-btn:hover {
+    background-color: var(--bg-soft-hover);
+}

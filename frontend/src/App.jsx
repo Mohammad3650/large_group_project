@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
-import Login from "./functionality/authentication/Login";
-import Signup from "./functionality/authentication/Signup"
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./functionality/Authentication/Login";
+import Signup from "./functionality/Authentication/Signup"
+import EditProfile from "./functionality/UserProfile/EditProfile.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./functionality/authentication/Dashboard";
-import Landing from "./functionality/LandingPage/Landing";
-import Calendar from "./functionality/CalendarView/calendar";
-import NavBar from "./functionality/LandingPage/NavBar";
-
-import CreateSchedule from "./functionality/authentication/createSchedule";
+import Dashboard from "./functionality/Dashboard/Dashboard.jsx";
+import Landing from "./functionality/LandingPage/Landing.jsx";
+import Calendar from "./functionality/Calendar/Calendar.jsx";
+import PreviewCalendar from "./functionality/Calendar/PreviewCalendar.jsx";
+import ChangePassword from "./functionality/UserProfile/ChangePassword.jsx";
+import CreateSchedule from "./functionality/Authentication/CreateSchedule";
 import { setAuthToken } from "./api";
-import SuccessfulTimeBlock from "./components/successfulTimeBlock";
+import SuccessfulTimeBlock from "./components/SuccessfulTimeBlock.jsx";
 import EditTimeBlock from "./components/EditTimeBlock";
+import "./styles/variables.css"
+
 
 
 
@@ -71,10 +74,31 @@ function App() {
           </ProtectedRoute>
       }
       />
-    </Routes>
 
+<<<<<<< HEAD
     </div>
 
+=======
+      <Route path="/preview-calendar" element={
+          <ProtectedRoute>
+            <PreviewCalendar/>
+          </ProtectedRoute>
+      }
+      />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <EditProfile />
+        </ProtectedRoute>
+      } 
+      />
+      <Route path="/change-password" element={
+      <ProtectedRoute>
+        <ChangePassword/>
+      </ProtectedRoute>
+      }/>
+    </Routes>
+    
+>>>>>>> origin/main
   )
 }
 

@@ -1,0 +1,97 @@
+* {
+    scrollbar-color: var(--bg-soft-hover) var(--bg-main);
+    scrollbar-width: thin;
+}
+
+body.dashboard-page {
+    display: block;
+    overflow: hidden;
+}
+
+.dashboard-content {
+    display: flex;
+    width: 100vw;
+    height: calc(100vh - 75px - 16px);
+    box-sizing: border-box;
+    padding: 0 32px 50px 32px;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.no-tasks-message {
+    color: var(--text-light);
+    font-size: 2rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.task-section {
+    width: 58%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding-right: 8px;
+}
+
+.dashboard-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: var(--space-md);
+}
+
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.export-csv-button {
+    padding: 6px 18px;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    background: var(--blue);
+    color: var(--text-white);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.export-csv-button:hover {
+    background: var(--link-blue);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    body.dashboard-page {
+        overflow: auto;
+    }
+
+    .dashboard-content {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+        padding: 0 16px;
+    }
+
+    .task-section {
+        width: 100%;
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    .dashboard-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .export-buttons {
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+}

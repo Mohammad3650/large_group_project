@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, time
 from typing import Any, Dict, List, Tuple
 
 MINUTES_PER_DAY = 24 * 60
@@ -10,53 +10,33 @@ class ScheduleResponseBuilder:
     """
     Converts solver output (start_min, end_min, duration, name)
     into the same structure expected by the SaveWeeklyPlan endpoint.
-
-    Output format:
-    {
-      "week_start": "YYYY-MM-DD",
-      "events": [
-        {
-          "date": "YYYY-MM-DD",
-          "start_time": "HH:MM:SS",
-          "end_time": "HH:MM:SS",
-          "block_type": "study|lecture|lab|tutorial|...",
-          "location": "",
-          "is_fixed": False
-        }
-      ]
-    }
     """
 
-    def build(
-        self,
-        solutions: List[Tuple[int, int, int, str]],
-        week_start: str,
-    ) -> Dict[str, Any]:
+    def build( self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled ,week_start: str, ) -> Dict[str, Any]:
         events = []
-        for (s, e, d, name) in solutions:
-            date_s, start_time = self._abs_min_to_date_time(week_start, s)
-            date_e, end_time = self._abs_min_to_date_time(week_start, e)
+        for (start, end, duration, name, location, block_type, description) in solutions:
+            date_start, start_time = self._abs_min_to_date_time(week_start, start)
+            date_end, end_time = self._abs_min_to_date_time(week_start, end)
 
-            # Sanity: if solver somehow crosses midnight, keep end_date separate
-            # Save serializer likely expects a single "date" per event though.
-            # Keep the start date; if end spills over, still send end_time.
-            block_type = self._guess_block_type(name)
+            if not block_type:
+                block_type = self._guess_block_type(name)
+
+            if date_start != date_end:
+                raise ValueError( f"Event '{name}' crosses midnight: start={date_end} {start_time}, end={date_end} {end_time}." )
 
             events.append(
                 {
-                    "date": date_s,
-                    "start_time": start_time,
-                    "end_time": end_time,
+                    "date": date_start.isoformat(),
+                    "start_time": start_time.isoformat(timespec="seconds"),
+                    "end_time": end_time.isoformat(timespec="seconds"),
                     "block_type": block_type,
-                    "location": "",
-                    "is_fixed": False,
+                    "location": location or "",
+                    "name": name,
+                    "description": description
                 }
             )
 
-        return {
-            "week_start": str(week_start),
-            "events": events,
-        }
+        return { "week_start": str(week_start.isoformat()), "events": events, "scheduled": scheduled }
 
     def _abs_min_to_date_time(self, week_start, abs_min: int) -> tuple[str, str]:
         """
@@ -79,22 +59,20 @@ class ScheduleResponseBuilder:
         minute = mins_in_day % 60
 
         date_obj = base + timedelta(days=day_index)
-        return str(date_obj), f"{hour:02d}:{minute:02d}:00"
+        return date_obj, time(hour=hour, minute=minute, second=0)
 
     def _guess_block_type(self, name: str) -> str:
-        n = (name or "").lower()
-        if "lecture" in n:
+        block_type = (name or "").lower()
+        if "lecture" in block_type:
             return "lecture"
-        if "lab" in n:
+        if "lab" in block_type:
             return "lab"
-        if "tutorial" in n:
+        if "tutorial" in block_type:
             return "tutorial"
-        if "commute" in n or "travel" in n:
+        if "commute" in block_type or "travel" in block_type:
             return "commute"
-        if "work" in n:
+        if "work" in block_type:
             return "work"
-        if "exercise" in n or "gym" in n:
+        if "exercise" in block_type or "gym" in block_type:
             return "exercise"
-        if "break" in n:
-            return "break"
         return "study"

@@ -1,0 +1,82 @@
+.go-dashboard-btn {
+    background-color: var(--success);
+    color: var(--text-white);
+    border-radius: var(--radius-lg);
+}
+
+.go-dashboard-btn:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+.go-calendar-btn {
+    background-color: var(--danger);
+    color: var(--text-white);
+    border-radius: var(--radius-lg);
+}
+
+.go-calendar-btn:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+.go-timeblock-btn {
+    background-color: cornflowerblue;
+    color: var(--text-white);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+}
+
+.go-timeblock-btn:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+.edit-timeblock-btn {
+    background-color: black;
+    color: var(--text-white);
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+}
+
+.edit-timeblock-btn:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+.success-btns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 10px;
+    min-width: 150px;
+}
+
+.success-text {
+    font-weight: bold;
+    text-align: center;
+}
+
+.success-page {
+    min-height: 90vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 16px;
+}
+
+
+.success-card {
+    background: var(--bg-main);
+    padding: 60px 80px;
+    border-radius: var(--radius-xl);
+    text-align: center;
+    max-width: 1000px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+.tick-image {
+    margin: 10px 0 5px 0;
+}

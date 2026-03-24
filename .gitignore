@@ -21,3 +21,6 @@ staticfiles/
 frontend/node_modules/
 frontend/package-lock.json
 frontend/coverage/
+
+backend/.coverage
+backend/htmlcov
