@@ -3,8 +3,30 @@ import toLocalDateTime from "./toLocalDateTime.js";
 /**
  * Maps raw time block data into the standard format used by the calendar and dashboard.
  *
- * @param {Array} blocks - Raw time block data
- * @returns {Array} The mapped time blocks
+ * @param {Array<{
+ *   id: number,
+ *   name: string,
+ *   date: string,
+ *   start_time: string,
+ *   end_time: string,
+ *   location: string,
+ *   block_type: string|null,
+ *   description: string|null
+ * }>} blocks - Raw time block data from the API
+ * @returns {Array<{
+ *   id: number|string,
+ *   name: string,
+ *   title: string,
+ *   date: string,
+ *   startTime: string,
+ *   endTime: string,
+ *   start: Temporal.ZonedDateTime,
+ *   end: Temporal.ZonedDateTime,
+ *   location: string,
+ *   blockType: string,
+ *   description: string,
+ *   _options: {additionalClasses: string[]}
+ * }>} The mapped time blocks
  */
 function mapTimeBlocks(blocks) {
     return blocks.map((block, index) => {

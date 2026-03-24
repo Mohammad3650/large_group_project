@@ -52,9 +52,9 @@ class Scheduler:
         """Create decision intervals for unscheduled events to be placed by the solver.
             Decision intervals are IntervalVar objects with 'start' and 'end' 
             variables to be decided by the solver"""
-        for ev in self.unscheduled:
+        for unsched_ev in self.unscheduled:
             created = []
-            duration, name, frequency, daily, preference, location, block_type, description = ev
+            duration, name, frequency, daily, preference, location, block_type, description = unsched_ev
             frequency = self.days if daily else frequency
             
             for i in range(frequency):
@@ -100,7 +100,7 @@ class Scheduler:
         Calculates frequency of sessions per day and returns (max - min).
         If include_scheduled is True, fixed scheduled sessions are also included in the daily counts.
         """
-        n = len(self.new_sessions) if not include_scheduled else (len(self.new_sessions) + len(self.intervals))
+        length = len(self.new_sessions) if not include_scheduled else (len(self.new_sessions) + len(self.intervals))
         # Get day number for each unscheduled event
         day_idxs = []
         self._get_unscheduled_day_numbers(day_idxs)
@@ -113,12 +113,12 @@ class Scheduler:
         counts = []
         for day in range(self.days):
             res = self._count_events_per_day(day, day_idxs)
-            count_d = self.model.NewIntVar(0, n, f"count_day{day}")
+            count_d = self.model.NewIntVar(0, length, f"count_day{day}")
             self.model.Add(count_d == sum(res))
             counts.append(count_d)
         
         # Find maximum and minimum counts
-        max_count, min_count = self._get_max_min_counts(n, counts)
+        max_count, min_count = self._get_max_min_counts(length, counts)
         return (max_count - min_count)    
 
 
@@ -139,10 +139,10 @@ class Scheduler:
     def _count_events_per_day(self, day, indexList):
         res = []
         for i, day_idx in enumerate(indexList):
-            b = self.model.NewBoolVar(f"s{i}_is_day{day}")
-            self.model.Add(day_idx == day).OnlyEnforceIf(b)
-            self.model.Add(day_idx != day).OnlyEnforceIf(b.Not())
-            res.append(b)
+            bool_var = self.model.NewBoolVar(f"s{i}_is_day{day}")
+            self.model.Add(day_idx == day).OnlyEnforceIf(bool_var)
+            self.model.Add(day_idx != day).OnlyEnforceIf(bool_var.Not())
+            res.append(bool_var)
         return res
     
     def _get_max_min_counts(self, length, counts):
@@ -220,6 +220,6 @@ class Scheduler:
             return
 
         for i, (start, end, duration, name, location, block_type, description) in enumerate(self.new_sessions):
-            s = self.solver.Value(start)
-            e = self.solver.Value(end)
-            print(f"Session {i+1} ; {name} @ {location} ({block_type}): {s} - {e} ; {duration}")
+            block_start = self.solver.Value(start)
+            block_end = self.solver.Value(end)
+            print(f"Session {i+1} ; {name} @ {location} ({block_type}): {block_start} - {block_end} ; {duration}")

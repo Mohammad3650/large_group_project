@@ -19,6 +19,7 @@ coverage==7.13.4
 
 
 ortools==9.15.6755
+Faker
 
 # Django – core backend framework
 

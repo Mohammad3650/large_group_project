@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 import "./stylesheets/TimeBlockForm.css";
 
+/**
+ * GeneratorForm renders schedule input fields and manages unscheduled block state.
+ * Users can add / remove blocks, set week range, time windows, and global options.
+ * @param {{onSubmit:function, loading:boolean, serverErrors:object, clearErrors:function}} props
+ * @returns {JSX.Element}
+ */
 function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
 
-    const [week_start, setWeekStart] = useState("");
-    const [week_end, setWeekEnd] = useState("");
-    const [even_spread, setEvenSpread] = useState(false);
-    const [include_scheduled, setIncludeScheduled] = useState(false);
+    const [weekStart, setWeekStart] = useState("");
+    const [weekEnd, setWeekEnd] = useState("");
+    const [evenSpread, setEvenSpread] = useState(false);
+    const [includeScheduled, setIncludeScheduled] = useState(false);
     const [windows, setWindow] = useState({ start_min: "", end_min: "" , daily: true});
 
     const [blocks, setBlocks] = useState([{
@@ -20,6 +26,10 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
         description: ""
     }])
 
+    /**
+     * Add an empty event block to state and clear form errors.
+     * @returns {void}
+     */
     function addBlock() {
         setBlocks([
         ...blocks,
@@ -37,6 +47,13 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
         clearErrors();
     }
 
+    /**
+     * Update a single field on a block and adjust daily frequency when needed.
+     * @param {number} index
+     * @param {string} field
+     * @param {string|boolean} value
+     * @returns {void}
+     */
     function updateBlock(index, field, value) {
         const updated = [...blocks];
         updated[index][field] = value;
@@ -44,31 +61,50 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
             updated[index].frequency = value ? "1" : "";
         }
         setBlocks(updated);
-        // clearErrors();
     }
 
+    /**
+     * Update the global window field value in state.
+     * @param {string} field
+     * @param {string} value
+     * @returns {void}
+     */
     function updateWindow(field, value) {
         setWindow(prev => ({ ...prev, [field]: value }));
     }
 
+    /**
+     * Remove a block by index and reset errors.
+     * @param {number} indexToDelete
+     * @returns {void}
+     */
     function deleteBlock(indexToDelete) {
         setBlocks(blocks.filter((_, index) => index !== indexToDelete));
         clearErrors();
 
     }
 
+    /**
+     * Toggle even spread and conditionally disable includeScheduled.
+     * @param {boolean} checked
+     * @returns {void}
+     */
     function handleEvenSpreadChange(checked) {
         setEvenSpread(checked);
         if (!checked) setIncludeScheduled(false);
     }
 
+    /**
+     * Package form state and dispatch submit callback.
+     * @returns {void}
+     */
     function handleSubmit(e){
         e.preventDefault();
         const k = {
-            week_start,
-            week_end,
-            even_spread,
-            include_scheduled,
+            week_start: weekStart,
+            week_end: weekEnd,
+            even_spread: evenSpread,
+            include_scheduled: includeScheduled,
             windows: [windows],
             unscheduled: blocks
         }
@@ -92,14 +128,14 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                 <label> Start
                 <input
                     type="date"
-                    value={week_start}
+                    value={weekStart}
                     onChange={(e) => setWeekStart(e.target.value)}
                 />
                 </label>
                 <label>End
                 <input
                     type="date"
-                    value={week_end}
+                    value={weekEnd}
                     onChange={(e) => setWeekEnd(e.target.value)}
                 />
                 </label>
@@ -133,17 +169,17 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                 <label className="checkbox-label">
                     <input
                         type="checkbox"
-                        checked={even_spread}
+                        checked={evenSpread}
                         onChange={(e) => handleEvenSpreadChange(e.target.checked)}
                     />
                     Even Spread
                 </label>
 
-                <label className={`checkbox-label ${!even_spread ? "checkbox-label--disabled" : ""}`}>
+                <label className={`checkbox-label ${!evenSpread ? "checkbox-label--disabled" : ""}`}>
                     <input
                         type="checkbox"
-                        checked={include_scheduled}
-                        disabled={!even_spread}
+                        checked={includeScheduled}
+                        disabled={!evenSpread}
                         onChange={(e) => setIncludeScheduled(e.target.checked)}
                     />
                     Include Scheduled

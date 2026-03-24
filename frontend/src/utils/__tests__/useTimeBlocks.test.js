@@ -51,7 +51,7 @@ describe("useTimeBlocks", () => {
 
         const { result } = renderHook(() => useTimeBlocks());
 
-        await waitFor(() => expect(result.current.error).toBe("Failed to load tasks"));
+        await waitFor(() => expect(result.current.error).toBe("Failed to load time blocks"));
 
         expect(result.current.blocks).toBeNull();
     });

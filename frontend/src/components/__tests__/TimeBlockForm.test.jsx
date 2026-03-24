@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { MemoryRouter } from "react-router-dom";
 import TimeBlockForm from "../TimeBlockForm.jsx";
+import getUserTimezone from "../../utils/getUserTimezone.js";
 
 describe("TimeBlockForm tests", () => {
   it("Renders all current form fields", () => {
@@ -121,6 +122,7 @@ describe("TimeBlockForm tests", () => {
 
   it("Submits the form data for all blocks", () => {
     const onSubmit = vi.fn();
+    const timezone = getUserTimezone();
 
     render(
       <MemoryRouter>
@@ -158,6 +160,7 @@ describe("TimeBlockForm tests", () => {
         block_type: "study",
         start_time: "09:00",
         end_time: "11:00",
+        timezone: "Europe/London",
       },
     ]);
   });
@@ -270,6 +273,8 @@ describe("TimeBlockForm tests", () => {
 
   it("Submits multiple blocks correctly", () => {
     const onSubmit = vi.fn();
+    const timezone = getUserTimezone();
+
 
     render(
       <MemoryRouter>
@@ -323,6 +328,7 @@ describe("TimeBlockForm tests", () => {
         block_type: "study",
         start_time: "09:00",
         end_time: "10:00",
+        timezone: "Europe/London",
       },
       {
         id: undefined,
@@ -333,6 +339,7 @@ describe("TimeBlockForm tests", () => {
         block_type: "study",
         start_time: "18:00",
         end_time: "19:00",
+        timezone: "Europe/London",
       },
     ]);
   });
