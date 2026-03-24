@@ -20,7 +20,7 @@ import calendarIcon from  "../assets/calendar_icon.png"
 
 function Navbar() {
     const isLoggedIn = useAuthStatus();
-    const username = useUsername(isLoggedIn);
+    const { username, error } = useUsername(isLoggedIn);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     return (
