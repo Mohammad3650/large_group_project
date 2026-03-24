@@ -4,6 +4,21 @@ from django.core.validators import RegexValidator
 
 
 class User(AbstractUser):
+    """
+    Custom user model extending Django's AbstractUser.
+
+    This model uses email as the unique identifier for authentication
+    instead of username. It also includes additional required fields
+    such as first name, last name, and phone number with validation.
+
+    Attributes:
+        username (str): Non-unique username field.
+        email (str): Unique email address used for login.
+        first_name (str): User's first name.
+        last_name (str): User's last name.
+        phone_number (str): User's phone number validated against UK format.
+    """
+    
     username = models.CharField(max_length=150, unique=False, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
