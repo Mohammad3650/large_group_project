@@ -67,7 +67,7 @@ urlpatterns = [
     path("schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"),
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
     path("api/user/change-password/", change_password),
-    path("api/user/delete/", delete_user),
+    path("api/user/delete/", delete_user, name="delete_user_view"),
     path("api/time-blocks/export/csv/", export_schedule_csv, name="api-export-timeblocks-csv"),
     path("api/time-blocks/export/ics/", export_schedule_ics, name="api-export-timeblocks-ics"),
     path("api/calendar-subscriptions/", calendar_subscriptions, name="api-calendar-subscriptions"),
