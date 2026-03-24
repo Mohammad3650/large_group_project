@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import LogoutButton from "../LogoutButton";
-import { logout } from "../../utils/handleLocalStorage";
+import { logout } from "../../utils/authStorage";
 
 const mockNavigate = vi.fn();
 
@@ -10,7 +10,7 @@ vi.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-vi.mock("../../utils/handleLocalStorage", () => ({
+vi.mock("../../utils/authStorage", () => ({
   logout: vi.fn(),
 }));
 

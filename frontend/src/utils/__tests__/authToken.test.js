@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { isTokenValid } from "../authToken";
 import * as apiModule from "../../api";
-import * as storageModule from "../handleLocalStorage";
+import * as storageModule from "../authStorage";
 
 vi.mock("../../api", () => ({
   publicApi: {
@@ -9,7 +9,7 @@ vi.mock("../../api", () => ({
   },
 }));
 
-vi.mock("../handleLocalStorage", () => ({
+vi.mock("../authStorage", () => ({
   getAccessToken: vi.fn(),
   logout: vi.fn(),
 }));
@@ -44,14 +44,33 @@ describe("isTokenValid", () => {
 
   it("logs out and returns false when token verification fails", async () => {
     storageModule.getAccessToken.mockReturnValue("invalid-token");
-    apiModule.publicApi.post.mockRejectedValue(new Error("Invalid token"));
+    apiModule.publicApi.post.mockRejectedValue({
+      response: { status: 401 },
+    });
 
     const result = await isTokenValid();
 
-    expect(apiModule.publicApi.post).toHaveBeenCalled();
+    expect(apiModule.publicApi.post).toHaveBeenCalledWith(
+      "/api/token/verify/",
+      { token: "invalid-token" }
+    );
     expect(storageModule.logout).toHaveBeenCalled();
     expect(result).toBe(false);
   });
+
+  it("returns false without logging out on network/server errors", async () => {
+  storageModule.getAccessToken.mockReturnValue("some-token");
+  apiModule.publicApi.post.mockRejectedValue(new Error("Network error"));
+
+  const result = await isTokenValid();
+
+  expect(apiModule.publicApi.post).toHaveBeenCalledWith(
+    "/api/token/verify/",
+    { token: "some-token" }
+  );
+  expect(storageModule.logout).not.toHaveBeenCalled();
+  expect(result).toBe(false);
+});
 
   it("calls the verify endpoint with the correct token", async () => {
     storageModule.getAccessToken.mockReturnValue("test-token");

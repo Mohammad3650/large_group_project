@@ -57,8 +57,8 @@ describe("Hero", () => {
     expect(container.querySelector(".hero_left")).toBeInTheDocument();
     expect(container.querySelector(".hero_right")).toBeInTheDocument();
     expect(container.querySelector(".hero_buttons")).toBeInTheDocument();
-    expect(container.querySelector(".hero_button.signup")).toBeInTheDocument();
-    expect(container.querySelector(".hero_button.login")).toBeInTheDocument();
+    expect(container.querySelector(".hero_button.black")).toBeInTheDocument();
+    expect(container.querySelector(".hero_button.white")).toBeInTheDocument();
     expect(container.querySelector(".hero_image")).toBeInTheDocument();
   });
 });

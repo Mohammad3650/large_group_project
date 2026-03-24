@@ -58,7 +58,7 @@ describe("Calendar", () => {
       blocks: null,
       setBlocks: vi.fn(),
     });
-    mockUseUsername.mockReturnValue("Mohammad");
+    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
     render(<Calendar />);
 
@@ -72,7 +72,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }, { id: 2 }],
       setBlocks,
     });
-    mockUseUsername.mockReturnValue("Mohammad");
+    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
     render(<Calendar />);
 
@@ -87,7 +87,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }],
       setBlocks: vi.fn(),
     });
-    mockUseUsername.mockReturnValue("Mohammad");
+    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
     render(<Calendar />);
 
@@ -99,7 +99,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }],
       setBlocks: vi.fn(),
     });
-    mockUseUsername.mockReturnValue("Mohammad");
+    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
     render(<Calendar />);
 
@@ -113,7 +113,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }],
       setBlocks: vi.fn(),
     });
-    mockUseUsername.mockReturnValue("Mohammad");
+    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
     render(<Calendar />);
 
@@ -129,7 +129,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }],
       setBlocks,
     });
-    mockUseUsername.mockReturnValue("Mohammad");
+    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
     render(<Calendar />);
 
