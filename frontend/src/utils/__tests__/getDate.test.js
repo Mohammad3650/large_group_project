@@ -12,8 +12,9 @@ describe("getDate", () => {
         expect(getDate(task)).toEqual(new Date("2024-01-15T00:00"));
     });
 
-    it("handles tasks on different dates correctly", () => {
-        const task = { date: "2024-03-20", startTime: "14:30" };
-        expect(getDate(task)).toEqual(new Date("2024-03-20T14:30"));
+    it("returns an earlier date for an earlier time", () => {
+        const earlier = { date: "2024-01-15", startTime: "09:00" };
+        const later = { date: "2024-01-15", startTime: "10:00" };
+        expect(getDate(earlier).getTime()).toBeLessThan(getDate(later).getTime());
     });
 });

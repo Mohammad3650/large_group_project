@@ -128,4 +128,33 @@ describe("useTasksByDateGroup", () => {
         render(<TestComponent blocks={[makeTask(0), makeTask(0), makeTask(0)]} />);
         await waitFor(() => expect(screen.getByTestId("today").textContent).toBe("3"));
     });
+
+    it("places a task 2 days from now into weekTasks not tomorrowTasks", async () => {
+        render(<TestComponent blocks={[makeTask(2)]} />);
+        await waitFor(() => expect(screen.getByTestId("week").textContent).toBe("1"));
+        expect(screen.getByTestId("tomorrow").textContent).toBe("0");
+    });
+
+    it("distributes tasks into the correct buckets simultaneously", async () => {
+        const blocks = [makeTask(-1), makeTask(0), makeTask(1), makeTask(5), makeTask(8)];
+        render(<TestComponent blocks={blocks} />);
+        await waitFor(() => {
+            expect(screen.getByTestId("overdue").textContent).toBe("1");
+            expect(screen.getByTestId("today").textContent).toBe("1");
+            expect(screen.getByTestId("tomorrow").textContent).toBe("1");
+            expect(screen.getByTestId("week").textContent).toBe("1");
+            expect(screen.getByTestId("beyond").textContent).toBe("1");
+        });
+    });
+
+    it("populates groups when blocks updates from null to an array", async () => {
+        const { rerender } = render(<TestComponent blocks={null} />);
+        expect(screen.getByTestId("total").textContent).toBe("0");
+
+        rerender(<TestComponent blocks={[makeTask(0), makeTask(1)]} />);
+        await waitFor(() => {
+            expect(screen.getByTestId("today").textContent).toBe("1");
+            expect(screen.getByTestId("tomorrow").textContent).toBe("1");
+        });
+    });
 });
