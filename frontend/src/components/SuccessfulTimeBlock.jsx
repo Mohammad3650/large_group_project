@@ -1,11 +1,16 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "./stylesheets/SuccessfulTimeBlock.css";
 import tickImage from "../assets/TimeBlock/tick.png";
-import NavBar from "./Navbar.jsx";
 
+/**
+ * Displays a success page after creating a time block.
+ * Provides navigation options to create another block,
+ * edit the created block, or navigate elsewhere.
+ *
+ * @returns {JSX.Element} A success message UI with navigation buttons.
+ */
 
-
-function SuccessfulTimeBlock({ block }){
+function SuccessfulTimeBlock(){
     const nav = useNavigate();
     const location = useLocation();
     const blockId = location.state?.id;
