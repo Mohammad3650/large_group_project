@@ -33,7 +33,7 @@ class SaveWeeklyPlanView(APIView):
         for event in events:
             date = event["date"]
             dayplan = get_or_create_dayplan(user, date)
-            created.append(create_timeblock(dayplan, event))
+            created.append(create_timeblock(dayplan, event, str(date)))
 
 
         return Response(
