@@ -107,4 +107,25 @@ describe("useTasksByDateGroup", () => {
         await waitFor(() => expect(screen.getByTestId("week").textContent).toBe("1"));
         expect(screen.getByTestId("beyond").textContent).toBe("0");
     });
+
+    it("handles an empty blocks array without errors", async () => {
+        render(<TestComponent blocks={[]} />);
+        await waitFor(() => expect(screen.getByTestId("total").textContent).toBe("0"));
+    });
+
+    it("re-groups tasks when blocks prop changes", async () => {
+        const { rerender } = render(<TestComponent blocks={[makeTask(0)]} />);
+        await waitFor(() => expect(screen.getByTestId("today").textContent).toBe("1"));
+
+        rerender(<TestComponent blocks={[makeTask(-1), makeTask(-1)]} />);
+        await waitFor(() => {
+            expect(screen.getByTestId("overdue").textContent).toBe("2");
+            expect(screen.getByTestId("today").textContent).toBe("0");
+        });
+    });
+
+    it("correctly counts multiple tasks in the same bucket", async () => {
+        render(<TestComponent blocks={[makeTask(0), makeTask(0), makeTask(0)]} />);
+        await waitFor(() => expect(screen.getByTestId("today").textContent).toBe("3"));
+    });
 });
