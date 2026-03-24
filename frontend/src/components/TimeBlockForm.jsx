@@ -56,6 +56,10 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
     }
     }, [initialData]);
 
+    /**
+     * Adds a new empty time block to the form.
+     * Also clears any existing server validation errors.
+     */
     function addBlock() {
     setBlocks([
         ...blocks,
@@ -72,6 +76,13 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
     clearErrors();
     }
 
+    /**
+     * Updates a specific field of a time block at a given index.
+     *
+     * @param {number} index - The index of the block to update.
+     * @param {string} field - The field name to update.
+     * @param {string} value - The new value for the field.
+     */
     function updateBlock(index, field, value) {
     const updated = [...blocks];
     updated[index][field] = value;
@@ -79,12 +90,26 @@ function TimeBlockForm({ onSubmit, loading, serverErrors, clearErrors, initialDa
     clearErrors();
     }
 
+    /**
+     * Removes a time block from the form by its index.
+     * Also clears any existing server validation errors.
+     *
+     * @param {number} indexToDelete - The index of the block to remove.
+     */
     function deleteBlock(indexToDelete) {
     setBlocks(blocks.filter((_, index) => index !== indexToDelete));
     clearErrors();
 
     }
 
+    /**
+     * Handles form submission.
+     * Prevents default form behaviour, attaches the user's timezone,
+     * formats all blocks into a list, and passes the data to the parent
+     * component via the onSubmit prop.
+     *
+     * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+     */
     function handleSubmit(e) {
     e.preventDefault();
     const timezone = getUserTimezone();
