@@ -1,11 +1,13 @@
 import "./stylesheets/Hero.css";
 import heropic from "../../assets/LandingPage/heropicture.png";
 import { useNavigate } from "react-router-dom";
-
+import useAuthStatus from "../../utils/authStatus";
 
 
 function Hero() {
+    const isLoggedIn = useAuthStatus();
     const nav = useNavigate();
+
   return (
     <div className="hero">
       <div className="hero_content">
@@ -17,8 +19,18 @@ function Hero() {
           </div>
 
           <div className="hero_buttons">
-            <button className="hero_button signup" onClick={() => nav("/signup")}>Sign Up</button>
-            <button className="hero_button login" onClick={() => nav("/login")}>Login</button>
+              {isLoggedIn ? (
+              <>
+                <button className="hero_button black" onClick={() => nav("/calendar")}> Calendar</button>
+                <button className="hero_button white" onClick={() => nav("/dashboard")}> Dashboard</button>
+              </>
+
+            ) : (
+              <>
+                <button className="hero_button black" onClick={() => nav("/signup")}>Sign Up</button>
+                <button className="hero_button white" onClick={() => nav("/login")}>Login</button> 
+              </>
+            )}
           </div>
         </div>
 

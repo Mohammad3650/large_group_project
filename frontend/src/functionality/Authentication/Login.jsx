@@ -1,127 +1,195 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom"
-import { publicApi } from "../../api"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { publicApi } from "../../api";
 import { formatApiError } from "../../utils/errors";
-import { saveTokens, getAccessToken } from "../../utils/handleLocalStorage";
-import { isTokenValid } from "../../utils/authToken.js";
+import { saveTokens } from "../../utils/authStorage";
+import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
+import AuthCard from "../../components/AuthCard";
+import AuthField from "../../components/AuthField";
 
+/**
+ * Initial error state used when the form first loads
+ * or when errors need to be reset before a new submission.
+ *
+ * Structure:
+ * - fieldErrors: validation errors linked to specific inputs e.g email or password
+ * - global: general errors not tied to one field e.g. "Invalid credentials"
+ */
+
+const initialErrors = {
+  fieldErrors: {},
+  global: [],
+};
+
+
+/**
+ * Login page component.
+ *
+ * Description:
+ * 
+ * - collects the user's email and password
+ * - validates the required fields before submission
+ * - sends the login credentials to the backend
+ * - stores returned JWT tokens on success
+ * - redirects authenticated users to the dashboard
+ *
+ * @returns The login page UI
+ */
 
 function Login() {
-    const nav = useNavigate();
+  const nav = useNavigate();
+  // Stores the email input value
+  const [email, setEmail] = useState("");
+  // Stores the password input value
+  const [password, setPassword] = useState("");
+  // Stores validation and API error messages
+  const [errors, setErrors] = useState(initialErrors);
+  // Indicates whether a login request is in progress to prevent multiple submissions
+  const [loading, setLoading] = useState(false);
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("" );
-    const [loading, setLoading] = useState(false)
+  useRedirectIfAuthenticated(nav);
 
-    useEffect(() => {
-      (async () => {
-        const ok = await isTokenValid();
-        if (ok) nav("/dashboard");
-      })()
-    }, [nav]);
+  /**
+   * Performs client-side checks to make sure the user has entered values.
+   * 
+   * - Emails must not be empty 
+   * - Passwords must not be empty
+   *
+   * @returns {Object} An object containing any validation errors.
+   */
 
-    async function handleLogin() {
-        if (loading) return;
+  function validateLoginForm() {
+    const fieldErrors = {};
 
-        setError("");
-        setLoading(true);
+    if (!email.trim()) fieldErrors.email = "Email is required.";
+    if (!password) fieldErrors.password = "Password is required.";
 
-        try {
-            const res = await publicApi.post("/api/token/", { email, password });
+    return fieldErrors;
+  }
 
-            saveTokens(res.data.access, res.data.refresh);
+  /**
+   * Sends the login request to the backend API.
+   *
+   * Description:
+   * - posts the email and password to the token endpoint
+   * - saves the access and refresh tokens on success
+   * - redirects the user to the dashboard
+   *
+   */
 
-            nav("/dashboard");
-        } catch (err) {
-            setError(formatApiError(err));
-        } finally {
-            setLoading(false);
-        }
+  async function submitLogin() {
+    const res = await publicApi.post("/api/token/", { email, password });
+    saveTokens(res.data.access, res.data.refresh);
+    nav("/dashboard");
+  }
+
+  /**
+   * Handles login form submission.
+   *
+   * Description:
+   * - prevents default browser form submission
+   * - blocks duplicate submissions while loading
+   * - runs client-side validation
+   * - shows validation errors if present
+   * - clears old errors before sending request
+   * - submits login request to backend
+   * - formats and displays API errors if login fails
+   *
+   * @param event - Form submit event
+   * @returns void
+   */
+
+  async function handleLogin(event) {
+
+    event.preventDefault();
+    // Prevents the browser from reloading the page on form submission
+    if (loading) return;
+
+    // Run client-side validation and show errors if any
+    const fieldErrors = validateLoginForm();
+
+    // If there are validation errors, display them and don't proceed with the API call
+    if (Object.keys(fieldErrors).length) {
+      setErrors({ fieldErrors, global: [] });
+      return;
     }
 
-return (
-  <div className="bg-light min-vh-100 d-flex align-items-center justify-content-center">
-    <div className="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
-      <div className="card shadow-lg border-0 rounded-4">
+    // Clears the previous errors before making the new requests 
+    setErrors(initialErrors);
+    setLoading(true);
 
-        <div className="card-body p-4 p-md-5">
-          <div className="text-center mb-4">
-            <h3 className="fw-bold mb-1">Welcome Back</h3>
-            <p className="text-muted mb-0">
-              Log in to continue to StudySync
-            </p>
-          </div>
+    try {
+      await submitLogin();
+    } catch (err) {
+      // Convert backend errors to be able to be displayed in the UI accordingly 
+      setErrors(formatApiError(err));
+    } finally {
+      // Re-enable the form whether the request failed or succeedded 
+      setLoading(false);
+    }
+  }
 
-          {error && error.global && (
-            <div className="alert alert-danger text-center" role="alert">
-              {error.global}
-            </div>
-          )}
+  return (
+    <AuthCard
+      title="Welcome Back"
+      subtitle="Log in to continue to StudySync"
+      footerText="No account?"
+      footerLinkText="Sign up"
+      footerLinkTo="/signup"
+    >
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
+      {/* Displays general login errors that are not tied to one specific field */}
+      {errors.global.length > 0 && (
+        <div className="alert alert-danger text-center" role="alert">
+          {errors.global.map((message) => (
+            <div key={message}>{message}</div>
+          ))}
+        </div>
+      )}
+
+      {/* Login form with email and password fields, and a submit button */}
+      <form onSubmit={handleLogin} noValidate>
+        <div className="row g-3">
+          <AuthField
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={setEmail}
+            error={errors.fieldErrors.email}
+          />
+
+          <AuthField
+            name="password"
+            label="Password"
+            type="password"
+            placeholder="Enter your password..."
+            value={password}
+            onChange={setPassword}
+            error={errors.fieldErrors.password}
+          />
+        </div>
+
+        <div className="d-grid mt-4">
+          <button
+            className="btn btn-dark btn-lg rounded-3"
+            disabled={loading}
+            type="submit"
           >
-            <div className="mb-3">
-              <label className="form-label fw-semibold">Email</label>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                className="form-control"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="form-label fw-semibold">Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password..."
-                className="form-control"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <div className="d-grid">
-              <button
-                className="btn btn-dark btn-lg rounded-3"
-                disabled={loading}
-                type="submit"
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2"></span>
-                    Logging in...
-                  </>
-                ) : (
-                  "Log in"
-                )}
-              </button>
-            </div>
-          </form>
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" />
+                Logging in...
+              </>
+            ) : (
+              "Log in"
+            )}
+          </button>
         </div>
-
-        <div className="card-footer bg-white text-center py-3 border-0 rounded-bottom-4">
-          <small className="text-muted">
-            No account?{" "}
-            <Link
-              to="/signup"
-              className="fw-semibold text-decoration-none ms-1"
-            >
-              Sign up
-            </Link>
-          </small>
-        </div>
-
-      </div>
-    </div>
-  </div>
-);
+      </form>
+    </AuthCard>
+  );
 }
 
 export default Login;

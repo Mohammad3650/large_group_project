@@ -2,9 +2,21 @@ import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { isTokenValid } from "../utils/authToken.js";
 
+/**
+ * A route guard components that restricts access to pages to authenticated users only.
+ * 
+ * It checks whether the user's auth token is valid:
+ * - If valid -> renders the protected content
+ * - If invalid -> redirects to the login page
+ * - While checking -> renders nothing
+ * 
+ * @param {Object} props 
+ * @param {React.ReactNode} props.children - The protected content to render if authenticated
+ * @returns {JSX.Element|null} The protected content, a redirect or null when loading.
+ */
+
 function ProtectedRoute({ children }) {
     const [allowed, setAllowed] = useState(null);
-
 
     useEffect(() => {
         (async () => {

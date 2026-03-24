@@ -35,11 +35,9 @@ from scheduler.views.delete_user_view import delete_user
 from scheduler.views.export_schedule_view import export_schedule_csv
 from scheduler.views.export_ics_view import export_schedule_ics
 
-from scheduler.views.user_auth_view import (
-    UserRegistrationView,
-    UserDetailsView,
-    DashboardView,
-)
+from scheduler.views.user_registration_view import UserRegistrationView
+from scheduler.views.dashboard_view import DashboardView
+from scheduler.views.user_details_view import UserDetailsView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -66,7 +64,7 @@ urlpatterns = [
     ),
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
     path("api/user/change-password/", change_password),
-    path("api/user/delete/", delete_user),
+    path("api/user/delete/", delete_user, name="delete_user_view"),
     path(
         "api/time-blocks/export/csv/",
         export_schedule_csv,
