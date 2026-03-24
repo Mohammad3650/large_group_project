@@ -13,6 +13,14 @@ describe("deleteTimeBlock", () => {
         expect(() => deleteTimeBlock(null)).toThrow("Invalid id");
     });
 
+    it("throws an error when id is zero", () => {
+        expect(() => deleteTimeBlock(0)).toThrow("Invalid id");
+    });
+
+    it("throws an error when id is undefined", () => {
+        expect(() => deleteTimeBlock(undefined)).toThrow("Invalid id");
+    });
+
     it("calls the correct API endpoint with the given ID", () => {
         deleteTimeBlock(42);
         expect(apiModule.api.delete).toHaveBeenCalledWith("/api/time-blocks/42/");

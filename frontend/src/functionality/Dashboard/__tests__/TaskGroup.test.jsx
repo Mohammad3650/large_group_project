@@ -49,15 +49,15 @@ describe("TaskGroup", () => {
 
     it("collapses the task list when the header is clicked", () => {
         render(<TaskGroup title="Today" tasks={mockTasks} setTasks={vi.fn()} />);
-        fireEvent.click(screen.getByText("Today").closest("div"));
+        fireEvent.click(screen.getByTestId("task-group-header"));
         expect(screen.queryByText("Lecture")).not.toBeInTheDocument();
         expect(screen.queryByText("Seminar")).not.toBeInTheDocument();
     });
 
     it("expands the task list again when the header is clicked a second time", () => {
         render(<TaskGroup title="Today" tasks={mockTasks} setTasks={vi.fn()} />);
-        fireEvent.click(screen.getByText("Today").closest("div"));
-        fireEvent.click(screen.getByText("Today").closest("div"));
+        fireEvent.click(screen.getByTestId("task-group-header"));
+        fireEvent.click(screen.getByTestId("task-group-header"));
         expect(screen.getByText("Lecture")).toBeInTheDocument();
         expect(screen.getByText("Seminar")).toBeInTheDocument();
     });

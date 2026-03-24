@@ -12,13 +12,13 @@ describe("formatDateTime", () => {
         expect(result).toBe("14:00 - 15:30 25 Dec");
     });
 
-    it("formats the start and end times correctly", () => {
-        const result = formatDateTime("2026-03-18", "08:00", "09:00");
-        expect(result).toMatch(/08:00 - 09:00/);
+    it("correctly formats midnight as 00:00", () => {
+        const result = formatDateTime("2026-03-18", "00:00", "01:00");
+        expect(result).toBe("00:00 - 01:00 18 Mar");
     });
 
-    it("formats the day and month correctly", () => {
-        const result = formatDateTime("2026-03-18", "09:00", "10:00");
-        expect(result).toMatch(/18 Mar/);
+    it("handles same start and end time", () => {
+        const result = formatDateTime("2026-03-18", "09:00", "09:00");
+        expect(result).toBe("09:00 - 09:00 18 Mar");
     });
 });
