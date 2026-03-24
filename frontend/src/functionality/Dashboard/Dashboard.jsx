@@ -35,6 +35,7 @@ function Dashboard() {
 
     useEffect(() => {
         document.body.classList.add("dashboard-page");
+        window.scrollTo(0, 0);
 
         const handleResize = () => window.scrollTo(0, 0);
         window.addEventListener("resize", handleResize);
