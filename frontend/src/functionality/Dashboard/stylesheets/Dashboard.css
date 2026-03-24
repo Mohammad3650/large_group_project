@@ -66,6 +66,96 @@ body.dashboard-page {
     box-shadow: var(--shadow-md);
     transform: translateY(-1px);
 }
+.subscription-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-soft);
+    box-shadow: var(--shadow-sm);
+}
+
+.subscription-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.subscription-title {
+    margin: 0;
+    color: var(--text-main);
+}
+
+.subscription-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--bg-soft-hover);
+    border-radius: var(--radius-md);
+    background: var(--bg-main);
+    color: var(--text-main);
+    box-sizing: border-box;
+}
+
+.subscription-button,
+.subscription-action-button,
+.subscription-delete-button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.subscription-button,
+.subscription-action-button {
+    background: var(--blue);
+    color: var(--text-white);
+}
+
+.subscription-delete-button {
+    background: #c43d3d;
+    color: var(--text-white);
+}
+
+.subscription-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.subscription-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: var(--bg-main);
+    box-shadow: var(--shadow-sm);
+}
+
+.subscription-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.subscription-url,
+.subscription-meta,
+.subscription-empty,
+.subscription-error-text {
+    margin: 0;
+    word-break: break-word;
+}
+
+.subscription-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+}
 
 @media (max-width: 768px) {
     body.dashboard-page {
@@ -94,4 +184,13 @@ body.dashboard-page {
         justify-content: flex-end;
         flex-wrap: wrap;
     }
+    .subscription-card {
+        flex-direction: column;
+    }
+
+    .subscription-actions {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
 }

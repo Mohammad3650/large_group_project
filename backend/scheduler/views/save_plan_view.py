@@ -5,9 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from scheduler.serializer.save_plan_serializer import SaveWeeklyPlanSerializer
-
-from scheduler.views.create_schedule_view import get_or_create_dayplan, create_timeblock
-
+from scheduler.services.timeblock_service import create_timeblock, get_or_create_dayplan
 
 class SaveWeeklyPlanView(APIView):
     """
@@ -19,9 +17,10 @@ class SaveWeeklyPlanView(APIView):
     @transaction.atomic
     def post(self, request):
         """
-        Save weekly plan events as time blocks for authenticated user.
-        @param request: HTTP request with validated weekly plan data
-        @return: Response with saved event count and 201 status
+        Save a generated weekly plan for the authenticated user.
+
+        Returns:
+            Response: Success message and number of saved events.
         """
         serializer = SaveWeeklyPlanSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -31,11 +30,10 @@ class SaveWeeklyPlanView(APIView):
         timezone = request.data.get("timezone", "UTC")
         created = []
 
-        for ev in events:
-            date = ev["date"]
-            ev["timezone"] = timezone
+        for event in events:
+            date = event["date"]
             dayplan = get_or_create_dayplan(user, date)
-            created.append(create_timeblock(dayplan, ev, str(date)))
+            created.append(create_timeblock(dayplan, event, str(date)))
 
 
         return Response(
