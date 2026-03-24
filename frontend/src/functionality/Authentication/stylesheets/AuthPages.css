@@ -1,0 +1,26 @@
+.login-page .maindiv,
+.signup-page .maindiv {
+  margin-bottom: 0;
+}
+
+.login-page .auth-card-wrapper {
+  min-height: calc(100vh - 90px);
+}
+
+.signup-card-section {
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+
+.login-page,
+.signup-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(13, 110, 253, 0.08),
+      transparent 30%
+    ),
+    radial-gradient(circle at top right, rgba(0, 0, 0, 0.04), transparent 25%),
+    linear-gradient(180deg, #f8f9fb 0%, #eef2f6 100%);
+}

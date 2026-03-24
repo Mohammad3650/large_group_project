@@ -6,6 +6,8 @@ import { saveTokens } from "../../utils/authStorage";
 import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
 import AuthCard from "../../components/AuthCard";
 import AuthField from "../../components/AuthField";
+import Navbar from "../../components/Navbar";
+import "./stylesheets/AuthPages.css";
 
 /**
  * Initial error state used when the form first loads
@@ -130,65 +132,70 @@ function Login() {
   }
 
   return (
-    <AuthCard
-      title="Welcome Back"
-      subtitle="Log in to continue to StudySync"
-      footerText="No account?"
-      footerLinkText="Sign up"
-      footerLinkTo="/signup"
-    >
+    <div className="login-page">
+      <Navbar />
+      <div className="login-card-section">
+        <AuthCard
+          title="Welcome Back"
+          subtitle="Log in to continue to StudySync"
+          footerText="No account?"
+          footerLinkText="Sign up"
+          footerLinkTo="/signup"
+        >
 
-      {/* Displays general login errors that are not tied to one specific field */}
-      {errors.global.length > 0 && (
-        <div className="alert alert-danger text-center" role="alert">
-          {errors.global.map((message) => (
-            <div key={message}>{message}</div>
-          ))}
-        </div>
-      )}
+          {/* Displays general login errors that are not tied to one specific field */}
+          {errors.global.length > 0 && (
+            <div className="alert alert-danger text-center" role="alert">
+              {errors.global.map((message) => (
+                <div key={message}>{message}</div>
+              ))}
+            </div>
+          )}
 
-      {/* Login form with email and password fields, and a submit button */}
-      <form onSubmit={handleLogin} noValidate>
-        <div className="row g-3">
-          <AuthField
-            name="email"
-            label="Email"
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={setEmail}
-            error={errors.fieldErrors.email}
-          />
+          {/* Login form with email and password fields, and a submit button */}
+          <form onSubmit={handleLogin} noValidate>
+            <div className="row g-3">
+              <AuthField
+                name="email"
+                label="Email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={setEmail}
+                error={errors.fieldErrors.email}
+              />
 
-          <AuthField
-            name="password"
-            label="Password"
-            type="password"
-            placeholder="Enter your password..."
-            value={password}
-            onChange={setPassword}
-            error={errors.fieldErrors.password}
-          />
-        </div>
+              <AuthField
+                name="password"
+                label="Password"
+                type="password"
+                placeholder="Enter your password..."
+                value={password}
+                onChange={setPassword}
+                error={errors.fieldErrors.password}
+              />
+            </div>
 
-        <div className="d-grid mt-4">
-          <button
-            className="btn btn-dark btn-lg rounded-3"
-            disabled={loading}
-            type="submit"
-          >
-            {loading ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" />
-                Logging in...
-              </>
-            ) : (
-              "Log in"
-            )}
-          </button>
-        </div>
-      </form>
-    </AuthCard>
+            <div className="d-grid mt-4">
+              <button
+                className="btn btn-dark btn-lg rounded-3"
+                disabled={loading}
+                type="submit"
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" />
+                    Logging in...
+                  </>
+                ) : (
+                  "Log in"
+                )}
+              </button>
+            </div>
+          </form>
+        </AuthCard>
+      </div>
+    </div>
   );
 }
 

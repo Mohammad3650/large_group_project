@@ -28,7 +28,7 @@ function AuthCard({
   children,
 }) {
   return (
-    <div className="bg-light min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div className="d-flex align-items-center justify-content-center auth-card-wrapper">
       <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5">
         <div className="card shadow-lg border-0 rounded-4">
           <div className="card-body py-4 px-5">
@@ -45,7 +45,7 @@ function AuthCard({
           </div>
 
           {/* Footer link for switching between auth pages */}
-          <div className="card-footer text-center bg-white border-0 pb-4">
+          <div className="card-footer text-center bg-white border-0 pb-4 rounded-4">
             <small className="text-muted">
               {footerText}
               <Link
