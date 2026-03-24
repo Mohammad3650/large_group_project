@@ -19,7 +19,7 @@ import calendarIcon from  "../assets/calendar_icon.png"
  */
 function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const username = useUsername(isLoggedIn);
+    const { username } = useUsername(isLoggedIn);
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {

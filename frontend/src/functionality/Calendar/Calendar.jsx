@@ -12,7 +12,7 @@ import CalendarPlaceholder from "./CalendarPlaceholder.jsx";
 
 function Calendar() {
     const { blocks, setBlocks } = useTimeBlocks();
-    const username = useUsername(true);
+    const { username } = useUsername(true);
     const nav = useNavigate();
 
     if (blocks === null) return <CalendarPlaceholder/>;

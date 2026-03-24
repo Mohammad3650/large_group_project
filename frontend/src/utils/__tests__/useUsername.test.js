@@ -14,9 +14,10 @@ describe("useUsername", () => {
         vi.clearAllMocks();
     });
 
-    it("initialises with an empty string", () => {
+    it("initialises with an empty username and no error", () => {
         const { result } = renderHook(() => useUsername(false));
-        expect(result.current).toBe("");
+        expect(result.current.username).toBe("");
+        expect(result.current.error).toBe("");
     });
 
     it("does not fetch the username when the user is not logged in", () => {
@@ -29,21 +30,27 @@ describe("useUsername", () => {
 
         const { result } = renderHook(() => useUsername(true));
 
-        await waitFor(() => expect(result.current).toBe("testuser"));
+        await waitFor(() => expect(result.current.username).toBe("testuser"));
         expect(apiModule.api.get).toHaveBeenCalledWith("/api/user/");
+        expect(result.current.error).toBe("");
     });
 
-    it("logs an error and keeps the username as an empty string when the API call fails", async () => {
-        const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    it("sets an error when the API call fails", async () => {
         apiModule.api.get.mockRejectedValue(new Error("Network error"));
 
         const { result } = renderHook(() => useUsername(true));
 
-        await waitFor(() => expect(consoleSpy).toHaveBeenCalled());
-        expect(result.current).toBe("");
-        expect(consoleSpy).toHaveBeenCalledWith("Failed to load user", expect.any(Error));
+        await waitFor(() => expect(result.current.error).toBe("Failed to load user"));
+        expect(result.current.username).toBe("");
+    });
 
-        consoleSpy.mockRestore();
+    it("sets an error when the response contains no username", async () => {
+        apiModule.api.get.mockResolvedValue({ data: {} });
+
+        const { result } = renderHook(() => useUsername(true));
+
+        await waitFor(() => expect(result.current.error).toBe("Invalid response from server"));
+        expect(result.current.username).toBe("");
     });
 
     it("fetches the username when isLoggedIn changes from false to true", async () => {
@@ -53,12 +60,12 @@ describe("useUsername", () => {
             initialProps: { isLoggedIn: false },
         });
 
-        expect(result.current).toBe("");
+        expect(result.current.username).toBe("");
         expect(apiModule.api.get).not.toHaveBeenCalled();
 
         rerender({ isLoggedIn: true });
 
-        await waitFor(() => expect(result.current).toBe("testuser"));
+        await waitFor(() => expect(result.current.username).toBe("testuser"));
         expect(apiModule.api.get).toHaveBeenCalledWith("/api/user/");
     });
 });

@@ -8,7 +8,7 @@ import mapTimeBlocks from "./mapTimeBlocks.js";
  * @returns {{ blocks: Array|null, setBlocks: Function, error: string }} The fetched blocks, setter, and error state
  */
 function useTimeBlocks() {
-    const [blocks, setBlocks] = useState(null);
+    const [blocks, setBlocks] = useState(null); // null = not yet fetched, [] = fetched but empty
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -16,8 +16,8 @@ function useTimeBlocks() {
             try {
                 const res = await api.get("/api/time-blocks/get/");
                 setBlocks(mapTimeBlocks(res.data));
-            } catch (err) {
-                setError("Failed to load tasks");
+            } catch {
+                setError("Failed to load time blocks");
             }
         }
         fetchTimeBlocks();
