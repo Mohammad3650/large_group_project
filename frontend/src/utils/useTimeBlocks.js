@@ -10,7 +10,7 @@ const TIME_BLOCKS_ENDPOINT = "/api/time-blocks/get/";
  * @returns {Object} Time block state, actions, and status flags
  */
 function useTimeBlocks() {
-    const [blocks, setBlocks] = useState(null);
+    const [blocks, setBlocks] = useState(null); // null = not yet fetched
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
 

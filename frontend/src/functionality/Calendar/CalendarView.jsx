@@ -14,6 +14,7 @@ import locationIcon from "../../assets/CalendarEvent/location_icon.png"
 import timeIcon from "../../assets/CalendarEvent/time_icon.png"
 import Navbar from "../../components/Navbar.jsx";
 import deleteTimeBlock from "../../utils/deleteTimeBlock.js";
+import getUserTimezone from "../../utils/getUserTimezone.js";
 
 
 /**
@@ -29,15 +30,14 @@ const formatDate = (date) => {
 
 function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
-
-    const CALENDAR_TIMEZONE = "Europe/London";
+    const calendarTimezone = getUserTimezone()
 
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],
         plugins: [createEventModalPlugin(), eventsService],
         events: blocks,
-        timezone: CALENDAR_TIMEZONE,
-        selectedDate: Temporal.Now.plainDateISO(CALENDAR_TIMEZONE),
+        timezone: calendarTimezone,
+        selectedDate: Temporal.Now.plainDateISO(calendarTimezone),
     });
 
     function handleDelete(id) {

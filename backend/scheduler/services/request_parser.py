@@ -5,6 +5,9 @@ import datetime
 
 @dataclass(frozen=True)
 class ParsedScheduleRequest:
+    """
+    Immutable dataclass representing a parsed schedule generation request.
+    """
     week_start: datetime.date
     week_end: datetime.date
     days: int
@@ -15,14 +18,27 @@ class ParsedScheduleRequest:
 
 
 class ScheduleRequestParser:
+    """
+    Service for parsing validated schedule request data into structured format.
+    """
 
     def _time_to_abs_min(self, time):
+        """
+        Convert time object to absolute minutes since midnight.
+        @param time: Time object or None
+        @return: Minutes since midnight or None
+        """
         if time is None:
             return None
 
         return time.hour * 60 + time.minute
     
     def create_windows(self, windows):
+        """
+        Process window data into list of dicts with absolute minute times.
+        @param windows: List of window dicts
+        @return: List of processed window dicts
+        """
         new_windows = []
         for window in windows:
             start = self._time_to_abs_min(window["start_min"])
@@ -40,6 +56,11 @@ class ScheduleRequestParser:
 
 
     def parse(self, validated: Dict[str, Any]) -> ParsedScheduleRequest:
+        """
+        Parse validated request data into ParsedScheduleRequest dataclass.
+        @param validated: Validated request dict
+        @return: ParsedScheduleRequest instance
+        """
         week_start = validated["week_start"]   # datetime.date
         week_end = validated["week_end"]       # datetime.date
         days = validated["days"]

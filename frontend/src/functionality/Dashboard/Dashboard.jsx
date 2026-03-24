@@ -6,7 +6,6 @@ import TaskGroup from "./TaskGroup.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
 import NotesSection from "./NotesSection.jsx";
 import useTimeBlocks from "../../utils/useTimeBlocks.js";
-import "./stylesheets/Dashboard.css";
 import handleExportCsv from "../../utils/handleExportCsv.js";
 import SubscriptionForm from "./SubscriptionForm.jsx";
 import SubscriptionList from "./SubscriptionList.jsx";
@@ -15,22 +14,7 @@ import deleteCalendarSubscription from "../../utils/deleteCalendarSubscription.j
 import getCalendarSubscriptions from "../../utils/getCalendarSubscriptions.js";
 import handleExportIcs from "../../utils/handleExportIcs.js";
 import refreshCalendarSubscription from "../../utils/refreshCalendarSubscription.js";
-
-
-/**
- * Converts a task object's date and start_time into a Date object for comparison.
- * @param {Object} b - Task object with date and start_time fields
- * @returns {Date} Combined date and time as a Date object
- */
-const getDate = (b) => new Date(`${b.date}T${b.startTime}`);
-
-/**
- * Sorts tasks in ascending order by datetime.
- * @param {Object} a - First task object
- * @param {Object} b - Second task object
- * @returns {number} Negative if a comes first, positive if b comes first
- */
-const sortTasksByDate = (a, b) => getDate(a) - getDate(b);
+import "./stylesheets/Dashboard.css";
 
 
 /**
@@ -44,25 +28,20 @@ function Dashboard() {
     const [error, setError] = useState("");
     const [subscriptions, setSubscriptions] = useState([]);
 
-    const [overdueTasks, setOverdueTasks] = useState([]);
-    const [todayTasks, setTodayTasks] = useState([]);
-    const [tomorrowTasks, setTomorrowTasks] = useState([]);
-    const [weekTasks, setWeekTasks] = useState([]);
-    const [beyondWeekTasks, setBeyondWeekTasks] = useState([]);
+    const {
+        blocks,
+        refetchBlocks,
+        error: blocksError,
+    } = useTimeBlocks();
 
-    const { blocks, refetchBlocks, error: blocksError, } = useTimeBlocks();
-
-    useEffect(() => {
-        document.body.classList.add("dashboard-page");
-
-        const handleResize = () => window.scrollTo(0, 0);
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            document.body.classList.remove("dashboard-page");
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
+    const {
+        overdueTasks, setOverdueTasks,
+        todayTasks, setTodayTasks,
+        tomorrowTasks, setTomorrowTasks,
+        weekTasks, setWeekTasks,
+        beyondWeekTasks, setBeyondWeekTasks,
+        totalTasks
+    } = useTasksByDateGroup(blocks);
 
     useEffect(() => {
         async function fetchDashboard() {
@@ -95,22 +74,17 @@ function Dashboard() {
     }, []);
 
     useEffect(() => {
-        if (blocks === null) return;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        const dayAfterTomorrow = new Date(today);
-        dayAfterTomorrow.setDate(today.getDate() + 2);
-        const weekEnd = new Date(today);
-        weekEnd.setDate(today.getDate() + 7);
+        document.body.classList.add("dashboard-page");
+        window.scrollTo(0, 0);
 
-        setOverdueTasks(blocks.filter(b => getDate(b) < today).sort(sortTasksByDate));
-        setTodayTasks(blocks.filter(b => getDate(b) >= today && getDate(b) < tomorrow).sort(sortTasksByDate));
-        setTomorrowTasks(blocks.filter(b => getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow).sort(sortTasksByDate));
-        setWeekTasks(blocks.filter(b => getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd).sort(sortTasksByDate));
-        setBeyondWeekTasks(blocks.filter(b => getDate(b) > weekEnd).sort(sortTasksByDate));
-    }, [blocks]);
+        const handleResize = () => window.scrollTo(0, 0);
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            document.body.classList.remove("dashboard-page");
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     async function handleImportSubscription(payload) {
         try {
@@ -164,8 +138,6 @@ function Dashboard() {
             setError("Failed to delete timetable subscription");
         }
     }
-
-    const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length + beyondWeekTasks.length;
 
     if (error || blocksError) {
     return <p>{error || blocksError}</p>;

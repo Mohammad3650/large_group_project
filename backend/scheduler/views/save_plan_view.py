@@ -8,6 +8,10 @@ from scheduler.serializer.save_plan_serializer import SaveWeeklyPlanSerializer
 from scheduler.services.timeblock_service import create_timeblock, get_or_create_dayplan
 
 class SaveWeeklyPlanView(APIView):
+    """
+    API endpoint for saving a weekly plan with multiple time block events.
+    """
+
     permission_classes = [IsAuthenticated]
 
     @transaction.atomic
@@ -23,6 +27,7 @@ class SaveWeeklyPlanView(APIView):
 
         user = request.user
         events = serializer.validated_data["events"]
+        timezone = request.data.get("timezone", "UTC")
         created = []
 
         for event in events:

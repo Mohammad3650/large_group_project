@@ -3,18 +3,20 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, serializers
 
+from scheduler.models import DayPlan, TimeBlock
 from scheduler.serializer.time_block_serializer import TimeBlockSerializer
-from scheduler.services.timeblock_service import create_timeblock, get_or_create_dayplan
+from scheduler.utils.to_utc import to_utc
+
 
 def validate_timeblock_payload(request):
     """
-    Validate incoming time block data excluding the date field.
+    Validate incoming time block data from the request.
 
     Args:
-        request (Request): DRF request object.
+        request (Request): DRF request object containing input data.
 
     Returns:
-        dict: Validated serializer data.
+        dict: Validated time block data.
     """
     block_data = {k: v for k, v in request.data.items() if k != "date"}
 
@@ -28,10 +30,13 @@ def validate_date(request):
     Validate that a date value is present in the request.
 
     Args:
-        request (Request): DRF request object.
+        request (Request): DRF request object containing input data.
 
     Returns:
         str: Date string from the request payload.
+
+    Raises:
+        serializers.ValidationError: If no date is provided.
     """
     date = request.data.get("date")
 
@@ -41,19 +46,77 @@ def validate_date(request):
     return date
 
 
+def get_or_create_dayplan(user, date):
+    """
+    Get or create the DayPlan for a given user and date.
 
+    Args:
+        user (User): The authenticated user.
+        date (str | date): The target date.
+
+    Returns:
+        DayPlan: The retrieved or newly created DayPlan instance.
+    """
+    dayplan, _ = DayPlan.objects.get_or_create(user=user, date=date)
+    return dayplan
+
+
+def create_timeblock(dayplan, data, original_date):
+    """
+    Create a TimeBlock for a given DayPlan, handling timezone conversion.
+
+    This function:
+    - converts start/end times from the user's timezone into UTC
+    - checks whether the converted start time falls on a different date
+    - reassigns the TimeBlock to the correct DayPlan if needed
+    - stores the timezone on the TimeBlock
+
+    Args:
+        dayplan (DayPlan): Initial DayPlan based on the local date.
+        data (dict): Validated input data.
+        original_date (str): Original local date before UTC conversion.
+
+    Returns:
+        TimeBlock: The newly created TimeBlock stored in UTC.
+    """
+    timezone = data.get("timezone", "UTC")
+
+    start_time_utc, start_date_utc = to_utc(
+        str(data.get("start_time")),
+        original_date,
+        timezone,
+    )
+    end_time_utc, _ = to_utc(
+        str(data.get("end_time")),
+        original_date,
+        timezone,
+    )
+
+    if str(start_date_utc) != original_date:
+        dayplan = get_or_create_dayplan(dayplan.user, start_date_utc)
+
+    return TimeBlock.objects.create(
+        day=dayplan,
+        name=data.get("name"),
+        start_time=start_time_utc,
+        end_time=end_time_utc,
+        location=data.get("location", ""),
+        block_type=data["block_type"],
+        description=data.get("description", ""),
+        timezone=timezone,
+    )
 
 
 def timeblock_response_payload(dayplan, time_block):
     """
-    Generate a standardized response payload for a TimeBlock.
+    Generate a standardised response payload for a TimeBlock.
 
     Args:
-        dayplan (DayPlan): The parent DayPlan of the time block.
-        time_block (TimeBlock): The TimeBlock instance to serialize.
+        dayplan (DayPlan): Parent DayPlan of the time block.
+        time_block (TimeBlock): Created TimeBlock instance.
 
     Returns:
-        dict: Serialized time block data including its ID and associated date.
+        dict: Serialized time block data including date and timezone.
     """
     return {
         "id": time_block.id,
@@ -64,6 +127,7 @@ def timeblock_response_payload(dayplan, time_block):
         "location": time_block.location,
         "block_type": time_block.block_type,
         "description": time_block.description,
+        "timezone": time_block.timezone,
     }
 
 
@@ -73,25 +137,16 @@ def create_schedule(request):
     """
     Create a new schedule entry (TimeBlock) for the authenticated user.
 
-    This endpoint validates the request payload, ensures a DayPlan exists for the given date,
-    creates a TimeBlock, and returns a standardized response payload.
-
     Args:
-        request (Request): DRF Request object containing the schedule payload.
+        request (Request): DRF request containing the schedule payload.
 
     Returns:
-        Response: DRF Response containing:
-            - status 201 CREATED
-            - JSON payload of the newly created time block (via timeblock_response_payload)
-
-    Raises:
-        serializers.ValidationError: If the payload is invalid or missing required fields.
+        Response: Created time block payload with HTTP 201 status.
     """
     date = validate_date(request)
-
     data = validate_timeblock_payload(request)
     dayplan = get_or_create_dayplan(request.user, date)
-    time_block = create_timeblock(dayplan, data)
+    time_block = create_timeblock(dayplan, data, date)
 
     return Response(
         timeblock_response_payload(dayplan, time_block),

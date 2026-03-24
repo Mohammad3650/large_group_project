@@ -30,9 +30,11 @@ from scheduler.views.calendar_subscription_view import (
 )
 from scheduler.views.create_schedule_view import create_schedule
 from scheduler.views.generator_view import GenerateScheduleView
-from scheduler.views.get_schedule_view import get_schedule, edit_timeblock
+from scheduler.views.get_schedule_view import get_schedule
+from scheduler.views.edit_schedule_view import edit_timeblock
 from scheduler.views.delete_schedule_view import delete_schedule
-from scheduler.views.note_view import get_note, save_note
+from scheduler.views.get_note_view import get_note
+from scheduler.views.save_note_view import save_note
 from scheduler.views.save_plan_view import SaveWeeklyPlanView
 from scheduler.views.change_password_view import change_password
 from scheduler.views.delete_user_view import delete_user
@@ -53,9 +55,7 @@ urlpatterns = [
     # path("", TokenVerifyView.as_view(), name="Landing_Page"),
     path("api/time-blocks/", create_schedule, name="api-create-timeblock"),
     path("api/time-blocks/get/", get_schedule, name="api-get-timeblocks"),
-    path(
-        "api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"
-    ),
+    path("api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"),
     path("api/notes/get", get_note, name="api-get-note"),
     path("api/notes/save/", save_note, name="api-save-note"),
     path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
