@@ -14,6 +14,7 @@ User = get_user_model()
 fake = Faker()
 
 DEFAULT_PASSWORD = "password123"
+DEFAULT_PHONE_NUMBER = "07700900000"
 
 
 def create_guaranteed_users():
@@ -32,7 +33,7 @@ def create_guaranteed_users():
             password=DEFAULT_PASSWORD,
             first_name=guaranteed_user["first_name"],
             last_name=guaranteed_user["last_name"],
-            phone_number="07700900000",
+            phone_number=DEFAULT_PHONE_NUMBER,
         )
         users.append(user)
     return users
@@ -57,7 +58,7 @@ def create_user(index):
         password=password,
         first_name=fake.first_name(),
         last_name=fake.last_name(),
-        phone_number="07700900000",
+        phone_number=DEFAULT_PHONE_NUMBER,
     )
 
 
