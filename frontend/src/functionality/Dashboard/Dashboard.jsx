@@ -34,19 +34,6 @@ function Dashboard() {
     } = useTasksByDateGroup(blocks);
 
     useEffect(() => {
-        document.body.classList.add("dashboard-page");
-        window.scrollTo(0, 0);
-
-        const handleResize = () => window.scrollTo(0, 0);
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            document.body.classList.remove("dashboard-page");
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
-    useEffect(() => {
         async function fetchDashboard() {
             try {
                 const res = await api.get("/dashboard/");
@@ -61,6 +48,19 @@ function Dashboard() {
         }
         fetchDashboard();
     }, [nav]);
+
+    useEffect(() => {
+        document.body.classList.add("dashboard-page");
+        window.scrollTo(0, 0);
+
+        const handleResize = () => window.scrollTo(0, 0);
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            document.body.classList.remove("dashboard-page");
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     if (error) return <p>{error}</p>;
 
