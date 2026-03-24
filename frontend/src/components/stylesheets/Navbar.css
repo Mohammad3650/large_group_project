@@ -154,9 +154,7 @@ button {
     align-content: center;
     justify-content: center;
 }
-    border-bottom: 1px solid var(--border-light);
-    padding-bottom: var(--space-sm);
-}
+
 
 .dropdown-link {
     text-decoration: none;

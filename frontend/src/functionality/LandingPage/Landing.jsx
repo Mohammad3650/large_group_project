@@ -9,9 +9,6 @@ import "./stylesheets/Landing.css";
 
 function Landing() {
   return (
-    <>
-    <div className="background">
-  
     
     <div className="landing">
       <Navbar />
