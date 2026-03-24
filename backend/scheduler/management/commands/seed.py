@@ -51,11 +51,10 @@ def create_user(index):
     """
     username = f"{SEEDED_USER_PREFIX}{fake.user_name()}_{index}"
     email = f"{username}@example.net"
-    password = DEFAULT_PASSWORD
     return User.objects.create_user(
         username=username,
         email=email,
-        password=password,
+        password=DEFAULT_PASSWORD,
         first_name=fake.first_name(),
         last_name=fake.last_name(),
         phone_number=DEFAULT_PHONE_NUMBER,
