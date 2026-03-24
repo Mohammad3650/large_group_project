@@ -7,7 +7,7 @@ import CalendarView from "./CalendarView.jsx";
 import AddTaskButton from "../../components/AddTaskButton.jsx";
 import useUsername from "../../utils/useUsername.js";
 import { useNavigate } from "react-router-dom";
-import CalendarPlaceholder from "./CalendarPlaceholder.jsx";
+// import CalendarPlaceholder from "./CalendarPlaceholder.jsx";
 
 
 function Calendar() {
@@ -15,7 +15,7 @@ function Calendar() {
     const { username } = useUsername(true);
     const nav = useNavigate();
 
-    if (blocks === null) return <CalendarPlaceholder/>;
+    // if (blocks === null) return <CalendarPlaceholder/>;
 
     return (
         <CalendarView

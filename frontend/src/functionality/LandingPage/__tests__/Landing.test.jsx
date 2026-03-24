@@ -2,10 +2,6 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import Landing from "../Landing";
 
-vi.mock("../../../components/Navbar.jsx", () => ({
-  default: () => <div>Mock Navbar</div>,
-}));
-
 vi.mock("../Hero", () => ({
   default: () => <div>Mock Hero</div>,
 }));
@@ -34,7 +30,6 @@ describe("Landing", () => {
     expect(container.querySelector(".landing_testimonials")).toBeInTheDocument();
     expect(container.querySelector(".landing_testimonials_title")).toBeInTheDocument();
 
-    expect(screen.getByText("Mock Navbar")).toBeInTheDocument();
     expect(screen.getByText("Mock Hero")).toBeInTheDocument();
     expect(screen.getByText("Mock Features")).toBeInTheDocument();
     expect(screen.getByText("Student Testimonials")).toBeInTheDocument();

@@ -46,9 +46,6 @@ vi.mock("@schedule-x/react", () => ({
   },
 }));
 
-vi.mock("../../../components/Navbar.jsx", () => ({
-  default: () => <div>Mock Navbar</div>,
-}));
 
 vi.mock("../../../utils/deleteTimeBlock.js", () => ({
   default: mockDeleteTimeBlock,
@@ -76,7 +73,7 @@ describe("CalendarView", () => {
     global.confirm = vi.fn();
   });
 
-  it("renders the navbar, title, header buttons and calendar", () => {
+  it("renders the title, header buttons and calendar", () => {
     render(
       <CalendarView
         blocks={blocks}
@@ -86,7 +83,6 @@ describe("CalendarView", () => {
       />,
     );
 
-    expect(screen.getByText("Mock Navbar")).toBeInTheDocument();
     expect(
       screen.getByText("Welcome to your calendar, Mohammad!"),
     ).toBeInTheDocument();

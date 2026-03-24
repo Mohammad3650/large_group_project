@@ -21,9 +21,7 @@ vi.mock("../../../utils/handleExportCsv.js", () => ({
 vi.mock("../../../utils/handleExportIcs.js", () => ({
     default: vi.fn(),
 }));
-vi.mock("../../../components/Navbar.jsx", () => ({
-    default: () => <nav>Navbar</nav>,
-}));
+
 vi.mock("./stylesheets/Dashboard.css", () => ({}));
 vi.mock("./TaskGroup.jsx", () => ({
     default: ({ title, tasks = [] }) => tasks.length === 0 ? null : (
@@ -67,10 +65,9 @@ describe("Dashboard", () => {
         useTimeBlocksModule.default.mockReturnValue({ blocks: mockBlocks });
     });
 
-    it("renders the navbar and notes section", async () => {
+    it("renders the notes section", async () => {
         renderDashboard();
-        await waitFor(() => expect(screen.getByText("Navbar")).toBeInTheDocument());
-        expect(screen.getByPlaceholderText("Notes")).toBeInTheDocument();
+        await waitFor(() => expect(screen.getByPlaceholderText("Notes")).toBeInTheDocument());
     });
 
     it("renders the welcome message from the API", async () => {
