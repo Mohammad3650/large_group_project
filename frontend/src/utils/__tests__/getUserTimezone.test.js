@@ -21,4 +21,14 @@ describe("getUserTimezone", () => {
 
         expect(getUserTimezone()).toBe("America/New_York");
     });
+
+    it("calls Intl.DateTimeFormat to retrieve the timezone", () => {
+        const spy = vi.spyOn(Intl, "DateTimeFormat").mockReturnValue({
+            resolvedOptions: () => ({ timeZone: "Europe/London" }),
+        });
+
+        getUserTimezone();
+
+        expect(spy).toHaveBeenCalled();
+    });
 });
