@@ -16,7 +16,7 @@ function NotesSection() {
     useEffect(() => {
         async function fetchNotes() {
             try {
-                const res = await api.get("/api/notes/get");
+                const res = await api.get("/api/notes/get/");
                 setNotes(res.data.content);
                 setLoaded(true);
             } catch (err) {

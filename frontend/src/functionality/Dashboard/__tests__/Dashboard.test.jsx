@@ -24,6 +24,9 @@ vi.mock("../../../utils/handleExportIcs.js", () => ({
 vi.mock("../../../components/Navbar.jsx", () => ({
     default: () => <nav>Navbar</nav>,
 }));
+vi.mock("./NotesSection.jsx", () => ({
+    default: () => <div><input placeholder="Notes" /></div>,
+}));
 vi.mock("./stylesheets/Dashboard.css", () => ({}));
 vi.mock("./TaskGroup.jsx", () => ({
     default: ({ title, tasks = [] }) => tasks.length === 0 ? null : (
@@ -204,9 +207,9 @@ describe("Dashboard", () => {
             ]
         });
         renderDashboard();
-        await waitFor(() => expect(screen.getByText("Overdue")).toBeInTheDocument());
-        const items = screen.getAllByText(/Overdue/);
-        expect(items[1].textContent).toBe("Earlier Overdue");
-        expect(items[2].textContent).toBe("Later Overdue");
+        await waitFor(() => expect(screen.getByText("Earlier Overdue")).toBeInTheDocument());
+        const taskElements = screen.getAllByText(/Overdue/i).filter(el => el.textContent !== "Overdue");
+        expect(taskElements[0].textContent).toBe("Earlier Overdue");
+        expect(taskElements[1].textContent).toBe("Later Overdue");
     });
 });

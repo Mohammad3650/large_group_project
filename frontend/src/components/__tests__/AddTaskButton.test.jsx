@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import AddTaskButton from "../AddTaskButton";
@@ -12,6 +12,10 @@ vi.mock("react-router-dom", async () => {
 });
 
 describe("AddTaskButton", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it("renders the button with the correct text", () => {
         render(<MemoryRouter><AddTaskButton /></MemoryRouter>);
         expect(screen.getByText("+ Add Task")).toBeInTheDocument();
