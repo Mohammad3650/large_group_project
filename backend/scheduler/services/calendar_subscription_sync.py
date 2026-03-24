@@ -117,6 +117,7 @@ def build_timeblock_data(event):
         "location": event["location"],
         "block_type": classify_block_type(summary),
         "description": clean_event_description(event["description"]),
+        "timezone": LOCAL_TIMEZONE.key,
     }
 
 
@@ -170,7 +171,7 @@ def sync_calendar_subscription(subscription):
         ).select_related("time_block").first()
 
         if imported_event is None:
-            time_block = create_timeblock(dayplan, timeblock_data)
+            time_block = create_timeblock(dayplan, timeblock_data, str(event_date))
             ImportedCalendarEvent.objects.create(
                 subscription=subscription,
                 external_event_uid=external_event_uid,
@@ -179,7 +180,7 @@ def sync_calendar_subscription(subscription):
             created_count += 1
             continue
 
-        update_timeblock(imported_event.time_block, dayplan, timeblock_data)
+        update_timeblock(imported_event.time_block, dayplan, timeblock_data, str(event_date))
         updated_count += 1
 
     subscription.last_synced_at = timezone.now()
