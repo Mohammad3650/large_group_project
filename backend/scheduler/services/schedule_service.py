@@ -10,11 +10,23 @@ from django.db.models import F
 
 
 class ScheduleService:
+    """
+    Service for generating schedules using constraint-based optimization.
+    Orchestrates parsing, scheduling, and response building.
+    """
+
     def __init__(self) -> None:
         self.parser = ScheduleRequestParser()
         self.builder = ScheduleResponseBuilder()
 
     def fetch_scheduled_time_blocks(self, week_start, week_end, user):
+        """
+        Fetch all scheduled time blocks for a user in a date range.
+        @param week_start: Start date
+        @param week_end: End date
+        @param user: User instance
+        @return: QuerySet of TimeBlock objects
+        """
         time_blocks = (
             TimeBlock.objects
             .filter(
@@ -28,7 +40,12 @@ class ScheduleService:
         return time_blocks
 
     def extract_scheduled_mins(self, time_blocks, week_start):
-        
+        """
+        Convert time blocks to absolute minutes since week start.
+        @param time_blocks: TimeBlock QuerySet
+        @param week_start: Week start date reference
+        @return: List of tuples (start_min, end_min, name)
+        """
         DAY_MINS = 1440
 
         events = []
@@ -47,6 +64,12 @@ class ScheduleService:
         return events
 
     def generate(self, user, validated_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generate optimized schedule with unscheduled events placed into time windows.
+        @param user: User instance
+        @param validated_data: Validated request data dict
+        @return: Response dict with generated schedule events
+        """
         parsed = self.parser.parse(validated_data)
 
         if not parsed.unscheduled:

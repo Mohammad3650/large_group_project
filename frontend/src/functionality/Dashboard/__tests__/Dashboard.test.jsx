@@ -18,11 +18,11 @@ vi.mock("../../../utils/useTimeBlocks.js", () => ({
 vi.mock("../../../utils/handleExportCsv.js", () => ({
     default: vi.fn(),
 }));
+vi.mock("../../../utils/handleExportIcs.js", () => ({
+    default: vi.fn(),
+}));
 vi.mock("../../../components/Navbar.jsx", () => ({
     default: () => <nav>Navbar</nav>,
-}));
-vi.mock("./NotesSection.jsx", () => ({
-    default: () => <div>NotesSection</div>,
 }));
 vi.mock("./stylesheets/Dashboard.css", () => ({}));
 vi.mock("./TaskGroup.jsx", () => ({
@@ -37,6 +37,7 @@ vi.mock("./TaskGroup.jsx", () => ({
 import * as apiModule from "../../../api.js";
 import * as useTimeBlocksModule from "../../../utils/useTimeBlocks.js";
 import * as handleExportCsvModule from "../../../utils/handleExportCsv.js";
+import * as handleExportIcsModule from "../../../utils/handleExportIcs.js";
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);
@@ -112,6 +113,18 @@ describe("Dashboard", () => {
         expect(handleExportCsvModule.default).toHaveBeenCalled();
     });
 
+    it("renders the Export ICS button", async () => {
+        renderDashboard();
+        await waitFor(() => expect(screen.getByText("Export ICS")).toBeInTheDocument());
+    });
+
+    it("calls handleExportIcs when the Export ICS button is clicked", async () => {
+        renderDashboard();
+        await waitFor(() => expect(screen.getByText("Export ICS")).toBeInTheDocument());
+        fireEvent.click(screen.getByText("Export ICS"));
+        expect(handleExportIcsModule.default).toHaveBeenCalled();
+    });
+
     it("shows the no-tasks message when blocks is an empty array", async () => {
         useTimeBlocksModule.default.mockReturnValue({ blocks: [] });
         renderDashboard();
@@ -165,6 +178,13 @@ describe("Dashboard", () => {
         await waitFor(() => expect(document.body).toHaveClass("dashboard-page"));
         unmount();
         expect(document.body).not.toHaveClass("dashboard-page");
+    });
+
+    it("scrolls to the top on mount", async () => {
+        const scrollSpy = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+        renderDashboard();
+        expect(scrollSpy).toHaveBeenCalledWith(0, 0);
+        scrollSpy.mockRestore();
     });
 
     it("scrolls to the top on window resize", async () => {

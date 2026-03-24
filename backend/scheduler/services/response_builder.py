@@ -62,17 +62,17 @@ class ScheduleResponseBuilder:
         return date_obj, time(hour=hour, minute=minute, second=0)
 
     def _guess_block_type(self, name: str) -> str:
-        n = (name or "").lower()
-        if "lecture" in n:
+        block_type = (name or "").lower()
+        if "lecture" in block_type:
             return "lecture"
-        if "lab" in n:
+        if "lab" in block_type:
             return "lab"
-        if "tutorial" in n:
+        if "tutorial" in block_type:
             return "tutorial"
-        if "commute" in n or "travel" in n:
+        if "commute" in block_type or "travel" in block_type:
             return "commute"
-        if "work" in n:
+        if "work" in block_type:
             return "work"
-        if "exercise" in n or "gym" in n:
+        if "exercise" in block_type or "gym" in block_type:
             return "exercise"
         return "study"

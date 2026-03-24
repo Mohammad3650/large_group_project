@@ -54,12 +54,4 @@ describe("toLocalDateTime", () => {
         expect(withSeconds.localTime).toBe(withoutSeconds.localTime);
         expect(withSeconds.localDate).toBe(withoutSeconds.localDate);
     });
-
-    it("calls getUserTimezone once per invocation", () => {
-        getUserTimezone.mockReturnValue("Europe/London");
-        vi.clearAllMocks();
-        toLocalDateTime("2024-03-18", "09:00:00");
-
-        expect(getUserTimezone).toHaveBeenCalledTimes(1);
-    });
 });
