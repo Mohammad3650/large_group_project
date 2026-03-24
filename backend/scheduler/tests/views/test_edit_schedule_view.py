@@ -49,6 +49,8 @@ class EditScheduleViewTest(APITestCase):
         """Authenticated user should be able to edit their own timeblocks."""
         self.client.force_authenticate(user=self.user)
 
+        timezone = self.block.timezone
+
         url = reverse("api-edit-timeblock", args=[self.block.id])
         data = {
             "name": "Updated Session",
@@ -56,6 +58,7 @@ class EditScheduleViewTest(APITestCase):
             "end_time": "10:00:00",
             "location": "Library",
             "block_type": "study",
+            "timezone": timezone,
         }
 
         response = self.client.patch(url, data)
@@ -82,6 +85,8 @@ class EditScheduleViewTest(APITestCase):
         """Authenticated user should not be able to edit timeblocks and make them invalid."""
         self.client.force_authenticate(user=self.user)
 
+        timezone = self.block.timezone
+
         url = reverse("api-edit-timeblock", args=[self.block.id])
         data = {
             "name": "Updated Session",
@@ -89,6 +94,7 @@ class EditScheduleViewTest(APITestCase):
             "end_time": "10:00:00",
             "location": "Library",
             "block_type": "study",
+            "timezone": timezone,
         }
 
         response = self.client.patch(url, data)

@@ -1,15 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import playDing from "../playDing.js";
 
-vi.mock("../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
+vi.mock("../../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
 
 const mockPlay = vi.fn().mockResolvedValue(undefined);
+
+const instances = [];
 
 class MockAudio {
     constructor() {
         this.play = mockPlay;
         this.currentTime = 0;
         this.volume = 0;
+        instances.push(this);
     }
 }
 vi.stubGlobal("Audio", MockAudio);
@@ -18,6 +21,7 @@ describe("playDing", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockPlay.mockResolvedValue(undefined);
+        instances.length = 0;
     });
 
     it("plays the ding sound", () => {
@@ -26,29 +30,11 @@ describe("playDing", () => {
     });
 
     it("sets the volume to 0.3", () => {
-        const instances = [];
-        vi.stubGlobal("Audio", class {
-            constructor() {
-                this.play = mockPlay;
-                this.currentTime = 0;
-                this.volume = 0;
-                instances.push(this);
-            }
-        });
         playDing();
         expect(instances[0].volume).toBe(0.3);
     });
 
     it("resets currentTime to 0 before playing", () => {
-        const instances = [];
-        vi.stubGlobal("Audio", class {
-            constructor() {
-                this.play = mockPlay;
-                this.currentTime = 99;
-                this.volume = 0;
-                instances.push(this);
-            }
-        });
         playDing();
         expect(instances[0].currentTime).toBe(0);
     });

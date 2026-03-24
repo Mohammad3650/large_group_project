@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor, act } from "@testing-library/react";
 import useTimeBlocks from "../useTimeBlocks";
 import * as apiModule from "../../api.js";
 import * as mapTimeBlocksModule from "../mapTimeBlocks.js";
-import {act} from "react";
 
 vi.mock("../../api.js", () => ({
     api: {
@@ -41,9 +40,21 @@ describe("useTimeBlocks", () => {
         await waitFor(() => expect(result.current.blocks).not.toBeNull());
 
         expect(apiModule.api.get).toHaveBeenCalledWith("/api/time-blocks/get/");
+        expect(apiModule.api.get).toHaveBeenCalledTimes(1);
         expect(mapTimeBlocksModule.default).toHaveBeenCalledWith(mockBlocks);
         expect(result.current.blocks).toEqual(mockBlocks);
         expect(result.current.error).toBe("");
+    });
+
+    it("sets blocks to the mapped output, not the raw API response", async () => {
+        const rawData = [{ id: 1, raw: true }];
+        const mappedData = [{ id: 1, mapped: true }];
+
+        apiModule.api.get.mockResolvedValue({ data: rawData });
+        mapTimeBlocksModule.default.mockReturnValue(mappedData);
+
+        const { result } = renderHook(() => useTimeBlocks());
+        await waitFor(() => expect(result.current.blocks).toEqual(mappedData));
     });
 
     it("sets an error message when the API call fails", async () => {
