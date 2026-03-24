@@ -40,7 +40,6 @@ from scheduler.views.change_password_view import change_password
 from scheduler.views.delete_user_view import delete_user
 from scheduler.views.export_schedule_view import export_schedule_csv
 from scheduler.views.export_ics_view import export_schedule_ics
-from scheduler.views.user_auth_view import (UserRegistrationView, UserDetailsView, DashboardView,)
 from scheduler.views.user_registration_view import UserRegistrationView
 from scheduler.views.dashboard_view import DashboardView
 from scheduler.views.user_details_view import UserDetailsView
