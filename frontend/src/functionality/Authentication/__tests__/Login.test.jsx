@@ -13,7 +13,7 @@ vi.mock("../../../utils/authToken", () => ({
   isTokenValid: vi.fn(),
 }));
 
-vi.mock("../../../utils/handleLocalStorage", () => ({
+vi.mock("../../../utils/authStorage", () => ({
   saveTokens: vi.fn(),
 }));
 
@@ -95,8 +95,8 @@ describe("Login page", () => {
       });
     });
 
-    expect(saveTokens).toHaveBeenCalledWith("A", "R");
-    expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
+  expect(saveTokens).toHaveBeenCalledWith("A", "R");
+  expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
   });
 
   it("shows validation errors and does not submit when fields are empty", async () => {

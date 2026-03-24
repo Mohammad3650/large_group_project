@@ -4,14 +4,14 @@ import {
   getRefreshToken,
   logout,
   saveTokens,
-} from "../handleLocalStorage";
+} from "../authStorage";
 import * as apiModule from "../../api";
 
 vi.mock("../../api", () => ({
   setAuthToken: vi.fn(),
 }));
 
-describe("handleLocalStorage", () => {
+describe("authStorage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();

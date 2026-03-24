@@ -30,7 +30,7 @@ vi.mock("../../../api", () => ({
   },
 }));
 
-vi.mock("../../../utils/handleLocalStorage", () => ({
+vi.mock("../../../utils/authStorage", () => ({
   saveTokens: vi.fn(),
 }));
 
@@ -83,6 +83,11 @@ describe("Signup page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     isTokenValid.mockResolvedValue(false);
+
+    formatApiError.mockReturnValue({
+      fieldErrors: {},
+      global: ["Something went wrong."],
+    });
   });
 
   it("renders the signup form", () => {

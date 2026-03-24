@@ -22,7 +22,7 @@ function Hero() {
               {isLoggedIn ? (
               <>
                 <button className="hero_button black" onClick={() => nav("/calendar")}> Calendar</button>
-                <button className="hero_button white" onClick={() => nav("/calendar")}> Dashboard</button>
+                <button className="hero_button white" onClick={() => nav("/dashboard")}> Dashboard</button>
               </>
 
             ) : (
