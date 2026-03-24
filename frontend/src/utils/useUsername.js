@@ -6,25 +6,33 @@ import { api } from "../api.js";
  * Only fetches when the user is confirmed to be logged in.
  *
  * @param {boolean} isLoggedIn - Whether the user is currently authenticated
- * @returns {string} The username of the currently logged-in user, or an empty string if not yet loaded
+ * @returns {{ username: string, error: string }} The username of the currently logged-in user
+ * and an error message if the fetch failed
  */
 function useUsername(isLoggedIn) {
     const [username, setUsername] = useState("");
+    const [error, setError] = useState("");
 
     useEffect(() => {
         if (!isLoggedIn) return;
+
         async function fetchUsername() {
             try {
                 const res = await api.get("/api/user/");
+                if (!res.data?.username) {
+                    setError("Invalid response from server");
+                    return;
+                }
                 setUsername(res.data.username);
             } catch (err) {
-                console.error("Failed to load user", err);
+                if (err.name === "CanceledError") return;
+                setError("Failed to load user");
             }
         }
         fetchUsername();
     }, [isLoggedIn]);
 
-    return username;
+    return { username, error };
 }
 
 export default useUsername;

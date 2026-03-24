@@ -7,6 +7,7 @@ import { api } from "../api.js";
  * @returns {Promise} The API response promise
  */
 function deleteTimeBlock(id) {
+    if (!id) throw new Error("Invalid id");
     return api.delete(`/api/time-blocks/${id}/`);
 }
 
