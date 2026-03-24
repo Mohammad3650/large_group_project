@@ -1,70 +1,141 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { saveTokens } from "../../utils/handleLocalStorage";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { publicApi } from "../../api";
+import { saveTokens } from "../../utils/authStorage";
 import { formatApiError } from "../../utils/errors";
-import { isTokenValid } from "../../utils/authToken.js";
+import { validateSignupForm } from "../../utils/signupValidation";
+import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
+import AuthCard from "../../components/AuthCard";
+import AuthField from "../../components/AuthField";
+
+/**
+ * Initial form state used when the component loads.
+ * Stores all input values required for user registration.
+ * Signup form fields are stored differently to login as there are more 
+ * and they are easier to manage and validate.
+ */
+
+const initialForm = {
+  email: "",
+  username: "",
+  firstName: "",
+  lastName: "",
+  phoneNumber: "",
+  password: "",
+  confirmPassword: "",
+};
+
+/**
+ * Initial error state used when the form first loads
+ * or when errors need to be reset before a new submission.
+ *
+ * Structure:
+ * - fieldErrors: validation errors linked to specific inputs e.g email or password
+ * - global: general errors not tied to one field e.g. "Invalid credentials"
+ */
+
+const initialErrors = {
+  fieldErrors: {},
+  global: [],
+};
+
+/**
+ * Signup page component.
+ *
+ * Responsibilities:
+ * - manages form input state for user registration
+ * - validates form data using a separate validation helper function
+ * - sends signup request to backend API
+ * - stores authentication tokens on success
+ * - redirects users after successful signup or if already authenticated
+ *
+ * @returns {JSX.Element} Signup form UI
+ */
 
 function Signup() {
   const nav = useNavigate();
-
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [errors, setErrors] = useState({ fieldErrors: {}, global: [] });
+  // Stores the values of all form inputs in a single state object
+  const [form, setForm] = useState(initialForm);
+  // Stores validation and API error messages
+  const [errors, setErrors] = useState(initialErrors);
+  // Indicates whether a signup request is in progress to prevent multiple submissions
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const ok = await isTokenValid();
-      if (ok) nav("/dashboard");
-    })();
-  }, [nav]);
+  useRedirectIfAuthenticated(nav);
+ 
+  /**
+   * Updates a specific field in the form state.
+   *
+   * Uses a functional update to ensure state is updated safely.
+   *
+   * @param {string} name - The name of the field to update
+   * @param {string} value - The new value for the field
+   */  
 
-  async function handleSignup(e) {
-    e.preventDefault();
+  function updateField(name, value) {
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  /**
+   * Runs client-side validation on the form.
+   *
+   * Uses the validateSignupForm helper function to check:
+   * - required fields
+   * - password confirmation match
+   *
+   * If validation errors exist:
+   * - updates error state
+   * - returns true to indicate failure
+   *
+   * @returns {boolean} True if validation errors exist, otherwise false
+   */
+
+  function showValidationErrors() {
+    const fieldErrors = validateSignupForm(form);
+    if (!Object.keys(fieldErrors).length) return false;
+
+    setErrors({ fieldErrors, global: [] });
+    return true;
+  }
+
+
+  /**
+   * Sends the signup request to the backend API.
+   *
+   * Flow:
+   * - maps frontend form fields to backend expected payload format
+   * - sends POST request to signup endpoint
+   * - stores returned JWT tokens
+   * - redirects user to dashboard on success
+   *
+   * @returns {Promise<void>}
+   */
+
+  async function submitSignup() {
+    const payload = {
+      email: form.email,
+      username: form.username,
+      first_name: form.firstName,
+      last_name: form.lastName,
+      phone_number: form.phoneNumber,
+      password: form.password,
+    };
+
+    const res = await publicApi.post("/auth/signup/", payload);
+    saveTokens(res.data.access, res.data.refresh);
+    nav("/dashboard");
+  }
+
+  async function handleSignup(event) {
+    event.preventDefault();
     if (loading) return;
 
-    setErrors({ fieldErrors: {}, global: [] });
+    setErrors(initialErrors);
+    if (showValidationErrors()) return;
+
     setLoading(true);
-
-    const fieldErrors = {};
-
-    if (!email.trim()) fieldErrors.email = ["Email is required."];
-    if (!username.trim()) fieldErrors.username = ["Username is required."];
-    if (!firstName.trim()) fieldErrors.first_name = ["First name is required."];
-    if (!lastName.trim()) fieldErrors.last_name = ["Last name is required."];
-    if (!phoneNumber.trim()) fieldErrors.phone_number = ["Phone number is required."];
-    if (!password) fieldErrors.password = ["Password is required."];
-    if (!confirmPassword) fieldErrors.confirmPassword = ["Please confirm your password."];
-
-    if (password && confirmPassword && password !== confirmPassword) {
-      fieldErrors.confirmPassword = ["Passwords do not match."];
-    }
-
-    if (Object.keys(fieldErrors).length) {
-      setErrors({ fieldErrors, global: [] });
-      setLoading(false);
-      return;
-    }
-
     try {
-      const res = await publicApi.post("/auth/signup/", {
-        email,
-        username,
-        first_name: firstName,
-        last_name: lastName,
-        phone_number: phoneNumber,
-        password,
-      });
-
-      saveTokens(res.data.access, res.data.refresh);
-      nav("/dashboard");
+      await submitSignup();
     } catch (err) {
       setErrors(formatApiError(err));
     } finally {
@@ -73,148 +144,116 @@ function Signup() {
   }
 
   return (
-    <div className="bg-light min-vh-100 d-flex align-items-center justify-content-center py-5">
-      <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-        <div className="card shadow-lg border-0 rounded-4">
-          <div className="card-body py-4 px-5">
-            <h3 className="text-center mb-4 mt-4 fw-bold">Create your account</h3>
+    <AuthCard
+      title="Create your account"
+      subtitle="Sign up to get started with StudySync"
+      footerText="Already have an account?"
+      footerLinkText="Log in"
+      footerLinkTo="/login"
+    >
+      {errors.global.length > 0 && (
+        <div className="alert alert-danger text-center">
+          {errors.global.map((message) => (
+            <div key={message}>{message}</div>
+          ))}
+        </div>
+      )}
 
-            {errors.global.length > 0 && (
-              <div className="alert alert-danger text-center">
-                {errors.global.map((m, i) => <div key={i}>{m}</div>)}
-              </div>
-            )}
+      <form noValidate onSubmit={handleSignup}>
+        <div className="row g-3">
+          <AuthField
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+            value={form.email}
+            onChange={(value) => updateField("email", value)}
+            error={errors.fieldErrors.email}
+          />
 
-            <form noValidate onSubmit={handleSignup}>
-              <div className="row g-3">
-                <div className="col-12">
-                  <label className="form-label fw-semibold">Email</label>
-                  <input
-                    type="email"
-                    className={`form-control ${errors.fieldErrors.email ? "is-invalid" : ""}`}
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  {errors.fieldErrors.email && (
-                    <div className="invalid-feedback">{errors.fieldErrors.email[0]}</div>
-                  )}
-                </div>
+          <AuthField
+            name="username"
+            label="Username"
+            placeholder="Choose a username"
+            value={form.username}
+            onChange={(value) => updateField("username", value)}
+            error={errors.fieldErrors.username}
+          />
 
-                <div className="col-12">
-                  <label className="form-label fw-semibold">Username</label>
-                  <input
-                    className={`form-control ${errors.fieldErrors.username ? "is-invalid" : ""}`}
-                    placeholder="Choose a username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                  {errors.fieldErrors.username && (
-                    <div className="invalid-feedback">{errors.fieldErrors.username[0]}</div>
-                  )}
-                </div>
-
-                <div className="col-12 col-md-6">
-                  <label className="form-label fw-semibold">First name</label>
-                  <input
-                    className={`form-control ${errors.fieldErrors.first_name ? "is-invalid" : ""}`}
-                    placeholder="First name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                  {errors.fieldErrors.first_name && (
-                    <div className="invalid-feedback">{errors.fieldErrors.first_name[0]}</div>
-                  )}
-                </div>
-
-                <div className="col-12 col-md-6">
-                  <label className="form-label fw-semibold">Last name</label>
-                  <input
-                    className={`form-control ${errors.fieldErrors.last_name ? "is-invalid" : ""}`}
-                    placeholder="Last name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                  {errors.fieldErrors.last_name && (
-                    <div className="invalid-feedback">{errors.fieldErrors.last_name[0]}</div>
-                  )}
-                </div>
-
-                <div className="col-12">
-                  <label className="form-label fw-semibold">Phone number</label>
-                  <input
-                    className={`form-control ${errors.fieldErrors.phone_number ? "is-invalid" : ""}`}
-                    placeholder="e.g. 07123 456 789"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                  {errors.fieldErrors.phone_number && (
-                    <div className="invalid-feedback">{errors.fieldErrors.phone_number[0]}</div>
-                  )}
-                </div>
-
-                <div className="col-12 col-md-6">
-                  <label className="form-label fw-semibold">Password</label>
-                  <input
-                    type="password"
-                    className={`form-control ${errors.fieldErrors.password ? "is-invalid" : ""}`}
-                    placeholder="Create a password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  {errors.fieldErrors.password && (
-                    <div className="invalid-feedback">{errors.fieldErrors.password[0]}</div>
-                  )}
-                </div>
-
-                <div className="col-12 col-md-6">
-                  <label className="form-label fw-semibold">Confirm password</label>
-                  <input
-                    type="password"
-                    className={`form-control ${errors.fieldErrors.confirmPassword ? "is-invalid" : ""}`}
-                    placeholder="Confirm password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                  {errors.fieldErrors.confirmPassword && (
-                    <div className="invalid-feedback">{errors.fieldErrors.confirmPassword[0]}</div>
-                  )}
-                </div>
-              </div>
-
-              <div className="d-grid mt-4">
-                <button
-                  className="btn btn-dark btn-lg rounded-3"
-                  disabled={loading}
-                  type="submit"
-                >
-                  {loading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2"></span>
-                      Signing up...
-                    </>
-                  ) : (
-                    "Sign up"
-                  )}
-                </button>
-              </div>
-            </form>
+          <div className="col-12 col-md-6">
+            <AuthField
+              name="firstName"
+              label="First name"
+              placeholder="First name"
+              value={form.firstName}
+              onChange={(value) => updateField("firstName", value)}
+              error={errors.fieldErrors.first_name}
+            />
           </div>
 
-          <div className="card-footer text-center bg-white border-0 pb-4">
-            <small className="text-muted">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="fw-semibold text-decoration-none ms-1"
-              >
-                Log in
-              </Link>
-            </small>
+          <div className="col-12 col-md-6">
+            <AuthField
+              name="lastName"
+              label="Last name"
+              placeholder="Last name"
+              value={form.lastName}
+              onChange={(value) => updateField("lastName", value)}
+              error={errors.fieldErrors.last_name}
+            />
+          </div>
+
+          <AuthField
+            name="phoneNumber"
+            label="Phone number"
+            placeholder="e.g. 07123 456 789"
+            value={form.phoneNumber}
+            onChange={(value) => updateField("phoneNumber", value)}
+            error={errors.fieldErrors.phone_number}
+          />
+
+          <div className="col-12 col-md-6">
+            <AuthField
+              name="password"
+              label="Password"
+              type="password"
+              placeholder="Create a password"
+              value={form.password}
+              onChange={(value) => updateField("password", value)}
+              error={errors.fieldErrors.password}
+            />
+          </div>
+
+          <div className="col-12 col-md-6">
+            <AuthField
+              name="confirmPassword"
+              label="Confirm password"
+              type="password"
+              placeholder="Confirm password"
+              value={form.confirmPassword}
+              onChange={(value) => updateField("confirmPassword", value)}
+              error={errors.fieldErrors.confirmPassword}
+            />
           </div>
         </div>
-      </div>
-    </div>
+
+        <div className="d-grid mt-4">
+          <button
+            className="btn btn-dark btn-lg rounded-3"
+            disabled={loading}
+            type="submit"
+          >
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" />
+                Signing up...
+              </>
+            ) : (
+              "Sign up"
+            )}
+          </button>
+        </div>
+      </form>
+    </AuthCard>
   );
 }
 
