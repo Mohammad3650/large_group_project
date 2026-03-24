@@ -1,5 +1,12 @@
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Button component that navigates the user to the create schedule page.
+ *
+ * @returns {JSX.Element} A styled button that, when clicked, redirects
+ * the user to the "/create-schedule" route.
+ */
+
 function CreateScheduleButton(){
     const nav = useNavigate();
 
