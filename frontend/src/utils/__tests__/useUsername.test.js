@@ -44,6 +44,18 @@ describe("useUsername", () => {
         expect(result.current.username).toBe("");
     });
 
+    it("does nothing when the API call is cancelled", async () => {
+        const cancelledError = new Error("Request cancelled");
+        cancelledError.name = "CanceledError";
+        apiModule.api.get.mockRejectedValue(cancelledError);
+
+        const { result } = renderHook(() => useUsername(true));
+
+        await waitFor(() => expect(apiModule.api.get).toHaveBeenCalled());
+        expect(result.current.error).toBe("");
+        expect(result.current.username).toBe("");
+    });
+
     it("sets an error when the response contains no username", async () => {
         apiModule.api.get.mockResolvedValue({ data: {} });
 

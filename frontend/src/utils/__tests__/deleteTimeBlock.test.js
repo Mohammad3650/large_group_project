@@ -9,6 +9,10 @@ vi.mock("../../api.js", () => ({
 }));
 
 describe("deleteTimeBlock", () => {
+    it("throws an error when id is not provided", () => {
+        expect(() => deleteTimeBlock(null)).toThrow("Invalid id");
+    });
+
     it("calls the correct API endpoint with the given ID", () => {
         deleteTimeBlock(42);
         expect(apiModule.api.delete).toHaveBeenCalledWith("/api/time-blocks/42/");
