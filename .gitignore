@@ -23,6 +23,8 @@ frontend/node_modules/
 frontend/coverage/
 
 # Coverage (backend)
+backend/.coverage
+backend/htmlcov
 .coverage
 coverage.xml
 coverage/
