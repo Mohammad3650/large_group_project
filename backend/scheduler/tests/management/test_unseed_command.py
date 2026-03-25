@@ -34,3 +34,10 @@ class UnseedCommandTest(TestCase):
         out = StringIO()
         call_command("unseed", stdout=out)
         self.assertIn("No seeded users found", out.getvalue())
+
+    def test_unseed_does_not_remove_non_seeded_users(self):
+        """Tests that the unseed command does not remove users without the seeded prefix."""
+        User.objects.create_user(username="regularuser", password="password123", email="regular@test.com")
+        call_command("seed", stdout=StringIO())
+        call_command("unseed", stdout=StringIO())
+        self.assertTrue(User.objects.filter(username="regularuser").exists())

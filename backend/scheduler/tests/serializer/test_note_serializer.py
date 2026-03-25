@@ -48,6 +48,8 @@ class NoteSerializerTest(TestCase):
         self.assertTrue(serializer.is_valid())
         updated_note = serializer.save()
         self.assertEqual(updated_note.content, "Updated content")
+        self.note.refresh_from_db()
+        self.assertEqual(self.note.content, "Updated content")
 
     def test_serializer_does_not_expose_user_field(self):
         """Verify the serializer does not expose the user field."""

@@ -43,3 +43,10 @@ class CreateEventsForUserTest(TestCase):
         first_block = TimeBlock.objects.filter(day__user=self.user).order_by("id").first()
         self.assertEqual(first_block.name, EVENTS[0]["name"])
         self.assertEqual(first_block.block_type, EVENTS[0]["block_type"])
+
+    def test_does_not_create_duplicate_day_plans(self):
+        """Tests that multiple events on the same date share a single day plan."""
+        create_events_for_user(self.user, NUM_EVENTS_PER_USER)
+        blocks = TimeBlock.objects.filter(day__user=self.user)
+        day_plan_ids = set(block.day_id for block in blocks)
+        self.assertEqual(DayPlan.objects.filter(user=self.user).count(), len(day_plan_ids))
