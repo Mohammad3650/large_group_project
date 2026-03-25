@@ -98,8 +98,12 @@
             echo
             echo "==> Installing frontend npm dependencies"
             (
-              cd "$FRONTEND_DIR"
-              npm install
+            cd "$FRONTEND_DIR"
+            if [ -f package-lock.json ]; then
+                npm ci
+            else
+                npm install
+            fi
             )
 
             echo

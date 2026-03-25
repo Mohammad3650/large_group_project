@@ -5,6 +5,7 @@ __pycache__/
 # Virtual env
 venv/
 .env
+backend/venv/
 
 # Django
 db.sqlite3
@@ -19,8 +20,10 @@ staticfiles/
 
 # Node / Frontend
 frontend/node_modules/
-frontend/package-lock.json
 frontend/coverage/
 
-backend/.coverage
-backend/htmlcov
+# Coverage (backend)
+.coverage
+coverage.xml
+coverage/
+htmlcov/
