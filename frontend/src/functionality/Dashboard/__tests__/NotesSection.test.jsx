@@ -69,19 +69,6 @@ describe("NotesSection", () => {
     });
 
     it("shows 'Error saving ✗' when the save request fails", async () => {
-        apiModule.api.get.mockResolvedValue({ data: { content: "" } });
-        apiModule.api.put.mockRejectedValue(new Error("Network error"));
-        await act(async () => { render(<NotesSection />); });
-        await waitFor(() => expect(apiModule.api.get).toHaveBeenCalled());
-
-        await act(async () => {
-            fireEvent.change(screen.getByPlaceholderText("Notes"), { target: { value: "New note" } });
-        });
-        await act(async () => { vi.advanceTimersByTime(1000); });
-        await waitFor(() => expect(screen.getByText("Error saving ✗")).toBeInTheDocument());
-    });
-
-    it("logs an error when saving notes fails", async () => {
         const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
         apiModule.api.get.mockResolvedValue({ data: { content: "" } });
         apiModule.api.put.mockRejectedValue(new Error("Network error"));
@@ -92,6 +79,7 @@ describe("NotesSection", () => {
             fireEvent.change(screen.getByPlaceholderText("Notes"), { target: { value: "New note" } });
         });
         await act(async () => { vi.advanceTimersByTime(1000); });
+        await waitFor(() => expect(screen.getByText("Error saving ✗")).toBeInTheDocument());
         await waitFor(() => expect(consoleSpy).toHaveBeenCalledWith("Failed to save notes", expect.any(Error)));
         consoleSpy.mockRestore();
     });
