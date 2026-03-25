@@ -10,14 +10,10 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-
     min-width: 170px;
     padding: 1rem 3rem;
-
-    border: none;
     border-radius: 1rem;
     cursor: pointer;
-
     font-size: 1.4rem;
     font-weight: 600;
     letter-spacing: -0.3px;
@@ -27,93 +23,66 @@
 
 .black {
     max-width: 180px;
-    background-color: #0f0f10;
-    color: #ffffff;
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 10px 0 #0b0b0c,
-        0 14px 22px rgba(0,0,0,0.25);
+    background-color: var(--text-main);
+    color: var(--bg-main);
+    box-shadow: var(--shadow-md);
 }
 
 .black:hover {
     transform: translateY(4px);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        0 10px 0 #0b0b0c,
-        0 14px 22px rgba(0,0,0,0.25);
+    box-shadow: var(--shadow-lg);
 }
 
 .white {
     max-width: 230px;
-    background-color: #e9e9ec;
-    color: #1c1c1c;
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.9),
-        0 10px 0 #d6d6db,
-        0 14px 22px rgba(0,0,0,0.12);
+    background-color: var(--bg-soft);
+    color: var(--text-main);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
 }
 
 .white:hover {
     transform: translateY(4px);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.9),
-        0 10px 0 #d6d6db,
-        0 14px 22px rgba(0,0,0,0.12);
+    box-shadow: var(--shadow-md);
 }
 
-.hero_text_top {
-    font-size: 70px;
-    font-family: sans-serif;
-    font-weight: bold;
-
-}
-
-
-
+.hero_text_top,
 .hero_text_bottom {
     font-size: 70px;
     font-family: sans-serif;
-    font-weight: bold
+    font-weight: bold;
+    color: var(--text-main);
 }
 
 .hero_quote {
     padding-left: 30px;
 }
 
-
 .hero {
-    margin-top:     0px;
-    border-bottom: 1px solid #e6e6ef;
-    margin-bottom: 60px;
+    margin-top: 0px;
+    border-bottom: 1px solid var(--border-light);
     padding-bottom: 70px;
+    background: var(--bg-main);
 }
 
-
-
-
-
-.hero_content
-{
+.hero_content {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.hero_left
-{
+.hero_left {
     flex: 1;
 }
 
-.hero_right
-{
+.hero_right {
     flex: 1;
     display: flex;
     justify-content: flex-end;
 }
 
-.hero_image 
-{
+.hero_image {
     width: 100%;
     max-width: 750px;
-    height:auto
+    height: auto;
 }

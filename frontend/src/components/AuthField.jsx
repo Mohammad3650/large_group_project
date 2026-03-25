@@ -1,3 +1,5 @@
+import "./stylesheets/AuthField.css";
+
 /**
  * Reusable input field component for authentication forms.
  *
@@ -27,13 +29,11 @@ function AuthField({
   error,
   name,
 }) {
-  // Adds Bootstrap invalid styling when an error is present
-  const inputClass = `form-control ${error ? "is-invalid" : ""}`;
+  const inputClass = `form-control auth-input ${error ? "is-invalid" : ""}`;
 
   return (
     <div className="col-12">
-      {/* Label is linked to the input using htmlFor/id */}
-      <label htmlFor={name} className="form-label fw-semibold">
+      <label htmlFor={name} className="form-label fw-semibold auth-label">
         {label}
       </label>
 
@@ -47,7 +47,6 @@ function AuthField({
         onChange={(e) => onChange(e.target.value)}
       />
 
-      {/* Inline validation message shown only when an error exists */}
       {error && <div className="invalid-feedback">{error}</div>}
     </div>
   );

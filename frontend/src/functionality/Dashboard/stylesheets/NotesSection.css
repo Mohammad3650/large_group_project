@@ -2,6 +2,11 @@
     width: 40%;
     box-sizing: border-box;
     margin-bottom: 32px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 12px;
 }
 
 .notes-header {
@@ -24,14 +29,25 @@
 
 .notes-section textarea {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 24px);
     border-radius: var(--radius-md);
     box-sizing: border-box;
     resize: none;
     padding: var(--space-sm);
-    background-color: var(--bg-soft);
-    color: black;
-    border: none;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    border: 1px solid var(--border-input);
+    outline: none;
+}
+
+.notes-section textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+}
+
+.notes-section textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.2);
 }
 
 @media (max-width: 768px) {

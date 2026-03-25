@@ -50,7 +50,7 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
 
     const customComponents = {
         eventModal: ({ calendarEvent }) => (
-            <div style={{ padding: "40px", color: "black", borderRadius: "10px", border: "1px solid black" }}>
+            <div className="calendar-event-modal">
                 <div className="sx__event-modal__title">{calendarEvent.title}</div>
                 <div className="sx__event-modal__description">
                     <div className="event-detail">

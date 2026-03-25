@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import "./stylesheets/AuthCard.css";
 
 /**
  * Reusable layout component for authentication pages.
@@ -27,30 +28,27 @@ function AuthCard({
   footerLinkTo,
   children,
 }) {
+  
   return (
-    <div className="bg-light min-vh-100 d-flex align-items-center justify-content-center py-5">
-      <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-        <div className="card shadow-lg border-0 rounded-4">
+    <div className="auth-page">
+      <div className="auth-shell">
+        <div className="auth-card card border-0">
           <div className="card-body py-4 px-5">
             <div className="text-center mb-4 mt-2">
-              {/* Main card heading */}
               <h3 className="fw-bold mb-1">{title}</h3>
 
-              {/* Optional subtitle shown only if provided */}
-              {subtitle && <p className="text-muted mb-0">{subtitle}</p>}
+              {subtitle && <p className="auth-subtitle mb-0">{subtitle}</p>}
             </div>
 
-            {/* Page-specific content such as login or signup form */}
             {children}
           </div>
 
-          {/* Footer link for switching between auth pages */}
-          <div className="card-footer text-center bg-white border-0 pb-4">
-            <small className="text-muted">
+          <div className="auth-footer card-footer text-center border-0 pb-4">
+            <small>
               {footerText}
               <Link
                 to={footerLinkTo}
-                className="fw-semibold text-decoration-none ms-1"
+                className="auth-link fw-semibold text-decoration-none ms-1"
               >
                 {footerLinkText}
               </Link>

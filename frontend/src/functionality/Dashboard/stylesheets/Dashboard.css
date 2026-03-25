@@ -6,6 +6,8 @@
 body.dashboard-page {
     display: block;
     overflow: hidden;
+    background: var(--bg-main);
+    color: var(--text-main);
 }
 
 .dashboard-content {
@@ -16,15 +18,8 @@ body.dashboard-page {
     padding: 0 32px 50px 32px;
     justify-content: space-between;
     align-items: stretch;
-}
-
-.no-tasks-message {
-    color: var(--text-light);
-    font-size: 2rem;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: var(--bg-main);
+    color: var(--text-main);
 }
 
 .task-section {
@@ -33,6 +28,21 @@ body.dashboard-page {
     display: flex;
     flex-direction: column;
     padding-right: 8px;
+    color: var(--text-main);
+}
+
+.task-section h1 {
+    color: var(--text-main);
+    margin-bottom: var(--space-md);
+}
+
+.no-tasks-message {
+    color: var(--text-muted);
+    font-size: 2rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dashboard-header-actions {

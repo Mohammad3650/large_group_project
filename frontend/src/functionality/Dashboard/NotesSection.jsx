@@ -53,6 +53,7 @@ function NotesSection() {
                 </span>
             </div>
             <textarea
+                className="notes-textarea"
                 placeholder="Notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}

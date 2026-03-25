@@ -22,7 +22,7 @@ import calendarIcon from "../assets/calendar_icon.png";
  * @returns {JSX.Element} The navigation header
  */
 
-function Navbar() {
+function Navbar({ theme, toggleTheme }) {
     const isLoggedIn = useAuthStatus();
     const { username, error } = useUsername(isLoggedIn);
     const [dropdownOpen, setDropdownOpen] = useState(false);
