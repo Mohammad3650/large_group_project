@@ -36,7 +36,6 @@ export async function isTokenValid() {
   // If there's no token, it's not valid
   if (!token) return false;
 
-
   try {
     await verifyToken(token);
     return true;

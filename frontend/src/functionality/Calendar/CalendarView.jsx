@@ -30,13 +30,14 @@ const formatDate = (date) => {
 
 function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
+    const calendarTimezone = getUserTimezone()
 
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],
         plugins: [createEventModalPlugin(), eventsService],
         events: blocks,
-        selectedDate: Temporal.Now.plainDateISO(),
-        timezone: getUserTimezone(),
+        timezone: calendarTimezone,
+        selectedDate: Temporal.Now.plainDateISO(calendarTimezone),
     });
 
     function handleDelete(id) {

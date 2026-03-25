@@ -77,7 +77,7 @@ source venv\bin\activate
 ```
 Install the backend dependencies:
 ```
-pip install -r requirements.txt
+pip install -r ../requirements.txt
 ```
 Apply the database migrations:
 ```
