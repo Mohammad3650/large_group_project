@@ -25,7 +25,7 @@ describe("useTimeBlocks", () => {
     });
 
     it("initialises with null blocks and an empty error", () => {
-        apiModule.api.get.mockResolvedValue({ data: [] });
+        apiModule.api.get.mockImplementation(() => new Promise(() => {}));
         const { result } = renderHook(() => useTimeBlocks());
         expect(result.current.blocks).toBeNull();
         expect(result.current.error).toBe("");
