@@ -68,3 +68,8 @@ class ToUtcTest(TestCase):
         utc_time, utc_date = to_utc("09:00", "2026-01-15", "Europe/London")
         self.assertEqual(utc_time, time(9, 0))
         self.assertEqual(utc_date, date(2026, 1, 15))
+
+    def test_invalid_timezone_raises_error(self):
+        """Verify that an unrecognised timezone string raises an error."""
+        with self.assertRaises(Exception):
+            to_utc("09:00:00", "2026-01-15", "Invalid/Timezone")

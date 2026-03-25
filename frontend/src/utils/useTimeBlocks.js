@@ -1,29 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "../api.js";
 import mapTimeBlocks from "./mapTimeBlocks.js";
 
+const TIME_BLOCKS_ENDPOINT = "/api/time-blocks/get/";
+
 /**
- * Fetches time blocks for the current user and maps them to a standard format.
+ * Fetch and manage the current user's time blocks.
  *
- * @returns {{ blocks: Array|null, setBlocks: Function, error: string }} The fetched blocks, setter, and error state
+ * @returns {Object} Time block state, actions, and status flags
  */
 function useTimeBlocks() {
-    const [blocks, setBlocks] = useState(null); // null = not yet fetched, [] = fetched but empty
+    const [blocks, setBlocks] = useState(null); // null = not yet fetched
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchTimeBlocks() {
-            try {
-                const res = await api.get("/api/time-blocks/get/");
-                setBlocks(mapTimeBlocks(res.data));
-            } catch {
-                setError("Failed to load time blocks");
-            }
+    const refetchBlocks = useCallback(async () => {
+        try {
+            setLoading(true);
+            setError("");
+
+            const response = await api.get(TIME_BLOCKS_ENDPOINT);
+            setBlocks(mapTimeBlocks(response.data));
+        } catch {
+            setError("Failed to load time blocks");
+        } finally {
+            setLoading(false);
         }
-        fetchTimeBlocks();
     }, []);
 
-    return { blocks, setBlocks, error };
+    useEffect(() => {
+        refetchBlocks();
+    }, [refetchBlocks]);
+
+    return { blocks, setBlocks, error, loading, refetchBlocks };
 }
 
 export default useTimeBlocks;

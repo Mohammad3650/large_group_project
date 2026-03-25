@@ -6,7 +6,13 @@ import AddTaskButton from "../../components/AddTaskButton.jsx";
 import NotesSection from "./NotesSection.jsx";
 import useTimeBlocks from "../../utils/useTimeBlocks.js";
 import handleExportCsv from "../../utils/handleExportCsv.js";
+import SubscriptionForm from "./SubscriptionForm.jsx";
+import SubscriptionList from "./SubscriptionList.jsx";
+import createCalendarSubscription from "../../utils/createCalendarSubscription.js";
+import deleteCalendarSubscription from "../../utils/deleteCalendarSubscription.js";
+import getCalendarSubscriptions from "../../utils/getCalendarSubscriptions.js";
 import handleExportIcs from "../../utils/handleExportIcs.js";
+import refreshCalendarSubscription from "../../utils/refreshCalendarSubscription.js";
 import useTasksByDateGroup from "../../utils/useTasksByDateGroup.js";
 import "./stylesheets/Dashboard.css";
 
@@ -20,8 +26,13 @@ function Dashboard() {
     const nav = useNavigate();
     const [message, setMessage] = useState("Loading...");
     const [error, setError] = useState("");
+    const [subscriptions, setSubscriptions] = useState([]);
 
-    const { blocks } = useTimeBlocks();
+    const {
+        blocks,
+        refetchBlocks,
+        error: blocksError,
+    } = useTimeBlocks();
 
     const {
         overdueTasks, setOverdueTasks,
@@ -35,18 +46,32 @@ function Dashboard() {
     useEffect(() => {
         async function fetchDashboard() {
             try {
-                const res = await api.get("/dashboard/");
-                setMessage(res.data.message);
+                const response = await api.get("/dashboard/");
+                setMessage(response.data.message);
             } catch (err) {
                 if (err?.response?.status === 401) {
-                    nav("/login"); // token missing / expired
+                    nav("/login");
                 } else {
                     setError("Failed to load dashboard");
                 }
             }
         }
+
         fetchDashboard();
     }, [nav]);
+
+    useEffect(() => {
+        async function fetchSubscriptions() {
+            try {
+                const data = await getCalendarSubscriptions();
+                setSubscriptions(data);
+            } catch {
+                setError("Failed to load calendar subscriptions");
+            }
+        }
+
+        fetchSubscriptions();
+    }, []);
 
     useEffect(() => {
         document.body.classList.add("dashboard-page");
@@ -61,7 +86,62 @@ function Dashboard() {
         };
     }, []);
 
-    if (error) return <p>{error}</p>;
+    async function handleImportSubscription(payload) {
+        try {
+            setError("");
+            const responseData = await createCalendarSubscription(payload);
+            setSubscriptions((currentSubscriptions) => [
+                responseData.subscription,
+                ...currentSubscriptions,
+            ]);
+            await refetchBlocks();
+        } catch (requestError) {
+            const detail =
+                requestError?.response?.data?.source_url?.[0] ||
+                requestError?.response?.data?.name?.[0] ||
+                requestError?.response?.data?.message ||
+                "Failed to import timetable";
+            setError(detail);
+        }
+    }
+
+    async function handleRefreshSubscription(subscriptionId) {
+        try {
+            setError("");
+            const responseData = await refreshCalendarSubscription(subscriptionId);
+
+            setSubscriptions((currentSubscriptions) =>
+                currentSubscriptions.map((subscription) =>
+                    subscription.id === subscriptionId
+                        ? responseData.subscription
+                        : subscription,
+                ),
+            );
+
+            await refetchBlocks();
+        } catch {
+            setError("Failed to refresh timetable subscription");
+        }
+    }
+
+    async function handleDeleteSubscription(subscriptionId) {
+        try {
+            setError("");
+            await deleteCalendarSubscription(subscriptionId);
+
+            setSubscriptions((currentSubscriptions) =>
+                currentSubscriptions.filter(
+                    (subscription) => subscription.id !== subscriptionId,
+                ),
+            );
+        } catch {
+            setError("Failed to delete timetable subscription");
+        }
+    }
+
+    if (error || blocksError) {
+    return <p>{error || blocksError}</p>;
+    }
 
     return (
         <>
@@ -70,7 +150,9 @@ function Dashboard() {
                     <h1>{message}</h1>
 
                     <div className="dashboard-header-actions">
-                        <AddTaskButton />
+                        <div className="dashboard-add-task">
+                            <AddTaskButton />
+                        </div>
 
                         <div className="export-buttons">
                             <button
@@ -89,6 +171,15 @@ function Dashboard() {
                                 Export ICS
                             </button>
                         </div>
+                    </div>
+
+                    <div className="subscription-section">
+                        <SubscriptionForm onImport={handleImportSubscription} />
+                        <SubscriptionList
+                            subscriptions={subscriptions}
+                            onRefresh={handleRefreshSubscription}
+                            onDelete={handleDeleteSubscription}
+                        />
                     </div>
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>

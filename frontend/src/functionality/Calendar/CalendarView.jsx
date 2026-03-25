@@ -2,7 +2,7 @@ import { createViewMonthGrid, createViewWeek } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import '@schedule-x/theme-default/dist/index.css'
 import 'temporal-polyfill/global'
 import "./stylesheets/Calendar.css"
@@ -27,16 +27,29 @@ const formatDate = (date) => {
     return `${day}/${month}/${year}`;
 };
 
-function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
-    const eventsService = useState(() => createEventsServicePlugin())[0];
+function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsService }) {
+    const eventModalPlugin = useMemo(() => createEventModalPlugin(), []);
 
     const calendar = useCalendarApp({
         views: [createViewWeek(), createViewMonthGrid()],
-        plugins: [createEventModalPlugin(), eventsService],
+        plugins: [eventModalPlugin, eventsService],
         events: blocks,
-        selectedDate: Temporal.Now.plainDateISO(),
-        timezone: getUserTimezone(),
+        timezone: calendarTimezone,
+        selectedDate: Temporal.Now.plainDateISO(calendarTimezone),
     });
+
+    return (
+        <ScheduleXCalendar
+            calendarApp={calendar}
+            customComponents={customComponents}
+        />
+    );
+}
+
+function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
+    const eventsService = useState(() => createEventsServicePlugin())[0];
+    const [calendarKey, setCalendarKey] = useState(0);
+    const calendarTimezone = getUserTimezone()
 
     function handleDelete(id) {
         if (!confirm("Are you sure you want to delete this event?")) return;
@@ -44,6 +57,7 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
             .then(() => {
                 eventsService.remove(id);
                 setBlocks(b => b.filter(block => block.id !== id));
+                setCalendarKey(k => k + 1);
             })
             .catch(err => console.error("Failed to delete", err));
     }
@@ -87,7 +101,13 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
                 <h1>{title}</h1>
                 {headerButtons}
                 <div className="actual-calendar sx-react-calendar-wrapper">
-                    <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />
+                    <CalendarRenderer
+                        key={calendarKey}
+                        blocks={blocks}
+                        calendarTimezone={calendarTimezone}
+                        customComponents={customComponents}
+                        eventsService={eventsService}
+                    />
                 </div>
             </div>
         </>
