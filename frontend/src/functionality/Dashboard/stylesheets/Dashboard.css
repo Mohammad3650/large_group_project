@@ -35,6 +35,14 @@ body.dashboard-page {
     padding-right: 8px;
 }
 
+.right-column {
+    width: 42%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+}
+
 .dashboard-header-actions {
     display: flex;
     justify-content: space-between;

@@ -175,14 +175,6 @@ function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="subscription-section">
-                        <SubscriptionForm onImport={handleImportSubscription} />
-                        <SubscriptionList
-                            subscriptions={subscriptions}
-                            onRefresh={handleRefreshSubscription}
-                            onDelete={handleDeleteSubscription}
-                        />
-                    </div>
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
                     )}
@@ -192,7 +184,18 @@ function Dashboard() {
                     <TaskGroup title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
                     <TaskGroup title="After Next 7 Days" tasks={beyondWeekTasks} setTasks={setBeyondWeekTasks}/>
                 </div>
-                <NotesSection/>
+                <div className="right-column">
+                    <NotesSection />
+                    <div className="subscription-section">
+                        <SubscriptionForm onImport={handleImportSubscription} />
+                        <SubscriptionList
+                            subscriptions={subscriptions}
+                            onRefresh={handleRefreshSubscription}
+                            onDelete={handleDeleteSubscription}
+                        />
+                    </div>
+                </div>
+
             </div>
         </>
     );
