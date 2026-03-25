@@ -20,46 +20,46 @@ import { Link } from "react-router-dom";
  */
 
 function AuthCard({
-  title,
-  subtitle,
-  footerText,
-  footerLinkText,
-  footerLinkTo,
-  children,
+    title,
+    subtitle,
+    footerText,
+    footerLinkText,
+    footerLinkTo,
+    children,
 }) {
-  return (
-    <div className="d-flex align-items-center justify-content-center auth-card-wrapper">
-      <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-        <div className="card shadow-lg border-0 rounded-4">
-          <div className="card-body py-4 px-5">
-            <div className="text-center mb-4 mt-2">
-              {/* Main card heading */}
-              <h3 className="fw-bold mb-1">{title}</h3>
+    return (
+        <div className="d-flex align-items-center justify-content-center auth-card-wrapper">
+            <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+                <div className="card shadow-lg border-0 rounded-4">
+                    <div className="card-body py-4 px-5">
+                        <div className="text-center mb-4 mt-2">
+                            {/* Main card heading */}
+                            <h3 className="fw-bold mb-1">{title}</h3>
 
-              {/* Optional subtitle shown only if provided */}
-              {subtitle && <p className="text-muted mb-0">{subtitle}</p>}
+                            {/* Optional subtitle shown only if provided */}
+                            {subtitle && <p className="text-muted mb-0">{subtitle}</p>}
+                        </div>
+
+                        {/* Page-specific content such as login or signup form */}
+                        {children}
+                    </div>
+
+                    {/* Footer link for switching between auth pages */}
+                    <div className="card-footer text-center bg-white border-0 pb-4 rounded-4">
+                        <small className="text-muted">
+                            {footerText}
+                            <Link
+                                to={footerLinkTo}
+                                className="fw-semibold text-decoration-none ms-1"
+                            >
+                                {footerLinkText}
+                            </Link>
+                        </small>
+                    </div>
+                </div>
             </div>
-
-            {/* Page-specific content such as login or signup form */}
-            {children}
-          </div>
-
-          {/* Footer link for switching between auth pages */}
-          <div className="card-footer text-center bg-white border-0 pb-4 rounded-4">
-            <small className="text-muted">
-              {footerText}
-              <Link
-                to={footerLinkTo}
-                className="fw-semibold text-decoration-none ms-1"
-              >
-                {footerLinkText}
-              </Link>
-            </small>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default AuthCard;
