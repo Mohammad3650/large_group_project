@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../../api.js";
-import '@schedule-x/theme-default/dist/index.css'
-import 'temporal-polyfill/global'
-import "./stylesheets/Calendar.css"
-import CalendarView from "./CalendarView.jsx";
-import CalendarPlaceholder from "./CalendarPlaceholder.jsx";
-import mapTimeBlocks from "../../utils/mapTimeBlocks.js";
-import getUserTimezone from "../../utils/getUserTimezone.js";
-import savePlan from "../../utils/savePlan.js";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../api.js';
+import '@schedule-x/theme-default/dist/index.css';
+import 'temporal-polyfill/global';
+import './stylesheets/Calendar.css';
+import CalendarView from './CalendarView.jsx';
+import CalendarPlaceholder from './CalendarPlaceholder.jsx';
+import mapTimeBlocks from '../../utils/mapTimeBlocks.js';
+import getUserTimezone from '../../utils/getUserTimezone.js';
+import savePlan from '../../utils/savePlan.js';
 
 // Component for previewing a generated schedule before saving
 function PreviewCalendar() {
@@ -20,18 +20,18 @@ function PreviewCalendar() {
     useEffect(() => {
         async function fetchTimeBlocks() {
             try {
-                const stored = sessionStorage.getItem("generatedSchedule");
+                const stored = sessionStorage.getItem('generatedSchedule');
 
                 const schedule = JSON.parse(stored);
                 if (!schedule) return;
                 setSchedule(schedule);
 
-                const events = schedule["events"];
-                const scheduled = schedule["scheduled"];
+                const events = schedule['events'];
+                const scheduled = schedule['scheduled'];
                 const combined = [...events, ...scheduled];
                 setBlocks(mapTimeBlocks(combined));
             } catch (err) {
-                console.error("Failed to load time blocks", err);
+                console.error('Failed to load time blocks', err);
             }
         }
         fetchTimeBlocks();
@@ -42,19 +42,19 @@ function PreviewCalendar() {
         const data = {
             week_start: schedule.week_start,
             events: schedule.events,
-            timezone: getUserTimezone(),
+            timezone: getUserTimezone()
         };
         await savePlan(data);
-        nav("/dashboard");
+        nav('/dashboard');
     }
 
     // Discard the schedule and return to dashboard
     function leave() {
-        sessionStorage.removeItem("generatedSchedule");
-        nav("/dashboard");
+        sessionStorage.removeItem('generatedSchedule');
+        nav('/dashboard');
     }
 
-    if (blocks === null) return <CalendarPlaceholder/>;
+    if (blocks === null) return <CalendarPlaceholder />;
 
     return (
         <CalendarView

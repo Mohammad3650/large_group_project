@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../../api.js";
-import TaskGroup from "./TaskGroup.jsx";
-import AddTaskButton from "../../components/AddTaskButton.jsx";
-import NotesSection from "./NotesSection.jsx";
-import useTimeBlocks from "../../utils/useTimeBlocks.js";
-import handleExportCsv from "../../utils/handleExportCsv.js";
-import SubscriptionForm from "./SubscriptionForm.jsx";
-import SubscriptionList from "./SubscriptionList.jsx";
-import createCalendarSubscription from "../../utils/createCalendarSubscription.js";
-import deleteCalendarSubscription from "../../utils/deleteCalendarSubscription.js";
-import getCalendarSubscriptions from "../../utils/getCalendarSubscriptions.js";
-import handleExportIcs from "../../utils/handleExportIcs.js";
-import refreshCalendarSubscription from "../../utils/refreshCalendarSubscription.js";
-import useTasksByDateGroup from "../../utils/useTasksByDateGroup.js";
-import "./stylesheets/Dashboard.css";
-
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../api.js';
+import TaskGroup from './TaskGroup.jsx';
+import AddTaskButton from '../../components/AddTaskButton.jsx';
+import NotesSection from './NotesSection.jsx';
+import useTimeBlocks from '../../utils/useTimeBlocks.js';
+import handleExportCsv from '../../utils/handleExportCsv.js';
+import SubscriptionForm from './SubscriptionForm.jsx';
+import SubscriptionList from './SubscriptionList.jsx';
+import createCalendarSubscription from '../../utils/createCalendarSubscription.js';
+import deleteCalendarSubscription from '../../utils/deleteCalendarSubscription.js';
+import getCalendarSubscriptions from '../../utils/getCalendarSubscriptions.js';
+import handleExportIcs from '../../utils/handleExportIcs.js';
+import refreshCalendarSubscription from '../../utils/refreshCalendarSubscription.js';
+import useTasksByDateGroup from '../../utils/useTasksByDateGroup.js';
+import './stylesheets/Dashboard.css';
 
 /**
  * Dashboard component - main page displayed after successful login.
@@ -24,36 +23,37 @@ import "./stylesheets/Dashboard.css";
  */
 function Dashboard() {
     const nav = useNavigate();
-    const [message, setMessage] = useState("Loading...");
-    const [error, setError] = useState("");
+    const [message, setMessage] = useState('Loading...');
+    const [error, setError] = useState('');
     const [subscriptions, setSubscriptions] = useState([]);
     const [showSubscriptions, setShowSubscriptions] = useState(true);
 
-    const {
-        blocks,
-        refetchBlocks,
-        error: blocksError,
-    } = useTimeBlocks();
+    const { blocks, refetchBlocks, error: blocksError } = useTimeBlocks();
 
     const {
-        overdueTasks, setOverdueTasks,
-        todayTasks, setTodayTasks,
-        tomorrowTasks, setTomorrowTasks,
-        weekTasks, setWeekTasks,
-        beyondWeekTasks, setBeyondWeekTasks,
+        overdueTasks,
+        setOverdueTasks,
+        todayTasks,
+        setTodayTasks,
+        tomorrowTasks,
+        setTomorrowTasks,
+        weekTasks,
+        setWeekTasks,
+        beyondWeekTasks,
+        setBeyondWeekTasks,
         totalTasks
     } = useTasksByDateGroup(blocks);
 
     useEffect(() => {
         async function fetchDashboard() {
             try {
-                const response = await api.get("/dashboard/");
+                const response = await api.get('/dashboard/');
                 setMessage(response.data.message);
             } catch (err) {
                 if (err?.response?.status === 401) {
-                    nav("/login");
+                    nav('/login');
                 } else {
-                    setError("Failed to load dashboard");
+                    setError('Failed to load dashboard');
                 }
             }
         }
@@ -67,7 +67,7 @@ function Dashboard() {
                 const data = await getCalendarSubscriptions();
                 setSubscriptions(data);
             } catch {
-                setError("Failed to load calendar subscriptions");
+                setError('Failed to load calendar subscriptions');
             }
         }
 
@@ -75,25 +75,25 @@ function Dashboard() {
     }, []);
 
     useEffect(() => {
-        document.body.classList.add("dashboard-page");
+        document.body.classList.add('dashboard-page');
         window.scrollTo(0, 0);
 
         const handleResize = () => window.scrollTo(0, 0);
-        window.addEventListener("resize", handleResize);
+        window.addEventListener('resize', handleResize);
 
         return () => {
-            document.body.classList.remove("dashboard-page");
-            window.removeEventListener("resize", handleResize);
+            document.body.classList.remove('dashboard-page');
+            window.removeEventListener('resize', handleResize);
         };
     }, []);
 
     async function handleImportSubscription(payload) {
         try {
-            setError("");
+            setError('');
             const responseData = await createCalendarSubscription(payload);
             setSubscriptions((currentSubscriptions) => [
                 responseData.subscription,
-                ...currentSubscriptions,
+                ...currentSubscriptions
             ]);
             await refetchBlocks();
         } catch (requestError) {
@@ -101,44 +101,45 @@ function Dashboard() {
                 requestError?.response?.data?.source_url?.[0] ||
                 requestError?.response?.data?.name?.[0] ||
                 requestError?.response?.data?.message ||
-                "Failed to import timetable";
+                'Failed to import timetable';
             setError(detail);
         }
     }
 
     async function handleRefreshSubscription(subscriptionId) {
         try {
-            setError("");
-            const responseData = await refreshCalendarSubscription(subscriptionId);
+            setError('');
+            const responseData =
+                await refreshCalendarSubscription(subscriptionId);
 
             setSubscriptions((currentSubscriptions) =>
                 currentSubscriptions.map((subscription) =>
                     subscription.id === subscriptionId
                         ? responseData.subscription
-                        : subscription,
-                ),
+                        : subscription
+                )
             );
 
             await refetchBlocks();
         } catch {
-            setError("Failed to refresh timetable subscription");
+            setError('Failed to refresh timetable subscription');
         }
     }
 
     async function handleDeleteSubscription(subscriptionId) {
         try {
-            setError("");
+            setError('');
             await deleteCalendarSubscription(subscriptionId);
 
             setSubscriptions((currentSubscriptions) =>
                 currentSubscriptions.filter(
-                    (subscription) => subscription.id !== subscriptionId,
-                ),
+                    (subscription) => subscription.id !== subscriptionId
+                )
             );
 
             await refetchBlocks();
         } catch {
-            setError("Failed to delete timetable subscription");
+            setError('Failed to delete timetable subscription');
         }
     }
 
@@ -146,7 +147,7 @@ function Dashboard() {
         if (!error) return;
 
         const timer = setTimeout(() => {
-            setError("");
+            setError('');
         }, 5000);
 
         return () => clearTimeout(timer);
@@ -190,7 +191,9 @@ function Dashboard() {
                         className="day-section"
                         onClick={() => setShowSubscriptions((prev) => !prev)}
                     >
-                        <span className={`arrow ${showSubscriptions ? "open" : "closed"}`}>
+                        <span
+                            className={`arrow ${showSubscriptions ? 'open' : 'closed'}`}
+                        >
                             ^
                         </span>
                         <h5>Timetable subscriptions</h5>
@@ -198,9 +201,13 @@ function Dashboard() {
 
                     {showSubscriptions && (
                         <div className="subscription-section">
-                            {error && <p className="subscription-error">{error}</p>}
+                            {error && (
+                                <p className="subscription-error">{error}</p>
+                            )}
 
-                            <SubscriptionForm onImport={handleImportSubscription} />
+                            <SubscriptionForm
+                                onImport={handleImportSubscription}
+                            />
                             <SubscriptionList
                                 subscriptions={subscriptions}
                                 onRefresh={handleRefreshSubscription}
@@ -209,15 +216,38 @@ function Dashboard() {
                         </div>
                     )}
                     {totalTasks === 0 && (
-                        <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
+                        <p className="no-tasks-message">
+                            🎉 Congrats, you have no tasks!
+                        </p>
                     )}
-                    <TaskGroup title="Overdue" tasks={overdueTasks} setTasks={setOverdueTasks} overdue={true}/>
-                    <TaskGroup title="Today" tasks={todayTasks} setTasks={setTodayTasks}/>
-                    <TaskGroup title="Tomorrow" tasks={tomorrowTasks} setTasks={setTomorrowTasks}/>
-                    <TaskGroup title="Next 7 Days" tasks={weekTasks} setTasks={setWeekTasks}/>
-                    <TaskGroup title="After Next 7 Days" tasks={beyondWeekTasks} setTasks={setBeyondWeekTasks}/>
+                    <TaskGroup
+                        title="Overdue"
+                        tasks={overdueTasks}
+                        setTasks={setOverdueTasks}
+                        overdue={true}
+                    />
+                    <TaskGroup
+                        title="Today"
+                        tasks={todayTasks}
+                        setTasks={setTodayTasks}
+                    />
+                    <TaskGroup
+                        title="Tomorrow"
+                        tasks={tomorrowTasks}
+                        setTasks={setTomorrowTasks}
+                    />
+                    <TaskGroup
+                        title="Next 7 Days"
+                        tasks={weekTasks}
+                        setTasks={setWeekTasks}
+                    />
+                    <TaskGroup
+                        title="After Next 7 Days"
+                        tasks={beyondWeekTasks}
+                        setTasks={setBeyondWeekTasks}
+                    />
                 </div>
-                <NotesSection/>
+                <NotesSection />
             </div>
         </>
     );

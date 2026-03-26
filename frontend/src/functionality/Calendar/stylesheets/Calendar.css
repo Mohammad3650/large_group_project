@@ -131,31 +131,63 @@
 
 /* Event type colours */
 .sx__time-grid-event.sx-type-sleep {
-    background: linear-gradient(90deg, rgba(234, 179, 8, 0.3) 0%, rgba(250, 204, 21, 0.668) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(234, 179, 8, 0.3) 0%,
+        rgba(250, 204, 21, 0.668) 100%
+    );
 }
 
 .sx__time-grid-event.sx-type-study {
-    background: linear-gradient(90deg, rgba(155, 85, 42, 0.3) 100%, rgba(87, 199, 133, 0.3) 100%, rgba(237, 221, 83, 0.3) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(155, 85, 42, 0.3) 100%,
+        rgba(87, 199, 133, 0.3) 100%,
+        rgba(237, 221, 83, 0.3) 100%
+    );
 }
 
 .sx__time-grid-event.sx-type-lecture {
-    background: linear-gradient(90deg, rgba(42, 155, 144, 0.3) 100%, rgba(87, 199, 133, 0.3) 100%, rgba(237, 221, 83, 0.3) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(42, 155, 144, 0.3) 100%,
+        rgba(87, 199, 133, 0.3) 100%,
+        rgba(237, 221, 83, 0.3) 100%
+    );
 }
 
 .sx__time-grid-event.sx-type-lab {
-    background: linear-gradient(90deg, rgba(34, 197, 94, 0.3) 100%, rgba(20, 99, 12, 0.784) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(34, 197, 94, 0.3) 100%,
+        rgba(20, 99, 12, 0.784) 100%
+    );
 }
 
 .sx__time-grid-event.sx-type-tutorial {
-    background: linear-gradient(90deg, rgba(42, 123, 155, 0.3) 100%, rgba(87, 199, 133, 0.3) 100%, rgba(237, 221, 83, 0.3) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(42, 123, 155, 0.3) 100%,
+        rgba(87, 199, 133, 0.3) 100%,
+        rgba(237, 221, 83, 0.3) 100%
+    );
 }
 
 .sx__time-grid-event.sx-type-commute {
-    background: linear-gradient(90deg, rgba(249, 115, 22, 0.3) 0%, rgba(251, 146, 60, 0.3) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(249, 115, 22, 0.3) 0%,
+        rgba(251, 146, 60, 0.3) 100%
+    );
 }
 
 .sx__time-grid-event.sx-type-exercise {
-    background: linear-gradient(90deg, rgba(220, 38, 38, 0.3) 0%, rgba(239, 68, 68, 0.3) 100%, rgba(237, 221, 83, 0.3) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(220, 38, 38, 0.3) 0%,
+        rgba(239, 68, 68, 0.3) 100%,
+        rgba(237, 221, 83, 0.3) 100%
+    );
 }
 
 .sx__time-grid-event.sx-type-break {
@@ -163,11 +195,21 @@
 }
 
 .sx__time-grid-event.sx-type-work {
-    background: linear-gradient(90deg, rgba(155, 132, 42, 0.3) 100%, rgba(87, 199, 133, 0.3) 100%, rgba(237, 221, 83, 0.3) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(155, 132, 42, 0.3) 100%,
+        rgba(87, 199, 133, 0.3) 100%,
+        rgba(237, 221, 83, 0.3) 100%
+    );
 }
 
 .sx__time-grid-event.sx-type-extracurricular {
-    background: linear-gradient(90deg, rgba(146, 42, 155, 0.3) 100%, rgba(87, 199, 133, 0.3) 100%, rgba(237, 221, 83, 0.3) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(146, 42, 155, 0.3) 100%,
+        rgba(87, 199, 133, 0.3) 100%,
+        rgba(237, 221, 83, 0.3) 100%
+    );
 }
 
 .sx__time-grid-event-title {
@@ -269,7 +311,7 @@ body.dark-theme .sx__date-picker-wrapper label {
     box-shadow: none !important;
 }
 
-body.dark-theme .sx__date-picker *[class*="label"] {
+body.dark-theme .sx__date-picker *[class*='label'] {
     background: var(--bg-main) !important;
     color: var(--text-muted) !important;
     border-color: var(--border-light) !important;

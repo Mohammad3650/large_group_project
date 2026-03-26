@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 /**
  * Render the calendar subscription import form.
@@ -8,14 +8,14 @@ import { useState } from "react";
  * @returns {JSX.Element} The subscription form
  */
 function SubscriptionForm({ onImport }) {
-    const [name, setName] = useState("");
-    const [sourceUrl, setSourceUrl] = useState("");
+    const [name, setName] = useState('');
+    const [sourceUrl, setSourceUrl] = useState('');
 
     async function handleSubmit(event) {
         event.preventDefault();
         await onImport({ name, sourceUrl });
-        setName("");
-        setSourceUrl("");
+        setName('');
+        setSourceUrl('');
     }
 
     return (

@@ -1,4 +1,4 @@
-import "./stylesheets/AuthField.css";
+import './stylesheets/AuthField.css';
 
 /**
  * Reusable input field component for authentication forms.
@@ -22,16 +22,15 @@ import "./stylesheets/AuthField.css";
 
 function AuthField({
     label,
-    type = "text",
+    type = 'text',
     placeholder,
     value,
     onChange,
     error,
-    name,
+    name
 }) {
-  
     // Adds Bootstrap invalid styling when an error is present
-    const inputClass = `form-control auth-input ${error ? "is-invalid" : ""}`;
+    const inputClass = `form-control auth-input ${error ? 'is-invalid' : ''}`;
 
     return (
         <div className="col-12">

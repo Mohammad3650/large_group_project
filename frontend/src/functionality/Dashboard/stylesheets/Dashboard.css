@@ -82,7 +82,10 @@ body.dashboard-page {
     border: none;
     cursor: pointer;
     box-shadow: var(--shadow-sm);
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
 }
 
 .export-csv-button:hover {
@@ -243,7 +246,7 @@ body.dashboard-page {
         justify-content: flex-start;
         flex-wrap: wrap;
     }
-    
+
     .subscription-card {
         flex-direction: column;
     }
@@ -252,5 +255,4 @@ body.dashboard-page {
         flex-direction: row;
         justify-content: flex-start;
     }
-
 }

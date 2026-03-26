@@ -1,4 +1,4 @@
-import toLocalDateTime from "./toLocalDateTime.js";
+import toLocalDateTime from './toLocalDateTime.js';
 
 /**
  * Build a local Temporal.ZonedDateTime from a YYYY-MM-DD date and HH:MM[:SS] time.
@@ -11,9 +11,9 @@ import toLocalDateTime from "./toLocalDateTime.js";
 function buildLocalZonedDateTime(date, time, timezone) {
     const trimmedTime = time.slice(0, 5);
 
-    return Temporal.PlainDateTime
-        .from(`${date}T${trimmedTime}:00`)
-        .toZonedDateTime(timezone);
+    return Temporal.PlainDateTime.from(
+        `${date}T${trimmedTime}:00`
+    ).toZonedDateTime(timezone);
 }
 
 /**
@@ -46,8 +46,15 @@ function buildLocalZonedDateTime(date, time, timezone) {
  */
 function mapTimeBlocks(blocks) {
     return blocks.map((block, index) => {
-        const { zonedDateTime: start, localDate, localTime: startTime } = toLocalDateTime(block.date, block.start_time);
-        const { zonedDateTime: end, localTime: endTime } = toLocalDateTime(block.date, block.end_time);
+        const {
+            zonedDateTime: start,
+            localDate,
+            localTime: startTime
+        } = toLocalDateTime(block.date, block.start_time);
+        const { zonedDateTime: end, localTime: endTime } = toLocalDateTime(
+            block.date,
+            block.end_time
+        );
 
         return {
             id: block.id ?? index,
@@ -59,9 +66,12 @@ function mapTimeBlocks(blocks) {
             start,
             end,
             location: block.location,
-            blockType: block.block_type ? block.block_type.charAt(0).toUpperCase() + block.block_type.slice(1) : "N/A",
-            description: block.description || "N/A",
-            _options: { additionalClasses: [`sx-type-${block.block_type}`] },
+            blockType: block.block_type
+                ? block.block_type.charAt(0).toUpperCase() +
+                  block.block_type.slice(1)
+                : 'N/A',
+            description: block.description || 'N/A',
+            _options: { additionalClasses: [`sx-type-${block.block_type}`] }
         };
     });
 }

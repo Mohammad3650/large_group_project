@@ -1,4 +1,3 @@
-
 /**
  * CalendarPlaceholder Component
  *
@@ -8,7 +7,7 @@
  */
 
 function CalendarPlaceholder() {
-    return(
+    return (
         <div className="calendardiv">
             <h1 className="title">Calendar</h1>
         </div>

@@ -1,6 +1,6 @@
-import { api } from "../api.js";
+import { api } from '../api.js';
 
-const CALENDAR_SUBSCRIPTIONS_ENDPOINT = "/api/calendar-subscriptions/";
+const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions/';
 
 /**
  * Fetch all saved calendar subscriptions for the current user.

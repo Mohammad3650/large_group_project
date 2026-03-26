@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import "./stylesheets/AuthCard.css";
+import { Link } from 'react-router-dom';
+import './stylesheets/AuthCard.css';
 
 /**
  * Reusable layout component for authentication pages.
@@ -26,37 +26,38 @@ function AuthCard({
     footerText,
     footerLinkText,
     footerLinkTo,
-    children,
+    children
 }) {
-  return (
-    <div className="auth-page">
-      <div className="auth-shell">
-        <div className="auth-card card border-0">
-          <div className="card-body py-4 px-5">
-            <div className="text-center mb-4 mt-2">
-              <h3 className="fw-bold mb-1">{title}</h3>
+    return (
+        <div className="auth-page">
+            <div className="auth-shell">
+                <div className="auth-card card border-0">
+                    <div className="card-body py-4 px-5">
+                        <div className="text-center mb-4 mt-2">
+                            <h3 className="fw-bold mb-1">{title}</h3>
 
-              {subtitle && <p className="auth-subtitle mb-0">{subtitle}</p>}
+                            {subtitle && (
+                                <p className="auth-subtitle mb-0">{subtitle}</p>
+                            )}
+                        </div>
+
+                        {children}
+                    </div>
+
+                    <div className="auth-footer card-footer text-center border-0 pb-4">
+                        <small>
+                            {footerText}
+                            <Link
+                                to={footerLinkTo}
+                                className="auth-link fw-semibold text-decoration-none ms-1"
+                            >
+                                {footerLinkText}
+                            </Link>
+                        </small>
+                    </div>
+                </div>
             </div>
-
-            {children}
-          </div>
-
-          <div className="auth-footer card-footer text-center border-0 pb-4">
-            <small>
-              {footerText}
-              <Link
-                to={footerLinkTo}
-                className="auth-link fw-semibold text-decoration-none ms-1"
-              >
-                {footerLinkText}
-              </Link>
-            </small>
-          </div>
         </div>
-      </div>
-    </div>
-    
     );
 }
 

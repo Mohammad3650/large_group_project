@@ -26,11 +26,9 @@
 
 .card-title,
 .card-text,
-.card-stars
-{
+.card-stars {
     margin: 0;
 }
-
 
 .card-title {
     font-size: large;
@@ -43,12 +41,10 @@
     color: var(--text-main);
 }
 
-
 .card-stars {
     font-size: 25px;
     line-height: 1;
 }
-
 
 .card-avatar {
     width: 85px;
@@ -69,8 +65,7 @@
     letter-spacing: 1px;
 }
 
-.card-content
-{
+.card-content {
     display: flex;
     flex-direction: column;
     text-align: left;
@@ -83,5 +78,3 @@
     font-family: Arial, sans-serif;
     color: var(--text-dark);
 }
-
-

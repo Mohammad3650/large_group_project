@@ -1,15 +1,14 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"
-import { render, screen } from "@testing-library/react"
-import { MemoryRouter, Routes, Route } from "react-router-dom"
-import ProtectedRoute from "../ProtectedRoute.jsx"
-import { isTokenValid } from "../../utils/authToken.js"
-
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from '../ProtectedRoute.jsx';
+import { isTokenValid } from '../../utils/authToken.js';
 
 /**
  * Mock the authToken utility to control authentication behaviour in tests.
  */
-vi.mock("../../utils/authToken.js", () => ({
-    isTokenValid: vi.fn(),
+vi.mock('../../utils/authToken.js', () => ({
+    isTokenValid: vi.fn()
 }));
 
 /**
@@ -17,16 +16,16 @@ vi.mock("../../utils/authToken.js", () => ({
  * Ensures users are either allowed access or redirected to Login page based on token validity
  */
 
-describe("ProtectedRoute", () => {
+describe('ProtectedRoute', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
     function renderProtectedRoute() {
         return render(
-            <MemoryRouter initialEntries={["/dashboard"]}>
+            <MemoryRouter initialEntries={['/dashboard']}>
                 <Routes>
-                    <Route 
+                    <Route
                         path="/dashboard"
                         element={
                             <ProtectedRoute>
@@ -40,20 +39,19 @@ describe("ProtectedRoute", () => {
         );
     }
 
-    it("renders page when token is valid", async () => {
+    it('renders page when token is valid', async () => {
         isTokenValid.mockResolvedValue(true);
 
         renderProtectedRoute();
 
-        expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
+        expect(await screen.findByText('Dashboard Page')).toBeInTheDocument();
     });
 
-    it("redirects to login when token is invalid", async () => {
+    it('redirects to login when token is invalid', async () => {
         isTokenValid.mockResolvedValue(false);
 
         renderProtectedRoute();
 
-        expect(await screen.findByText("Login Page")).toBeInTheDocument();
-    })
-
-})
+        expect(await screen.findByText('Login Page')).toBeInTheDocument();
+    });
+});

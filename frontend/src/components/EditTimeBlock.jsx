@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { api } from "../api";
-import TimeBlockForm from "./TimeBlockForm";
-import toLocalDateTime from "../utils/toLocalDateTime.js";
-import getUserTimezone from "../utils/getUserTimezone.js";
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { api } from '../api';
+import TimeBlockForm from './TimeBlockForm';
+import toLocalDateTime from '../utils/toLocalDateTime.js';
+import getUserTimezone from '../utils/getUserTimezone.js';
 
 /**
  * Component for editing an existing time block.
@@ -25,29 +25,34 @@ function EditTimeBlock() {
 
     useEffect(() => {
         api.get(`/api/timeblocks/${id}/edit`)
-        .then(res => {
-            const data = res.data;
-            const { localDate, localTime: startTime } = toLocalDateTime(data.date, data.start_time);
-            const { localTime: endTime } = toLocalDateTime(data.date, data.end_time);
+            .then((res) => {
+                const data = res.data;
+                const { localDate, localTime: startTime } = toLocalDateTime(
+                    data.date,
+                    data.start_time
+                );
+                const { localTime: endTime } = toLocalDateTime(
+                    data.date,
+                    data.end_time
+                );
 
-            setInitialData({
-            id: data.id,
-            date: localDate,
-            name: data.name,
-            location: data.location,
-            block_type: data.block_type,
-            description: data.description,
-            start_time: startTime,
-            end_time: endTime,
-            });
-        })
-        .catch(err => console.error(err));
+                setInitialData({
+                    id: data.id,
+                    date: localDate,
+                    name: data.name,
+                    location: data.location,
+                    block_type: data.block_type,
+                    description: data.description,
+                    start_time: startTime,
+                    end_time: endTime
+                });
+            })
+            .catch((err) => console.error(err));
     }, [id]);
 
     const nav = useNavigate();
 
     async function handleUpdate(dataList) {
-
         if (loading) return;
 
         setServerErrors([]);
@@ -56,21 +61,20 @@ function EditTimeBlock() {
         const block = dataList[0];
 
         const cleanedData = {
-        ...block,
-        start_time: block.start_time === "" ? null : block.start_time,
-        end_time: block.end_time === "" ? null : block.end_time,
-        timezone: getUserTimezone(),
+            ...block,
+            start_time: block.start_time === '' ? null : block.start_time,
+            end_time: block.end_time === '' ? null : block.end_time,
+            timezone: getUserTimezone()
         };
 
         try {
-        await api.patch(`/api/timeblocks/${id}/edit`, cleanedData);
+            await api.patch(`/api/timeblocks/${id}/edit`, cleanedData);
 
-        // redirect after success
-        nav("/successful-timeblock", { state: { id: id } });
-
+            // redirect after success
+            nav('/successful-timeblock', { state: { id: id } });
         } catch (err) {
-        console.log("UPDATE ERROR:", err.response?.data);
-        setServerErrors([err.response?.data || {}]);
+            console.log('UPDATE ERROR:', err.response?.data);
+            setServerErrors([err.response?.data || {}]);
         }
 
         setLoading(false);
@@ -79,20 +83,19 @@ function EditTimeBlock() {
     if (!initialData) return <p>Loading...</p>;
 
     return (
-    <div className="page-center">
-        <div className="time-block-form-card">
-            <h2>Edit Time Block</h2>
-            <TimeBlockForm
-                onSubmit={handleUpdate}
-                initialData={initialData}
-                loading={loading}
-                serverErrors={serverErrors}
-                clearErrors={() => setServerErrors([])}
-            />
+        <div className="page-center">
+            <div className="time-block-form-card">
+                <h2>Edit Time Block</h2>
+                <TimeBlockForm
+                    onSubmit={handleUpdate}
+                    initialData={initialData}
+                    loading={loading}
+                    serverErrors={serverErrors}
+                    clearErrors={() => setServerErrors([])}
+                />
+            </div>
         </div>
-    </div>
     );
-
 }
 
 export default EditTimeBlock;
