@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
-
+import userEvent from '@testing-library/user-event';
 import Signup from '../Signup';
 import { isTokenValid } from '../../../utils/authToken';
 import { publicApi } from '../../../api';
@@ -58,31 +57,27 @@ async function fillSignupForm(user, overrides = {}) {
         ...overrides
     };
 
-    await user.type(
-        screen.getByPlaceholderText('you@example.com'),
-        values.email
-    );
-    await user.type(
-        screen.getByPlaceholderText('Choose a username'),
-        values.username
-    );
-    await user.type(
-        screen.getByPlaceholderText('First name'),
-        values.firstName
-    );
-    await user.type(screen.getByPlaceholderText('Last name'), values.lastName);
-    await user.type(
-        screen.getByPlaceholderText('e.g. 07123 456 789'),
-        values.phoneNumber
-    );
-    await user.type(
-        screen.getByPlaceholderText('Create a password'),
-        values.password
-    );
-    await user.type(
-        screen.getByPlaceholderText('Confirm password'),
-        values.confirmPassword
-    );
+    fireEvent.change(screen.getByPlaceholderText('you@example.com'), {
+        target: { value: values.email }
+    });
+    fireEvent.change(screen.getByPlaceholderText('Choose a username'), {
+        target: { value: values.username }
+    });
+    fireEvent.change(screen.getByPlaceholderText('First name'), {
+        target: { value: values.firstName }
+    });
+    fireEvent.change(screen.getByPlaceholderText('Last name'), {
+        target: { value: values.lastName }
+    });
+    fireEvent.change(screen.getByPlaceholderText('e.g. 07123 456 789'), {
+        target: { value: values.phoneNumber }
+    });
+    fireEvent.change(screen.getByPlaceholderText('Create a password'), {
+        target: { value: values.password }
+    });
+    fireEvent.change(screen.getByPlaceholderText('Confirm password'), {
+        target: { value: values.confirmPassword }
+    });
 }
 
 describe('Signup page', () => {
@@ -226,17 +221,15 @@ describe('Signup page', () => {
     });
 
     it('does not submit again while a signup request is in progress', async () => {
-        const user = userEvent.setup();
-
         publicApi.post.mockImplementation(() => new Promise(() => {}));
 
         renderSignup();
-        await fillSignupForm(user);
+        await fillSignupForm();
 
-        const button = screen.getByRole('button', { name: /sign up/i });
+        const form = screen.getByRole('button', { name: /sign up/i }).closest('form');
 
-        await user.click(button);
-        await user.click(button);
+        fireEvent.submit(form);
+        fireEvent.submit(form);
 
         expect(publicApi.post).toHaveBeenCalledTimes(1);
     });

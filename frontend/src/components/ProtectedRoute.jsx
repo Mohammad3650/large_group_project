@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { isTokenValid } from '../utils/authToken.js';
 
 /**
- * A route guard components that restricts access to pages to authenticated users only.
+ * A route guard component that restricts access to pages to authenticated users only.
  *
  * It checks whether the user's auth token is valid:
  * - If valid -> renders the protected content
@@ -25,7 +25,16 @@ function ProtectedRoute({ children }) {
         })();
     }, []);
 
-    if (allowed == null) return null;
+    if (allowed === null) {
+        return (
+            <div className="d-flex justify-content-center align-items-center min-vh-100">
+                <div className="text-center">
+                    <div className="spinner-border text-dark mb-3" role="status" />
+                    <p className="text-muted mb-0">Checking authentication...</p>
+                </div>
+            </div>
+        );
+    };
     if (!allowed) return <Navigate to="/login" replace />;
 
     return children;
