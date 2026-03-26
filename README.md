@@ -10,7 +10,7 @@ The members of this team are:
 
 - _Abdulrahman  Sharif_
 - _Mohammed Ijaj Ahmed_
-- _Ahmed Nabil_
+- _Nabil Ahmed_
 - _Muhammad Iyaad Islam_
 - _Omar Mohammed Kassam_
 - _Shahmeer Khalid_

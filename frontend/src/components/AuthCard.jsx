@@ -21,14 +21,13 @@ import "./stylesheets/AuthCard.css";
  */
 
 function AuthCard({
-  title,
-  subtitle,
-  footerText,
-  footerLinkText,
-  footerLinkTo,
-  children,
+    title,
+    subtitle,
+    footerText,
+    footerLinkText,
+    footerLinkTo,
+    children,
 }) {
-  
   return (
     <div className="auth-page">
       <div className="auth-shell">
@@ -57,7 +56,8 @@ function AuthCard({
         </div>
       </div>
     </div>
-  );
+    
+    );
 }
 
 export default AuthCard;

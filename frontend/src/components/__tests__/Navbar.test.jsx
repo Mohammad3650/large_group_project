@@ -25,7 +25,7 @@ vi.mock("../stylesheets/Navbar.css", () => ({}));
 const renderNavbar = () =>
     render(
         <MemoryRouter>
-            <Navbar />
+        <Navbar />
         </MemoryRouter>
     );
 
