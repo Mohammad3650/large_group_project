@@ -1,6 +1,6 @@
-import { api } from "../api.js";
+import { api } from '../api.js';
 
-const CALENDAR_SUBSCRIPTIONS_ENDPOINT = "/api/calendar-subscriptions/";
+const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions/';
 
 /**
  * Create a new calendar subscription and import its events.
@@ -13,7 +13,7 @@ const CALENDAR_SUBSCRIPTIONS_ENDPOINT = "/api/calendar-subscriptions/";
 async function createCalendarSubscription({ name, sourceUrl }) {
     const response = await api.post(CALENDAR_SUBSCRIPTIONS_ENDPOINT, {
         name,
-        source_url: sourceUrl,
+        source_url: sourceUrl
     });
 
     return response.data;

@@ -1,4 +1,4 @@
-import { api } from "../api.js";
+import { api } from '../api.js';
 
 /**
  * Deletes a time block by ID.
@@ -7,7 +7,7 @@ import { api } from "../api.js";
  * @returns {Promise} The API response promise
  */
 function deleteTimeBlock(id) {
-    if (!id) throw new Error("Invalid id");
+    if (!id) throw new Error('Invalid id');
     return api.delete(`/api/time-blocks/${id}/`);
 }
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getAccessToken } from "./authStorage";
+import { useEffect, useState } from 'react';
+import { getAccessToken } from './authStorage';
 
 /**
  * Custom hook to determine whether a user is authenticated.
@@ -13,23 +13,25 @@ import { getAccessToken } from "./authStorage";
  */
 
 function useAuthStatus() {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getAccessToken()));
+    const [isLoggedIn, setIsLoggedIn] = useState(() =>
+        Boolean(getAccessToken())
+    );
 
-  useEffect(() => {
-    function syncAuthStatus() {
-      setIsLoggedIn(Boolean(getAccessToken()));
-    }
+    useEffect(() => {
+        function syncAuthStatus() {
+            setIsLoggedIn(Boolean(getAccessToken()));
+        }
 
-    window.addEventListener("auth-change", syncAuthStatus);
-    window.addEventListener("storage", syncAuthStatus);
+        window.addEventListener('auth-change', syncAuthStatus);
+        window.addEventListener('storage', syncAuthStatus);
 
-    return () => {
-      window.removeEventListener("auth-change", syncAuthStatus);
-      window.removeEventListener("storage", syncAuthStatus);
-    };
-  }, []);
+        return () => {
+            window.removeEventListener('auth-change', syncAuthStatus);
+            window.removeEventListener('storage', syncAuthStatus);
+        };
+    }, []);
 
-  return isLoggedIn;
+    return isLoggedIn;
 }
 
 export default useAuthStatus;

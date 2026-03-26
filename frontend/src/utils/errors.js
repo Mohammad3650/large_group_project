@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 /**
  * Returns the standard frontend error shape with a single global message.
@@ -8,10 +8,10 @@ import axios from "axios";
  */
 
 function buildGlobalError(message) {
-  return {
-    fieldErrors: {},
-    global: [message],
-  };
+    return {
+        fieldErrors: {},
+        global: [message]
+    };
 }
 
 /**
@@ -23,21 +23,25 @@ function buildGlobalError(message) {
  */
 
 function handleObjectErrors(data) {
-  const out = { fieldErrors: {}, global: [] };
+    const out = { fieldErrors: {}, global: [] };
 
-  for (const [key, value] of Object.entries(data)) {
-    if (key === "non_field_errors") {
-      out.global.push(...(Array.isArray(value) ? value : [String(value)]));
-    } else {
-      out.fieldErrors[key] = Array.isArray(value) ? value : [String(value)];
+    for (const [key, value] of Object.entries(data)) {
+        if (key === 'non_field_errors') {
+            out.global.push(
+                ...(Array.isArray(value) ? value : [String(value)])
+            );
+        } else {
+            out.fieldErrors[key] = Array.isArray(value)
+                ? value
+                : [String(value)];
+        }
     }
-  }
 
-  if (!out.global.length && !Object.keys(out.fieldErrors).length) {
-    return buildGlobalError("Request failed.");
-  }
+    if (!out.global.length && !Object.keys(out.fieldErrors).length) {
+        return buildGlobalError('Request failed.');
+    }
 
-  return out;
+    return out;
 }
 
 /**
@@ -48,9 +52,9 @@ function handleObjectErrors(data) {
  */
 
 function handlePrimitiveError(data) {
-  return buildGlobalError(
-    typeof data === "string" ? data : "Request failed."
-  );
+    return buildGlobalError(
+        typeof data === 'string' ? data : 'Request failed.'
+    );
 }
 
 /**
@@ -73,29 +77,29 @@ function handlePrimitiveError(data) {
  */
 
 export function formatApiError(err) {
-  // If the error is not from Axios, return a generic fallback message
-  if (!axios.isAxiosError(err)) {
-    return buildGlobalError("Something went wrong.");
-  }
+    // If the error is not from Axios, return a generic fallback message
+    if (!axios.isAxiosError(err)) {
+        return buildGlobalError('Something went wrong.');
+    }
 
-  // Extract response data from the Axios error if available
-  const data = err.response?.data;
+    // Extract response data from the Axios error if available
+    const data = err.response?.data;
 
-  // If the request failed without any response data, show a server fallback message
-  if (!data) {
-    return buildGlobalError("No response from server.");
-  }
+    // If the request failed without any response data, show a server fallback message
+    if (!data) {
+        return buildGlobalError('No response from server.');
+    }
 
-  // DRF common: { detail: "..." }
-  if (typeof data === "object" && typeof data.detail === "string") {
-    return buildGlobalError(data.detail);
-  }
+    // DRF common: { detail: "..." }
+    if (typeof data === 'object' && typeof data.detail === 'string') {
+        return buildGlobalError(data.detail);
+    }
 
-  // Handle structured validation errors returned as an object
-  if (typeof data === "object" && data !== null) {
-    return handleObjectErrors(data);
-  }
+    // Handle structured validation errors returned as an object
+    if (typeof data === 'object' && data !== null) {
+        return handleObjectErrors(data);
+    }
 
-  // Handle string or unexpected primitive response types
-  return handlePrimitiveError(data);
+    // Handle string or unexpected primitive response types
+    return handlePrimitiveError(data);
 }
