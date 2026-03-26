@@ -25,7 +25,7 @@ function Calendar() {
   // Custom hook for fetching and updating time blocks
   const { blocks, setBlocks } = useTimeBlocks();
   // Fetches the current user's username
-  const username = useUsername(true);
+  const {username} = useUsername(true);
   //Navigation for routing
   const nav = useNavigate();
 
