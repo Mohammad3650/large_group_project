@@ -152,7 +152,9 @@ function Dashboard() {
                     <h1>{message}</h1>
 
                     <div className="dashboard-header-actions">
-                        <AddTaskButton />
+                        <div className="dashboard-add-task">
+                            <AddTaskButton />
+                        </div>
 
                         <div className="export-buttons">
                             <button

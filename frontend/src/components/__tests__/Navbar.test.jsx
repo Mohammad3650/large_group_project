@@ -37,7 +37,7 @@ describe("Navbar", () => {
     describe("when the user is not logged in", () => {
         beforeEach(() => {
             useAuthStatus.mockReturnValue(false);
-            useUsernameModule.default.mockReturnValue("");
+            useUsernameModule.default.mockReturnValue({ username: "", error: "" });
         });
 
         it("renders the site title linking to /", async () => {
@@ -68,7 +68,7 @@ describe("Navbar", () => {
     describe("when the user is logged in", () => {
         beforeEach(() => {
             useAuthStatus.mockReturnValue(true);
-            useUsernameModule.default.mockReturnValue("testuser");
+            useUsernameModule.default.mockReturnValue({ username: "testuser", error: "" });
         });
 
         it("renders the Dashboard link", async () => {
