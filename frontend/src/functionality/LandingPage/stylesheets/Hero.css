@@ -46,8 +46,8 @@
     box-shadow: var(--shadow-md);
 }
 
-.hero_text_top,
-.hero_text_bottom {
+.hero-text-top,
+.hero-text-bottom {
     font-size: 70px;
     font-family: sans-serif;
     font-weight: bold;
@@ -65,23 +65,23 @@
     background: var(--bg-main);
 }
 
-.hero_content {
+.hero-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.hero_left {
+.hero-left {
     flex: 1;
 }
 
-.hero_right {
+.hero-right {
     flex: 1;
     display: flex;
     justify-content: flex-end;
 }
 
-.hero_image {
+.hero-image {
     width: 100%;
     max-width: 750px;
     height: auto;

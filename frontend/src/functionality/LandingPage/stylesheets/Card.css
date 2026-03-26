@@ -18,11 +18,11 @@
     justify-content: flex-start;
 }
 
-@media (max-width: 900px) {
-  .testimonials_grid {
+/* @media (max-width: 900px) {
+  .testimonials-grid {
     grid-template-columns: 1fr;
   }
-}
+} */
 
 .card-title,
 .card-text,

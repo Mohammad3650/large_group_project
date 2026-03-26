@@ -19,12 +19,12 @@ function Landing() {
       <Hero />
       <Features/>
 
-    <div className="landing_testimonials_wrapper">
-      <div className="landing_testimonials">
-        <h2 className="landing_testimonials_title">Student Testimonials</h2>
+    <div className="landing-testimonials-wrapper">
+      <div className="landing-testimonials">
+        <h2 className="landing-testimonials-title">Student Testimonials</h2>
 
-          <div className="testimonials_grid">
-            <div className="testimonial_item">
+          <div className="testimonials-grid">
+            <div className="testimonial-item">
               <Card
                 avatar="OK"
                 name="Omar Kassam"
@@ -33,7 +33,7 @@ function Landing() {
               />
             </div>
 
-            <div className="testimonial_item">
+            <div className="testimonial-item">
               <Card
                 avatar="IA"
                 name="Ijaj Ahmed"
@@ -42,7 +42,7 @@ function Landing() {
               />
             </div>
 
-            <div className="testimonial_item">
+            <div className="testimonial-item">
               <Card
                 avatar="HK"
                 name="Hamza Khan"
@@ -51,7 +51,7 @@ function Landing() {
               />      
             </div>
 
-            <div className="testimonial_item">
+            <div className="testimonial-item">
               <Card
                 avatar="MI"
                 name="Mohammed Islam"
@@ -60,7 +60,7 @@ function Landing() {
               />
             </div>
 
-            <div className="testimonial_item">
+            <div className="testimonial-item">
               <Card
                 avatar="AS"
                 name="Abdulrahman Sharif"
@@ -69,7 +69,7 @@ function Landing() {
               />
             </div>
 
-            <div className="testimonial_item">
+            <div className="testimonial-item">
               <Card
                 avatar="NA"
                 name="Nabil Ahmed"
