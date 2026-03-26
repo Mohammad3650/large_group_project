@@ -85,7 +85,7 @@ function EditTimeBlock() {
             <TimeBlockForm
                 onSubmit={handleUpdate}
                 initialData={initialData}
-                loading={false}
+                loading={loading}
                 serverErrors={serverErrors}
                 clearErrors={() => setServerErrors([])}
             />

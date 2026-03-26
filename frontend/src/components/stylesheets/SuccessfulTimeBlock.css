@@ -19,7 +19,7 @@
 }
 
 .go-timeblock-btn {
-    background-color: cornflowerblue;
+    background-color: var(--blue);
     color: var(--text-white);
     padding: var(--space-md);
     border-radius: var(--radius-lg);
@@ -30,10 +30,11 @@
 }
 
 .edit-timeblock-btn {
-    background-color: black;
-    color: var(--text-white);
+    background-color: var(--bg-soft);
+    color: var(--text-main);
     padding: var(--space-md);
     border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
 }
 
 .edit-timeblock-btn:hover {
@@ -52,6 +53,7 @@
 .success-text {
     font-weight: bold;
     text-align: center;
+    color: var(--text-main);
 }
 
 .success-page {
@@ -61,11 +63,12 @@
     justify-content: center;
     align-items: center;
     padding: 40px 16px;
+    background: var(--bg-main);
+    color: var(--text-main);
 }
 
-
 .success-card {
-    background: var(--bg-main);
+    background: var(--bg-soft);
     padding: 60px 80px;
     border-radius: var(--radius-xl);
     text-align: center;
@@ -75,6 +78,8 @@
     flex-direction: column;
     align-items: center;
     gap: 25px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-lg);
 }
 
 .tick-image {

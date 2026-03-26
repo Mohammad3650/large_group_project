@@ -7,17 +7,18 @@ import { useNavigate } from "react-router-dom";
  * the user to the "/create-schedule" route.
  */
 
-function CreateScheduleButton(){
-    const nav = useNavigate();
+function CreateScheduleButton() {
+  const nav = useNavigate();
 
-    return (
+  return (
     <button
-        className="btn btn-primary me-2"
-        onClick={() => nav("/create-schedule")}
+      className="btn btn-primary me-2"
+      type="button"
+      onClick={() => nav("/create-schedule")}
     >
-        Create Schedule
+      Create Schedule
     </button>
-    );
+  );
 }
 
 export default CreateScheduleButton;
