@@ -7,35 +7,35 @@ import { logout } from "../../utils/authStorage";
 const mockNavigate = vi.fn();
 
 vi.mock("react-router-dom", () => ({
-  useNavigate: () => mockNavigate,
+    useNavigate: () => mockNavigate,
 }));
 
 vi.mock("../../utils/authStorage", () => ({
-  logout: vi.fn(),
+    logout: vi.fn(),
 }));
 
 describe("LogoutButton", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-  it("renders the logout button", () => {
-    render(<LogoutButton />);
+    it("renders the logout button", () => {
+        render(<LogoutButton />);
 
-    expect(
-      screen.getByRole("button", { name: /logout/i })
-    ).toBeInTheDocument();
-  });
+        expect(
+            screen.getByRole("button", { name: /logout/i })
+        ).toBeInTheDocument();
+    });
 
-  it("logs the user out and redirects to login when clicked", async () => {
-    const user = userEvent.setup();
+    it("logs the user out and redirects to login when clicked", async () => {
+        const user = userEvent.setup();
 
-    render(<LogoutButton />);
+        render(<LogoutButton />);
 
-    const button = screen.getByRole("button", { name: /logout/i });
-    await user.click(button);
+        const button = screen.getByRole("button", { name: /logout/i });
+        await user.click(button);
 
-    expect(logout).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith("/login");
-  });
+        expect(logout).toHaveBeenCalledTimes(1);
+        expect(mockNavigate).toHaveBeenCalledWith("/login");
+    });
 });

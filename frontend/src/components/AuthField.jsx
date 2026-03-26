@@ -19,38 +19,38 @@
  */
 
 function AuthField({
-  label,
-  type = "text",
-  placeholder,
-  value,
-  onChange,
-  error,
-  name,
+    label,
+    type = "text",
+    placeholder,
+    value,
+    onChange,
+    error,
+    name,
 }) {
-  // Adds Bootstrap invalid styling when an error is present
-  const inputClass = `form-control ${error ? "is-invalid" : ""}`;
+    // Adds Bootstrap invalid styling when an error is present
+    const inputClass = `form-control ${error ? "is-invalid" : ""}`;
 
-  return (
-    <div className="col-12">
-      {/* Label is linked to the input using htmlFor/id */}
-      <label htmlFor={name} className="form-label fw-semibold">
-        {label}
-      </label>
+    return (
+        <div className="col-12">
+            {/* Label is linked to the input using htmlFor/id */}
+            <label htmlFor={name} className="form-label fw-semibold">
+                {label}
+            </label>
 
-      <input
-        id={name}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        className={inputClass}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
+            <input
+                id={name}
+                name={name}
+                type={type}
+                placeholder={placeholder}
+                className={inputClass}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+            />
 
-      {/* Inline validation message shown only when an error exists */}
-      {error && <div className="invalid-feedback">{error}</div>}
-    </div>
-  );
+            {/* Inline validation message shown only when an error exists */}
+            {error && <div className="invalid-feedback">{error}</div>}
+        </div>
+    );
 }
 
 export default AuthField;
