@@ -6,7 +6,6 @@ import { saveTokens } from "../../utils/authStorage";
 import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
 import AuthCard from "../../components/AuthCard";
 import AuthField from "../../components/AuthField";
-import Navbar from "../../components/Navbar";
 import "./stylesheets/AuthPages.css";
 
 /**
@@ -133,7 +132,6 @@ function Login() {
 
     return (
         <div className="login-page">
-            <Navbar />
             <div className="login-card-section">
                 <AuthCard
                     title="Welcome Back"

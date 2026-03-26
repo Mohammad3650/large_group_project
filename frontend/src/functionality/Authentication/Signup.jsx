@@ -7,7 +7,6 @@ import { validateSignupForm } from "../../utils/signupValidation";
 import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
 import AuthCard from "../../components/AuthCard";
 import AuthField from "../../components/AuthField";
-import Navbar from "../../components/Navbar";
 import "./stylesheets/AuthPages.css";
 
 /**
@@ -147,7 +146,6 @@ function Signup() {
 
     return (
         <div className="signup-page">
-            <Navbar />
             <div className="signup-card-section">
                 <AuthCard
                     title="Create your account"
