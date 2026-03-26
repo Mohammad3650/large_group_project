@@ -1,17 +1,13 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const {
-  mockNavigate,
-  mockUseTimeBlocks,
-  mockUseUsername,
-  mockHandleDelete,
-} = vi.hoisted(() => ({
-  mockNavigate: vi.fn(),
-  mockUseTimeBlocks: vi.fn(),
-  mockUseUsername: vi.fn(),
-  mockHandleDelete: vi.fn(),
-}));
+const { mockNavigate, mockUseTimeBlocks, mockUseUsername, mockHandleDelete } =
+  vi.hoisted(() => ({
+    mockNavigate: vi.fn(),
+    mockUseTimeBlocks: vi.fn(),
+    mockUseUsername: vi.fn(),
+    mockHandleDelete: vi.fn(),
+  }));
 
 vi.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
@@ -53,12 +49,17 @@ describe("Calendar", () => {
     vi.clearAllMocks();
   });
 
+  const mockedUsername = {
+    username: "Mohammad",
+    toString: () => "Mohammad",
+  };
+
   it("renders the placeholder when blocks are null", () => {
     mockUseTimeBlocks.mockReturnValue({
       blocks: null,
       setBlocks: vi.fn(),
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
+    mockUseUsername.mockReturnValue(mockedUsername);
 
     render(<Calendar />);
 
@@ -72,12 +73,14 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }, { id: 2 }],
       setBlocks,
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
+    mockUseUsername.mockReturnValue(mockedUsername);
 
     render(<Calendar />);
 
     expect(screen.getByText("Mock Calendar View")).toBeInTheDocument();
-    expect(screen.getByText("Welcome to your calendar, Mohammad!")).toBeInTheDocument();
+    expect(
+      screen.getByText("Welcome to your calendar, Mohammad!"),
+    ).toBeInTheDocument();
     expect(screen.getByTestId("blocks-length")).toHaveTextContent("2");
     expect(screen.getByText("Mock Add Task Button")).toBeInTheDocument();
   });
@@ -87,7 +90,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }],
       setBlocks: vi.fn(),
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
+    mockUseUsername.mockReturnValue(mockedUsername);
 
     render(<Calendar />);
 
@@ -99,7 +102,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }],
       setBlocks: vi.fn(),
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
+    mockUseUsername.mockReturnValue(mockedUsername);
 
     render(<Calendar />);
 
@@ -113,7 +116,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }],
       setBlocks: vi.fn(),
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
+    mockUseUsername.mockReturnValue(mockedUsername);
 
     render(<Calendar />);
 
@@ -129,7 +132,7 @@ describe("Calendar", () => {
       blocks: [{ id: 1 }],
       setBlocks,
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
+    mockUseUsername.mockReturnValue(mockedUsername);
 
     render(<Calendar />);
 
