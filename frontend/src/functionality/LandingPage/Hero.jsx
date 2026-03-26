@@ -21,25 +21,25 @@ function Hero() {
   return (
     <div className="hero">
       {/* Wrapper for layout (split left/right) */}
-      <div className="hero_content">
-        <div className="hero_left">
-          <div className="hero_quote">
-            <span className="hero_text_top">Plan your study.</span>
+      <div className="hero-content">
+        <div className="hero-left">
+          <div className="hero-quote">
+            <span className="hero-text-top">Plan your study.</span>
             <br></br>
-            <span className="hero_text_bottom">Live your life.</span>
+            <span className="hero-text-bottom">Live your life.</span>
           </div>
 
-          <div className="hero_buttons">
+          <div className="hero-buttons">
             {isLoggedIn ? (
               <>
                 <button
-                  className="hero_button black"
+                  className="hero-button black"
                   onClick={() => nav("/calendar")}
                 >
                   Calendar
                 </button>
                 <button
-                  className="hero_button white"
+                  className="hero-button white"
                   onClick={() => nav("/dashboard")}
                 >
                   Dashboard
@@ -48,13 +48,13 @@ function Hero() {
             ) : (
               <>
                 <button
-                  className="hero_button black"
+                  className="hero-button black"
                   onClick={() => nav("/signup")}
                 >
                   Sign Up
                 </button>
                 <button
-                  className="hero_button white"
+                  className="hero-button white"
                   onClick={() => nav("/login")}
                 >
                   Login
@@ -64,8 +64,8 @@ function Hero() {
           </div>
         </div>
 
-        <div className="hero_right">
-          <img className="hero_image" src={heropic} alt="StudySync hero"></img>
+        <div className="hero-right">
+          <img className="hero-image" src={heropic} alt="StudySync hero"></img>
         </div>
       </div>
     </div>

@@ -30,9 +30,15 @@ describe("Landing", () => {
     const { container } = render(<Landing />);
 
     expect(container.querySelector(".landing")).toBeInTheDocument();
-    expect(container.querySelector(".landing_testimonials_wrapper")).toBeInTheDocument();
-    expect(container.querySelector(".landing_testimonials")).toBeInTheDocument();
-    expect(container.querySelector(".landing_testimonials_title")).toBeInTheDocument();
+    expect(
+      container.querySelector(".landing-testimonials-wrapper"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".landing-testimonials"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".landing-testimonials-title"),
+    ).toBeInTheDocument();
 
     expect(screen.getByText("Mock Navbar")).toBeInTheDocument();
     expect(screen.getByText("Mock Hero")).toBeInTheDocument();
@@ -68,27 +74,39 @@ describe("Landing", () => {
     render(<Landing />);
 
     expect(
-      screen.getByText("“StudySync helped me actually plan my week instead of just hoping for the best. It’s simple and clear.”")
+      screen.getByText(
+        "“StudySync helped me actually plan my week instead of just hoping for the best. It’s simple and clear.”",
+      ),
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("“I used to miss deadlines all the time. Having everything in one place made a huge difference.”")
+      screen.getByText(
+        "“I used to miss deadlines all the time. Having everything in one place made a huge difference.”",
+      ),
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("“Perfect for university life. I like that it focuses on planning, not distractions or unncessary clutter.”")
+      screen.getByText(
+        "“Perfect for university life. I like that it focuses on planning, not distractions or unnecessary clutter.”",
+      ),
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("“Straightforward, easy to use, and actually helpful. Exactly what I needed as a student.”")
+      screen.getByText(
+        "“Straightforward, easy to use, and actually helpful. Exactly what I needed as a student.”",
+      ),
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("“Using StudySync made my weeks feel more organised, and far less chaotic.”")
+      screen.getByText(
+        "“Using StudySync made my weeks feel more organised, and far less chaotic.”",
+      ),
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("“It’s really helped me balance lectures, coursework, and revision without feeling overwhelmed.”")
+      screen.getByText(
+        "“It’s really helped me balance lectures, coursework, and revision without feeling overwhelmed.”",
+      ),
     ).toBeInTheDocument();
 
     expect(screen.getAllByText("⭐⭐⭐⭐⭐")).toHaveLength(5);

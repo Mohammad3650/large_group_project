@@ -10,13 +10,13 @@ describe("Card", () => {
         stars="★★★★★"
         review="This made planning much easier."
         name="Mohammad"
-      />
+      />,
     );
 
     expect(screen.getByText("A")).toBeInTheDocument();
     expect(screen.getByText("★★★★★")).toBeInTheDocument();
     expect(
-      screen.getByText("This made planning much easier.")
+      screen.getByText("This made planning much easier."),
     ).toBeInTheDocument();
     expect(screen.getByText("Mohammad")).toBeInTheDocument();
   });
@@ -28,30 +28,23 @@ describe("Card", () => {
         stars="★★★★☆"
         review="Very clean and easy to use."
         name="Aisha"
-      />
+      />,
     );
-
-    expect(container.querySelector(".card")).toBeInTheDocument();
-    expect(container.querySelector(".card_container")).toBeInTheDocument();
-    expect(container.querySelector(".card_avatar")).toBeInTheDocument();
-    expect(container.querySelector(".card_content")).toBeInTheDocument();
-    expect(container.querySelector(".card_stars")).toBeInTheDocument();
-    expect(container.querySelector(".card_text")).toBeInTheDocument();
-    expect(container.querySelector(".card_title")).toBeInTheDocument();
+    expect(container.querySelector(".testimonial-card")).toBeInTheDocument();
+    expect(container.querySelector(".card-container")).toBeInTheDocument();
+    expect(container.querySelector(".card-avatar")).toBeInTheDocument();
+    expect(container.querySelector(".card-content")).toBeInTheDocument();
+    expect(container.querySelector(".card-stars")).toBeInTheDocument();
+    expect(container.querySelector(".card-text")).toBeInTheDocument();
+    expect(container.querySelector(".card-title")).toBeInTheDocument();
   });
 
   it("renders the name inside italic text", () => {
     render(
-      <Card
-        avatar="C"
-        stars="★★★☆☆"
-        review="Helpful overall."
-        name="Zaynab"
-      />
+      <Card avatar="C" stars="★★★☆☆" review="Helpful overall." name="Zaynab" />,
     );
 
     const title = screen.getByText("Zaynab");
     expect(title.tagName).toBe("I");
   });
 });
-
