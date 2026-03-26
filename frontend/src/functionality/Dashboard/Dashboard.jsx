@@ -28,6 +28,7 @@ function Dashboard() {
     const [message, setMessage] = useState("Loading...");
     const [error, setError] = useState("");
     const [subscriptions, setSubscriptions] = useState([]);
+    const [showSubscriptions, setShowSubscriptions] = useState(true);
 
     const {
         blocks,
@@ -135,13 +136,25 @@ function Dashboard() {
                     (subscription) => subscription.id !== subscriptionId,
                 ),
             );
+
+            await refetchBlocks();
         } catch {
             setError("Failed to delete timetable subscription");
         }
     }
 
-    if (error || blocksError) {
-    return <p>{error || blocksError}</p>;
+    useEffect(() => {
+        if (!error) return;
+
+        const timer = setTimeout(() => {
+            setError("");
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, [error]);
+
+    if (blocksError) {
+        return <p>{blocksError}</p>;
     }
 
     return (
@@ -175,14 +188,28 @@ function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="subscription-section">
-                        <SubscriptionForm onImport={handleImportSubscription} />
-                        <SubscriptionList
-                            subscriptions={subscriptions}
-                            onRefresh={handleRefreshSubscription}
-                            onDelete={handleDeleteSubscription}
-                        />
+                    <div
+                        className="day-section"
+                        onClick={() => setShowSubscriptions((prev) => !prev)}
+                    >
+                        <span className={`arrow ${showSubscriptions ? "open" : "closed"}`}>
+                            ^
+                        </span>
+                        <h5>Timetable subscriptions</h5>
                     </div>
+
+                    {showSubscriptions && (
+                        <div className="subscription-section">
+                            {error && <p className="subscription-error">{error}</p>}
+
+                            <SubscriptionForm onImport={handleImportSubscription} />
+                            <SubscriptionList
+                                subscriptions={subscriptions}
+                                onRefresh={handleRefreshSubscription}
+                                onDelete={handleDeleteSubscription}
+                            />
+                        </div>
+                    )}
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>
                     )}
