@@ -16,6 +16,7 @@ import handleExportIcs from "../../utils/handleExportIcs.js";
 import refreshCalendarSubscription from "../../utils/refreshCalendarSubscription.js";
 import useTasksByDateGroup from "../../utils/useTasksByDateGroup.js";
 import "./stylesheets/Dashboard.css";
+import CalendarView from "../Calendar/CalendarView.jsx";
 
 
 /**
@@ -31,6 +32,7 @@ function Dashboard() {
 
     const {
         blocks,
+        setBlocks,
         refetchBlocks,
         error: blocksError,
     } = useTimeBlocks();
@@ -185,13 +187,16 @@ function Dashboard() {
                     <TaskGroup title="After Next 7 Days" tasks={beyondWeekTasks} setTasks={setBeyondWeekTasks}/>
                 </div>
                 <div className="right-column">
-                    <NotesSection />
+                    <div>
+                        <NotesSection />
+                    </div>
                     <div className="subscription-section">
-                        <SubscriptionForm onImport={handleImportSubscription} />
-                        <SubscriptionList
-                            subscriptions={subscriptions}
-                            onRefresh={handleRefreshSubscription}
-                            onDelete={handleDeleteSubscription}
+                        <CalendarView
+                            blocks={blocks}
+                            setBlocks={setBlocks}
+                            title={''}
+                            headerButtons={null}
+                            eventButtons={null}
                         />
                     </div>
                 </div>

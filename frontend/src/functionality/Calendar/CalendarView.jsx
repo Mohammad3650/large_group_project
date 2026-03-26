@@ -1,4 +1,4 @@
-import { createViewMonthGrid, createViewWeek } from "@schedule-x/calendar";
+import { createViewDay , createViewMonthGrid, createViewWeek } from "@schedule-x/calendar";
 import { ScheduleXCalendar, useCalendarApp } from "@schedule-x/react";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
@@ -33,7 +33,7 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
     const calendarTimezone = getUserTimezone()
 
     const calendar = useCalendarApp({
-        views: [createViewWeek(), createViewMonthGrid()],
+        views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
         plugins: [createEventModalPlugin(), eventsService],
         events: blocks,
         timezone: calendarTimezone,
@@ -85,7 +85,6 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
 
     return (
         <>
-            <Navbar/>
             <div className="calendar-content">
                 <h1>{title}</h1>
                 {headerButtons}
