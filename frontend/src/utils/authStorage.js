@@ -35,6 +35,7 @@ export function logout() {
 
   // Remove auth header from future API requests
   setAuthToken(null);
+  window.dispatchEvent(new Event("auth-change"));
 }
 
 /**
@@ -54,4 +55,5 @@ export function saveTokens(access, refresh) {
 
   // Set auth header for subsequent API calls
   setAuthToken(access);
+  window.dispatchEvent(new Event("auth-change"));
 }
