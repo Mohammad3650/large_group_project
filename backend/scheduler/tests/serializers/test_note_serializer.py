@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from scheduler.models.Note import Note
-from scheduler.serializer.note_serializer import NoteSerializer
+from scheduler.serializers.note_serializer import NoteSerializer
 
 User = get_user_model()
 
