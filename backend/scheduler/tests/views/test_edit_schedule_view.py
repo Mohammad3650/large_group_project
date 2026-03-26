@@ -43,25 +43,26 @@ class EditScheduleViewTest(APITestCase):
             block_type="exercise",
         )
 
-        self.url = reverse("api-get-timeblocks")
+        self.base_data = {
+            "date": "2026-02-18",
+            "name": "Study Session",
+            "location": "Online",
+            "start_time": "09:00",
+            "end_time": "10:00",
+            "block_type": "study",
+            "timezone": "Europe/London",
+            "description": "Studying OSC for the exam soon",
+        }
 
     def test_patch_timeblock(self):
         """Authenticated user should be able to edit their own timeblocks."""
         self.client.force_authenticate(user=self.user)
 
-        timezone = self.block.timezone
-
         url = reverse("api-edit-timeblock", args=[self.block.id])
-        data = {
-            "name": "Updated Session",
-            "start_time": "09:00:00",
-            "end_time": "10:00:00",
-            "location": "Library",
-            "block_type": "study",
-            "timezone": timezone,
-        }
+        data_with_updated_name = self.base_data.copy()
+        data_with_updated_name.update({"name": "Updated Session"})
 
-        response = self.client.patch(url, data)
+        response = self.client.patch(url, data_with_updated_name)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "Updated Session")
@@ -85,18 +86,32 @@ class EditScheduleViewTest(APITestCase):
         """Authenticated user should not be able to edit timeblocks and make them invalid."""
         self.client.force_authenticate(user=self.user)
 
-        timezone = self.block.timezone
-
+        # Invalidate the start and end time order
         url = reverse("api-edit-timeblock", args=[self.block.id])
-        data = {
-            "name": "Updated Session",
-            "start_time": "invalid",
-            "end_time": "10:00:00",
-            "location": "Library",
-            "block_type": "study",
-            "timezone": timezone,
-        }
+        invalid_data = self.base_data.copy()
+        invalid_data.update({"start_time": "10:00", "end_time": "09:00"})
 
-        response = self.client.patch(url, data)
+        response = self.client.patch(url, invalid_data)
 
         self.assertEqual(response.status_code, 400)
+
+    def test_patch_timeblock_forbidden_for_other_user(self):
+        """Users cannot edit TimeBlocks belonging to other users."""
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("api-edit-timeblock", args=[self.other_block.id])
+        data = self.base_data.copy()
+        data.update({"name": "Hacked Session"})
+
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_timeblock_forbidden_for_other_user(self):
+        """Users cannot view TimeBlocks belonging to other users."""
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("api-edit-timeblock", args=[self.other_block.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
