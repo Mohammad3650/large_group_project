@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from scheduler.serializer.save_plan_serializer import SaveWeeklyPlanSerializer
+from scheduler.serializers.save_plan_serializer import SaveWeeklyPlanSerializer
 from scheduler.services.timeblock_service import create_timeblock, get_or_create_dayplan
 
 class SaveWeeklyPlanView(APIView):

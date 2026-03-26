@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from scheduler.models.Note import Note
-from scheduler.serializer.note_serializer import NoteSerializer
+from scheduler.serializers.note_serializer import NoteSerializer
 
 
 @api_view(["PUT"])

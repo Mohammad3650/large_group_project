@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from scheduler.models import CalendarSubscription, TimeBlock
-from scheduler.serializer.calendar_subscription_serializer import (
+from scheduler.serializers.calendar_subscription_serializer import (
     CalendarSubscriptionSerializer,
 )
 from scheduler.services.calendar_subscription_sync import sync_calendar_subscription

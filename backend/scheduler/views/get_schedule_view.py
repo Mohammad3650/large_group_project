@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from ..models import TimeBlock
-from scheduler.serializer.time_block_serializer import TimeBlockSerializer
+from scheduler.serializers.time_block_serializer import TimeBlockSerializer
 
 
 @api_view(["GET"])
