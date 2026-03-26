@@ -1,7 +1,6 @@
 import './stylesheets/Card.css';
 /*
   Card Component
-
   - Displays a single testimonial (avatar, rating, review, name).
   - Reusable UI component used in the landing page.
   - Data is passed via props for flexibility.
