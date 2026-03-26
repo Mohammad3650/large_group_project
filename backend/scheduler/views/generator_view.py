@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
-from scheduler.serializer.generator_serializers import GenerateScheduleRequestSerializer
+from scheduler.serializers.generator_serializers import GenerateScheduleRequestSerializer
 from scheduler.services.schedule_service import ScheduleService
 
 

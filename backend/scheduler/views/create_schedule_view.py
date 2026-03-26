@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status, serializers
 
 from scheduler.models import DayPlan, TimeBlock
-from scheduler.serializer.time_block_serializer import TimeBlockSerializer
+from scheduler.serializers.time_block_serializer import TimeBlockSerializer
 from scheduler.utils.to_utc import to_utc
 
 

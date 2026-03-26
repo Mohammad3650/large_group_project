@@ -1,5 +1,5 @@
 from django.test import TestCase
-from scheduler.serializer.time_block_serializer import TimeBlockSerializer
+from scheduler.serializers.time_block_serializer import TimeBlockSerializer
 
 
 class TimeBlockSerializerTest(TestCase):

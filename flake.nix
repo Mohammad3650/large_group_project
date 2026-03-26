@@ -14,6 +14,9 @@
         python = pkgs.python3;
         node = pkgs.nodejs_20;
 
+        # Path containing libstdc++.so.6 — needed on Linux for numpy/ortools C extensions
+        libPath = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
+
         runtimeInputs = with pkgs; [
           bash
           coreutils
@@ -24,6 +27,7 @@
           node
           python
           sqlite
+          stdenv.cc.cc.lib  # provides libstdc++.so.6 for numpy/ortools on Linux
         ];
 
         mkApp = script: {
@@ -63,10 +67,13 @@
             set -euo pipefail
             ${rootChecks}
 
+            # Make libstdc++.so.6 visible to pip-installed C extensions (numpy, ortools, etc.)
+            export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
             ROOT="$PWD"
             BACKEND_DIR="$ROOT/backend"
             FRONTEND_DIR="$ROOT/frontend"
-            REQUIREMENTS_FILE="$ROOT/requirements.txt"
+            REQUIREMENTS_FILE="$ROOT/backend/requirements.txt"
             VENV_DIR="$BACKEND_DIR/venv"
 
             require_root "$ROOT"
@@ -128,6 +135,9 @@
             set -euo pipefail
             ${rootChecks}
 
+            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
+            export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
             ROOT="$PWD"
             BACKEND_DIR="$ROOT/backend"
             FRONTEND_DIR="$ROOT/frontend"
@@ -184,6 +194,9 @@
           text = ''
             set -euo pipefail
             ${rootChecks}
+
+            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
+            export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
             ROOT="$PWD"
             BACKEND_DIR="$ROOT/backend"
@@ -244,6 +257,9 @@
             set -euo pipefail
             ${rootChecks}
 
+            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
+            export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
             ROOT="$PWD"
             BACKEND_DIR="$ROOT/backend"
             VENV_DIR="$BACKEND_DIR/venv"
@@ -272,6 +288,9 @@
           text = ''
             set -euo pipefail
             ${rootChecks}
+
+            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
+            export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
             ROOT="$PWD"
             BACKEND_DIR="$ROOT/backend"
@@ -307,6 +326,8 @@
         devShells.default = pkgs.mkShell {
           packages = runtimeInputs;
           shellHook = ''
+            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
+            export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
             echo "StudySync development shell"
             echo "Available entrypoints:"
             echo "  nix run .#init"

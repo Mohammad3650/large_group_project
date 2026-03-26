@@ -91,8 +91,23 @@ class Scheduler:
         return start, end, event
 
     def overlap_constraints(self):
-        """Prevent any overlaps between all scheduled and newly created intervals."""
-        self.model.AddNoOverlap(self.intervals)
+        """
+        Prevent overlaps involving unscheduled events.
+        """
+        # split the list by count.
+        num_scheduled = len(self.scheduled)
+        scheduled_intervals = self.intervals[:num_scheduled]
+        unscheduled_intervals = self.intervals[num_scheduled:]
+
+        # All unscheduled events must not overlap with each other.
+        if len(unscheduled_intervals) > 1:
+            self.model.AddNoOverlap(unscheduled_intervals)
+
+        # Each unscheduled event must not overlap with any scheduled event.
+        for sched_iv in scheduled_intervals:
+            for unsched_iv in unscheduled_intervals:
+                self.model.AddNoOverlap([sched_iv, unsched_iv])
+
 
     def evenly_spread_over_range_constraint(self, include_scheduled):
         """

@@ -26,7 +26,10 @@ import deleteTimeBlock from "../../utils/deleteTimeBlock.js";
 import getUserTimezone from "../../utils/getUserTimezone.js";
 
 /**
- * Formats a date string from ISO format into British date format.
+ * CalendarView Component
+ *
+ * Renders the main calendar interface using Schedule-X.
+ * Handles event display, deletion, and integration with custom modal components.
  *
  * @param {string} date - Date string in ISO format (e.g. "2026-02-19")
  * @returns {string} Formatted date string in British format (e.g. "19/02/2026")
@@ -47,6 +50,12 @@ function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsSe
     selectedDate: Temporal.Now.plainDateISO(calendarTimezone),
   });
 
+  return (
+    <ScheduleXCalendar
+      calendarApp={calendar}
+      customComponents={customComponents}
+    />
+  );
   return (
     <ScheduleXCalendar
       calendarApp={calendar}
