@@ -7,8 +7,12 @@ import useAuthStatus from "../utils/authStatus";
 import ToggleDarkMode from "./ToggleDarkMode.jsx";
 
 import userIcon from "../assets/Navbar/user.png";
-import taskList from "../assets/Navbar/task_list.png";
-import calendarIcon from "../assets/calendar_icon.png";
+
+import taskListLight from "../assets/Navbar/task_list.png";
+import taskListDark from "../assets/Navbar/task_list_black.png";
+
+import calendarIconLight from "../assets/calendar_icon.png";
+import calendarIconDark from "../assets/calendar_icon_black.png";
 
 /**
  * Navbar component - site-wide navigation header.
@@ -26,6 +30,9 @@ function Navbar({ theme, toggleTheme }) {
     const isLoggedIn = useAuthStatus();
     const { username, error } = useUsername(isLoggedIn);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const taskList = theme === "dark" ? taskListDark : taskListLight;
+    const calendarIcon = theme === "dark" ? calendarIconDark : calendarIconLight;
 
   return (
     <header>

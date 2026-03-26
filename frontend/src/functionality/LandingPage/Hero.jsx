@@ -1,12 +1,17 @@
 import "./stylesheets/Hero.css";
-import heropic from "../../assets/LandingPage/heropicture.png";
 import { useNavigate } from "react-router-dom";
 import useAuthStatus from "../../utils/authStatus";
+
+import heroPicLight from "../../assets/LandingPage/heropicture.png";
+import heroPicDark from "../../assets/LandingPage/heropicture_dark.png";
 
 
 function Hero() {
     const isLoggedIn = useAuthStatus();
     const nav = useNavigate();
+
+    const isDark = document.body.classList.contains("dark-theme");
+    const heropic = !isDark ? heroPicDark : heroPicLight;
 
   return (
     <div className="hero">
