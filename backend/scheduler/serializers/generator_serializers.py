@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from scheduler.serializers.UnscheduledSerializer import UnscheduledSerializer
-from scheduler.serializers.WindowSerializer import WindowSerializer
+from scheduler.serializers.unscheduled_serializer import UnscheduledSerializer
+from scheduler.serializers.window_serializer import WindowSerializer
 
 
 class GenerateScheduleRequestSerializer(serializers.Serializer):
