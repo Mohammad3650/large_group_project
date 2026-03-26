@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import getDate from "./getDate.js";
-import sortTasksByDate from "./sortTasksByDate.js";
-
+import { useEffect, useState } from 'react';
+import getDate from './getDate.js';
+import sortTasksByDate from './sortTasksByDate.js';
 
 /**
  * Groups an array of time blocks into date-based categories for display on the dashboard.
@@ -35,21 +34,53 @@ function useTasksByDateGroup(blocks) {
         const weekEnd = new Date(today);
         weekEnd.setDate(today.getDate() + 7);
 
-        setOverdueTasks(blocks.filter(b => getDate(b) < today).sort(sortTasksByDate));
-        setTodayTasks(blocks.filter(b => getDate(b) >= today && getDate(b) < tomorrow).sort(sortTasksByDate));
-        setTomorrowTasks(blocks.filter(b => getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow).sort(sortTasksByDate));
-        setWeekTasks(blocks.filter(b => getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd).sort(sortTasksByDate));
-        setBeyondWeekTasks(blocks.filter(b => getDate(b) > weekEnd).sort(sortTasksByDate));
+        setOverdueTasks(
+            blocks.filter((b) => getDate(b) < today).sort(sortTasksByDate)
+        );
+        setTodayTasks(
+            blocks
+                .filter((b) => getDate(b) >= today && getDate(b) < tomorrow)
+                .sort(sortTasksByDate)
+        );
+        setTomorrowTasks(
+            blocks
+                .filter(
+                    (b) =>
+                        getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow
+                )
+                .sort(sortTasksByDate)
+        );
+        setWeekTasks(
+            blocks
+                .filter(
+                    (b) =>
+                        getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd
+                )
+                .sort(sortTasksByDate)
+        );
+        setBeyondWeekTasks(
+            blocks.filter((b) => getDate(b) > weekEnd).sort(sortTasksByDate)
+        );
     }, [blocks]);
 
-    const totalTasks = overdueTasks.length + todayTasks.length + tomorrowTasks.length + weekTasks.length + beyondWeekTasks.length;
+    const totalTasks =
+        overdueTasks.length +
+        todayTasks.length +
+        tomorrowTasks.length +
+        weekTasks.length +
+        beyondWeekTasks.length;
 
     return {
-        overdueTasks, setOverdueTasks,
-        todayTasks, setTodayTasks,
-        tomorrowTasks, setTomorrowTasks,
-        weekTasks, setWeekTasks,
-        beyondWeekTasks, setBeyondWeekTasks,
+        overdueTasks,
+        setOverdueTasks,
+        todayTasks,
+        setTodayTasks,
+        tomorrowTasks,
+        setTomorrowTasks,
+        weekTasks,
+        setWeekTasks,
+        beyondWeekTasks,
+        setBeyondWeekTasks,
         totalTasks
     };
 }

@@ -3,15 +3,6 @@
     margin-bottom: 0;
 }
 
-.login-page .auth-card-wrapper {
-    min-height: calc(100vh - 90px);
-}
-
-.signup-card-section {
-    padding-top: 24px;
-    padding-bottom: 40px;
-}
-
 .login-page,
 .signup-page {
     min-height: 100vh;
@@ -23,8 +14,35 @@
         ),
         radial-gradient(
             circle at top right,
-            rgba(0, 0, 0, 0.04),
+            rgba(255, 255, 255, 0.04),
             transparent 25%
         ),
-        linear-gradient(180deg, #f8f9fb 0%, #eef2f6 100%);
+        var(--bg-main);
+}
+
+.login-page .auth-card-wrapper,
+.signup-page .auth-card-wrapper {
+    min-height: auto;
+    padding: 24px 0 40px;
+}
+
+.signup-card-section {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+body.dark-theme .login-page,
+body.dark-theme .signup-page {
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(96, 165, 250, 0.12),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at top right,
+            rgba(255, 255, 255, 0.03),
+            transparent 25%
+        ),
+        var(--bg-main);
 }

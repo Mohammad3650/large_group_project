@@ -1,4 +1,4 @@
-import getDate from "./getDate.js";
+import getDate from './getDate.js';
 
 /**
  * Sorts tasks in ascending order by datetime.

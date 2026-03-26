@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom/vitest";
-import AuthField from "../AuthField";
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom/vitest';
+import AuthField from '../AuthField';
 
-describe("AuthField", () => {
-    it("renders the label and input with the provided props", () => {
+describe('AuthField', () => {
+    it('renders the label and input with the provided props', () => {
         render(
             <AuthField
                 name="email"
@@ -17,12 +17,14 @@ describe("AuthField", () => {
             />
         );
 
-        expect(screen.getByLabelText("Email")).toBeInTheDocument();
-        expect(screen.getByPlaceholderText("you@example.com")).toBeInTheDocument();
-        expect(screen.getByRole("textbox")).toHaveAttribute("type", "email");
+        expect(screen.getByLabelText('Email')).toBeInTheDocument();
+        expect(
+            screen.getByPlaceholderText('you@example.com')
+        ).toBeInTheDocument();
+        expect(screen.getByRole('textbox')).toHaveAttribute('type', 'email');
     });
 
-    it("calls onChange with the new value when the user types", async () => {
+    it('calls onChange with the new value when the user types', async () => {
         const user = userEvent.setup();
         const handleChange = vi.fn();
 
@@ -36,12 +38,15 @@ describe("AuthField", () => {
             />
         );
 
-        await user.type(screen.getByPlaceholderText("Choose a username"), "testuser");
+        await user.type(
+            screen.getByPlaceholderText('Choose a username'),
+            'testuser'
+        );
 
         expect(handleChange).toHaveBeenCalled();
     });
 
-    it("shows the error message and invalid class when an error is provided", () => {
+    it('shows the error message and invalid class when an error is provided', () => {
         render(
             <AuthField
                 name="password"
@@ -54,11 +59,13 @@ describe("AuthField", () => {
             />
         );
 
-        expect(screen.getByText("Password is required.")).toBeInTheDocument();
-        expect(screen.getByPlaceholderText("Enter password")).toHaveClass("is-invalid");
+        expect(screen.getByText('Password is required.')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter password')).toHaveClass(
+            'is-invalid'
+        );
     });
 
-    it("does not show an error message when no error is provided", () => {
+    it('does not show an error message when no error is provided', () => {
         render(
             <AuthField
                 name="firstName"
@@ -70,6 +77,8 @@ describe("AuthField", () => {
         );
 
         expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
-        expect(screen.getByPlaceholderText("First name")).not.toHaveClass("is-invalid");
+        expect(screen.getByPlaceholderText('First name')).not.toHaveClass(
+            'is-invalid'
+        );
     });
 });

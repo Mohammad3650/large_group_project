@@ -1,5 +1,5 @@
 import 'temporal-polyfill/global';
-import getUserTimezone from "./getUserTimezone.js";
+import getUserTimezone from './getUserTimezone.js';
 
 /**
  * Converts a UTC date and time into the user's local timezone.
@@ -15,7 +15,7 @@ function toLocalDateTime(date, time) {
     ).withTimeZone(userTimezone);
 
     const localDate = zonedDateTime.toPlainDate().toString();
-    const localTime = `${String(zonedDateTime.hour).padStart(2, "0")}:${String(zonedDateTime.minute).padStart(2, "0")}`;
+    const localTime = `${String(zonedDateTime.hour).padStart(2, '0')}:${String(zonedDateTime.minute).padStart(2, '0')}`;
 
     return { zonedDateTime: zonedDateTime, localDate, localTime };
 }

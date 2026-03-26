@@ -1,5 +1,3 @@
-import Navbar from "../../components/Navbar.jsx";
-
 /**
  * CalendarPlaceholder Component
  *
@@ -9,9 +7,8 @@ import Navbar from "../../components/Navbar.jsx";
  */
 
 function CalendarPlaceholder() {
-    return(
+    return (
         <div className="calendardiv">
-            <Navbar/>
             <h1 className="title">Calendar</h1>
         </div>
     );

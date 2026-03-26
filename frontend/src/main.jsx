@@ -1,17 +1,15 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import "./styles/variables.css"
-import App from './App'
-import { BrowserRouter as Router } from 'react-router-dom'
-import "bootstrap/dist/css/bootstrap.min.css";
-
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import './styles/variables.css';
+import App from './App';
+import { BrowserRouter as Router } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 createRoot(document.getElementById('root')).render(
-  <Router>
-    <StrictMode>
-      <App />
-    </StrictMode>
-  </Router>
-  
-)
+    <Router>
+        <StrictMode>
+            <App />
+        </StrictMode>
+    </Router>
+);

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { api } from "../../api.js";
-import "./stylesheets/NotesSection.css";
+import { useEffect, useState } from 'react';
+import { api } from '../../api.js';
+import './stylesheets/NotesSection.css';
 
 /**
  * Fetches and auto-saves the user's notes with a 1 second debounce.
@@ -9,18 +9,18 @@ import "./stylesheets/NotesSection.css";
  * @returns {JSX.Element} The notes section with a textarea and save status
  */
 function NotesSection() {
-    const [notes, setNotes] = useState("");
-    const [saveStatus, setSaveStatus] = useState("");
+    const [notes, setNotes] = useState('');
+    const [saveStatus, setSaveStatus] = useState('');
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         async function fetchNotes() {
             try {
-                const res = await api.get("/api/notes/get/");
+                const res = await api.get('/api/notes/get/');
                 setNotes(res.data.content);
                 setLoaded(true);
             } catch (err) {
-                console.error("Failed to load notes", err);
+                console.error('Failed to load notes', err);
             }
         }
         fetchNotes();
@@ -28,14 +28,14 @@ function NotesSection() {
 
     useEffect(() => {
         if (!loaded) return;
-        setSaveStatus("saving");
+        setSaveStatus('saving');
         const timer = setTimeout(async () => {
             try {
-                await api.put("/api/notes/save/", { content: notes });
-                setSaveStatus("saved");
+                await api.put('/api/notes/save/', { content: notes });
+                setSaveStatus('saved');
             } catch (err) {
-                console.error("Failed to save notes", err);
-                setSaveStatus("error");
+                console.error('Failed to save notes', err);
+                setSaveStatus('error');
             }
         }, 1000);
 
@@ -45,14 +45,20 @@ function NotesSection() {
     return (
         <div className="notes-section">
             <div className="notes-header">
-                <span className={`save-status ${saveStatus === "error" ? "error" : ""}`}>
-                    {saveStatus === "saving" ? "Saving..."
-                    : saveStatus === "error" ? "Error saving ✗"
-                    : saveStatus === "saved" ? "Saved ✓"
-                    : "\u00A0"}
+                <span
+                    className={`save-status ${saveStatus === 'error' ? 'error' : ''}`}
+                >
+                    {saveStatus === 'saving'
+                        ? 'Saving...'
+                        : saveStatus === 'error'
+                          ? 'Error saving ✗'
+                          : saveStatus === 'saved'
+                            ? 'Saved ✓'
+                            : '\u00A0'}
                 </span>
             </div>
             <textarea
+                className="notes-textarea"
                 placeholder="Notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}

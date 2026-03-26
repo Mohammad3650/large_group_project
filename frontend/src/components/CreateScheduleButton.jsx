@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Button component that navigates the user to the create schedule page.
@@ -7,16 +7,17 @@ import { useNavigate } from "react-router-dom";
  * the user to the "/create-schedule" route.
  */
 
-function CreateScheduleButton(){
+function CreateScheduleButton() {
     const nav = useNavigate();
 
     return (
-    <button
-        className="btn btn-primary me-2"
-        onClick={() => nav("/create-schedule")}
-    >
-        Create Schedule
-    </button>
+        <button
+            className="btn btn-primary me-2"
+            type="button"
+            onClick={() => nav('/create-schedule')}
+        >
+            Create Schedule
+        </button>
     );
 }
 
