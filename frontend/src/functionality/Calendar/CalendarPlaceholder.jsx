@@ -1,5 +1,13 @@
 import Navbar from "../../components/Navbar.jsx";
 
+/**
+ * CalendarPlaceholder Component
+ *
+ * Displays a simple placeholder view while the calendar data is loading.
+ * Includes the navigation bar and a title.
+ *
+ */
+
 function CalendarPlaceholder() {
     return(
         <div className="calendardiv">

@@ -9,15 +9,16 @@ import useUsername from "../../utils/useUsername.js";
 import { useNavigate } from "react-router-dom";
 import CalendarPlaceholder from "./CalendarPlaceholder.jsx";
 
-/*
-  Calendar Component
-
-  - Main calendar view for displaying and managing time blocks.
-  - Fetches user-specific data via custom hooks (time blocks, username).
-  - Passes data and actions to CalendarView for rendering.
-  - Handles navigation (edit) and deletion of events.
-  - Shows placeholder while data is loading.
-*/
+/**
+ * Calendar Component
+ *
+ * Main calendar view for displaying and managing time blocks.
+ * Fetches user-specific data via custom hooks (time blocks, username).
+ * Passes data and actions to CalendarView for rendering.
+ * Handles navigation (edit) and deletion of events.
+ * Displays a placeholder while data is loading.
+ *
+ */
 
 function Calendar() {
 

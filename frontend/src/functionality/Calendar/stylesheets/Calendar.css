@@ -237,3 +237,12 @@
     justify-content: center;
     display: flex;
 }
+
+
+
+.event-modal-container {
+    padding: 40px;
+    color: black;
+    border-radius: 10px;
+    border: 1px solid black;
+}

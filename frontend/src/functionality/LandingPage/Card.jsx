@@ -1,5 +1,4 @@
 import "./stylesheets/Card.css";
-
 /*
   Card Component
 
@@ -12,19 +11,19 @@ import "./stylesheets/Card.css";
 function Card(props) {
   return (
     //outer wrapper for spacing/layout
-    <div className="card">
-      <div className="card_container">
+    <div className="testimonial-card">
+      <div className="card-container">
         {/* avatar*/}
-        <div className="card_avatar">{props.avatar}</div>
+        <div className="card-avatar">{props.avatar}</div>
 
         {/* content section*/}
-        <div className="card_content">
+        <div className="card-content">
           {/*star rating*/}
-          <h5 className="card_stars">{props.stars}</h5>
-          <p className="card_text">{props.review}</p>
+          <h5 className="card-stars">{props.stars}</h5>
+          <p className="card-text">{props.review}</p>
 
           {/* name of the review*/}
-          <h4 className="card_title">
+          <h4 className="card-title">
             {" "}
             <i>{props.name} </i>
           </h4>

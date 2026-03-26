@@ -14,13 +14,13 @@ import useAuthStatus from "../../utils/authStatus";
 
 function Hero() {
   const isLoggedIn = useAuthStatus();
+
   // Hook used to programmatically navigate between routes
   const nav = useNavigate();
 
   return (
     <div className="hero">
       {/* Wrapper for layout (split left/right) */}
-
       <div className="hero_content">
         <div className="hero_left">
           <div className="hero_quote">
@@ -28,6 +28,7 @@ function Hero() {
             <br></br>
             <span className="hero_text_bottom">Live your life.</span>
           </div>
+
           <div className="hero_buttons">
             {isLoggedIn ? (
               <>
@@ -35,14 +36,12 @@ function Hero() {
                   className="hero_button black"
                   onClick={() => nav("/calendar")}
                 >
-                  {" "}
                   Calendar
                 </button>
                 <button
                   className="hero_button white"
                   onClick={() => nav("/dashboard")}
                 >
-                  {" "}
                   Dashboard
                 </button>
               </>
@@ -59,11 +58,12 @@ function Hero() {
                   onClick={() => nav("/login")}
                 >
                   Login
-                </button>{" "}
+                </button>
               </>
             )}
           </div>
         </div>
+
         <div className="hero_right">
           <img className="hero_image" src={heropic} alt="StudySync hero"></img>
         </div>
