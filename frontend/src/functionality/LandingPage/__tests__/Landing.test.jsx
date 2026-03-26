@@ -82,7 +82,7 @@ describe('Landing', () => {
 
         expect(
             screen.getByText(
-                '“Perfect for university life. I like that it focuses on planning, not distractions or unnecessary clutter.”'
+                '“Perfect for university life. I like that it focuses on planning, not distractions or unncessary clutter.”'
             )
         ).toBeInTheDocument();
 
