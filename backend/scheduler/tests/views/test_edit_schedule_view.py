@@ -134,6 +134,4 @@ class EditScheduleViewTest(APITestCase):
         self.assertEqual(str(self.block.day.date), new_date)
 
         # Ensure a new DayPlan was created
-        self.assertTrue(
-            DayPlan.objects.filter(user=self.user, date=new_date).exists()
-        )
+        self.assertTrue(DayPlan.objects.filter(user=self.user, date=new_date).exists())
