@@ -3,7 +3,7 @@
     gap: 5px;
     align-items: center;
     cursor: pointer;
-    user-select: none
+    user-select: none;
 }
 
 .arrow {

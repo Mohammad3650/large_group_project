@@ -73,7 +73,7 @@
             ROOT="$PWD"
             BACKEND_DIR="$ROOT/backend"
             FRONTEND_DIR="$ROOT/frontend"
-            REQUIREMENTS_FILE="$ROOT/requirements.txt"
+            REQUIREMENTS_FILE="$ROOT/backend/requirements.txt"
             VENV_DIR="$BACKEND_DIR/venv"
 
             require_root "$ROOT"

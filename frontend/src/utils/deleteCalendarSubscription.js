@@ -1,6 +1,6 @@
-import { api } from "../api.js";
+import { api } from '../api.js';
 
-const CALENDAR_SUBSCRIPTIONS_ENDPOINT = "/api/calendar-subscriptions";
+const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions';
 
 /**
  * Delete a saved calendar subscription.
@@ -10,7 +10,7 @@ const CALENDAR_SUBSCRIPTIONS_ENDPOINT = "/api/calendar-subscriptions";
  */
 async function deleteCalendarSubscription(subscriptionId) {
     const response = await api.delete(
-        `${CALENDAR_SUBSCRIPTIONS_ENDPOINT}/${subscriptionId}/`,
+        `${CALENDAR_SUBSCRIPTIONS_ENDPOINT}/${subscriptionId}/`
     );
 
     return response.data;

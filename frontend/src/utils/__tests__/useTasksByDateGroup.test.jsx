@@ -42,7 +42,7 @@ function TestComponent({ blocks }) {
     );
 }
 
-describe("useTasksByDateGroup", () => {
+describe("Tests for useTasksByDateGroup", () => {
     it("returns empty arrays when blocks is null", () => {
         render(<TestComponent blocks={null} />);
         expect(screen.getByTestId("total").textContent).toBe("0");

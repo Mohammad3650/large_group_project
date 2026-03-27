@@ -1,30 +1,29 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { publicApi } from "../../api";
-import { saveTokens } from "../../utils/authStorage";
-import { formatApiError } from "../../utils/errors";
-import { validateSignupForm } from "../../utils/signupValidation";
-import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
-import AuthCard from "../../components/AuthCard";
-import AuthField from "../../components/AuthField";
-import Navbar from "../../components/Navbar";
-import "./stylesheets/AuthPages.css";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { publicApi } from '../../api';
+import { saveTokens } from '../../utils/authStorage';
+import { formatApiError } from '../../utils/errors';
+import { validateSignupForm } from '../../utils/signupValidation';
+import useRedirectIfAuthenticated from '../../utils/useRedirectIfAuthenticated';
+import AuthCard from '../../components/AuthCard';
+import AuthField from '../../components/AuthField';
+import './stylesheets/AuthPages.css';
 
 /**
  * Initial form state used when the component loads.
  * Stores all input values required for user registration.
- * Signup form fields are stored differently to login as there are more 
+ * Signup form fields are stored differently to login as there are more
  * and they are easier to manage and validate.
  */
 
 const initialForm = {
-    email: "",
-    username: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    password: "",
-    confirmPassword: "",
+    email: '',
+    username: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    password: '',
+    confirmPassword: ''
 };
 
 /**
@@ -38,7 +37,7 @@ const initialForm = {
 
 const initialErrors = {
     fieldErrors: {},
-    global: [],
+    global: []
 };
 
 /**
@@ -63,8 +62,8 @@ function Signup() {
     // Indicates whether a signup request is in progress to prevent multiple submissions
     const [loading, setLoading] = useState(false);
 
-     useRedirectIfAuthenticated(nav);
- 
+    useRedirectIfAuthenticated(nav);
+
     /**
      * Updates a specific field in the form state.
      *
@@ -72,7 +71,7 @@ function Signup() {
      *
      * @param {string} name - The name of the field to update
      * @param {string} value - The new value for the field
-     */  
+     */
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -100,7 +99,6 @@ function Signup() {
         return true;
     }
 
-
     /**
      * Sends the signup request to the backend API.
      *
@@ -120,12 +118,12 @@ function Signup() {
             first_name: form.firstName,
             last_name: form.lastName,
             phone_number: form.phoneNumber,
-            password: form.password,
+            password: form.password
         };
 
-        const res = await publicApi.post("/auth/signup/", payload);
+        const res = await publicApi.post('/auth/signup/', payload);
         saveTokens(res.data.access, res.data.refresh);
-        nav("/dashboard");
+        nav('/dashboard');
     }
 
     async function handleSignup(event) {
@@ -147,7 +145,6 @@ function Signup() {
 
     return (
         <div className="signup-page">
-            <Navbar />
             <div className="signup-card-section">
                 <AuthCard
                     title="Create your account"
@@ -167,22 +164,26 @@ function Signup() {
                     <form noValidate onSubmit={handleSignup}>
                         <div className="row g-3">
                             <AuthField
-                            name="email"
-                            label="Email"
-                            type="email"
-                            placeholder="you@example.com"
-                            value={form.email}
-                            onChange={(value) => updateField("email", value)}
-                            error={errors.fieldErrors.email}
+                                name="email"
+                                label="Email"
+                                type="email"
+                                placeholder="you@example.com"
+                                value={form.email}
+                                onChange={(value) =>
+                                    updateField('email', value)
+                                }
+                                error={errors.fieldErrors.email}
                             />
 
                             <AuthField
-                            name="username"
-                            label="Username"
-                            placeholder="Choose a username"
-                            value={form.username}
-                            onChange={(value) => updateField("username", value)}
-                            error={errors.fieldErrors.username}
+                                name="username"
+                                label="Username"
+                                placeholder="Choose a username"
+                                value={form.username}
+                                onChange={(value) =>
+                                    updateField('username', value)
+                                }
+                                error={errors.fieldErrors.username}
                             />
 
                             <div className="col-12 col-md-6">
@@ -191,7 +192,9 @@ function Signup() {
                                     label="First name"
                                     placeholder="First name"
                                     value={form.firstName}
-                                    onChange={(value) => updateField("firstName", value)}
+                                    onChange={(value) =>
+                                        updateField('firstName', value)
+                                    }
                                     error={errors.fieldErrors.first_name}
                                 />
                             </div>
@@ -202,18 +205,22 @@ function Signup() {
                                     label="Last name"
                                     placeholder="Last name"
                                     value={form.lastName}
-                                    onChange={(value) => updateField("lastName", value)}
+                                    onChange={(value) =>
+                                        updateField('lastName', value)
+                                    }
                                     error={errors.fieldErrors.last_name}
                                 />
                             </div>
 
                             <AuthField
-                            name="phoneNumber"
-                            label="Phone number"
-                            placeholder="e.g. 07123 456 789"
-                            value={form.phoneNumber}
-                            onChange={(value) => updateField("phoneNumber", value)}
-                            error={errors.fieldErrors.phone_number}
+                                name="phoneNumber"
+                                label="Phone number"
+                                placeholder="e.g. 07123 456 789"
+                                value={form.phoneNumber}
+                                onChange={(value) =>
+                                    updateField('phoneNumber', value)
+                                }
+                                error={errors.fieldErrors.phone_number}
                             />
 
                             <div className="col-12 col-md-6">
@@ -223,7 +230,9 @@ function Signup() {
                                     type="password"
                                     placeholder="Create a password"
                                     value={form.password}
-                                    onChange={(value) => updateField("password", value)}
+                                    onChange={(value) =>
+                                        updateField('password', value)
+                                    }
                                     error={errors.fieldErrors.password}
                                 />
                             </div>
@@ -235,7 +244,9 @@ function Signup() {
                                     type="password"
                                     placeholder="Confirm password"
                                     value={form.confirmPassword}
-                                    onChange={(value) => updateField("confirmPassword", value)}
+                                    onChange={(value) =>
+                                        updateField('confirmPassword', value)
+                                    }
                                     error={errors.fieldErrors.confirmPassword}
                                 />
                             </div>
@@ -243,17 +254,17 @@ function Signup() {
 
                         <div className="d-grid mt-4">
                             <button
-                            className="btn btn-dark btn-lg rounded-3"
-                            disabled={loading}
-                            type="submit"
+                                className="btn btn-dark btn-lg rounded-3"
+                                disabled={loading}
+                                type="submit"
                             >
                                 {loading ? (
                                     <>
-                                    <span className="spinner-border spinner-border-sm me-2" />
-                                    Signing up...
+                                        <span className="spinner-border spinner-border-sm me-2" />
+                                        Signing up...
                                     </>
                                 ) : (
-                                    "Sign up"
+                                    'Sign up'
                                 )}
                             </button>
                         </div>

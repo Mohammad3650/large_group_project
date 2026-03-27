@@ -13,6 +13,7 @@ from scheduler.management.commands.seed_config import NUM_RANDOM_USERS, NUM_EVEN
 User = get_user_model()
 fake = Faker()
 
+# constants used for user creation
 DEFAULT_PASSWORD = "password123"
 DEFAULT_PHONE_NUMBER = "07700900000"
 

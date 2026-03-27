@@ -1,7 +1,7 @@
-import { setAuthToken } from "../api";
+import { setAuthToken } from '../api';
 
-const ACCESS_KEY = "access";
-const REFRESH_KEY = "refresh";
+const ACCESS_KEY = 'access';
+const REFRESH_KEY = 'refresh';
 
 /**
  * Retrieves the stored access token from localStorage.
@@ -10,7 +10,7 @@ const REFRESH_KEY = "refresh";
  */
 
 export function getAccessToken() {
-  return localStorage.getItem(ACCESS_KEY);
+    return localStorage.getItem(ACCESS_KEY);
 }
 
 /**
@@ -20,7 +20,7 @@ export function getAccessToken() {
  */
 
 export function getRefreshToken() {
-  return localStorage.getItem(REFRESH_KEY);
+    return localStorage.getItem(REFRESH_KEY);
 }
 
 /**
@@ -30,11 +30,12 @@ export function getRefreshToken() {
  */
 
 export function logout() {
-  localStorage.removeItem(ACCESS_KEY);
-  localStorage.removeItem(REFRESH_KEY);
+    localStorage.removeItem(ACCESS_KEY);
+    localStorage.removeItem(REFRESH_KEY);
 
-  // Remove auth header from future API requests
-  setAuthToken(null);
+    // Remove auth header from future API requests
+    setAuthToken(null);
+    window.dispatchEvent(new Event('auth-change'));
 }
 
 /**
@@ -49,9 +50,10 @@ export function logout() {
  */
 
 export function saveTokens(access, refresh) {
-  localStorage.setItem(ACCESS_KEY, access);
-  localStorage.setItem(REFRESH_KEY, refresh);
+    localStorage.setItem(ACCESS_KEY, access);
+    localStorage.setItem(REFRESH_KEY, refresh);
 
-  // Set auth header for subsequent API calls
-  setAuthToken(access);
+    // Set auth header for subsequent API calls
+    setAuthToken(access);
+    window.dispatchEvent(new Event('auth-change'));
 }

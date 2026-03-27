@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 
-from scheduler.serializer.user_details_serializer import UserDetailsSerializer
+from scheduler.serializers.user_details_serializer import UserDetailsSerializer
 
 User = get_user_model()
 

@@ -1,51 +1,55 @@
-html, body {
-  margin: 0;
-  padding: 0;
+html,
+body {
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  min-width: 320px;
-  min-height: 100vh;
-  font-family: var(--font-main);
-  background-color: var(--bg-main);
-  color: var(--text-main);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    min-width: 320px;
+    min-height: 100vh;
+    font-family: var(--font-main);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 button {
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 10px 14px;
-  cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    cursor: pointer;
+    transition:
+        background-color 0.2s,
+        box-shadow 0.2s,
+        opacity 0.2s;
 }
 
 button:hover {
-  opacity: 0.95;
+    opacity: 0.95;
 }
 
 .app-card {
-  background: var(--bg-main);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
 }
 
 #root {
-  width: 100%;
-  min-height: 100vh;
+    width: 100%;
+    min-height: 100vh;
 }
 
 a {
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 button,
 input,
 select,
 textarea {
-  font: inherit;
+    font: inherit;
 }

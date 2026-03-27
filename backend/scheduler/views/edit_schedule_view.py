@@ -3,7 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from ..models import TimeBlock
-from scheduler.serializer.time_block_serializer import TimeBlockSerializer
+from ..models import DayPlan
+from scheduler.serializers.time_block_serializer import TimeBlockSerializer
 from ..utils.to_utc import to_utc
 
 
@@ -53,6 +54,12 @@ def edit_timeblock(request, id):
     if "end_time" in request.data:
         end_time_utc, _ = to_utc(request.data["end_time"], date, timezone)
         serializer.validated_data["end_time"] = end_time_utc
+
+        # if new date then save the block as a new dayplan
+        if date != str(block.day.date):
+            day_plan, _ = DayPlan.objects.get_or_create(user=request.user, date=date)
+            block.day = day_plan
+            block.save()
 
     serializer.save()
     return Response(serializer.data)

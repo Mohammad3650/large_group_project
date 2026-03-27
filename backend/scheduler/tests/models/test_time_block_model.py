@@ -13,8 +13,13 @@ class TimeBlockModelTest(TestCase):
         )
         self.day_plan = DayPlan.objects.create(user=self.user, date=date(2026, 2, 17))
 
-    # test you can create a fixed time block with appropriate fields and should NOT have flexible time block fields
-    def test_create_fixed_time_block_without_description(self):
+    def test_create_time_block_without_description(self):
+        """
+        Test that a TimeBlock can be created without a description.
+
+        Uses self.day_plan from setUp to attach the block to a valid DayPlan.
+        Ensures required fields (block_type, start_time, end_time) are stored correctly.
+        """
         block = TimeBlock.objects.create(
             day=self.day_plan,
             block_type="lecture",
@@ -29,6 +34,12 @@ class TimeBlockModelTest(TestCase):
         self.assertEqual(block.description, "")
 
     def test_dayplan_has_time_blocks(self):
+        """
+        Test that multiple TimeBlocks can be associated with a single DayPlan.
+
+        Reuses self.day_plan from setUp to verify the reverse relationship
+        (DayPlan → time_blocks).
+        """
         block = TimeBlock.objects.create(
             day=self.day_plan,
             block_type="study",
@@ -43,10 +54,19 @@ class TimeBlockModelTest(TestCase):
             end_time=time(18, 0),
         )
 
+        # Ensure both blocks are linked to the same DayPlan
         self.assertEqual(self.day_plan.time_blocks.count(), 2)
+
+        # Ensure ordering/first object is correct
         self.assertEqual(self.day_plan.time_blocks.first(), block)
 
     def test_invalid_block_type(self):
+        """
+        Test that invalid block types are rejected.
+
+        Uses self.day_plan from setUp and calls full_clean()
+        to trigger model validation.
+        """
         block = TimeBlock(
             day=self.day_plan,
             block_type="invalid_type",
@@ -58,6 +78,12 @@ class TimeBlockModelTest(TestCase):
             block.full_clean()
 
     def test_create_block_with_description(self):
+        """
+        Test that a TimeBlock can be created with a description.
+
+        Again reuses self.day_plan from setUp to avoid duplication.
+        Verifies that optional fields are stored correctly.
+        """
         block = TimeBlock.objects.create(
             day=self.day_plan,
             block_type="lecture",

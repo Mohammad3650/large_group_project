@@ -1,8 +1,7 @@
-import { useState } from "react";
-import "./stylesheets/TaskItem.css";
-import formatDateTime from "../../utils/formatDateTime.js";
-import playDing from "../../utils/playDing.js";
-
+import { useState } from 'react';
+import './stylesheets/TaskItem.css';
+import formatDateTime from '../../utils/formatDateTime.js';
+import playDing from '../../utils/playDing.js';
 
 /**
  * Displays a single task item with a checkbox, name, start time and end time.
@@ -29,10 +28,24 @@ function TaskItem(props) {
     }
 
     return (
-        <div className={`form-check task-item ${checked ? "checked" : ""} ${fading ? "fading" : ""}`} onClick={handleClick}>
-            <input className="form-check-input" type="checkbox" readOnly checked={checked} />
-            <label className={`form-check-label ${props.overdue ? "overdue-text" : ""}`}>{props.name}</label>
-            <span className="task-datetime">{formatDateTime(props.date, props.startTime, props.endTime)}</span>
+        <div
+            className={`form-check task-item ${checked ? 'checked' : ''} ${fading ? 'fading' : ''}`}
+            onClick={handleClick}
+        >
+            <input
+                className="form-check-input"
+                type="checkbox"
+                readOnly
+                checked={checked}
+            />
+            <label
+                className={`form-check-label ${props.overdue ? 'overdue-text' : ''}`}
+            >
+                {props.name}
+            </label>
+            <span className="task-datetime">
+                {formatDateTime(props.date, props.startTime, props.endTime)}
+            </span>
         </div>
     );
 }

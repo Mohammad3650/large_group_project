@@ -9,7 +9,7 @@ vi.mock("../../api.js", () => ({
     },
 }));
 
-describe("useUsername", () => {
+describe("Tests for useUsername", () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

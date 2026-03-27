@@ -2,168 +2,176 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import axios from "axios";
 import { formatApiError } from "../errors";
 
-describe("formatApiError", () => {
-  beforeEach(() => {
+describe("Tests for formatApiError", () => {
+    const mockAxiosError = () => {
+        vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    };
+
+    const mockNonAxiosError = () => {
+        vi.spyOn(axios, "isAxiosError").mockReturnValue(false);
+    };
+
+    beforeEach(() => {
     vi.restoreAllMocks();
-  });
-
-  it("returns a generic message for non-Axios errors", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(false);
-
-    const result = formatApiError(new Error("Something broke"));
-
-    expect(result).toEqual({
-      fieldErrors: {},
-      global: ["Something went wrong."],
     });
-  });
 
-  it("returns a no-response message when Axios error has no response data", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    it("returns a generic message for non-Axios errors", () => {
+        mockNonAxiosError();
 
-    const error = {
-      response: undefined,
-    };
+        const result = formatApiError(new Error("Something broke"));
 
-    const result = formatApiError(error);
-
-    expect(result).toEqual({
-      fieldErrors: {},
-      global: ["No response from server."],
+        expect(result).toEqual({
+            fieldErrors: {},
+            global: ["Something went wrong."],
+        });
     });
-  });
 
-  it("returns the DRF detail message as a global error", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    it("returns a no-response message when Axios error has no response data", () => {
+        mockAxiosError();
 
-    const error = {
-      response: {
-        data: {
-          detail: "Invalid token.",
-        },
-      },
-    };
+        const error = {
+            response: undefined,
+        };
 
-    const result = formatApiError(error);
+        const result = formatApiError(error);
 
-    expect(result).toEqual({
-      fieldErrors: {},
-      global: ["Invalid token."],
+        expect(result).toEqual({
+            fieldErrors: {},
+            global: ["No response from server."],
+        });
     });
-  });
 
-  it("maps field errors and non_field_errors correctly", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    it("returns the DRF detail message as a global error", () => {
+        mockAxiosError();
 
-    const error = {
-      response: {
-        data: {
-          email: ["Email is already in use."],
-          password: ["Password is too short."],
-          non_field_errors: ["Unable to log in with provided credentials."],
-        },
-      },
-    };
+        const error = {
+            response: {
+            data: {
+                detail: "Invalid token.",
+            },
+            },
+        };
 
-    const result = formatApiError(error);
+        const result = formatApiError(error);
 
-    expect(result).toEqual({
-      fieldErrors: {
-        email: ["Email is already in use."],
-        password: ["Password is too short."],
-      },
-      global: ["Unable to log in with provided credentials."],
+        expect(result).toEqual({
+            fieldErrors: {},
+            global: ["Invalid token."],
+        });
     });
-  });
 
-  it("converts non-array field errors into arrays", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    it("maps field errors and non_field_errors correctly", () => {
+        mockAxiosError();
 
-    const error = {
-      response: {
-        data: {
-          email: "Email is required.",
-        },
-      },
-    };
+        const error = {
+            response: {
+            data: {
+                email: ["Email is already in use."],
+                password: ["Password is too short."],
+                non_field_errors: ["Unable to log in with provided credentials."],
+            },
+            },
+        };
 
-    const result = formatApiError(error);
+        const result = formatApiError(error);
 
-    expect(result).toEqual({
-      fieldErrors: {
-        email: ["Email is required."],
-      },
-      global: [],
+        expect(result).toEqual({
+            fieldErrors: {
+            email: ["Email is already in use."],
+            password: ["Password is too short."],
+            },
+            global: ["Unable to log in with provided credentials."],
+        });
     });
-  });
 
-  it("converts non-array non_field_errors into an array", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    it("converts non-array field errors into arrays", () => {
+        mockAxiosError();
 
-    const error = {
-      response: {
-        data: {
-          non_field_errors: "General validation failure.",
-        },
-      },
-    };
+        const error = {
+            response: {
+            data: {
+                email: "Email is required.",
+            },
+            },
+        };
 
-    const result = formatApiError(error);
+        const result = formatApiError(error);
 
-    expect(result).toEqual({
-      fieldErrors: {},
-      global: ["General validation failure."],
+        expect(result).toEqual({
+            fieldErrors: {
+            email: ["Email is required."],
+            },
+            global: [],
+        });
     });
-  });
 
-  it("returns a fallback message when the error object is empty", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    it("converts non-array non_field_errors into an array", () => {
+        mockAxiosError();
 
-    const error = {
-      response: {
-        data: {},
-      },
-    };
+        const error = {
+            response: {
+            data: {
+                non_field_errors: "General validation failure.",
+            },
+            },
+        };
 
-    const result = formatApiError(error);
+        const result = formatApiError(error);
 
-    expect(result).toEqual({
-      fieldErrors: {},
-      global: ["Request failed."],
+        expect(result).toEqual({
+            fieldErrors: {},
+            global: ["General validation failure."],
+        });
     });
-  });
 
-  it("returns a string response as a global error", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    it("returns a fallback message when the error object is empty", () => {
+        mockAxiosError();
 
-    const error = {
-      response: {
-        data: "Server unavailable.",
-      },
-    };
+        const error = {
+            response: {
+            data: {},
+            },
+        };
 
-    const result = formatApiError(error);
+        const result = formatApiError(error);
 
-    expect(result).toEqual({
-      fieldErrors: {},
-      global: ["Server unavailable."],
+        expect(result).toEqual({
+            fieldErrors: {},
+            global: ["Request failed."],
+        });
     });
-  });
 
-  it("returns a fallback message for unexpected primitive response data", () => {
-    vi.spyOn(axios, "isAxiosError").mockReturnValue(true);
+    it("returns a string response as a global error", () => {
+        mockAxiosError();
 
-    const error = {
-      response: {
-        data: 500,
-      },
-    };
+        const error = {
+            response: {
+            data: "Server unavailable.",
+            },
+        };
 
-    const result = formatApiError(error);
+        const result = formatApiError(error);
 
-    expect(result).toEqual({
-      fieldErrors: {},
-      global: ["Request failed."],
+        expect(result).toEqual({
+            fieldErrors: {},
+            global: ["Server unavailable."],
+        });
     });
-  });
+
+    it("returns a fallback message for unexpected primitive response data", () => {
+        mockAxiosError();
+
+        const error = {
+            response: {
+            data: 500,
+            },
+        };
+
+        const result = formatApiError(error);
+
+        expect(result).toEqual({
+            fieldErrors: {},
+            global: ["Request failed."],
+        });
+    });
 });

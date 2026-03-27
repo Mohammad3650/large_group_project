@@ -24,19 +24,6 @@ class TimeBlock(models.Model):
         ("extracurricular", "Extracurricular"),
     ]
 
-    TIME_OF_DAY_PREFERENCES = [
-        ("morning", "Morning"),
-        ("afternoon", "Afternoon"),
-        ("evening", "Evening"),
-    ]
-
-    FREQUENCY_CHOICES = [
-        ("none", "One-time"),
-        ("weekly", "Weekly"),
-        ("biweekly", "Every other week"),
-        ("monthly", "Monthly"),
-    ]
-
     day = models.ForeignKey(
         DayPlan, on_delete=models.CASCADE, related_name="time_blocks"
     )

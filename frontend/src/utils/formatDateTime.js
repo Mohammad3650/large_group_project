@@ -9,9 +9,18 @@
 function formatDateTime(date, startTime, endTime) {
     const dateObj = new Date(`${date}T${startTime}`);
     const endObj = new Date(`${date}T${endTime}`);
-    const day = dateObj.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-    const start = dateObj.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-    const end = endObj.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    const day = dateObj.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short'
+    });
+    const start = dateObj.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    const end = endObj.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
     return `${start} - ${end} ${day}`;
 }
 

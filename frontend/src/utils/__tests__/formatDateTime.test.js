@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import formatDateTime from "../formatDateTime.js";
 
-describe("formatDateTime", () => {
+describe("Tests for formatDateTime", () => {
     it("formats the date and time into a human-readable string", () => {
         const result = formatDateTime("2026-02-19", "09:00", "10:00");
         expect(result).toBe("09:00 - 10:00 19 Feb");

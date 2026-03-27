@@ -19,7 +19,7 @@ const mockBlocks = [
     { id: 2, name: "Seminar" },
 ];
 
-describe("useTimeBlocks", () => {
+describe("Tests for useTimeBlocks", () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

@@ -11,7 +11,9 @@ function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
     if (!subscriptions.length) {
         return (
             <div className="subscription-list">
-                <p className="subscription-empty">No calendar subscriptions added yet.</p>
+                <p className="subscription-empty">
+                    No calendar subscriptions added yet.
+                </p>
             </div>
         );
     }
@@ -22,12 +24,16 @@ function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
                 <div key={subscription.id} className="subscription-card">
                     <div className="subscription-card-content">
                         <h3>{subscription.name}</h3>
-                        <p className="subscription-url">{subscription.source_url}</p>
+                        <p className="subscription-url">
+                            {subscription.source_url}
+                        </p>
                         <p className="subscription-meta">
-                            Last synced:{" "}
+                            Last synced:
                             {subscription.last_synced_at
-                                ? new Date(subscription.last_synced_at).toLocaleString()
-                                : "Never"}
+                                ? new Date(
+                                      subscription.last_synced_at
+                                  ).toLocaleString()
+                                : 'Never'}
                         </p>
                         {subscription.last_error && (
                             <p className="subscription-error-text">

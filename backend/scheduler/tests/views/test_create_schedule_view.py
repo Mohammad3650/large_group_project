@@ -2,8 +2,6 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from scheduler.models.User import User
 from scheduler.models.TimeBlock import TimeBlock
-from datetime import time, date
-from zoneinfo import ZoneInfo
 from scheduler.utils.to_utc import to_utc
 
 
@@ -19,41 +17,37 @@ class CreateScheduleTest(APITestCase):
             phone_number="01122334455",
         )
 
-    def test_create_timeblock_requires_authentication(self):
-        url = reverse("api-create-timeblock")
+        self.url = reverse("api-create-timeblock")
 
+        self.base_data = {
+            "date": "2026-02-18",
+            "name": "Study Session",
+            "location": "Online",
+            "start_time": "09:00",
+            "end_time": "10:00",
+            "block_type": "study",
+            "timezone": "Europe/London",
+            "description": "Studying OSC for the exam soon",
+        }
+
+    def test_create_timeblock_requires_authentication(self):
         response = self.client.post(
-            url,
-            {
-                "date": "2026-02-18",
-                "name": "Study Session",
-                "location": "Online",
-                "start_time": "09:00",
-                "end_time": "10:00",
-                "block_type": "study",
-                "timezone": "Europe/London",
-            },
+            self.url,
+            self.base_data,
             format="json",
         )
 
         self.assertEqual(response.status_code, 401)
 
-    def test_create_timeblock_without_description(self):
+    def test_create_timeblock_without_description_is_allowed(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-create-timeblock")
+        data_without_description = self.base_data.copy()
+        data_without_description.pop("description")
 
         response = self.client.post(
-            url,
-            {
-                "date": "2026-02-18",
-                "name": "Study Session",
-                "location": "Online",
-                "start_time": "09:00",
-                "end_time": "10:00",
-                "block_type": "study",
-                "timezone": "Europe/London",
-            },
+            self.url,
+            data_without_description,
             format="json",
         )
 
@@ -62,20 +56,9 @@ class CreateScheduleTest(APITestCase):
     def test_create_timeblock_with_description(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-create-timeblock")
-
         response = self.client.post(
-            url,
-            {
-                "date": "2026-02-18",
-                "name": "Study Session",
-                "location": "Online",
-                "start_time": "09:00",
-                "end_time": "10:00",
-                "block_type": "study",
-                "description": "work on course work",
-                "timezone": "Europe/London",
-            },
+            self.url,
+            self.base_data,
             format="json",
         )
 
@@ -84,18 +67,12 @@ class CreateScheduleTest(APITestCase):
     def test_create_timeblock_missing_required_field(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-create-timeblock")
+        data_without_name = self.base_data.copy()
+        data_without_name.pop("name")
 
         response = self.client.post(
-            url,
-            {
-                "date": "2026-02-18",
-                # Missing name intentionally
-                "end_time": "10:00",
-                "block_type": "study",
-                "location": "Online",
-                "timezone": "Europe/London",
-            },
+            self.url,
+            data_without_name,
             format="json",
         )
 
@@ -103,19 +80,15 @@ class CreateScheduleTest(APITestCase):
 
     def test_create_timeblock_invalid_time_order(self):
         self.client.force_authenticate(user=self.user)
-        url = reverse("api-create-timeblock")
+
+        data_with_invalid_time_order = self.base_data.copy()
+        data_with_invalid_time_order.update(
+            {"start_time": "10:00", "end_time": "09:00"}
+        )
 
         response = self.client.post(
-            url,
-            {
-                "date": "2026-02-18",
-                "name": "Study Session",
-                "location": "Online",
-                "start_time": "10:00",
-                "end_time": "09:00",
-                "block_type": "study",
-                "timezone": "Europe/London",
-            },
+            self.url,
+            data_with_invalid_time_order,
             format="json",
         )
 
@@ -124,17 +97,12 @@ class CreateScheduleTest(APITestCase):
     def test_create_block_missing_date_field(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-create-timeblock")
+        data_without_date = self.base_data.copy()
+        data_without_date.pop("date")
 
         response = self.client.post(
-            url,
-            {
-                "name": "No Date Block",
-                "end_time": "10:00",
-                "block_type": "study",
-                "location": "Online",
-                "timezone": "Europe/London",
-            },
+            self.url,
+            data_without_date,
             format="json",
         )
 
@@ -143,17 +111,12 @@ class CreateScheduleTest(APITestCase):
     def test_create_block_missing_timezone_field(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-create-timeblock")
+        data_without_timezone = self.base_data.copy()
+        data_without_timezone.pop("timezone")
 
         response = self.client.post(
-            url,
-            {
-                "date": "2026-02-18",
-                "name": "No Timezone Block",
-                "end_time": "10:00",
-                "block_type": "study",
-                "location": "Online",
-            },
+            self.url,
+            data_without_timezone,
             format="json",
         )
 

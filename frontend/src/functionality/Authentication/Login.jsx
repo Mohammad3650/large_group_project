@@ -1,13 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { publicApi } from "../../api";
-import { formatApiError } from "../../utils/errors";
-import { saveTokens } from "../../utils/authStorage";
-import useRedirectIfAuthenticated from "../../utils/useRedirectIfAuthenticated";
-import AuthCard from "../../components/AuthCard";
-import AuthField from "../../components/AuthField";
-import Navbar from "../../components/Navbar";
-import "./stylesheets/AuthPages.css";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { publicApi } from '../../api';
+import { formatApiError } from '../../utils/errors';
+import { saveTokens } from '../../utils/authStorage';
+import useRedirectIfAuthenticated from '../../utils/useRedirectIfAuthenticated';
+import AuthCard from '../../components/AuthCard';
+import AuthField from '../../components/AuthField';
+import './stylesheets/AuthPages.css';
 
 /**
  * Initial error state used when the form first loads
@@ -20,15 +19,14 @@ import "./stylesheets/AuthPages.css";
 
 const initialErrors = {
     fieldErrors: {},
-    global: [],
+    global: []
 };
-
 
 /**
  * Login page component.
  *
  * Description:
- * 
+ *
  * - collects the user's email and password
  * - validates the required fields before submission
  * - sends the login credentials to the backend
@@ -41,9 +39,9 @@ const initialErrors = {
 function Login() {
     const nav = useNavigate();
     // Stores the email input value
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState('');
     // Stores the password input value
-    const [password, setPassword] = useState("");
+    const [password, setPassword] = useState('');
     // Stores validation and API error messages
     const [errors, setErrors] = useState(initialErrors);
     // Indicates whether a login request is in progress to prevent multiple submissions
@@ -53,8 +51,8 @@ function Login() {
 
     /**
      * Performs client-side checks to make sure the user has entered values.
-     * 
-     * - Emails must not be empty 
+     *
+     * - Emails must not be empty
      * - Passwords must not be empty
      *
      * @returns {Object} An object containing any validation errors.
@@ -63,8 +61,8 @@ function Login() {
     function validateLoginForm() {
         const fieldErrors = {};
 
-        if (!email.trim()) fieldErrors.email = "Email is required.";
-        if (!password) fieldErrors.password = "Password is required.";
+        if (!email.trim()) fieldErrors.email = 'Email is required.';
+        if (!password) fieldErrors.password = 'Password is required.';
 
         return fieldErrors;
     }
@@ -80,9 +78,9 @@ function Login() {
      */
 
     async function submitLogin() {
-        const res = await publicApi.post("/api/token/", { email, password });
+        const res = await publicApi.post('/api/token/', { email, password });
         saveTokens(res.data.access, res.data.refresh);
-        nav("/dashboard");
+        nav('/dashboard');
     }
 
     /**
@@ -102,7 +100,6 @@ function Login() {
      */
 
     async function handleLogin(event) {
-
         event.preventDefault();
         // Prevents the browser from reloading the page on form submission
         if (loading) return;
@@ -116,24 +113,23 @@ function Login() {
             return;
         }
 
-        // Clears the previous errors before making the new requests 
+        // Clears the previous errors before making the new requests
         setErrors(initialErrors);
         setLoading(true);
 
         try {
             await submitLogin();
         } catch (err) {
-            // Convert backend errors to be able to be displayed in the UI accordingly 
+            // Convert backend errors to be able to be displayed in the UI accordingly
             setErrors(formatApiError(err));
         } finally {
-            // Re-enable the form whether the request failed or succeedded 
+            // Re-enable the form whether the request failed or succeedded
             setLoading(false);
         }
     }
 
     return (
         <div className="login-page">
-            <Navbar />
             <div className="login-card-section">
                 <AuthCard
                     title="Welcome Back"
@@ -142,13 +138,15 @@ function Login() {
                     footerLinkText="Sign up"
                     footerLinkTo="/signup"
                 >
-
                     {/* Displays general login errors that are not tied to one specific field */}
                     {errors.global.length > 0 && (
-                        <div className="alert alert-danger text-center" role="alert">
-                        {errors.global.map((message) => (
-                            <div key={message}>{message}</div>
-                        ))}
+                        <div
+                            className="alert alert-danger text-center"
+                            role="alert"
+                        >
+                            {errors.global.map((message) => (
+                                <div key={message}>{message}</div>
+                            ))}
                         </div>
                     )}
 
@@ -183,12 +181,12 @@ function Login() {
                                 type="submit"
                             >
                                 {loading ? (
-                                <>
-                                    <span className="spinner-border spinner-border-sm me-2" />
-                                    Logging in...
-                                </>
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" />
+                                        Logging in...
+                                    </>
                                 ) : (
-                                "Log in"
+                                    'Log in'
                                 )}
                             </button>
                         </div>

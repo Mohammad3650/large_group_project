@@ -1,140 +1,149 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const {
-  mockNavigate,
-  mockUseTimeBlocks,
-  mockUseUsername,
-  mockHandleDelete,
-} = vi.hoisted(() => ({
-  mockNavigate: vi.fn(),
-  mockUseTimeBlocks: vi.fn(),
-  mockUseUsername: vi.fn(),
-  mockHandleDelete: vi.fn(),
+const { mockNavigate, mockUseTimeBlocks, mockUseUsername, mockHandleDelete } =
+    vi.hoisted(() => ({
+        mockNavigate: vi.fn(),
+        mockUseTimeBlocks: vi.fn(),
+        mockUseUsername: vi.fn(),
+        mockHandleDelete: vi.fn()
+    }));
+
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => mockNavigate
 }));
 
-vi.mock("react-router-dom", () => ({
-  useNavigate: () => mockNavigate,
+vi.mock('../../../utils/useTimeBlocks.js', () => ({
+    default: mockUseTimeBlocks
 }));
 
-vi.mock("../../../utils/useTimeBlocks.js", () => ({
-  default: mockUseTimeBlocks,
+vi.mock('../../../utils/useUsername.js', () => ({
+    default: mockUseUsername
 }));
 
-vi.mock("../../../utils/useUsername.js", () => ({
-  default: mockUseUsername,
+vi.mock('../../../components/AddTaskButton.jsx', () => ({
+    default: () => <div>Mock Add Task Button</div>
 }));
 
-vi.mock("../../../components/AddTaskButton.jsx", () => ({
-  default: () => <div>Mock Add Task Button</div>,
+vi.mock('../CalendarPlaceholder.jsx', () => ({
+    default: () => <div>Mock Calendar Placeholder</div>
 }));
 
-vi.mock("../CalendarPlaceholder.jsx", () => ({
-  default: () => <div>Mock Calendar Placeholder</div>,
+vi.mock('../CalendarView.jsx', () => ({
+    default: ({ blocks, setBlocks, title, headerButtons, eventButtons }) => (
+        <div>
+            <div>Mock Calendar View</div>
+            <div>{title}</div>
+            <div data-testid="blocks-length">{blocks.length}</div>
+            <button onClick={() => setBlocks(['updated'])}>
+                Trigger Set Blocks
+            </button>
+            <div>{headerButtons}</div>
+            <div>{eventButtons({ id: 42 }, mockHandleDelete)}</div>
+        </div>
+    )
 }));
 
-vi.mock("../CalendarView.jsx", () => ({
-  default: ({ blocks, setBlocks, title, headerButtons, eventButtons }) => (
-    <div>
-      <div>Mock Calendar View</div>
-      <div>{title}</div>
-      <div data-testid="blocks-length">{blocks.length}</div>
-      <button onClick={() => setBlocks(["updated"])}>Trigger Set Blocks</button>
-      <div>{headerButtons}</div>
-      <div>{eventButtons({ id: 42 }, mockHandleDelete)}</div>
-    </div>
-  ),
-}));
+import Calendar from '../Calendar';
 
-import Calendar from "../Calendar";
-
-describe("Calendar", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it("renders the placeholder when blocks are null", () => {
-    mockUseTimeBlocks.mockReturnValue({
-      blocks: null,
-      setBlocks: vi.fn(),
+describe('Calendar', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
-    render(<Calendar />);
+    const mockedUsername = {
+        username: 'Mohammad',
+        toString: () => 'Mohammad'
+    };
 
-    expect(screen.getByText("Mock Calendar Placeholder")).toBeInTheDocument();
-  });
+    it('renders the placeholder when blocks are null', () => {
+        mockUseTimeBlocks.mockReturnValue({
+            blocks: null,
+            setBlocks: vi.fn()
+        });
+        mockUseUsername.mockReturnValue(mockedUsername);
 
-  it("renders the calendar view with the correct props", () => {
-    const setBlocks = vi.fn();
+        render(<Calendar />);
 
-    mockUseTimeBlocks.mockReturnValue({
-      blocks: [{ id: 1 }, { id: 2 }],
-      setBlocks,
+        expect(
+            screen.getByText('Mock Calendar Placeholder')
+        ).toBeInTheDocument();
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
-    render(<Calendar />);
+    it('renders the calendar view with the correct props', () => {
+        const setBlocks = vi.fn();
 
-    expect(screen.getByText("Mock Calendar View")).toBeInTheDocument();
-    expect(screen.getByText("Welcome to your calendar, Mohammad!")).toBeInTheDocument();
-    expect(screen.getByTestId("blocks-length")).toHaveTextContent("2");
-    expect(screen.getByText("Mock Add Task Button")).toBeInTheDocument();
-  });
+        mockUseTimeBlocks.mockReturnValue({
+            blocks: [{ id: 1 }, { id: 2 }],
+            setBlocks
+        });
+        mockUseUsername.mockReturnValue(mockedUsername);
 
-  it("passes true to useUsername", () => {
-    mockUseTimeBlocks.mockReturnValue({
-      blocks: [{ id: 1 }],
-      setBlocks: vi.fn(),
+        render(<Calendar />);
+
+        expect(screen.getByText('Mock Calendar View')).toBeInTheDocument();
+        expect(
+            screen.getByText('Welcome to your calendar, Mohammad!')
+        ).toBeInTheDocument();
+        expect(screen.getByTestId('blocks-length')).toHaveTextContent('2');
+        expect(screen.getByText('Mock Add Task Button')).toBeInTheDocument();
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
-    render(<Calendar />);
+    it('passes true to useUsername', () => {
+        mockUseTimeBlocks.mockReturnValue({
+            blocks: [{ id: 1 }],
+            setBlocks: vi.fn()
+        });
+        mockUseUsername.mockReturnValue(mockedUsername);
 
-    expect(mockUseUsername).toHaveBeenCalledWith(true);
-  });
+        render(<Calendar />);
 
-  it("navigates to the edit page when edit is clicked", () => {
-    mockUseTimeBlocks.mockReturnValue({
-      blocks: [{ id: 1 }],
-      setBlocks: vi.fn(),
+        expect(mockUseUsername).toHaveBeenCalledWith(true);
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
-    render(<Calendar />);
+    it('navigates to the edit page when edit is clicked', () => {
+        mockUseTimeBlocks.mockReturnValue({
+            blocks: [{ id: 1 }],
+            setBlocks: vi.fn()
+        });
+        mockUseUsername.mockReturnValue(mockedUsername);
 
-    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+        render(<Calendar />);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/timeblocks/42/edit");
-  });
+        fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
 
-  it("calls delete when delete is clicked", () => {
-    mockUseTimeBlocks.mockReturnValue({
-      blocks: [{ id: 1 }],
-      setBlocks: vi.fn(),
+        expect(mockNavigate).toHaveBeenCalledWith('/timeblocks/42/edit');
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
-    render(<Calendar />);
+    it('calls delete when delete is clicked', () => {
+        mockUseTimeBlocks.mockReturnValue({
+            blocks: [{ id: 1 }],
+            setBlocks: vi.fn()
+        });
+        mockUseUsername.mockReturnValue(mockedUsername);
 
-    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+        render(<Calendar />);
 
-    expect(mockHandleDelete).toHaveBeenCalledWith(42);
-  });
+        fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
-  it("passes setBlocks through to CalendarView", () => {
-    const setBlocks = vi.fn();
-
-    mockUseTimeBlocks.mockReturnValue({
-      blocks: [{ id: 1 }],
-      setBlocks,
+        expect(mockHandleDelete).toHaveBeenCalledWith(42);
     });
-    mockUseUsername.mockReturnValue({ username: "Mohammad" });
 
-    render(<Calendar />);
+    it('passes setBlocks through to CalendarView', () => {
+        const setBlocks = vi.fn();
 
-    fireEvent.click(screen.getByRole("button", { name: "Trigger Set Blocks" }));
+        mockUseTimeBlocks.mockReturnValue({
+            blocks: [{ id: 1 }],
+            setBlocks
+        });
+        mockUseUsername.mockReturnValue(mockedUsername);
 
-    expect(setBlocks).toHaveBeenCalledWith(["updated"]);
-  });
+        render(<Calendar />);
+
+        fireEvent.click(
+            screen.getByRole('button', { name: 'Trigger Set Blocks' })
+        );
+
+        expect(setBlocks).toHaveBeenCalledWith(['updated']);
+    });
 });

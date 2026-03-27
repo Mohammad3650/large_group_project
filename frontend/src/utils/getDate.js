@@ -5,5 +5,4 @@
  */
 const getDate = (b) => new Date(`${b.date}T${b.startTime}`);
 
-
 export default getDate;

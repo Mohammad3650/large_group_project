@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from scheduler.serializer.calendar_subscription_serializer import (
+from scheduler.serializers.calendar_subscription_serializer import (
     CalendarSubscriptionSerializer,
 )
 
