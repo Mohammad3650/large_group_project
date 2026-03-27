@@ -54,16 +54,7 @@ function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsSe
         selectedDate: Temporal.Now.plainDateISO(calendarTimezone)
     });
 
-<<<<<<< HEAD
-    return (
-        <ScheduleXCalendar
-            calendarApp={calendar}
-            customComponents={customComponents}
-        />
-    );
-=======
     return <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />;
->>>>>>> f693dce (Finish landing page and calendar updates)
 }
 
 function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
