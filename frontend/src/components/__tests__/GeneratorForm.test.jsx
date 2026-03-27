@@ -1,20 +1,24 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import GeneratorForm from '../GeneratorForm.jsx';
 
+const renderGeneratorForm = (overrides = {}) => {
+    const props = {
+        onSubmit: vi.fn(),
+        loading: false,
+        serverErrors: {},
+        clearErrors: vi.fn(),
+        ...overrides
+    };
+
+    return render(<GeneratorForm {...props} />);
+};
+
 describe('Test generator form', () => {
     it('renders all main forms', () => {
-        render(
-            <GeneratorForm
-                onSubmit={vi.fn()}
-                loading={false}
-                serverErrors={{}}
-                clearErrors={vi.fn()}
-            />
-        );
+        renderGeneratorForm();
 
         // Date and time input labels
         expect(screen.getByLabelText(/start/i)).toBeInTheDocument();
@@ -52,14 +56,7 @@ describe('Test generator form', () => {
     });
 
     it('include scheduled is disabled initially and becomes enabled when even spread is checked', () => {
-        render(
-            <GeneratorForm
-                onSubmit={vi.fn()}
-                loading={false}
-                serverErrors={{}}
-                clearErrors={vi.fn()}
-            />
-        );
+        renderGeneratorForm();
 
         const evenSpreadCheckbox = screen.getByLabelText(/even spread/i);
         const includeScheduledCheckbox =
@@ -79,14 +76,7 @@ describe('Test generator form', () => {
     });
 
     it('daily checkbox disables frequency and sets it to 1', () => {
-        render(
-            <GeneratorForm
-                onSubmit={vi.fn()}
-                loading={false}
-                serverErrors={{}}
-                clearErrors={vi.fn()}
-            />
-        );
+        renderGeneratorForm();
 
         const dailyCheckbox = screen.getByLabelText(/daily/i);
         const frequencyInput = screen.getByPlaceholderText(
@@ -107,14 +97,7 @@ describe('Test generator form', () => {
     });
 
     it('add another event and delete event works', () => {
-        render(
-            <GeneratorForm
-                onSubmit={vi.fn()}
-                loading={false}
-                serverErrors={{}}
-                clearErrors={vi.fn()}
-            />
-        );
+        renderGeneratorForm();
 
         fireEvent.click(
             screen.getByRole('button', { name: /add another event/i })
@@ -136,27 +119,14 @@ describe('Test generator form', () => {
 
     it('calls clearErrors via useEffect', () => {
         const mockClearErrors = vi.fn();
-        render(
-            <GeneratorForm
-                onSubmit={vi.fn()}
-                loading={false}
-                serverErrors={{}}
-                clearErrors={mockClearErrors}
-            />
-        );
+
+        renderGeneratorForm({ clearErrors: mockClearErrors });
         expect(mockClearErrors).toHaveBeenCalledTimes(1);
     });
 
     it('updates text, number, select, textarea, and time/date inputs', async () => {
         const user = userEvent.setup();
-        render(
-            <GeneratorForm
-                onSubmit={vi.fn()}
-                loading={false}
-                serverErrors={{}}
-                clearErrors={vi.fn()}
-            />
-        );
+        renderGeneratorForm();
 
         await user.type(
             screen.getByPlaceholderText(/^name$/i),
@@ -220,14 +190,8 @@ describe('Test generator form', () => {
     });
 
     it('shows loading state and disables submit button', () => {
-        render(
-            <GeneratorForm
-                onSubmit={vi.fn()}
-                loading={true}
-                serverErrors={{}}
-                clearErrors={vi.fn()}
-            />
-        );
+        renderGeneratorForm({ loading: true });
+
 
         const submitButton = screen.getByRole('button', {
             name: /generating/i
@@ -242,14 +206,8 @@ describe('Test generator form', () => {
     it('submits the full payload', async () => {
         const user = userEvent.setup();
         const mockOnSubmit = vi.fn();
-        render(
-            <GeneratorForm
-                onSubmit={mockOnSubmit}
-                loading={false}
-                serverErrors={{}}
-                clearErrors={vi.fn()}
-            />
-        );
+
+        renderGeneratorForm({ onSubmit: mockOnSubmit });
 
         fireEvent.change(screen.getByLabelText(/start/i), {
             target: { value: '2026-03-23' }
@@ -331,14 +289,7 @@ describe('Test generator form', () => {
             ]
         };
 
-        render(
-            <GeneratorForm
-                onSubmit={vi.fn()}
-                loading={false}
-                serverErrors={serverErrors}
-                clearErrors={vi.fn()}
-            />
-        );
+        renderGeneratorForm({ serverErrors });
 
         expect(screen.getByText('Name error')).toBeInTheDocument();
         expect(screen.getByText('Duration error')).toBeInTheDocument();
@@ -361,14 +312,7 @@ describe('Test generator form', () => {
                 week_start: ['Week start is required']
             };
 
-            render(
-                <GeneratorForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={serverErrors}
-                    clearErrors={vi.fn()}
-                />
-            );
+            renderGeneratorForm({ serverErrors });
 
             expect(
                 screen.getByText('Something went wrong')
