@@ -11,12 +11,12 @@ vi.mock('../../api.js', () => ({
 
 import SuccessfulTimeBlock from '../SuccessfulTimeBlock.jsx';
 
-describe('Succesful time block created', () => {
+describe('Successful time block created', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    it('Renders the text to show a time block has been created successfully', () => {
+    it('renders the text to show a time block has been created successfully', () => {
         render(
             <MemoryRouter>
                 <SuccessfulTimeBlock />
@@ -32,7 +32,7 @@ describe('Succesful time block created', () => {
         ).toBeInTheDocument();
     });
 
-    it('Renders the buttons for when a time block has been created successfully', () => {
+    it('renders the buttons for when a time block has been created successfully', () => {
         render(
             <MemoryRouter
                 initialEntries={[{ pathname: '/success', state: { id: 123 } }]}
@@ -60,14 +60,12 @@ describe('Succesful time block created', () => {
         });
 
         expect(newBlockButton).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /edit time block/i })
-        ).toBeInTheDocument();
+        expect(editTimeBlockButton).toBeInTheDocument();
         expect(dashboardButton).toBeInTheDocument();
         expect(viewInCalendarButton).toBeInTheDocument();
     });
 
-    it('Tick image loads up on the screen', () => {
+    it('tick image loads up on the screen', () => {
         render(
             <MemoryRouter>
                 <SuccessfulTimeBlock />
@@ -81,7 +79,7 @@ describe('Succesful time block created', () => {
         expect(image).toBeInTheDocument();
     });
 
-    it('New time block button takes the user to the create time block page', () => {
+    it('new time block button takes the user to the create time block page', () => {
         render(
             <MemoryRouter initialEntries={['/successful-timeblock']}>
                 <Routes>
@@ -106,7 +104,7 @@ describe('Succesful time block created', () => {
         expect(screen.getByText('Create Time Block')).toBeInTheDocument();
     });
 
-    it('Return to dashboard navigates to /dashboard', async () => {
+    it('return to dashboard navigates to /dashboard', async () => {
         const user = userEvent.setup();
 
         render(
@@ -139,7 +137,7 @@ describe('Succesful time block created', () => {
         ).toBeInTheDocument();
     });
 
-    it('Does not render the Edit Time Block button when blockId is missing', () => {
+    it('does not render the Edit Time Block button when blockId is missing', () => {
         render(
             <MemoryRouter initialEntries={['/success']}>
                 <Routes>
@@ -153,7 +151,7 @@ describe('Succesful time block created', () => {
         ).not.toBeInTheDocument();
     });
 
-    it('Edit Time Block button navigates to the edit page when blockId exists', () => {
+    it('edit Time Block button navigates to the edit page when blockId exists', () => {
         render(
             <MemoryRouter
                 initialEntries={[{ pathname: '/success', state: { id: 123 } }]}
@@ -177,7 +175,7 @@ describe('Succesful time block created', () => {
         expect(screen.getByText('Edit Time Block Page')).toBeInTheDocument();
     });
 
-    it('View in Calendar button navigates to the calendar page', () => {
+    it('view in Calendar button navigates to the calendar page', () => {
         render(
             <MemoryRouter initialEntries={['/success']}>
                 <Routes>

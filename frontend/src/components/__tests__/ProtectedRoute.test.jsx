@@ -54,4 +54,12 @@ describe('ProtectedRoute', () => {
 
         expect(await screen.findByText('Login Page')).toBeInTheDocument();
     });
+
+    it('shows loading indicator while checking authentication', () => {
+        isTokenValid.mockResolvedValue(new Promise(() => {})); // never resolves
+
+        renderProtectedRoute();
+
+        expect(screen.getByText(/checking authentication/i)).toBeInTheDocument();
+    });
 });

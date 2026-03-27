@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -51,7 +51,7 @@ async function fillLoginForm(user, overrides = {}) {
     );
 }
 
-describe('Login page', () => {
+describe('Tests for login page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         isTokenValid.mockResolvedValue(false);
@@ -141,10 +141,10 @@ describe('Login page', () => {
         renderLoginWithRoutes();
         await fillLoginForm(user);
 
-        const button = screen.getByRole('button', { name: /log in/i });
+        const form = screen.getByRole('button', { name: /log in/i }).closest('form');
 
-        await user.click(button);
-        await user.click(button);
+        fireEvent.submit(form);
+        fireEvent.submit(form);
 
         expect(publicApi.post).toHaveBeenCalledTimes(1);
     });
