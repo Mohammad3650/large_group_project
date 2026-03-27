@@ -17,7 +17,7 @@ class MockAudio {
 }
 vi.stubGlobal("Audio", MockAudio);
 
-describe("playDing", () => {
+describe("Tests for playDing", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockPlay.mockResolvedValue(undefined);

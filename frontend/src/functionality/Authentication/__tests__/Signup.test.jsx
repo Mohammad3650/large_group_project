@@ -80,7 +80,7 @@ async function fillSignupForm(user, overrides = {}) {
     });
 }
 
-describe('Signup page', () => {
+describe('Tets for sign up page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         isTokenValid.mockResolvedValue(false);

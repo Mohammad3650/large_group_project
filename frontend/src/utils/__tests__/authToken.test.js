@@ -14,7 +14,7 @@ vi.mock("../authStorage", () => ({
   logout: vi.fn(),
 }));
 
-describe("isTokenValid", () => {
+describe("Tests for isTokenValid", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

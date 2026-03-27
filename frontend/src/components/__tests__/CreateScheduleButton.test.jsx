@@ -26,4 +26,21 @@ describe('Create schedule button takes the user to the page to create a time blo
 
         expect(screen.getByText('Create Time Block')).toBeInTheDocument();
     });
+
+    it('does not navigate before clicking the button', () => {
+        render(
+            <MemoryRouter initialEntries={['/']}>
+                <Routes>
+                    <Route path="/" element={<CreateScheduleButton />} />
+                    <Route
+                        path="/create-schedule"
+                        element={<h2>Create Time Block</h2>}
+                    />
+                </Routes>
+            </MemoryRouter>
+        );
+        expect(
+            screen.queryByText('Create Time Block')
+        ).not.toBeInTheDocument();
+    });
 });

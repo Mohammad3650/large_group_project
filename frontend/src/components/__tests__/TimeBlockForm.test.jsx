@@ -5,18 +5,44 @@ import { MemoryRouter } from 'react-router-dom';
 import TimeBlockForm from '../TimeBlockForm.jsx';
 import getUserTimezone from '../../utils/getUserTimezone.js';
 
-describe('TimeBlockForm tests', () => {
-    it('Renders all current form fields', () => {
-        render(
+const renderTimeBlockForm = (overrides = {}) => {
+    const props = {
+        onSubmit: vi.fn(),
+        loading: false,
+        serverErrors: [],
+        clearErrors: vi.fn(),
+        ...overrides
+    };
+
+    return {
+        ...render(
             <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
+                <TimeBlockForm {...props} />
             </MemoryRouter>
-        );
+        ),
+        props
+    };
+};
+
+const rerenderTimeBlockForm = (rerender, overrides = {}) => {
+    const props = {
+        onSubmit: vi.fn(),
+        loading: false,
+        serverErrors: [],
+        clearErrors: vi.fn(),
+        ...overrides
+    };
+
+    rerender(
+        <MemoryRouter>
+            <TimeBlockForm {...props} />
+        </MemoryRouter>
+    );
+};
+
+describe('TimeBlockForm tests', () => {
+    it('renders all current form fields', () => {
+        renderTimeBlockForm();
 
         expect(
             document.querySelector('input[type="date"]')
@@ -56,16 +82,7 @@ describe('TimeBlockForm tests', () => {
             }
         ];
 
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={serverErrors}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+        renderTimeBlockForm({ serverErrors });
 
         expect(screen.getByText(/date is required/i)).toBeInTheDocument();
         expect(screen.getByText(/name is required/i)).toBeInTheDocument();
@@ -74,17 +91,8 @@ describe('TimeBlockForm tests', () => {
         expect(screen.getByText(/end time is required/i)).toBeInTheDocument();
     });
 
-    it('Lets the user add and delete events', () => {
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+    it('lets the user add and delete events', () => {
+        renderTimeBlockForm();
 
         fireEvent.click(
             screen.getByRole('button', { name: /add another event/i })
@@ -106,36 +114,18 @@ describe('TimeBlockForm tests', () => {
     });
 
     it('does not show delete button when only one block exists', () => {
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+        renderTimeBlockForm();
 
         expect(
             screen.queryByRole('button', { name: /delete event/i })
         ).not.toBeInTheDocument();
     });
 
-    it('Submits the form data for all blocks', () => {
+    it('submits the form data for all blocks', () => {
         const onSubmit = vi.fn();
         const timezone = getUserTimezone();
 
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={onSubmit}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+        renderTimeBlockForm({ onSubmit });
 
         const dateInput = document.querySelector('input[type="date"]');
         const nameInput = screen.getByPlaceholderText(/name/i);
@@ -168,41 +158,23 @@ describe('TimeBlockForm tests', () => {
                 block_type: 'study',
                 start_time: '09:00',
                 end_time: '11:00',
-                timezone: 'Europe/London'
+                timezone: timezone,
             }
         ]);
     });
 
-    it('Shows Create Schedule when loading is false', () => {
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+    it('shows Create Schedule when loading is false', () => {
+        renderTimeBlockForm();
 
         expect(
             screen.getByRole('button', { name: /create schedule/i })
         ).toBeInTheDocument();
     });
 
-    it('Clears errors when adding, updating, and deleting blocks', () => {
+    it('clears errors when adding, updating, and deleting blocks', () => {
         const clearErrors = vi.fn();
 
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={clearErrors}
-                />
-            </MemoryRouter>
-        );
+        renderTimeBlockForm({ clearErrors });
 
         fireEvent.change(screen.getByPlaceholderText(/name/i), {
             target: { value: 'Task 1' }
@@ -220,33 +192,15 @@ describe('TimeBlockForm tests', () => {
         expect(clearErrors).toHaveBeenCalled();
     });
 
-    it('Shows Saving... and disables submit button when loading is true', () => {
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={true}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+    it('shows Saving... and disables submit button when loading is true', () => {
+        renderTimeBlockForm({ loading: true });
 
         const submitButton = screen.getByRole('button', { name: /saving/i });
         expect(submitButton).toBeDisabled();
     });
 
-    it('Changes block type from study to work after editing', () => {
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+    it('changes block type from study to work after editing', () => {
+        renderTimeBlockForm();
 
         const select = screen.getByDisplayValue('Study');
         fireEvent.change(select, { target: { value: 'work' } });
@@ -266,37 +220,18 @@ describe('TimeBlockForm tests', () => {
             end_time: '15:00'
         };
 
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                    initialData={initialData}
-                />
-            </MemoryRouter>
-        );
+        renderTimeBlockForm({ initialData });
 
         expect(
             screen.queryByRole('button', { name: /add another event/i })
         ).not.toBeInTheDocument();
     });
 
-    it('Submits multiple blocks correctly', () => {
+    it('submits multiple blocks correctly', () => {
         const onSubmit = vi.fn();
         const timezone = getUserTimezone();
 
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={onSubmit}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+        renderTimeBlockForm({ onSubmit });
 
         fireEvent.change(document.querySelector('input[type="date"]'), {
             target: { value: '2026-03-23' }
@@ -349,7 +284,7 @@ describe('TimeBlockForm tests', () => {
                 block_type: 'study',
                 start_time: '09:00',
                 end_time: '10:00',
-                timezone: 'Europe/London'
+                timezone: timezone,
             },
             {
                 id: undefined,
@@ -360,12 +295,12 @@ describe('TimeBlockForm tests', () => {
                 block_type: 'study',
                 start_time: '18:00',
                 end_time: '19:00',
-                timezone: 'Europe/London'
+                timezone: timezone,
             }
         ]);
     });
 
-    it('Updates the form when initialData changes after render', () => {
+    it('updates the form when initialData changes after render', () => {
         const firstData = {
             id: 1,
             date: '2026-03-26',
@@ -388,31 +323,11 @@ describe('TimeBlockForm tests', () => {
             end_time: '11:30'
         };
 
-        const { rerender } = render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                    initialData={firstData}
-                />
-            </MemoryRouter>
-        );
+        const { rerender } = renderTimeBlockForm({ initialData: firstData });
 
         expect(screen.getByPlaceholderText(/name/i)).toHaveValue('First block');
 
-        rerender(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                    initialData={secondData}
-                />
-            </MemoryRouter>
-        );
+        rerenderTimeBlockForm(rerender, { initialData: secondData });
 
         expect(document.querySelector('input[type="date"]')).toHaveValue(
             '2026-03-27'
@@ -431,7 +346,7 @@ describe('TimeBlockForm tests', () => {
         expect(timeInputs[1]).toHaveValue('11:30');
     });
 
-    it('Falls back to empty strings when initialData times are missing', () => {
+    it('falls back to empty strings when initialData times are missing', () => {
         const initialData = {
             id: 3,
             date: '2026-03-28',
@@ -443,24 +358,14 @@ describe('TimeBlockForm tests', () => {
             end_time: null
         };
 
-        render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                    initialData={initialData}
-                />
-            </MemoryRouter>
-        );
+        renderTimeBlockForm({ initialData });
 
         const timeInputs = document.querySelectorAll('input[type="time"]');
         expect(timeInputs[0]).toHaveValue('');
         expect(timeInputs[1]).toHaveValue('');
     });
 
-    it('Updates from create mode to edit mode when initialData is later provided', () => {
+    it('updates from create mode to edit mode when initialData is later provided', () => {
         const data = {
             id: 7,
             date: '2026-03-29',
@@ -472,36 +377,17 @@ describe('TimeBlockForm tests', () => {
             end_time: '13:00'
         };
 
-        const { rerender } = render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                />
-            </MemoryRouter>
-        );
+        const { rerender } = renderTimeBlockForm();
 
         expect(screen.getByPlaceholderText(/name/i)).toHaveValue('');
 
-        rerender(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                    initialData={data}
-                />
-            </MemoryRouter>
-        );
+        rerenderTimeBlockForm(rerender, { initialData: data });
 
         expect(screen.getByPlaceholderText(/name/i)).toHaveValue('Later block');
         expect(screen.getByPlaceholderText(/location/i)).toHaveValue('Room C');
     });
 
-    it('Updates description to an empty string when initialData description is missing', () => {
+    it('updates description to an empty string when initialData description is missing', () => {
         const firstData = {
             id: 1,
             date: '2026-03-26',
@@ -524,33 +410,13 @@ describe('TimeBlockForm tests', () => {
             end_time: '11:30'
         };
 
-        const { rerender } = render(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                    initialData={firstData}
-                />
-            </MemoryRouter>
-        );
+        const { rerender } = renderTimeBlockForm({ initialData: firstData });
 
         expect(
             screen.getByPlaceholderText(/description \(optional\)/i)
         ).toHaveValue('Has description');
 
-        rerender(
-            <MemoryRouter>
-                <TimeBlockForm
-                    onSubmit={vi.fn()}
-                    loading={false}
-                    serverErrors={[]}
-                    clearErrors={vi.fn()}
-                    initialData={secondData}
-                />
-            </MemoryRouter>
-        );
+        rerenderTimeBlockForm(rerender, { initialData: secondData });
 
         expect(
             screen.getByPlaceholderText(/description \(optional\)/i)
