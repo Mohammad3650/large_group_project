@@ -1,21 +1,21 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import CalendarPlaceholder from '../CalendarPlaceholder';
 
-vi.mock('../../../components/Navbar.jsx', () => ({
-    default: () => <div>Mock Navbar</div>
-}));
+function renderCalendarPlaceholder() {
+    return render(<CalendarPlaceholder />);
+}
 
-describe('CalendarPlaceholder', () => {
+describe('CalendarPlaceholder component', () => {
     it('renders the placeholder layout', () => {
-        const { container } = render(<CalendarPlaceholder />);
+        const { container } = renderCalendarPlaceholder();
 
         expect(container.querySelector('.calendardiv')).toBeInTheDocument();
         expect(container.querySelector('.title')).toBeInTheDocument();
     });
 
     it('renders the calendar title', () => {
-        render(<CalendarPlaceholder />);
+        renderCalendarPlaceholder();
 
         expect(screen.getByText('Calendar')).toBeInTheDocument();
     });

@@ -33,12 +33,8 @@ describe('Hero', () => {
 
         render(<Hero />);
 
-        expect(
-            screen.getByRole('button', { name: 'Sign Up' })
-        ).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: 'Login' })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Sign Up' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
     });
 
     it('navigates to signup when Sign Up is clicked', () => {
@@ -66,12 +62,8 @@ describe('Hero', () => {
 
         render(<Hero />);
 
-        expect(
-            screen.getByRole('button', { name: 'Calendar' })
-        ).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: 'Dashboard' })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Calendar' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument();
     });
 
     it('navigates to calendar when Calendar is clicked', () => {
@@ -113,16 +105,10 @@ describe('Hero', () => {
         expect(container.querySelector('.hero-right')).toBeInTheDocument();
         expect(container.querySelector('.hero-quote')).toBeInTheDocument();
         expect(container.querySelector('.hero-text-top')).toBeInTheDocument();
-        expect(
-            container.querySelector('.hero-text-bottom')
-        ).toBeInTheDocument();
+        expect(container.querySelector('.hero-text-bottom')).toBeInTheDocument();
         expect(container.querySelector('.hero-buttons')).toBeInTheDocument();
-        expect(
-            container.querySelector('.hero-button.black')
-        ).toBeInTheDocument();
-        expect(
-            container.querySelector('.hero-button.white')
-        ).toBeInTheDocument();
+        expect(container.querySelector('.hero-button.black')).toBeInTheDocument();
+        expect(container.querySelector('.hero-button.white')).toBeInTheDocument();
         expect(container.querySelector('.hero-image')).toBeInTheDocument();
     });
 });
