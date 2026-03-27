@@ -39,12 +39,11 @@ const formatDate = (date) => {
     return `${day}/${month}/${year}`;
 };
 
-function CalendarRenderer({
-    blocks,
-    calendarTimezone,
-    customComponents,
-    eventsService
-}) {
+/**
+ * Renders the Schedule-X calendar with the configured views, plugins,
+ * timezone, and custom modal components.
+ */
+function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsService }) {
     const eventModalPlugin = useMemo(() => createEventModalPlugin(), []);
 
     const calendar = useCalendarApp({
@@ -55,21 +54,10 @@ function CalendarRenderer({
         selectedDate: Temporal.Now.plainDateISO(calendarTimezone)
     });
 
-    return (
-        <ScheduleXCalendar
-            calendarApp={calendar}
-            customComponents={customComponents}
-        />
-    );
+    return <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />;
 }
 
-function CalendarView({
-    blocks,
-    setBlocks,
-    title,
-    headerButtons,
-    eventButtons
-}) {
+function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
     const [calendarKey, setCalendarKey] = useState(0);
     const calendarTimezone = getUserTimezone();
@@ -82,8 +70,15 @@ function CalendarView({
     const locationIcon = isDark ? locationIconDark : locationIconLight;
     const timeIcon = isDark ? timeIconDark : timeIconLight;
 
+    function confirmDelete() {
+        return confirm('Are you sure you want to delete this event?');
+    }
+
+    /**
+     * Deletes a time block from the backend and updates the calendar UI.
+     */
     function handleDelete(id) {
-        if (!confirm('Are you sure you want to delete this event?')) return;
+        if (!confirmDelete()) return;
 
         deleteTimeBlock(id)
             .then(() => {
@@ -91,64 +86,38 @@ function CalendarView({
                 setBlocks((b) => b.filter((block) => block.id !== id));
                 setCalendarKey((k) => k + 1);
             })
-            .catch((err) => console.error('Failed to delete', err));
+            .catch((err) => console.error('Failed to delete event with ID', id, err));
     }
 
     const customComponents = {
         eventModal: ({ calendarEvent }) => (
             <div className="calendar-event-modal">
-                <div className="sx__event-modal__title">
-                    {calendarEvent.title}
-                </div>
+                <div className="sx__event-modal__title">{calendarEvent.title}</div>
                 <div className="sx__event-modal__description">
                     <div className="event-detail">
-                        <img
-                            src={calendarIcon}
-                            alt="Date"
-                            className="event-detail-icon"
-                        />
+                        <img src={calendarIcon} alt="Date" className="event-detail-icon" />
                         <span>{formatDate(calendarEvent.date)}</span>
                     </div>
                     <div className="event-detail">
-                        <img
-                            src={timeIcon}
-                            alt="Time"
-                            className="event-detail-icon"
-                        />
+                        <img src={timeIcon} alt="Time" className="event-detail-icon" />
                         <span>
                             {calendarEvent.startTime} - {calendarEvent.endTime}
                         </span>
                     </div>
                     <div className="event-detail">
-                        <img
-                            src={locationIcon}
-                            alt="Location"
-                            className="event-detail-icon"
-                        />
+                        <img src={locationIcon} alt="Location" className="event-detail-icon" />
                         <span>{calendarEvent.location}</span>
                     </div>
                     <div className="event-detail">
-                        <img
-                            src={blockTypeIcon}
-                            alt="Block Type"
-                            className="event-detail-icon"
-                        />
+                        <img src={blockTypeIcon} alt="Block Type" className="event-detail-icon" />
                         <span>{calendarEvent.blockType}</span>
                     </div>
                     <div className="event-detail">
-                        <img
-                            src={descriptionIcon}
-                            alt="Description"
-                            className="event-detail-icon"
-                        />
+                        <img src={descriptionIcon} alt="Description" className="event-detail-icon" />
                         <span>{calendarEvent.description}</span>
                     </div>
                 </div>
-                <div className="buttons">
-                    {eventButtons
-                        ? eventButtons(calendarEvent, handleDelete)
-                        : null}
-                </div>
+                <div className="buttons">{eventButtons ? eventButtons(calendarEvent, handleDelete) : null}</div>
             </div>
         )
     };
@@ -158,13 +127,7 @@ function CalendarView({
             <h1>{title}</h1>
             {headerButtons}
             <div className="actual-calendar">
-                <CalendarRenderer
-                    key={calendarKey}
-                    blocks={blocks}
-                    calendarTimezone={calendarTimezone}
-                    customComponents={customComponents}
-                    eventsService={eventsService}
-                />
+                <CalendarRenderer key={calendarKey} blocks={blocks} calendarTimezone={calendarTimezone} customComponents={customComponents} eventsService={eventsService} />
             </div>
         </div>
     );
