@@ -11,26 +11,28 @@ vi.mock('react-router-dom', async () => {
     return { ...actual, useNavigate: () => mockNavigate };
 });
 
-describe('AddTaskButton', () => {
+const renderAddTaskButton = () => {
+    return render(
+        <MemoryRouter>
+            <AddTaskButton />
+        </MemoryRouter>
+    );
+};
+
+describe('Tests for the add task button', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
     it('renders the button with the correct text', () => {
-        render(
-            <MemoryRouter>
-                <AddTaskButton />
-            </MemoryRouter>
-        );
+        renderAddTaskButton();
+
         expect(screen.getByText('+ Add Task')).toBeInTheDocument();
     });
 
     it('navigates to /create-schedule when the button is clicked', () => {
-        render(
-            <MemoryRouter>
-                <AddTaskButton />
-            </MemoryRouter>
-        );
+        renderAddTaskButton();
+        
         fireEvent.click(screen.getByText('+ Add Task'));
         expect(mockNavigate).toHaveBeenCalledWith('/create-schedule');
     });
