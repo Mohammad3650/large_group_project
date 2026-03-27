@@ -61,12 +61,6 @@ function CalendarRenderer({
             customComponents={customComponents}
         />
     );
-    return (
-        <ScheduleXCalendar
-            calendarApp={calendar}
-            customComponents={customComponents}
-        />
-    );
 }
 
 function CalendarView({
