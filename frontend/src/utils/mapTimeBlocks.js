@@ -1,22 +1,6 @@
 import toLocalDateTime from './toLocalDateTime.js';
 
 /**
- * Build a local Temporal.ZonedDateTime from a YYYY-MM-DD date and HH:MM[:SS] time.
- *
- * @param {string} date - Event date
- * @param {string} time - Event time
- * @param {string} timezone - Browser timezone
- * @returns {Temporal.ZonedDateTime} Local zoned datetime
- */
-function buildLocalZonedDateTime(date, time, timezone) {
-    const trimmedTime = time.slice(0, 5);
-
-    return Temporal.PlainDateTime.from(
-        `${date}T${trimmedTime}:00`
-    ).toZonedDateTime(timezone);
-}
-
-/**
  * Maps raw time block data into the standard format used by the calendar and dashboard.
  *
  * @param {Array<{
