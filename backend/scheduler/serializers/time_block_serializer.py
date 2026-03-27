@@ -6,15 +6,6 @@ class TimeBlockSerializer(serializers.ModelSerializer):
     date = serializers.SerializerMethodField()
 
     def get_date(self, obj):
-        """
-        Returns the date of the associated DayPlan as a string.
-
-        Args:
-            obj (TimeBlock): The TimeBlock instance being serialized.
-
-        Returns:
-            str: The date of the TimeBlock's DayPlan.
-        """
         return str(obj.day.date)
 
     class Meta:
@@ -33,40 +24,49 @@ class TimeBlockSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         """
-        Validates the TimeBlock data before saving.
+        Validates incoming TimeBlock data.
 
-        Ensures required fields are provided and that the start time
-        occurs before the end time.
+        Coordinates validation by delegating to helper methods
+        for required field checks and ensuring start time is before end time.
 
         Args:
-            attrs (dict): The incoming data to validate.
+            attrs (dict): Incoming data to validate.
 
         Returns:
-            dict: The validated data if all checks pass.
+            dict: Validated data.
 
         Raises:
-            serializers.ValidationError: If any validation rule is violated.
+            serializers.ValidationError: If validation fails.
         """
         errors = {}
 
-        if not attrs.get("name"):
-            errors["name"] = ["A name must be provided."]
-        if not attrs.get("location"):
-            errors["location"] = ["Location must be provided."]
-        if not attrs.get("start_time"):
-            errors["start_time"] = ["Start time must be provided."]
-        if not attrs.get("end_time"):
-            errors["end_time"] = ["End time must be provided."]
-        if not attrs.get("timezone"):
-            errors["timezone"] = ["Timezone must be provided."]
-        if (
-            attrs.get("start_time") is not None
-            and attrs.get("end_time") is not None
-            and attrs.get("start_time") >= attrs.get("end_time")
-        ):
-            errors["end_time"] = ["End time must be after start time."]
+        errors.update(self._validate_required_fields(attrs))
+        errors.update(self._validate_time_order(attrs))
 
         if errors:
             raise serializers.ValidationError(errors)
 
         return attrs
+
+    def _validate_required_fields(self, attrs):
+        required_fields = ["name", "location", "start_time", "end_time", "timezone"]
+        errors = {}
+
+        for field in required_fields:
+            if not attrs.get(field):
+                errors[field] = [
+                    f"{field.replace('_', ' ').capitalize()} must be provided."
+                ]
+
+        return errors
+
+    def _validate_time_order(self, attrs):
+        errors = {}
+
+        start_time = attrs.get("start_time")
+        end_time = attrs.get("end_time")
+
+        if start_time and end_time and start_time >= end_time:
+            errors["end_time"] = ["End time must be after start time."]
+
+        return errors
