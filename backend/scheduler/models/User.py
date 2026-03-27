@@ -27,12 +27,9 @@ class User(AbstractUser):
         last_name (str): User's last name.
         phone_number (str): User's phone number validated against UK format.
     """
-    
+
     username = models.CharField(max_length=150, unique=False, blank=False)
     email = models.EmailField(unique=True, blank=False)
-
-    # Username is still stored as a required display/identity field
-    username = models.CharField(max_length=150, blank=False)
 
     # Basic profile fields required for each user
     first_name = models.CharField(max_length=50, blank=False)
