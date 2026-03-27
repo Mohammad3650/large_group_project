@@ -20,7 +20,7 @@ const defaultProps = {
     overdue: false
 };
 
-describe('TaskItem', () => {
+describe('Tests for TaskItem', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.useFakeTimers();
