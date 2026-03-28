@@ -34,7 +34,6 @@ class User(AbstractUser):
     # Email is used as the unique login field
     email = models.EmailField(unique=True, blank=False)
 
-
     # Basic profile fields required for each user
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
