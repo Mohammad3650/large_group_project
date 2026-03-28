@@ -249,7 +249,13 @@ describe('ChangePassword', () => {
 
         expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1200);
 
-        const scheduledCallback = setTimeoutSpy.mock.calls[0][0];
+        const navigationTimeoutCall = setTimeoutSpy.mock.calls.find(
+            ([callback, delay]) => typeof callback === 'function' && delay === 1200
+        );
+
+        expect(navigationTimeoutCall).toBeDefined();
+
+        const scheduledCallback = navigationTimeoutCall[0];
         scheduledCallback();
 
         expect(mockNavigate).toHaveBeenCalledWith('/profile');
