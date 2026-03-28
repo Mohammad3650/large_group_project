@@ -3,6 +3,7 @@ from django.test import SimpleTestCase
 
 from scheduler.services.schedule_generator import Scheduler
 from scheduler.services.request_parser import ParsedScheduleRequest
+from unittest.mock import patch
 
 
 class SchedulerTests(SimpleTestCase):
@@ -202,3 +203,67 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(durations, [30, 45, 60])
         for start, end, duration, *_ in result:
             self.assertEqual(end - start, duration)
+    
+    def test_early_preference_pushes_event_to_window_start(self):
+        request = self.make_request(
+            days=1,
+            windows=[(540, 720, False)],
+            unscheduled=[(60, "Revision", 1, False, "Early", "", "study", "")]
+        )
+
+        _, result = self.build_and_solve(request)
+        self.assertEqual(len(result), 1)
+        start, end, duration, name, *_ = result[0]
+        self.assertEqual(start, 540)
+        self.assertEqual(end, 600)
+        self.assertEqual(duration, 60)
+        self.assertEqual(name, "Revision")
+    
+    def test_late_preference_pushes_event_to_window_end(self):
+        request = self.make_request(
+            days=1,
+            windows=[(540, 720, False)],
+            unscheduled=[(60, "Revision", 1, False, "Late", "", "study", "")]
+        )
+
+        _, result = self.build_and_solve(request)
+        self.assertEqual(len(result), 1)
+        start, end, *_ = result[0]
+        self.assertEqual(start, 660)
+        self.assertEqual(end, 720)
+
+    def test_debug_output_before_solving_prints_none_status(self):
+        request = self.make_request(days=1, unscheduled=[])
+        scheduler = Scheduler(request, [])
+
+        with patch("builtins.print") as mocked_print:
+            scheduler.debug_output()
+            mocked_print.assert_called_once_with("Status -> None")
+
+    def test_debug_output_after_solving_prints_session_line(self):
+        request = self.make_request(
+            days=1,
+            windows=[(540, 720, False)],
+            unscheduled=[(60, "Revision", 1, False, "None", "Library", "study", "desc")]
+        )
+        scheduler, _ = self.build_and_solve(request)
+
+        with patch("builtins.print") as mocked_print:
+            scheduler.debug_output()
+
+        self.assertTrue(mocked_print.called)
+        printed = mocked_print.call_args_list[0][0][0]
+        self.assertIn("Session 1", printed)
+        self.assertIn("Revision", printed)
+        self.assertIn("Library", printed)
+
+    def test_recur_once_per_day_early_return_branch(self):
+        request = self.make_request(days=2, unscheduled=[])
+        scheduler = Scheduler(request, [])
+
+        recurring_events = [1, 2, 3]  # length = 3 > days = 2
+
+        with patch.object(scheduler, "_enforce_max_one_per_day") as mocked:
+            scheduler.reccur_once_per_day_constraint(recurring_events)
+            mocked.assert_not_called()
+
