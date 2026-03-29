@@ -111,3 +111,10 @@ describe('Calendar component', () => {
         expect(setBlocks).toHaveBeenCalledWith(['updated']);
     });
 });
+
+it('renders the empty state when there are no events', () => {
+    renderCalendar({ blocks: [] });
+
+    expect(screen.getByText('Welcome to your calendar, Mohammad!')).toBeInTheDocument();
+    expect(screen.getByText('No events yet.')).toBeInTheDocument();
+});

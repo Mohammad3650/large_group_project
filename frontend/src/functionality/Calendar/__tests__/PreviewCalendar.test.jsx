@@ -1,13 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const { mockNavigate, mockHandleDelete, mockMapTimeBlocks, mockSavePlan } =
-    vi.hoisted(() => ({
-        mockNavigate: vi.fn(),
-        mockHandleDelete: vi.fn(),
-        mockMapTimeBlocks: vi.fn(),
-        mockSavePlan: vi.fn()
-    }));
+const { mockNavigate, mockHandleDelete, mockMapTimeBlocks, mockSavePlan } = vi.hoisted(() => ({
+    mockNavigate: vi.fn(),
+    mockHandleDelete: vi.fn(),
+    mockMapTimeBlocks: vi.fn(),
+    mockSavePlan: vi.fn()
+}));
 
 vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate
@@ -27,15 +26,9 @@ vi.mock('../CalendarView.jsx', () => ({
             <div>Mock Calendar View</div>
             <div>{title}</div>
             <div data-testid="blocks-length">{blocks.length}</div>
-            <button onClick={() => setBlocks(['updated'])}>
-                Trigger Set Blocks
-            </button>
+            <button onClick={() => setBlocks(['updated'])}>Trigger Set Blocks</button>
             <div>{headerButtons}</div>
-            <div>
-                {eventButtons
-                    ? eventButtons({ id: 42 }, mockHandleDelete)
-                    : null}
-            </div>
+            <div>{eventButtons ? eventButtons({ id: 42 }, mockHandleDelete) : null}</div>
         </div>
     )
 }));
@@ -82,60 +75,38 @@ describe('PreviewCalendar', () => {
     it('renders the placeholder when blocks are null', () => {
         render(<PreviewCalendar />);
 
-        expect(
-            screen.getByText('Mock Calendar Placeholder')
-        ).toBeInTheDocument();
+        expect(screen.getByText('Mock Calendar Placeholder')).toBeInTheDocument();
     });
 
     it('renders save and cancel buttons once CalendarView is shown', async () => {
-        sessionStorage.setItem(
-            'generatedSchedule',
-            JSON.stringify(mockSchedule)
-        );
+        sessionStorage.setItem('generatedSchedule', JSON.stringify(mockSchedule));
         mockMapTimeBlocks.mockReturnValue(mappedBlocks);
 
         render(<PreviewCalendar />);
 
         await waitFor(() => {
-            expect(
-                screen.getByRole('button', { name: /Save Schedule/i })
-            ).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /Save Schedule/i })).toBeInTheDocument();
         });
-        expect(
-            screen.getByRole('button', { name: /Cancel/i })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
     });
 
     it('loads schedule from sessionStorage and renders CalendarView', async () => {
-        sessionStorage.setItem(
-            'generatedSchedule',
-            JSON.stringify(mockSchedule)
-        );
+        sessionStorage.setItem('generatedSchedule', JSON.stringify(mockSchedule));
         mockMapTimeBlocks.mockReturnValue(mappedBlocks);
 
         render(<PreviewCalendar />);
 
         await waitFor(() => {
-            expect(
-                screen.getByText('Preview generated schedule')
-            ).toBeInTheDocument();
+            expect(screen.getByText('Preview generated schedule')).toBeInTheDocument();
         });
 
-        expect(mockMapTimeBlocks).toHaveBeenCalledWith([
-            ...mockSchedule.events,
-            ...mockSchedule.scheduled
-        ]);
+        expect(mockMapTimeBlocks).toHaveBeenCalledWith([...mockSchedule.events, ...mockSchedule.scheduled]);
 
-        expect(screen.getByTestId('blocks-length')).toHaveTextContent(
-            String(mappedBlocks.length)
-        );
+        expect(screen.getByTestId('blocks-length')).toHaveTextContent(String(mappedBlocks.length));
     });
 
     it('saves schedule and navigates to dashboard', async () => {
-        sessionStorage.setItem(
-            'generatedSchedule',
-            JSON.stringify(mockSchedule)
-        );
+        sessionStorage.setItem('generatedSchedule', JSON.stringify(mockSchedule));
         mockMapTimeBlocks.mockReturnValue(mappedBlocks);
         mockSavePlan.mockResolvedValue({});
 
@@ -159,10 +130,7 @@ describe('PreviewCalendar', () => {
     });
 
     it('removes generatedSchedule and navigates on cancel', async () => {
-        sessionStorage.setItem(
-            'generatedSchedule',
-            JSON.stringify(mockSchedule)
-        );
+        sessionStorage.setItem('generatedSchedule', JSON.stringify(mockSchedule));
         mockMapTimeBlocks.mockReturnValue(mappedBlocks);
 
         render(<PreviewCalendar />);
@@ -176,4 +144,19 @@ describe('PreviewCalendar', () => {
         expect(sessionStorage.getItem('generatedSchedule')).toBeNull();
         expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
+});
+
+it('logs an error when loading the generated schedule fails', async () => {
+    const error = new Error('Bad session data');
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    sessionStorage.setItem('generatedSchedule', '{invalid json');
+
+    render(<PreviewCalendar />);
+
+    await waitFor(() => {
+        expect(consoleSpy).toHaveBeenCalledWith('Failed to load time blocks', expect.any(Error));
+    });
+
+    consoleSpy.mockRestore();
 });
