@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../../api.js';
 import AuthCard from '../../../components/AuthCard.jsx';
@@ -9,6 +9,10 @@ const initialErrors = {
     global: []
 };
 
+const PASSWORD_CHANGE_FAILURE_MESSAGE = 'Password change failed.';
+const PASSWORD_CHANGE_SUCCESS_MESSAGE = 'Password updated successfully.';
+const PASSWORD_CHANGE_REDIRECT_DELAY_MS = 1200;
+
 function ChangePassword() {
     const navigate = useNavigate();
 
@@ -17,6 +21,16 @@ function ChangePassword() {
     const [message, setMessage] = useState('');
     const [errors, setErrors] = useState(initialErrors);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!message) return;
+
+        const timeoutId = setTimeout(() => {
+            navigate('/profile');
+        }, PASSWORD_CHANGE_REDIRECT_DELAY_MS);
+
+        return () => clearTimeout(timeoutId);
+    }, [message, navigate]);
 
     function validateForm() {
         const fieldErrors = {};
@@ -54,13 +68,11 @@ function ChangePassword() {
 
             setMessage(res.data.message);
 
-            setTimeout(() => {
-                navigate('/profile');
-            }, 1200);
+            setMessage(res.data.message || PASSWORD_CHANGE_SUCCESS_MESSAGE);
         } catch {
             setErrors({
                 fieldErrors: {},
-                global: ['Password change failed.']
+                global: [PASSWORD_CHANGE_FAILURE_MESSAGE]
             });
         } finally {
             setLoading(false);

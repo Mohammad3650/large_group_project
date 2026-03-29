@@ -222,28 +222,22 @@ function EditProfile() {
                         className="btn btn-dark btn-lg rounded-3"
                         disabled={saving}
                     >
-                        {saving ? 'Saving...' : 'Save Changes'}
+                        {saving ? 'Saving changes...' : 'Save Changes'}
                     </button>
 
                     <button
                         type="button"
                         className="btn btn-outline-dark rounded-3"
+                        aria-label="Change password"
                         onClick={() => navigate('/change-password')}
                     >
                         Change Password
                     </button>
 
-                    {/* <button
-            type="button"
-            className="btn btn-outline-secondary rounded-3"
-            onClick={() => navigate("/dashboard")}
-          >
-            Back to Dashboard
-          </button> */}
-
                     <button
                         type="button"
                         className="btn btn-danger rounded-3"
+                        aria-label="Delete your account permanently"
                         onClick={deleteAccount}
                     >
                         Delete Account
