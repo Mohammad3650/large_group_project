@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import generateSchedule from "../savePlan";
+import savePlan from "../savePlan";
 import { api } from "../../api";
 
 vi.mock("../../api", () => ({
@@ -8,14 +8,18 @@ vi.mock("../../api", () => ({
     }
 }));
 
-describe("savePlan", () => {
+describe("Tests for savePlan", () => {
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it("calls api.post with correct URL and data", async () => {
         const mockData = { test: "data" };
 
         api.post.mockResolvedValue({ data: {} });
 
-        await generateSchedule(mockData);
+        await savePlan(mockData);
 
         expect(api.post).toHaveBeenCalledWith(
             "/api/plans/save/",
