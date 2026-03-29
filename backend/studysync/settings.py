@@ -13,6 +13,20 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 
+import os
+import sys
+
+# Label the environment we are in.
+# This is set up for PythonAnywhere deployment and must change if the
+# deployment platform changes.
+if 'test' in sys.argv:
+    ENVIRONMENT = 'test'
+elif 'PYTHONANYWHERE_SITE' in os.environ:
+    ENVIRONMENT = 'production'
+else:
+    ENVIRONMENT = 'development'
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,12 +35,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-g65u&##si5vdn9y^_^@6)_-^^m$ocz$58$6=m30#8kr=w$f+yn"
+if ENVIRONMENT == 'production':
+    SECRET_KEY = str(os.getenv('SECRET_KEY'))
+else:
+    SECRET_KEY = "django-insecure-g65u&##si5vdn9y^_^@6)_-^^m$ocz$58$6=m30#8kr=w$f+yn"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ENVIRONMENT == 'development'
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "hamzakhan887.pythonanywhere.com"]
 
 
 # Application definition
@@ -162,3 +179,12 @@ LOGIN_REDIRECT_URL = "/admin/"
 SOCIALACCOUNT_STORE_TOKEN = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Security settings
+if ENVIRONMENT == 'production':
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_PRELOAD = True
