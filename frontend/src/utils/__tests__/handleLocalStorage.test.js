@@ -11,51 +11,56 @@ vi.mock("../../api", () => ({
   setAuthToken: vi.fn(),
 }));
 
-describe("authStorage", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    localStorage.clear();
-  });
+const setTokens = ({ access, refresh } = {}) => {
+  if (access !== undefined) localStorage.setItem("access", access);
+  if (refresh !== undefined) localStorage.setItem("refresh", refresh);
+};
 
-  it("returns the stored access token", () => {
-    localStorage.setItem("access", "test-access");
+describe("Tests for authStorage", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        localStorage.clear();
+    });
 
-    const result = getAccessToken();
+    it("returns the stored access token", () => {
+        setTokens({ access: "test-access" });
 
-    expect(result).toBe("test-access");
-  });
 
-  it("returns the stored refresh token", () => {
-    localStorage.setItem("refresh", "test-refresh");
+        const result = getAccessToken();
 
-    const result = getRefreshToken();
+        expect(result).toBe("test-access");
+    });
 
-    expect(result).toBe("test-refresh");
-  });
+    it("returns the stored refresh token", () => {
+        setTokens({ refresh: "test-refresh" });
 
-  it("returns null if tokens are not present", () => {
-    expect(getAccessToken()).toBeNull();
-    expect(getRefreshToken()).toBeNull();
-  });
+        const result = getRefreshToken();
 
-  it("saves tokens to localStorage and sets auth header", () => {
-    saveTokens("access-token", "refresh-token");
+        expect(result).toBe("test-refresh");
+    });
 
-    expect(localStorage.getItem("access")).toBe("access-token");
-    expect(localStorage.getItem("refresh")).toBe("refresh-token");
+    it("returns null if tokens are not present", () => {
+        expect(getAccessToken()).toBeNull();
+        expect(getRefreshToken()).toBeNull();
+    });
 
-    expect(apiModule.setAuthToken).toHaveBeenCalledWith("access-token");
-  });
+    it("saves tokens to localStorage and sets auth header", () => {
+        saveTokens("access-token", "refresh-token");
 
-  it("removes tokens from localStorage and clears auth header on logout", () => {
-    localStorage.setItem("access", "access-token");
-    localStorage.setItem("refresh", "refresh-token");
+        expect(localStorage.getItem("access")).toBe("access-token");
+        expect(localStorage.getItem("refresh")).toBe("refresh-token");
 
-    logout();
+        expect(apiModule.setAuthToken).toHaveBeenCalledWith("access-token");
+    });
 
-    expect(localStorage.getItem("access")).toBeNull();
-    expect(localStorage.getItem("refresh")).toBeNull();
+    it("removes tokens from localStorage and clears auth header on logout", () => {
+        setTokens({ access: "access-token", refresh: "refresh-token" });
 
-    expect(apiModule.setAuthToken).toHaveBeenCalledWith(null);
-  });
+        logout();
+
+        expect(localStorage.getItem("access")).toBeNull();
+        expect(localStorage.getItem("refresh")).toBeNull();
+
+        expect(apiModule.setAuthToken).toHaveBeenCalledWith(null);
+    });
 });

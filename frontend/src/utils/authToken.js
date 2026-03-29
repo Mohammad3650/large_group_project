@@ -17,16 +17,16 @@ async function verifyToken(token) {
  * Checks whether the currently stored access token is still valid.
  *
  * Behavior:
- * -- Reads the access token from local storage
- * -- Returns false immediately if no token exists
- * -- Sends the token to the backend verification endpoint
- * -- Returns true if verification succeeds
- * -- Logs the user out and returns false if verification fails
+ * - Reads the access token from local storage
+ * - Returns false immediately if no token exists
+ * - Sends the token to the backend verification endpoint
+ * - Returns true if verification succeeds
+ * - Logs the user out and returns false if verification fails
  *
  * Failure cases handled:
- * -- missing token
- * -- expired/invalid token (401/403)
- * -- network/server errors
+ * - missing token
+ * - expired/invalid token (401/403)
+ * - network/server errors
  *
  * @returns {Promise<boolean>} True if the token is valid, false otherwise
  */

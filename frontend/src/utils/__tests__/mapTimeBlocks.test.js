@@ -22,7 +22,12 @@ const baseBlock = {
     description: "Introduction to testing",
 };
 
-describe("mapTimeBlocks", () => {
+describe("Tests for mapTimeBlocks", () => {
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it("maps a block with all fields correctly", () => {
         const result = mapTimeBlocks([baseBlock]);
 
@@ -44,7 +49,6 @@ describe("mapTimeBlocks", () => {
     });
 
     it("calls toLocalDateTime with date + start_time and date + end_time", () => {
-        vi.clearAllMocks();
         mapTimeBlocks([baseBlock]);
 
         expect(toLocalDateTime).toHaveBeenCalledWith("2024-03-18", "09:00:00");

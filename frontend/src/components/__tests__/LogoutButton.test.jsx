@@ -14,7 +14,7 @@ vi.mock('../../utils/authStorage', () => ({
     logout: vi.fn()
 }));
 
-describe('LogoutButton', () => {
+describe('Tests for LogoutButton', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

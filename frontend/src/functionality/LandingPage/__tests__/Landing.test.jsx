@@ -25,7 +25,7 @@ function renderLanding() {
     return render(<Landing />);
 }
 
-describe('Landing component', () => {
+describe('Tests for Landing', () => {
     it('renders the main layout and child components', () => {
         const { container } = renderLanding();
 

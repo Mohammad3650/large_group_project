@@ -8,7 +8,7 @@ vi.mock('../../api.js', () => ({
     }
 }));
 
-describe('handleExportIcs', () => {
+describe('Tests for handleExportIcs', () => {
     let createObjectURLSpy;
     let revokeObjectURLSpy;
     let createElementSpy;

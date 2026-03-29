@@ -3,25 +3,35 @@ import { render, waitFor } from '@testing-library/react';
 import useRedirectIfAuthenticated from '../useRedirectIfAuthenticated.js';
 import { isTokenValid } from '../authToken.js';
 
+const mockNavigate = vi.fn();
+
 vi.mock('../authToken.js', () => ({
     isTokenValid: vi.fn()
 }));
 
-function TestComponent({ navigate, path }) {
-    useRedirectIfAuthenticated(navigate, path);
+vi.mock("react-router-dom", async () => {
+    const actual = await vi.importActual('react-router-dom');
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate,
+    };
+});
+
+function TestComponent({ path }) {
+    useRedirectIfAuthenticated(path);
     return <div>Test Component</div>;
 }
 
-describe('useRedirectIfAuthenticated', () => {
+describe('Tests for useRedirectIfAuthenticated', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        mockNavigate.mockClear();
     });
 
     it('navigates to the default dashboard path when the token is valid', async () => {
-        const mockNavigate = vi.fn();
         isTokenValid.mockResolvedValue(true);
 
-        render(<TestComponent navigate={mockNavigate} />);
+        render(<TestComponent />);
 
         await waitFor(() => {
             expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
@@ -29,10 +39,9 @@ describe('useRedirectIfAuthenticated', () => {
     });
 
     it('navigates to a custom path when the token is valid', async () => {
-        const mockNavigate = vi.fn();
         isTokenValid.mockResolvedValue(true);
 
-        render(<TestComponent navigate={mockNavigate} path="/calendar" />);
+        render(<TestComponent path="/calendar" />);
 
         await waitFor(() => {
             expect(mockNavigate).toHaveBeenCalledWith('/calendar');
@@ -40,10 +49,9 @@ describe('useRedirectIfAuthenticated', () => {
     });
 
     it('does not navigate when the token is invalid', async () => {
-        const mockNavigate = vi.fn();
         isTokenValid.mockResolvedValue(false);
 
-        render(<TestComponent navigate={mockNavigate} />);
+        render(<TestComponent />);
 
         await waitFor(() => {
             expect(isTokenValid).toHaveBeenCalledTimes(1);
