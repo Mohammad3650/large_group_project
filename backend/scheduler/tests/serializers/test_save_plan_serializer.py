@@ -14,15 +14,6 @@ def valid_event(**overrides):
     base.update(overrides)
     return base
 
-
-def valid_payload(**overrides):
-    base = {
-        "week_start": "2026-03-16",
-        "events": [valid_event()],
-    }
-    base.update(overrides)
-    return base
-
 class TestSaveTimeBlockSerializer(TestCase):
     def setUp(self):
         self.data = {

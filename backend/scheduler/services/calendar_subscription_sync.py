@@ -133,6 +133,138 @@ def should_import_event(event):
     """
     return event["end_datetime"] >= timezone.now()
 
+def get_event_date(event):
+    """
+    Get the local event date in Europe/London.
+
+    Args:
+        event (dict): Parsed event dictionary.
+
+    Returns:
+        date: Local event date.
+    """
+    return event["start_datetime"].astimezone(LOCAL_TIMEZONE).date()
+
+
+def get_existing_imported_event(subscription, external_event_uid):
+    """
+    Retrieve an existing imported calendar event for a subscription.
+
+    Args:
+        subscription (CalendarSubscription): Subscription being synced.
+        external_event_uid (str): Stable external event identifier.
+
+    Returns:
+        ImportedCalendarEvent | None: Matching imported event if it exists.
+    """
+    return (
+        ImportedCalendarEvent.objects.filter(
+            subscription=subscription,
+            external_event_uid=external_event_uid,
+        )
+        .select_related("time_block")
+        .first()
+    )
+
+
+def create_imported_event(
+    subscription,
+    external_event_uid,
+    dayplan,
+    timeblock_data,
+    event_date,
+):
+    """
+    Create a new imported event and linked TimeBlock.
+
+    Args:
+        subscription (CalendarSubscription): Subscription being synced.
+        external_event_uid (str): Stable external event identifier.
+        dayplan (DayPlan): Target DayPlan.
+        timeblock_data (dict): TimeBlock payload.
+        event_date (date): Local event date.
+
+    Returns:
+        None
+    """
+    time_block = create_timeblock(dayplan, timeblock_data, str(event_date))
+    ImportedCalendarEvent.objects.create(
+        subscription=subscription,
+        external_event_uid=external_event_uid,
+        time_block=time_block,
+    )
+
+
+def update_imported_event(imported_event, dayplan, timeblock_data, event_date):
+    """
+    Update the linked TimeBlock for an existing imported event.
+
+    Args:
+        imported_event (ImportedCalendarEvent): Existing imported event mapping.
+        dayplan (DayPlan): Target DayPlan.
+        timeblock_data (dict): Updated TimeBlock payload.
+        event_date (date): Local event date.
+
+    Returns:
+        None
+    """
+    update_timeblock(
+        imported_event.time_block,
+        dayplan,
+        timeblock_data,
+        str(event_date),
+    )
+
+
+def sync_single_event(subscription, event):
+    """
+    Sync a single parsed ICS event into StudySync.
+
+    Args:
+        subscription (CalendarSubscription): Subscription being synced.
+        event (dict): Parsed ICS event.
+
+    Returns:
+        str: One of "created", "updated", or "skipped".
+    """
+    if not should_import_event(event):
+        return "skipped"
+
+    external_event_uid = build_external_event_uid(event)
+    event_date = get_event_date(event)
+    dayplan = get_or_create_dayplan(subscription.user, event_date)
+    timeblock_data = build_timeblock_data(event)
+
+    imported_event = get_existing_imported_event(subscription, external_event_uid)
+
+    if imported_event is None:
+        create_imported_event(
+            subscription,
+            external_event_uid,
+            dayplan,
+            timeblock_data,
+            event_date,
+        )
+        return "created"
+
+    update_imported_event(imported_event, dayplan, timeblock_data, event_date)
+    return "updated"
+
+
+def finalise_subscription_sync(subscription):
+    """
+    Update sync metadata after a successful subscription sync.
+
+    Args:
+        subscription (CalendarSubscription): Subscription being synced.
+
+    Returns:
+        None
+    """
+    subscription.last_synced_at = timezone.now()
+    subscription.last_error = ""
+    subscription.save(update_fields=["last_synced_at", "last_error", "updated_at"])
+
 
 @transaction.atomic
 def sync_calendar_subscription(subscription):
@@ -148,47 +280,15 @@ def sync_calendar_subscription(subscription):
     ics_content = fetch_ics_content(subscription.source_url)
     events = parse_ics_events(ics_content)
 
-    created_count = 0
-    updated_count = 0
-    skipped_count = 0
+    sync_result = {
+        "created": 0,
+        "updated": 0,
+        "skipped": 0,
+    }
 
     for event in events:
-        if not should_import_event(event):
-            skipped_count += 1
-            continue
+        outcome = sync_single_event(subscription, event)
+        sync_result[outcome] += 1
 
-        external_event_uid = build_external_event_uid(event)
-
-        local_start = event["start_datetime"].astimezone(LOCAL_TIMEZONE)
-        event_date = local_start.date()
-
-        dayplan = get_or_create_dayplan(subscription.user, event_date)
-        timeblock_data = build_timeblock_data(event)
-
-        imported_event = ImportedCalendarEvent.objects.filter(
-            subscription=subscription,
-            external_event_uid=external_event_uid,
-        ).select_related("time_block").first()
-
-        if imported_event is None:
-            time_block = create_timeblock(dayplan, timeblock_data, str(event_date))
-            ImportedCalendarEvent.objects.create(
-                subscription=subscription,
-                external_event_uid=external_event_uid,
-                time_block=time_block,
-            )
-            created_count += 1
-            continue
-
-        update_timeblock(imported_event.time_block, dayplan, timeblock_data, str(event_date))
-        updated_count += 1
-
-    subscription.last_synced_at = timezone.now()
-    subscription.last_error = ""
-    subscription.save(update_fields=["last_synced_at", "last_error", "updated_at"])
-
-    return {
-        "created": created_count,
-        "updated": updated_count,
-        "skipped": skipped_count,
-    }
+    finalise_subscription_sync(subscription)
+    return sync_result

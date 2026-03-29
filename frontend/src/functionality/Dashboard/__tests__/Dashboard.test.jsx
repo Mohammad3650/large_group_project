@@ -187,7 +187,7 @@ const renderDashboard = () =>
         </MemoryRouter>
     );
 
-describe('Dashboard', () => {
+describe('Tests for Dashboard', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         apiModule.api.get.mockResolvedValue({

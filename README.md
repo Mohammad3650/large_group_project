@@ -23,7 +23,8 @@ Live URL: [currently not available]
 
 ## Demo Accounts 
 
-[Not available yet]
+Email: seeded_johndoe@example.net
+Password: password123
 
 ## Features
 

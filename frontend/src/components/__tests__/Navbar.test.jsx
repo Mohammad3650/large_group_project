@@ -33,7 +33,7 @@ const renderNavbar = () =>
         </MemoryRouter>
     );
 
-describe('Tests for navbar', () => {
+describe('Tests for Navbar', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent} from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -218,6 +218,7 @@ describe('ChangePassword', () => {
             await screen.findByText(/password change failed/i)
         ).toBeInTheDocument();
     });
+
     it('schedules navigation to profile after a successful password change', async () => {
         const user = userEvent.setup();
         const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
@@ -249,11 +250,35 @@ describe('ChangePassword', () => {
 
         expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1200);
 
-        const scheduledCallback = setTimeoutSpy.mock.calls[0][0];
+        const navigationTimeoutCall = setTimeoutSpy.mock.calls.find(
+            ([callback, delay]) => typeof callback === 'function' && delay === 1200
+        );
+
+        expect(navigationTimeoutCall).toBeDefined();
+
+        const scheduledCallback = navigationTimeoutCall[0];
         scheduledCallback();
 
         expect(mockNavigate).toHaveBeenCalledWith('/profile');
 
         setTimeoutSpy.mockRestore();
+    });
+
+    it('returns early if submit happens while loading is true', async () => {
+        const user = userEvent.setup();
+
+        api.post.mockImplementation(() => new Promise(() => {}));
+
+        renderComponent();
+
+        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
+        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
+
+        const form = screen.getByRole('button', { name: /update password/i }).closest('form');
+
+        fireEvent.submit(form);
+        fireEvent.submit(form);
+
+        expect(api.post).toHaveBeenCalledTimes(1);
     });
 });

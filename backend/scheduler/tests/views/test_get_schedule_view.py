@@ -7,6 +7,15 @@ from scheduler.models.TimeBlock import TimeBlock
 
 
 class GetScheduleViewTest(APITestCase):
+    """
+    Set up two users, their DayPlans, and associated TimeBlocks for testing
+    schedule retrieval and access control behaviour.
+
+    Includes:
+    - A primary user with one TimeBlock
+    - A second user with a separate TimeBlock (to test data isolation)
+    - The endpoint URL for retrieving schedules
+    """
 
     def setUp(self):
         self.user = User.objects.create_user(
