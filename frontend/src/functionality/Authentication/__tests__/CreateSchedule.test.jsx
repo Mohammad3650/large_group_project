@@ -90,7 +90,7 @@ vi.mock('../../../components/GeneratorForm.jsx', () => ({
     )
 }));
 
-describe('CreateSchedule', () => {
+describe('Tests for CreateSchedule', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         sessionStorage.clear();

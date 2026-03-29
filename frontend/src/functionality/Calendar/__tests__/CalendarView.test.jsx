@@ -70,7 +70,7 @@ function renderEventModal() {
     return render(<EventModal calendarEvent={blocks[0]} />);
 }
 
-describe('CalendarView component', () => {
+describe('Tests for CalendarView', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         global.confirm = vi.fn();

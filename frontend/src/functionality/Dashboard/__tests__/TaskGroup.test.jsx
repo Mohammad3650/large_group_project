@@ -33,7 +33,7 @@ const mockTasks = [
     }
 ];
 
-describe('TaskGroup', () => {
+describe('Tests for TaskGroup', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

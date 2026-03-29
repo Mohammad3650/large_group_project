@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import sortTasksByDate from "../sortTasksByDate.js";
 
-describe("sortTasksByDate", () => {
+describe("Tests for sortTasksByDate", () => {
     it("sorts earlier tasks before later tasks (same date)", () => {
         const a = { date: "2024-01-15", startTime: "09:00" };
         const b = { date: "2024-01-15", startTime: "10:00" };

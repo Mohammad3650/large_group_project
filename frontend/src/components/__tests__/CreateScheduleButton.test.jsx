@@ -4,7 +4,7 @@ import { describe, it, expect } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import CreateScheduleButton from '../CreateScheduleButton.jsx';
 
-describe('Create schedule button takes the user to the page to create a time block', () => {
+describe('Tests for CreateScheduleButton', () => {
     it('navigates to /create-schedule when clicked', () => {
         render(
             <MemoryRouter initialEntries={['/']}>

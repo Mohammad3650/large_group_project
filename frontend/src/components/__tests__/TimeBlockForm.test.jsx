@@ -40,7 +40,7 @@ const rerenderTimeBlockForm = (rerender, overrides = {}) => {
     );
 };
 
-describe('TimeBlockForm tests', () => {
+describe('Tests for TimeBlockForm', () => {
     it('renders all current form fields', () => {
         renderTimeBlockForm();
 

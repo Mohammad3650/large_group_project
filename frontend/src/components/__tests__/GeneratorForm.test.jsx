@@ -16,7 +16,7 @@ const renderGeneratorForm = (overrides = {}) => {
     return render(<GeneratorForm {...props} />);
 };
 
-describe('Test generator form', () => {
+describe('Tests for GeneratorForm', () => {
     it('renders all main forms', () => {
         renderGeneratorForm();
 

@@ -6,7 +6,7 @@ function renderCalendarPlaceholder() {
     return render(<CalendarPlaceholder />);
 }
 
-describe('CalendarPlaceholder component', () => {
+describe('Tests for CalendarPlaceholder', () => {
     it('renders the placeholder layout', () => {
         const { container } = renderCalendarPlaceholder();
 

@@ -22,7 +22,7 @@ function TestComponent({ path }) {
     return <div>Test Component</div>;
 }
 
-describe('useRedirectIfAuthenticated', () => {
+describe('Tests for useRedirectIfAuthenticated', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockNavigate.mockClear();
