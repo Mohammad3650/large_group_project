@@ -29,14 +29,32 @@ class Scheduler:
         self.status = None
 
     def create_daily_window(self, windows):
-        """Expand windows into daily intervals if specified"""
+        """
+        Expand windows into daily intervals if specified.
+
+        Args:
+            windows: List of tuples (start, end, daily) where daily is a bool.
+
+        Returns:
+            List of expanded window intervals as (start, end) tuples.
+        """
         expanded = []
         for start, end, daily in windows:
             expanded.extend(self._expand_window(start, end, daily))
         return expanded
  
     def _expand_window(self, start, end, daily):
-        """Expand a single window across all days if daily is True"""
+        """
+        Expand a single window across all days if daily is True.
+
+        Args:
+            start: Start time in minutes.
+            end: End time in minutes.
+            daily: Boolean indicating if the window repeats daily.
+
+        Returns:
+            List of (start, end) tuples for the window(s).
+        """
         if not daily:
             return [(start, end)]
         return [(start + i * DAY_MINS, end + i * DAY_MINS) for i in range(self.days)]
@@ -57,7 +75,20 @@ class Scheduler:
                 self.reccur_once_per_day_constraint(sessions)
     
     def _create_sessions(self, name, duration, frequency, location, block_type, description):
-        """Create and register all sessions for one unscheduled event type"""
+        """
+        Create and register all sessions for one unscheduled event type.
+
+        Args:
+            name: Name of the event.
+            duration: Duration in minutes.
+            frequency: Number of sessions to create.
+            location: Location of the event.
+            block_type: Type of the block.
+            description: Description of the event.
+
+        Returns:
+            List of session tuples.
+        """
         sessions = []
         for i in range(frequency):
             start, end, _ = self._create_decision_variables(name, duration, i)
@@ -67,7 +98,13 @@ class Scheduler:
         return sessions
     
     def _apply_preference(self, sessions, preference):
-        """Register start-time bias objectives for Early/Late preferences"""
+        """
+        Register start-time bias objectives for Early/Late preferences.
+
+        Args:
+            sessions: List of session tuples.
+            preference: String preference ("Early" or "Late").
+        """
         weight = PREFERENCE_WEIGHTS.get(preference)
         if weight is None:
             return
@@ -75,7 +112,17 @@ class Scheduler:
             self.objectives.append(self.event_start_bias_constrains(session, weight))
 
     def _create_decision_variables(self, name, duration, i):
-        """Create start/end/interval vars and enforce window membership"""
+        """
+        Create start/end/interval vars and enforce window membership.
+
+        Args:
+            name: Name of the event.
+            duration: Duration in minutes.
+            i: Index of the session.
+
+        Returns:
+            Tuple of (start, end, event) variables.
+        """
         total_mins = DAY_MINS * self.days
         start = self.model.NewIntVar(0, total_mins, f"{name}_{i}_start")
         end = self.model.NewIntVar(0, total_mins, f"{name}_{i}_end")
@@ -85,7 +132,15 @@ class Scheduler:
         return start, end, event
  
     def _apply_window_constraints(self, name, i, start, duration):
-        """Enforce that a session falls in exactly one allowed window"""
+        """
+        Enforce that a session falls in exactly one allowed window.
+
+        Args:
+            name: Name of the event.
+            i: Index of the session.
+            start: Start time variable.
+            duration: Duration in minutes.
+        """
         in_window = [
             self._make_window_bool(name, i, w, ws, we, start, duration)
             for w, (ws, we) in enumerate(self.windows)
@@ -93,7 +148,21 @@ class Scheduler:
         self.model.Add(sum(in_window) == 1)
  
     def _make_window_bool(self, name, i, w, ws, we, start, duration):
-        """Create and return a bool var indicating membership in one window"""
+        """
+        Create and return a bool var indicating membership in one window.
+
+        Args:
+            name: Name of the event.
+            i: Index of the session.
+            w: Window index.
+            ws: Window start time.
+            we: Window end time.
+            start: Start time variable.
+            duration: Duration in minutes.
+
+        Returns:
+            Boolean variable indicating if the session is in the window.
+        """
         b = self.model.NewBoolVar(f"{name}_{i}_inw{w}")
         self.model.Add(start >= ws).OnlyEnforceIf(b)
         self.model.Add(start <= we - duration).OnlyEnforceIf(b)
@@ -112,14 +181,25 @@ class Scheduler:
             self._add_no_overlap_with_unscheduled(sched_iv, unscheduled_intervals)
     
     def _add_no_overlap_with_unscheduled(self, sched_iv, unscheduled_intervals):
-        """Ensure a scheduled interval does not overlap with any unscheduled ones"""
+        """
+        Ensure a scheduled interval does not overlap with any unscheduled ones.
+
+        Args:
+            sched_iv: Scheduled interval variable.
+            unscheduled_intervals: List of unscheduled interval variables.
+        """
         for unsched_iv in unscheduled_intervals:
             self.model.AddNoOverlap([sched_iv, unsched_iv])
 
     def evenly_spread_over_range_constraint(self, include_scheduled):
         """
         Evenly distribute sessions across days.
-        Returns (max_count - min_count) to be minimised.
+
+        Args:
+            include_scheduled: Boolean to include scheduled events in the count.
+
+        Returns:
+            Integer variable representing (max_count - min_count) to be minimized.
         """
         length = len(self.new_sessions) + (len(self.intervals) if include_scheduled else 0)
         day_idxs = self._collect_day_indices(include_scheduled)
@@ -128,7 +208,15 @@ class Scheduler:
         return (max_count - min_count)   
 
     def _collect_day_indices(self, include_scheduled):
-        """Collect day indices for all sessions, including scheduled ones"""
+        """
+        Collect day indices for all sessions, including scheduled ones.
+
+        Args:
+            include_scheduled: Boolean to include scheduled events.
+
+        Returns:
+            List of day index variables.
+        """
         day_idxs = []
         self._get_unscheduled_day_numbers(day_idxs)
         if include_scheduled:
@@ -136,7 +224,16 @@ class Scheduler:
         return day_idxs
     
     def _count_sessions_per_day(self, day_idxs, length):
-        """Count sessions per day and create integer variables for the counts"""
+        """
+        Count sessions per day and create integer variables for the counts.
+
+        Args:
+            day_idxs: List of day index variables.
+            length: Maximum possible count.
+
+        Returns:
+            List of count variables per day.
+        """
         counts = []
         for day in range(self.days):
             bools = self._count_events_per_day(day, day_idxs)
@@ -146,23 +243,51 @@ class Scheduler:
         return counts
 
     def _make_day_idx_var(self, start, name):
-        """Create a variable representing the day index for a given start time"""
+        """
+        Create a variable representing the day index for a given start time.
+
+        Args:
+            start: Start time variable.
+            name: Name of the event.
+
+        Returns:
+            Day index variable.
+        """
         day_idx = self.model.NewIntVar(0, self.days - 1, f"{name}_day_idx")
         self.model.AddDivisionEquality(day_idx, start, DAY_MINS)
         return day_idx
 
     def _get_unscheduled_day_numbers(self, index_list):
-        """Append day indices for all unscheduled sessions to the list"""
+        """
+        Append day indices for all unscheduled sessions to the list.
+
+        Args:
+            index_list: List to append day indices to.
+        """
         for (start, _, _, name, _, _, _) in self.new_sessions:
             index_list.append(self._make_day_idx_var(start, name))
     
     def _get_scheduled_day_numbers(self, index_list):
-        """Append day indices for all scheduled events to the list"""
+        """
+        Append day indices for all scheduled events to the list.
+
+        Args:
+            index_list: List to append day indices to.
+        """
         for (start, _, name) in self.scheduled:
             index_list.append(self._make_day_idx_var(start, name))
     
     def _count_events_per_day(self, day, index_list):
-        """Create boolean variables indicating if each event is on the given day"""
+        """
+        Create boolean variables indicating if each event is on the given day.
+
+        Args:
+            day: Day index.
+            index_list: List of day index variables.
+
+        Returns:
+            List of boolean variables.
+        """
         bools = []
         for i, day_idx in enumerate(index_list):
             bool_var = self.model.NewBoolVar(f"s{i}_is_day{day}")
@@ -172,7 +297,16 @@ class Scheduler:
         return bools
     
     def _get_max_min_counts(self, length, counts):
-        """Create variables for the maximum and minimum session counts per day"""
+        """
+        Create variables for the maximum and minimum session counts per day.
+
+        Args:
+            length: Maximum possible count.
+            counts: List of count variables per day.
+
+        Returns:
+            Tuple of (max_count, min_count) variables.
+        """
         max_count = self.model.NewIntVar(0, length, "max_count")
         min_count = self.model.NewIntVar(0, length, "min_count")
         self.model.AddMaxEquality(max_count, counts)
@@ -180,7 +314,12 @@ class Scheduler:
         return max_count, min_count
 
     def reccur_once_per_day_constraint(self, recurring_events):
-        """Enforces that recurring events of one type appear at most once per day"""
+        """
+        Enforces that recurring events of one type appear at most once per day.
+
+        Args:
+            recurring_events: List of recurring event sessions.
+        """
         if len(recurring_events) > self.days:
             return
         day_idxs = []
@@ -188,7 +327,13 @@ class Scheduler:
         self._enforce_max_one_per_day(day_idxs, len(recurring_events))
     
     def _enforce_max_one_per_day(self, day_idxs, n):
-        """Ensure at most one event per day for recurring events"""
+        """
+        Ensure at most one event per day for recurring events.
+
+        Args:
+            day_idxs: List of day index variables.
+            n: Number of events.
+        """
         for day in range(self.days):
             bools = self._count_events_per_day(day, day_idxs)
             count_d = self.model.NewIntVar(0, n, f"count_day{day}")
@@ -217,7 +362,12 @@ class Scheduler:
         self.status = self.solver.Solve(self.model)
 
     def solve(self):
-        """Solve the model and return solutions list"""
+        """
+        Solve the model and return solutions list.
+
+        Returns:
+            List of scheduled session tuples (start, end, date, name, location, block_type, description).
+        """
         """self._startSolver(self.model)"""""
         self._start_solver()
 

@@ -6,7 +6,7 @@ from scheduler.services.request_parser import ParsedScheduleRequest
 from unittest.mock import patch
 
 
-class SchedulerTests(SimpleTestCase):
+class SchedulerGeneratorTest(SimpleTestCase):
 
     def make_request(self, days=1, windows=None, unscheduled=None, even_spread=False, include_scheduled=True):
         return ParsedScheduleRequest(
@@ -29,6 +29,7 @@ class SchedulerTests(SimpleTestCase):
         return scheduler, result
 
     def test_single_event_fits_inside_window(self):
+        """Test that a single unscheduled event fits within the available time window."""
         request = self.make_request(
             days=1,
             windows=[(540, 720, False)],
@@ -45,6 +46,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(end - start, 60)
 
     def test_infeasible_schedule_returns_empty(self):
+        """Test that an infeasible schedule (event too long for window) returns an empty result."""
         request = self.make_request(
             days=1,
             windows=[(540, 570, False)],
@@ -55,6 +57,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(result, [])
 
     def test_daily_task_creates_one_per_day(self):
+        """Test that a daily recurring event creates one instance per day."""
         request = self.make_request(
             days=3,
             windows=[(540, 720, True)],
@@ -67,6 +70,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(day_indexes, [0, 1, 2])
 
     def test_two_unscheduled_events_do_not_overlap(self):
+        """Test that two unscheduled events in the same window do not overlap."""
         request = self.make_request(
             days=1,
             windows=[(540, 660, False)],  # 09:00-11:00
@@ -86,6 +90,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(second_end - second_start, 60)
 
     def test_event_uses_second_window_if_first_blocked(self):
+        """Test that an event uses the second window if the first is blocked by a scheduled event."""
         request = self.make_request(
             days=1,
             windows=[(540, 600, False), (660, 720, False)],
@@ -99,6 +104,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(end, 720)
 
     def test_non_daily_window_is_not_repeated(self):
+        """Test that a non-daily window is not repeated across days."""
         request = self.make_request(
             days=3,
             windows=[(540, 600, False)],  # only day 0 absolute
@@ -108,6 +114,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(scheduler.windows, [(540, 600)])
 
     def test_daily_window_is_repeated_for_each_day(self):
+        """Test that a daily window is repeated for each day."""
         request = self.make_request(
             days=3,
             windows=[(540, 600, True)],
@@ -117,6 +124,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual( scheduler.windows, [(540, 600), (1980, 2040), (3420, 3480), ])
 
     def test_frequency_two_creates_two_sessions(self):
+        """Test that frequency=2 creates exactly two sessions."""
         request = self.make_request(
             days=3,
             windows=[(540, 720, True)],
@@ -126,6 +134,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(len(result), 2)
 
     def test_daily_true_overrides_frequency(self):
+        """Test that daily=True overrides frequency and creates one per day."""
         request = self.make_request(
             days=4,
             windows=[(540, 720, True)],
@@ -135,6 +144,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(len(result), 4)
 
     def test_daily_recurring_event_appears_once_per_day(self):
+        """Test that a daily recurring event appears exactly once per day."""
         request = self.make_request(
             days=4,
             windows=[(540, 720, True)],
@@ -149,6 +159,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(day_counts, {0: 1, 1: 1, 2: 1, 3: 1})
 
     def test_even_spread_places_two_events_on_different_days(self):
+        """Test that even spread places two events on different days."""
         request = self.make_request(
             days=2,
             windows=[(540, 720, True)],
@@ -164,6 +175,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(days, [0, 1])
 
     def test_include_scheduled_in_even_spread_affects_placement(self):
+        """Test that including scheduled events in even spread affects placement."""
         request = self.make_request(
             days=2,
             windows=[(540, 720, True)],
@@ -180,6 +192,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(day, 1)
 
     def test_zero_unscheduled_returns_empty_solution(self):
+        """Test that zero unscheduled events return an empty solution."""
         request = self.make_request(
             days=2,
             windows=[(540, 720, True)],
@@ -189,6 +202,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(result, [])
 
     def test_unscheduled_sessions_all_have_correct_duration(self):
+        """Test that all unscheduled sessions have their correct durations."""
         request = self.make_request(
             days=1,
             windows=[(540, 900, False)],
@@ -205,6 +219,7 @@ class SchedulerTests(SimpleTestCase):
             self.assertEqual(end - start, duration)
     
     def test_early_preference_pushes_event_to_window_start(self):
+        """Test that 'Early' preference pushes the event to the start of the window."""
         request = self.make_request(
             days=1,
             windows=[(540, 720, False)],
@@ -220,6 +235,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(name, "Revision")
     
     def test_late_preference_pushes_event_to_window_end(self):
+        """Test that 'Late' preference pushes the event to the end of the window."""
         request = self.make_request(
             days=1,
             windows=[(540, 720, False)],
@@ -233,6 +249,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertEqual(end, 720)
 
     def test_debug_output_before_solving_prints_none_status(self):
+        """Test that debug_output prints 'Status -> None' before solving."""
         request = self.make_request(days=1, unscheduled=[])
         scheduler = Scheduler(request, [])
 
@@ -241,6 +258,7 @@ class SchedulerTests(SimpleTestCase):
             mocked_print.assert_called_once_with("Status -> None")
 
     def test_debug_output_after_solving_prints_session_line(self):
+        """Test that debug_output prints session details after solving."""
         request = self.make_request(
             days=1,
             windows=[(540, 720, False)],
@@ -258,6 +276,7 @@ class SchedulerTests(SimpleTestCase):
         self.assertIn("Library", printed)
 
     def test_recur_once_per_day_early_return_branch(self):
+        """Test that recur_once_per_day_constraint returns early if events > days."""
         request = self.make_request(days=2, unscheduled=[])
         scheduler = Scheduler(request, [])
 
