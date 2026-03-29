@@ -47,7 +47,7 @@ function Login() {
     // Indicates whether a login request is in progress to prevent multiple submissions
     const [loading, setLoading] = useState(false);
 
-    useRedirectIfAuthenticated(nav);
+    useRedirectIfAuthenticated();
 
     /**
      * Performs client-side checks to make sure the user has entered values.
