@@ -1,16 +1,14 @@
 import './stylesheets/Navbar.css';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import LogoutButton from './LogoutButton.jsx';
 import useUsername from '../utils/useUsername.js';
 import useAuthStatus from '../utils/authStatus';
+import useDropdown from '../utils/useDropdown.js';
 import ToggleDarkMode from './ToggleDarkMode.jsx';
 
 import userIcon from '../assets/Navbar/user.png';
-
 import taskListLight from '../assets/Navbar/task_list.png';
 import taskListDark from '../assets/Navbar/task_list_black.png';
-
 import calendarIconLight from '../assets/calendar_icon.png';
 import calendarIconDark from '../assets/calendar_icon_black.png';
 
@@ -25,19 +23,17 @@ import calendarIconDark from '../assets/calendar_icon_black.png';
  * @param {Function} props.toggleTheme - Function to switch theme
  * @returns {JSX.Element} The navigation header
  */
-
 function Navbar({ theme, toggleTheme }) {
     const isLoggedIn = useAuthStatus();
-    const { username, error } = useUsername(isLoggedIn);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const { username } = useUsername(isLoggedIn);
+    const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
 
     const taskList = theme === 'dark' ? taskListDark : taskListLight;
-    const calendarIcon =
-        theme === 'dark' ? calendarIconDark : calendarIconLight;
+    const calendarIcon = theme === 'dark' ? calendarIconDark : calendarIconLight;
 
     return (
         <header>
-            <div className="maindiv">
+            <div className="navbar-container">
                 <div className="navbar-left">
                     <Link to="/" className="navbar-title">
                         <span className="title">StudySync</span>
@@ -70,7 +66,7 @@ function Navbar({ theme, toggleTheme }) {
                     <ToggleDarkMode theme={theme} toggleTheme={toggleTheme} />
 
                     {isLoggedIn ? (
-                        <div className="navbar-user">
+                        <div className="navbar-user" ref={dropdownRef}>
                             <img
                                 src={userIcon}
                                 alt="User"
@@ -95,7 +91,7 @@ function Navbar({ theme, toggleTheme }) {
                             )}
                         </div>
                     ) : (
-                        <span className="rightspan">Built for Students</span>
+                        <span className="navbar-tagline">Built for Students</span>
                     )}
                 </div>
             </div>

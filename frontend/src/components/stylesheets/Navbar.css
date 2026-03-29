@@ -1,4 +1,4 @@
-.maindiv {
+.navbar-container {
     justify-content: space-between;
     display: flex;
     align-items: center;
@@ -47,7 +47,7 @@
     object-fit: contain;
 }
 
-.rightspan {
+.navbar-tagline {
     font-size: 15px;
     color: var(--text-muted);
 }
