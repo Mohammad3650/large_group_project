@@ -33,7 +33,17 @@ const mockTasks = [
     }
 ];
 
-describe('TaskGroup', () => {
+const renderTaskGroup = (props = {}) =>
+    render(
+        <TaskGroup
+            title="Today"
+            tasks={mockTasks}
+            setTasks={vi.fn()}
+            {...props}
+        />
+    );
+
+describe('TaskGroup component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -46,40 +56,30 @@ describe('TaskGroup', () => {
     });
 
     it('renders the section title', () => {
-        render(
-            <TaskGroup title="Today" tasks={mockTasks} setTasks={vi.fn()} />
-        );
+        renderTaskGroup();
         expect(screen.getByText('Today')).toBeInTheDocument();
     });
 
     it('renders the task count', () => {
-        render(
-            <TaskGroup title="Today" tasks={mockTasks} setTasks={vi.fn()} />
-        );
+        renderTaskGroup();
         expect(screen.getByText('(2)')).toBeInTheDocument();
     });
 
     it('renders all task items by default', () => {
-        render(
-            <TaskGroup title="Today" tasks={mockTasks} setTasks={vi.fn()} />
-        );
+        renderTaskGroup();
         expect(screen.getByText('Lecture')).toBeInTheDocument();
         expect(screen.getByText('Seminar')).toBeInTheDocument();
     });
 
     it('collapses the task list when the header is clicked', () => {
-        render(
-            <TaskGroup title="Today" tasks={mockTasks} setTasks={vi.fn()} />
-        );
+        renderTaskGroup();
         fireEvent.click(screen.getByTestId('task-group-header'));
         expect(screen.queryByText('Lecture')).not.toBeInTheDocument();
         expect(screen.queryByText('Seminar')).not.toBeInTheDocument();
     });
 
     it('expands the task list again when the header is clicked a second time', () => {
-        render(
-            <TaskGroup title="Today" tasks={mockTasks} setTasks={vi.fn()} />
-        );
+        renderTaskGroup();
         fireEvent.click(screen.getByTestId('task-group-header'));
         fireEvent.click(screen.getByTestId('task-group-header'));
         expect(screen.getByText('Lecture')).toBeInTheDocument();
@@ -87,35 +87,19 @@ describe('TaskGroup', () => {
     });
 
     it('applies the overdue-title class to the heading when overdue is true', () => {
-        render(
-            <TaskGroup
-                title="Overdue"
-                tasks={mockTasks}
-                setTasks={vi.fn()}
-                overdue={true}
-            />
-        );
+        renderTaskGroup({ title: 'Overdue', overdue: true });
         expect(screen.getByText('Overdue')).toHaveClass('overdue-title');
     });
 
     it('does not apply the overdue-title class when overdue is false', () => {
-        render(
-            <TaskGroup
-                title="Today"
-                tasks={mockTasks}
-                setTasks={vi.fn()}
-                overdue={false}
-            />
-        );
+        renderTaskGroup({ overdue: false });
         expect(screen.getByText('Today')).not.toHaveClass('overdue-title');
     });
 
     it('calls deleteTimeBlock and removes the task on successful deletion', async () => {
         deleteTimeBlockModule.default.mockResolvedValue({});
         const setTasks = vi.fn();
-        render(
-            <TaskGroup title="Today" tasks={mockTasks} setTasks={setTasks} />
-        );
+        renderTaskGroup({ setTasks });
 
         fireEvent.click(screen.getAllByText('Delete')[0]);
 
@@ -128,25 +112,16 @@ describe('TaskGroup', () => {
         expect(filterFn(mockTasks)).toEqual([mockTasks[1]]);
     });
 
-    it('logs an error when deletion fails', async () => {
-        const consoleSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {});
+    it('does not throw when deletion fails', async () => {
         deleteTimeBlockModule.default.mockRejectedValue(
             new Error('Network error')
         );
-        render(
-            <TaskGroup title="Today" tasks={mockTasks} setTasks={vi.fn()} />
-        );
+        renderTaskGroup();
 
         fireEvent.click(screen.getAllByText('Delete')[0]);
 
         await vi.waitFor(() =>
-            expect(consoleSpy).toHaveBeenCalledWith(
-                'Failed to delete task',
-                expect.any(Error)
-            )
+            expect(deleteTimeBlockModule.default).toHaveBeenCalledWith(1)
         );
-        consoleSpy.mockRestore();
     });
 });

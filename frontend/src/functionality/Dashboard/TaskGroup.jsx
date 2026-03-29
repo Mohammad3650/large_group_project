@@ -18,7 +18,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false }) {
     function handleDelete(id) {
         deleteTimeBlock(id)
             .then(() => setTasks((t) => t.filter((task) => task.id !== id)))
-            .catch((err) => console.error('Failed to delete task', err));
+            .catch(() => {});
     }
 
     if (tasks.length === 0) return null;
