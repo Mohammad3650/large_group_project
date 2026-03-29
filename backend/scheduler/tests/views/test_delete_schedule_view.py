@@ -8,8 +8,11 @@ from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
 
 
-class DeleteScheduleTest(APITestCase):
+class DeleteScheduleViewTest(APITestCase):
     def setUp(self):
+        """
+        Set up authenticated user, a second user, and a sample TimeBlock for deletion tests.
+        """
         self.user = User.objects.create_user(
             username="test-user",
             email="test@test.com",
@@ -43,12 +46,15 @@ class DeleteScheduleTest(APITestCase):
 
         self.url = reverse("api-delete-timeblock", args=[self.block.id])
 
-    def test_generate_schedule_requires_authentication(self):
+    def test_delete_time_block_requires_authentication(self):
+        """
+        Ensure unauthenticated users cannot delete a time block.
+        """
         self.client.force_authenticate(user=None)  # ensure not authenticated
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, 401)
 
-    def test_delete_timeblock_success(self):
+    def test_delete_time_block_success(self):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.delete(self.url)

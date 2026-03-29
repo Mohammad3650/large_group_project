@@ -31,7 +31,7 @@ from scheduler.views.calendar_subscription_view import (
 from scheduler.views.create_schedule_view import create_schedule
 from scheduler.views.generator_view import GenerateScheduleView
 from scheduler.views.get_schedule_view import get_schedule
-from scheduler.views.edit_schedule_view import edit_timeblock
+from scheduler.views.edit_schedule_view import edit_time_block
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.get_note_view import get_note
 from scheduler.views.save_note_view import save_note
@@ -62,15 +62,37 @@ urlpatterns = [
     ),
     path("api/notes/get/", get_note, name="api-get-note"),
     path("api/notes/save/", save_note, name="api-save-note"),
-    path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
+    path("api/timeblocks/<int:id>/edit", edit_time_block, name="api-edit-timeblock"),
     path("api/user/", UserDetailsView.as_view(), name="user-details"),
-    path("schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"),
+    path(
+        "schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"
+    ),
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
     path("api/user/change-password/", change_password),
     path("api/user/delete/", delete_user, name="delete_user_view"),
-    path("api/time-blocks/export/csv/", export_schedule_csv, name="api-export-timeblocks-csv"),
-    path("api/time-blocks/export/ics/", export_schedule_ics, name="api-export-timeblocks-ics"),
-    path("api/calendar-subscriptions/", calendar_subscriptions, name="api-calendar-subscriptions"),
-    path("api/calendar-subscriptions/<int:subscription_id>/refresh/", refresh_calendar_subscription, name="api-refresh-calendar-subscription"),
-    path("api/calendar-subscriptions/<int:subscription_id>/", delete_calendar_subscription, name="api-delete-calendar-subscription"), 
+    path(
+        "api/time-blocks/export/csv/",
+        export_schedule_csv,
+        name="api-export-timeblocks-csv",
+    ),
+    path(
+        "api/time-blocks/export/ics/",
+        export_schedule_ics,
+        name="api-export-timeblocks-ics",
+    ),
+    path(
+        "api/calendar-subscriptions/",
+        calendar_subscriptions,
+        name="api-calendar-subscriptions",
+    ),
+    path(
+        "api/calendar-subscriptions/<int:subscription_id>/refresh/",
+        refresh_calendar_subscription,
+        name="api-refresh-calendar-subscription",
+    ),
+    path(
+        "api/calendar-subscriptions/<int:subscription_id>/",
+        delete_calendar_subscription,
+        name="api-delete-calendar-subscription",
+    ),
 ]
