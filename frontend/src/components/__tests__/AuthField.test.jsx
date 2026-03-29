@@ -4,18 +4,22 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import AuthField from '../AuthField';
 
+const renderAuthField = (props = {}) => {
+    const defaultProps = {
+        name: 'email',
+        label: 'Email',
+        type: 'email',
+        placeholder: 'you@example.com',
+        value: '',
+        onChange: vi.fn(),
+    };
+
+    return render(<AuthField {...defaultProps} {...props} />);
+};
+
 describe('Tests for AuthField', () => {
     it('renders the label and input with the provided props', () => {
-        render(
-            <AuthField
-                name="email"
-                label="Email"
-                type="email"
-                placeholder="you@example.com"
-                value=""
-                onChange={vi.fn()}
-            />
-        );
+        renderAuthField();
 
         expect(screen.getByLabelText('Email')).toBeInTheDocument();
         expect(
@@ -28,15 +32,13 @@ describe('Tests for AuthField', () => {
         const user = userEvent.setup();
         const handleChange = vi.fn();
 
-        render(
-            <AuthField
-                name="username"
-                label="Username"
-                placeholder="Choose a username"
-                value=""
-                onChange={handleChange}
-            />
-        );
+        renderAuthField({
+            name: 'username',
+            label: 'Username',
+            type: 'text',
+            placeholder: 'Choose a username',
+            onChange: handleChange,
+        });
 
         await user.type(
             screen.getByPlaceholderText('Choose a username'),
@@ -47,17 +49,13 @@ describe('Tests for AuthField', () => {
     });
 
     it('shows the error message and invalid class when an error is provided', () => {
-        render(
-            <AuthField
-                name="password"
-                label="Password"
-                type="password"
-                placeholder="Enter password"
-                value=""
-                onChange={vi.fn()}
-                error="Password is required."
-            />
-        );
+        renderAuthField({
+            name: 'password',
+            label: 'Password',
+            type: 'password',
+            placeholder: 'Enter password',
+            error: 'Password is required.',
+        });
 
         expect(screen.getByText('Password is required.')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Enter password')).toHaveClass(
@@ -66,18 +64,47 @@ describe('Tests for AuthField', () => {
     });
 
     it('does not show an error message when no error is provided', () => {
-        render(
+         renderAuthField({
+            name: 'firstName',
+            label: 'First name',
+            type: 'text',
+            placeholder: 'First name',
+            error: undefined,
+        });
+
+        expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
+        expect(screen.getByPlaceholderText('First name')).not.toHaveClass(
+            'is-invalid'
+        );
+    });
+
+    it('handles the exact error-state partition consistently: error present vs error absent', () => {
+        const { rerender } = renderAuthField({
+            name: 'password',
+            label: 'Password',
+            type: 'password',
+            placeholder: 'Enter password',
+            error: 'Password is required.',
+        });
+
+        expect(screen.getByText('Password is required.')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter password')).toHaveClass(
+            'is-invalid'
+        );
+
+        rerender(
             <AuthField
-                name="firstName"
-                label="First name"
-                placeholder="First name"
+                name="password"
+                label="Password"
+                type="password"
+                placeholder="Enter password"
                 value=""
                 onChange={vi.fn()}
             />
         );
 
-        expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
-        expect(screen.getByPlaceholderText('First name')).not.toHaveClass(
+        expect(screen.queryByText('Password is required.')).not.toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter password')).not.toHaveClass(
             'is-invalid'
         );
     });
