@@ -62,7 +62,7 @@ function Signup() {
     // Indicates whether a signup request is in progress to prevent multiple submissions
     const [loading, setLoading] = useState(false);
 
-    useRedirectIfAuthenticated(nav);
+    useRedirectIfAuthenticated();
 
     /**
      * Updates a specific field in the form state.

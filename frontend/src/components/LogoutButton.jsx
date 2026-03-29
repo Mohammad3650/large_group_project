@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../utils/authStorage';
-import './stylesheets/LogoutButton.css';
+import './stylesheets/Navbar.css';
 
 /**
  * Button component that logs the user out and redirects to login page
