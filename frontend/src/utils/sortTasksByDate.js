@@ -2,10 +2,10 @@ import getDate from './getDate.js';
 
 /**
  * Sorts tasks in ascending order by datetime.
- * @param {Object} a - First task object
- * @param {Object} b - Second task object
- * @returns {number} Negative if a comes first, positive if b comes first
+ * @param {Object} firstTimeBlock - First task object
+ * @param {Object} secondTimeBlock - Second task object
+ * @returns {number} Negative if firstTimeBlock is earlier, positive if secondTimeBlock is earlier, zero if equal
  */
-const sortTasksByDate = (a, b) => getDate(a) - getDate(b);
+const sortTasksByDate = (firstTimeBlock, secondTimeBlock) => getDate(firstTimeBlock) - getDate(secondTimeBlock);
 
 export default sortTasksByDate;

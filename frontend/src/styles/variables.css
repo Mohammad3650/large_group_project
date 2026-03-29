@@ -1,6 +1,9 @@
 :root {
     /* fonts */
     --font-main: system-ui, sans-serif;
+    --font-size-sm: 0.9375rem;
+    --font-size-lg: 1.5rem;
+    --font-size-xl: 1.875rem;
 
     /* text colours */
     --text-main: #222;
@@ -44,6 +47,7 @@
     --space-xl: 20px;
     --space-2xl: 30px;
     --space-3xl: 50px;
+    --space-navbar-x: 32px;
 
     /* shadows */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
