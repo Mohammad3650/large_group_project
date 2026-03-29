@@ -1,4 +1,5 @@
 import toLocalDateTime from './toLocalDateTime.js';
+import Capitalise from './capitalise.js';
 
 /**
  * Maps raw time block data into the standard format used by the calendar and dashboard.
@@ -50,11 +51,9 @@ function mapTimeBlocks(blocks) {
             start,
             end,
             location: block.location,
-            blockType: block.block_type
-                ? block.block_type.charAt(0).toUpperCase() +
-                  block.block_type.slice(1)
-                : 'N/A',
+            blockType: block.block_type ? Capitalise(block.block_type) : 'N/A',
             description: block.description || 'N/A',
+            // _options is required by the schedule-x calendar library to apply custom CSS classes to events
             _options: { additionalClasses: [`sx-type-${block.block_type}`] }
         };
     });
