@@ -8,7 +8,7 @@ from scheduler.serializers.time_block_serializer import TimeBlockSerializer
 from scheduler.utils.to_utc import to_utc
 
 
-def validate_timeblock_payload(request):
+def validate_time_block_payload(request):
     """
     Validate incoming time block data from the request.
 
@@ -46,7 +46,7 @@ def validate_date(request):
     return date
 
 
-def get_or_create_dayplan(user, date):
+def get_or_create_day_plan(user, date):
     """
     Get or create the DayPlan for a given user and date.
 
@@ -57,11 +57,11 @@ def get_or_create_dayplan(user, date):
     Returns:
         DayPlan: The retrieved or newly created DayPlan instance.
     """
-    dayplan, _ = DayPlan.objects.get_or_create(user=user, date=date)
-    return dayplan
+    day_plan, _ = DayPlan.objects.get_or_create(user=user, date=date)
+    return day_plan
 
 
-def create_timeblock(dayplan, data, original_date):
+def create_time_block(day_plan, data, original_date):
     """
     Create a TimeBlock for a given DayPlan, handling timezone conversion.
 
@@ -72,7 +72,7 @@ def create_timeblock(dayplan, data, original_date):
     - stores the timezone on the TimeBlock
 
     Args:
-        dayplan (DayPlan): Initial DayPlan based on the local date.
+        day_plan (DayPlan): Initial DayPlan based on the local date.
         data (dict): Validated input data.
         original_date (str): Original local date before UTC conversion.
 
@@ -93,10 +93,10 @@ def create_timeblock(dayplan, data, original_date):
     )
 
     if str(start_date_utc) != original_date:
-        dayplan = get_or_create_dayplan(dayplan.user, start_date_utc)
+        day_plan = get_or_create_day_plan(day_plan.user, start_date_utc)
 
     return TimeBlock.objects.create(
-        day=dayplan,
+        day=day_plan,
         name=data.get("name"),
         start_time=start_time_utc,
         end_time=end_time_utc,
@@ -107,12 +107,12 @@ def create_timeblock(dayplan, data, original_date):
     )
 
 
-def timeblock_response_payload(dayplan, time_block):
+def time_block_response_payload(day_plan, time_block):
     """
     Generate a standardised response payload for a TimeBlock.
 
     Args:
-        dayplan (DayPlan): Parent DayPlan of the time block.
+        day_plan (DayPlan): Parent DayPlan of the time block.
         time_block (TimeBlock): Created TimeBlock instance.
 
     Returns:
@@ -120,7 +120,7 @@ def timeblock_response_payload(dayplan, time_block):
     """
     return {
         "id": time_block.id,
-        "date": str(dayplan.date),
+        "date": str(day_plan.date),
         "name": time_block.name,
         "start_time": str(time_block.start_time) if time_block.start_time else None,
         "end_time": str(time_block.end_time) if time_block.end_time else None,
@@ -144,11 +144,11 @@ def create_schedule(request):
         Response: Created time block payload with HTTP 201 status.
     """
     date = validate_date(request)
-    data = validate_timeblock_payload(request)
-    dayplan = get_or_create_dayplan(request.user, date)
-    time_block = create_timeblock(dayplan, data, date)
+    data = validate_time_block_payload(request)
+    day_plan = get_or_create_day_plan(request.user, date)
+    time_block = create_time_block(day_plan, data, date)
 
     return Response(
-        timeblock_response_payload(dayplan, time_block),
+        time_block_response_payload(day_plan, time_block),
         status=status.HTTP_201_CREATED,
     )
