@@ -64,12 +64,12 @@ class Scheduler:
                 created.append(self.new_sessions[-1])
 
                 if preference == "Early":
-                    self.objectives.append(self.event_start_bias_constrains((start, end, duration, name, location, block_type, description), 1))
+                    self.objectives.append(self.event_start_bias_constraints((start, end, duration, name, location, block_type, description), 1))
                 elif preference == "Late":
-                    self.objectives.append(self.event_start_bias_constrains((start, end, duration, name, location, block_type, description), -1))
+                    self.objectives.append(self.event_start_bias_constraints((start, end, duration, name, location, block_type, description), -1))
             
             if daily:
-                self.reccur_once_per_day_constraint(created)
+                self.recur_once_per_day_constraint(created)
 
     def _create_decision_variables(self, name, duration, i):
         start = self.model.NewIntVar(0, 1440 * self.days, f"{name}_{i}_start")
@@ -168,7 +168,7 @@ class Scheduler:
         return max_count, min_count
 
 
-    def reccur_once_per_day_constraint(self, recurring_events):
+    def recur_once_per_day_constraint(self, recurring_events):
         """Enforces that recurring events of one type must only appear once per day"""
         DAY_MINS = 1440
         n = len(recurring_events)
