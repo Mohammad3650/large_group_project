@@ -11,7 +11,7 @@ vi.mock('../../api.js', () => ({
 
 import SuccessfulTimeBlock from '../SuccessfulTimeBlock.jsx';
 
-describe('Successful time block created', () => {
+describe('Tests for SuccessfulTimeBlock', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

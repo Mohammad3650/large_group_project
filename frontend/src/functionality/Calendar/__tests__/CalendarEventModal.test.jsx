@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import CalendarEventModal from '../CalendarEventModal.jsx';
 
-describe('CalendarEventModal', () => {
+describe('Tests for CalendarEventModal', () => {
     const mockEvent = {
         id: 42,
         title: 'SEG Lecture',

@@ -61,7 +61,7 @@ function renderCalendar({ blocks = [{ id: 1 }], setBlocks = vi.fn(), username = 
     };
 }
 
-describe('Calendar component', () => {
+describe('Tests for Calendar', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

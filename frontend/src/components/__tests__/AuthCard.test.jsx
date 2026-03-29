@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/vitest';
 import AuthCard from '../AuthCard';
 
-describe('AuthCard', () => {
+describe('Tests for AuthCard', () => {
     it('renders the title, subtitle, children, and footer link', () => {
         render(
             <MemoryRouter>

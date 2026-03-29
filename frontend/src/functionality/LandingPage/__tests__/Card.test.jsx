@@ -13,7 +13,7 @@ function renderCard(overrides = {}) {
     return render(<Card {...defaultProps} {...overrides} />);
 }
 
-describe('Card component', () => {
+describe('Tests for Card', () => {
     it('renders the avatar, stars, review and name', () => {
         renderCard();
 

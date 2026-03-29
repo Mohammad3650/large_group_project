@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import AuthField from '../AuthField';
 
-describe('AuthField', () => {
+describe('Tests for AuthField', () => {
     it('renders the label and input with the provided props', () => {
         render(
             <AuthField

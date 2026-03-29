@@ -13,7 +13,7 @@ vi.mock('../../../utils/authStatus', () => ({
     default: () => mockUseAuthStatus()
 }));
 
-describe('Hero', () => {
+describe('Tests for Hero', () => {
     beforeEach(() => {
         mockNavigate.mockClear();
         mockUseAuthStatus.mockReset();
