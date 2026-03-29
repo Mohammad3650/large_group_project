@@ -150,6 +150,7 @@ AUTH_USER_MODEL = "scheduler.User"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
+    "https://razascrew.netlify.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
