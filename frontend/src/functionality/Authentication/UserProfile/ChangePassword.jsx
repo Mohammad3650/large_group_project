@@ -9,10 +9,13 @@ const initialErrors = {
     global: []
 };
 
+const PASSWORD_CHANGE_REDIRECT_DELAY_MS = 1200;
+
 const MESSAGES = {
     currentPasswordRequired: 'Current password is required.',
     newPasswordRequired: 'New password is required.',
-    passwordChangeFailed: 'Password change failed.'
+    passwordChangeFailed: 'Password change failed.',
+    passwordChangeSuccess: 'Password updated successfully.'
 };
 
 function ChangePassword() {
@@ -29,7 +32,7 @@ function ChangePassword() {
 
         const timer = setTimeout(() => {
             navigate('/profile');
-        }, 1200);
+        }, PASSWORD_CHANGE_REDIRECT_DELAY_MS);
 
         return () => clearTimeout(timer);
     }, [message, navigate]);
@@ -68,7 +71,7 @@ function ChangePassword() {
                 new_password: newPassword
             });
 
-            setMessage(res.data.message);
+            setMessage(res.data.message || MESSAGES.passwordChangeSuccess);
         } catch {
             setErrors({
                 fieldErrors: {},

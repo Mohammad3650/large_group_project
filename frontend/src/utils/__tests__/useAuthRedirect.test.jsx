@@ -5,7 +5,7 @@ import { isTokenValid } from '../authToken.js';
 
 const mockNavigate = vi.fn();
 
-vi.mock('../authToken.js', () => ({
+vi.mock('../Auth/authToken.js', () => ({
     isTokenValid: vi.fn()
 }));
 

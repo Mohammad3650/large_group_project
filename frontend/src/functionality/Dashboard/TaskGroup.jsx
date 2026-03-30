@@ -1,7 +1,7 @@
 import TaskItem from './TaskItem.jsx';
 import { useState } from 'react';
 import './stylesheets/TaskGroup.css';
-import deleteTimeBlock from '../../utils/deleteTimeBlock.js';
+import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
 
 /**
  * Displays a collapsible section of tasks grouped by day.

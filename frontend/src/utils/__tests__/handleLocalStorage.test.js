@@ -4,7 +4,7 @@ import {
   getRefreshToken,
   logout,
   saveTokens,
-} from "../authStorage";
+} from "../Auth/authStorage";
 import * as apiModule from "../../api";
 
 vi.mock("../../api", () => ({

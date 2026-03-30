@@ -222,6 +222,7 @@ function EditProfile() {
                     <button
                         type="button"
                         className="btn btn-danger rounded-3"
+                        aria-label="Delete your account permanently"
                         onClick={deleteAccount}
                     >
                         Delete Account

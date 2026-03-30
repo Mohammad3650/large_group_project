@@ -12,11 +12,11 @@ vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate
 }));
 
-vi.mock('../../../utils/useTimeBlocks.js', () => ({
+vi.mock('../../../utils/Hooks/useTimeBlocks.js', () => ({
     default: mockUseTimeBlocks
 }));
 
-vi.mock('../../../utils/useUsername.js', () => ({
+vi.mock('../../../utils/Hooks/useUsername.js', () => ({
     default: mockUseUsername
 }));
 
@@ -110,4 +110,11 @@ describe('Tests for Calendar', () => {
 
         expect(setBlocks).toHaveBeenCalledWith(['updated']);
     });
+});
+
+it('renders the empty state when there are no events', () => {
+    renderCalendar({ blocks: [] });
+
+    expect(screen.getByText('Welcome to your calendar, Mohammad!')).toBeInTheDocument();
+    expect(screen.getByText('No events yet.')).toBeInTheDocument();
 });

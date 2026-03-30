@@ -6,9 +6,9 @@ import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 import CalendarView from './CalendarView.jsx';
 import CalendarPlaceholder from './CalendarPlaceholder.jsx';
-import mapTimeBlocks from '../../utils/mapTimeBlocks.js';
-import getUserTimezone from '../../utils/getUserTimezone.js';
-import savePlan from '../../utils/savePlan.js';
+import mapTimeBlocks from '../../utils/Helpers/mapTimeBlocks.js';
+import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
+import savePlan from '../../utils/Api/savePlan.js';
 
 // Component for previewing a generated schedule before saving
 function PreviewCalendar() {

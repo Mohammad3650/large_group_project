@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor, act } from "@testing-library/react";
-import useTimeBlocks from "../useTimeBlocks";
+import useTimeBlocks from "../Hooks/useTimeBlocks";
 import * as apiModule from "../../api.js";
-import * as mapTimeBlocksModule from "../mapTimeBlocks.js";
+import * as mapTimeBlocksModule from "../Helpers/mapTimeBlocks.js";
 
 vi.mock("../../api.js", () => ({
     api: {
@@ -10,7 +10,7 @@ vi.mock("../../api.js", () => ({
     },
 }));
 
-vi.mock("../mapTimeBlocks.js", () => ({
+vi.mock("../Helpers/mapTimeBlocks.js", () => ({
     default: vi.fn((blocks) => blocks),
 }));
 

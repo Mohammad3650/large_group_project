@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { isTokenValid } from "../authToken";
+import { isTokenValid } from "../Auth/authToken";
 import * as apiModule from "../../api";
-import * as storageModule from "../authStorage";
+import * as storageModule from "../Auth/authStorage";
 
 vi.mock("../../api", () => ({
   publicApi: {
@@ -9,7 +9,7 @@ vi.mock("../../api", () => ({
   },
 }));
 
-vi.mock("../authStorage", () => ({
+vi.mock("../Auth/authStorage", () => ({
   getAccessToken: vi.fn(),
   logout: vi.fn(),
 }));

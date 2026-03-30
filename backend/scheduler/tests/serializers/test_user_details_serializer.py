@@ -6,6 +6,7 @@ User = get_user_model()
 
 
 class UserDetailsSerializerTest(TestCase):
+    """Tests for the UserDetailsSerializer"""
     def setUp(self):
         """Creates two users and a base data template used across tests."""
         self.user = User.objects.create_user(
