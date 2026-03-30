@@ -2,7 +2,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from ..models import DayPlan, TimeBlock
+from rest_framework import status
+
+from ..models import TimeBlock, DayPlan
 from scheduler.serializers.time_block_serializer import TimeBlockSerializer
 from ..utils.to_utc import to_utc
 
@@ -73,33 +75,64 @@ def partially_update_timeblock(request, block):
     serializer.save()
     return Response(serializer.data)
 
+def get_block_or_404(user, id):
+    """Retrieve a TimeBlock belonging to a user or raise 404."""
+    return get_object_or_404(TimeBlock, id=id, day__user=user)
+
+
+def serialize_time_block(block):
+    """Serialize a TimeBlock and include the date."""
+    serializer = TimeBlockSerializer(block)
+    data = serializer.data
+    data["date"] = str(block.day.date)
+    return data
+
+
+def update_time_fields(serializer, request_data, block):
+    """Update start_time and end_time fields using UTC conversion."""
+    timezone = request_data.get("timezone", block.timezone)
+    date = request_data.get("date", str(block.day.date))
+
+    if "start_time" in request_data:
+        start_time_utc, _ = to_utc(request_data["start_time"], date, timezone)
+        serializer.validated_data["start_time"] = start_time_utc
+
+    if "end_time" in request_data:
+        end_time_utc, _ = to_utc(request_data["end_time"], date, timezone)
+        serializer.validated_data["end_time"] = end_time_utc
+
+    return date
+
+
+def move_block_if_date_changed(block, date):
+    """Move TimeBlock to a different DayPlan if the date changed."""
+    if date != str(block.day.date):
+        day_plan, _ = DayPlan.objects.get_or_create(user=block.day.user, date=date)
+        block.day = day_plan
+        block.save()
+
+
 @api_view(["GET", "PATCH"])
 @permission_classes([IsAuthenticated])
-def edit_timeblock(request, id):
+def edit_time_block(request, id):
     """
     Retrieve or partially update a TimeBlock belonging to the authenticated user.
-
-    GET:
-        - Fetches the time block data, including the associated date.
-
-    PATCH:
-        - Allows partial updates to one or more fields of the TimeBlock.
-        - Validates fields via TimeBlockSerializer before saving.
-
-    Args:
-        request (Request): DRF Request object.
-        id (int): ID of the TimeBlock to retrieve or update.
-
-    Returns:
-        Response:
-            - GET: 200 OK with serialized time block data
-            - PATCH: 200 OK with updated serialized data
-            - 400 BAD REQUEST if validation fails
-            - 404 NOT FOUND if the time block does not belong to the user or does not exist
+    GET: fetches the time block
+    PATCH: updates time fields and optionally moves the block to a new DayPlan
     """
-    block = get_user_timeblock(request.user, id)
+    block = get_block_or_404(request.user, id)
 
     if request.method == "GET":
-        return Response(serialize_timeblock_with_date(block))
+        return Response(serialize_time_block(block))
 
-    return partially_update_timeblock(request, block)
+    # PATCH
+    serializer = TimeBlockSerializer(block, data=request.data, partial=True)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Separate responsibilities into helper functions
+    date = update_time_fields(serializer, request.data, block)
+    serializer.save()
+    move_block_if_date_changed(block, date)
+
+    return Response(serialize_time_block(block))

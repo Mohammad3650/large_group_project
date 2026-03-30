@@ -9,9 +9,14 @@ const initialErrors = {
     global: []
 };
 
-const PASSWORD_CHANGE_FAILURE_MESSAGE = 'Password change failed.';
-const PASSWORD_CHANGE_SUCCESS_MESSAGE = 'Password updated successfully.';
 const PASSWORD_CHANGE_REDIRECT_DELAY_MS = 1200;
+
+const MESSAGES = {
+    currentPasswordRequired: 'Current password is required.',
+    newPasswordRequired: 'New password is required.',
+    passwordChangeFailed: 'Password change failed.',
+    passwordChangeSuccess: 'Password updated successfully.'
+};
 
 function ChangePassword() {
     const navigate = useNavigate();
@@ -25,22 +30,22 @@ function ChangePassword() {
     useEffect(() => {
         if (!message) return;
 
-        const timeoutId = setTimeout(() => {
+        const timer = setTimeout(() => {
             navigate('/profile');
         }, PASSWORD_CHANGE_REDIRECT_DELAY_MS);
 
-        return () => clearTimeout(timeoutId);
+        return () => clearTimeout(timer);
     }, [message, navigate]);
 
     function validateForm() {
         const fieldErrors = {};
 
         if (!currentPassword) {
-            fieldErrors.currentPassword = 'Current password is required.';
+            fieldErrors.currentPassword = MESSAGES.currentPasswordRequired;
         }
 
         if (!newPassword) {
-            fieldErrors.newPassword = 'New password is required.';
+            fieldErrors.newPassword = MESSAGES.newPasswordRequired;
         }
 
         return fieldErrors;
@@ -66,13 +71,11 @@ function ChangePassword() {
                 new_password: newPassword
             });
 
-            setMessage(res.data.message);
-
-            setMessage(res.data.message || PASSWORD_CHANGE_SUCCESS_MESSAGE);
+            setMessage(res.data.message || MESSAGES.passwordChangeSuccess);
         } catch {
             setErrors({
                 fieldErrors: {},
-                global: [PASSWORD_CHANGE_FAILURE_MESSAGE]
+                global: [MESSAGES.passwordChangeFailed]
             });
         } finally {
             setLoading(false);

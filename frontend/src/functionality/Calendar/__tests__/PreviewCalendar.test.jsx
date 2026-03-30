@@ -46,7 +46,7 @@ vi.mock('../../../utils/savePlan.js', () => ({
 
 import PreviewCalendar from '../PreviewCalendar';
 
-describe('PreviewCalendar', () => {
+describe('Tests for PreviewCalendar', () => {
     const mockSchedule = {
         week_start: '2026-03-16',
         events: [

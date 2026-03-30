@@ -5,9 +5,11 @@ from scheduler.models.TimeBlock import TimeBlock
 from scheduler.utils.to_utc import to_utc
 
 
-class CreateScheduleTest(APITestCase):
-
+class CreateScheduleViewTest(APITestCase):
     def setUp(self):
+        """
+        Set up a test user and a reusable base payload for creating time blocks.
+        """
         self.user = User.objects.create_user(
             username="testuser",
             email="testuser@testuser.com",
@@ -30,7 +32,10 @@ class CreateScheduleTest(APITestCase):
             "description": "Studying OSC for the exam soon",
         }
 
-    def test_create_timeblock_requires_authentication(self):
+    def test_create_time_block_requires_authentication(self):
+        """
+        Ensure unauthenticated users cannot create a time block.
+        """
         response = self.client.post(
             self.url,
             self.base_data,
@@ -39,7 +44,7 @@ class CreateScheduleTest(APITestCase):
 
         self.assertEqual(response.status_code, 401)
 
-    def test_create_timeblock_without_description_is_allowed(self):
+    def test_create_time_block_without_description_is_allowed(self):
         self.client.force_authenticate(user=self.user)
 
         data_without_description = self.base_data.copy()
@@ -53,7 +58,7 @@ class CreateScheduleTest(APITestCase):
 
         self.assertEqual(response.status_code, 201)
 
-    def test_create_timeblock_with_description(self):
+    def test_create_time_block_with_description(self):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post(
@@ -64,7 +69,15 @@ class CreateScheduleTest(APITestCase):
 
         self.assertEqual(response.status_code, 201)
 
-    def test_create_timeblock_missing_required_field(self):
+    def test_create_time_block_missing_required_field(self):
+        """
+        Ensure validation fails when required fields are missing.
+
+        In this case, the 'name' field is removed.
+
+        Expected:
+            - 400 BAD REQUEST response
+        """
         self.client.force_authenticate(user=self.user)
 
         data_without_name = self.base_data.copy()
@@ -78,7 +91,13 @@ class CreateScheduleTest(APITestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_create_timeblock_invalid_time_order(self):
+    def test_create_time_block_invalid_time_order(self):
+        """
+        Ensure validation fails when start_time is after end_time.
+
+        Expected:
+            - 400 BAD REQUEST response
+        """
         self.client.force_authenticate(user=self.user)
 
         data_with_invalid_time_order = self.base_data.copy()
@@ -95,6 +114,13 @@ class CreateScheduleTest(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_create_block_missing_date_field(self):
+        """
+        Ensure validation fails when start_time is after end_time.
+        Given date field is separate to timeblock this tests a different required field.
+
+        Expected:
+            - 400 BAD REQUEST response
+        """
         self.client.force_authenticate(user=self.user)
 
         data_without_date = self.base_data.copy()
@@ -122,7 +148,7 @@ class CreateScheduleTest(APITestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_create_timeblock_cross_midnight(self):
+    def test_create_time_block_cross_midnight(self):
         """Test that a TimeBlock crossing midnight in UTC is assigned to the correct DayPlan."""
         self.client.force_authenticate(user=self.user)
 

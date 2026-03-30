@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import SubscriptionForm from '../SubscriptionForm.jsx';
 
-describe('SubscriptionForm', () => {
+describe('Tests for SubscriptionForm', () => {
     it('renders the subscription form fields and submit button', () => {
         render(<SubscriptionForm onImport={vi.fn()} />);
 

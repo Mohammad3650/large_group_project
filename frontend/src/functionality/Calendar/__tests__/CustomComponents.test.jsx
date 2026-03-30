@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { customComponents } from '../CustomComponents.jsx';
 
-describe('customComponents', () => {
+describe('Tests for CustomComponents', () => {
     it('returns an eventModal component that renders CalendarEventModal', () => {
         const mockEventButtons = vi.fn(() => <button>Delete</button>);
         const mockHandleDelete = vi.fn();

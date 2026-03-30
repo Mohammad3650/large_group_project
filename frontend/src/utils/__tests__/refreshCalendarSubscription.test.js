@@ -7,7 +7,7 @@ vi.mock('../../api.js', () => ({
     }
 }));
 
-describe('refreshCalendarSubscription', () => {
+describe('Tests for refreshCalendarSubscription', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

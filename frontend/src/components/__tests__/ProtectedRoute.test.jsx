@@ -16,7 +16,7 @@ vi.mock('../../utils/authToken.js', () => ({
  * Ensures users are either allowed access or redirected to Login page based on token validity
  */
 
-describe('ProtectedRoute', () => {
+describe('Tests for ProtectedRoute', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

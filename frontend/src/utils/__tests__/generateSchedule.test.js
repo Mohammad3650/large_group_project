@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import generateSchedule from "../generateSchedule";
 import { api } from "../../api";
 
@@ -8,7 +8,11 @@ vi.mock("../../api", () => ({
     }
 }));
 
-describe("generateSchedule", () => {
+describe("Test for generateSchedule", () => {
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    })
 
     it("calls api.post with correct URL and data", async () => {
         const mockData = { test: "data" };

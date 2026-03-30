@@ -17,7 +17,7 @@ vi.mock('../../../api.js', () => ({
     }
 }));
 
-describe('NotesSection', () => {
+describe('Tests for NotesSection', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.useFakeTimers({ shouldAdvanceTime: true });

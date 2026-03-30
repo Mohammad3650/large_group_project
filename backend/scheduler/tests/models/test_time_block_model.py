@@ -7,6 +7,7 @@ from scheduler.models.User import User
 
 
 class TimeBlockModelTest(TestCase):
+    """Tests for the TimeBlock model"""
     def setUp(self):
         self.user = User.objects.create_user(
             username="testuser", password="password123"
