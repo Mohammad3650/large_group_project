@@ -1,10 +1,11 @@
 import axios from 'axios';
 
+const fallbackMessage = 'Request failed.';
 /**
  * Returns the standard frontend error shape with a single global message.
  *
  * @param {string} message - Global error message to display
- * @returns {{ fieldErrors: Object<string, string[]>, global: string[] }}
+ * @returns {{ fieldErrors, global: string[] }}
  */
 
 function buildGlobalError(message) {
@@ -19,7 +20,7 @@ function buildGlobalError(message) {
  * field-level and global errors.
  *
  * @param {Record<string, unknown>} data - Error response object
- * @returns {{ fieldErrors: Object<string, string[]>, global: string[] }}
+ * @returns {{ fieldErrors, global: string[] }}
  */
 
 function handleObjectErrors(data) {
@@ -27,18 +28,14 @@ function handleObjectErrors(data) {
 
     for (const [key, value] of Object.entries(data)) {
         if (key === 'non_field_errors') {
-            out.global.push(
-                ...(Array.isArray(value) ? value : [String(value)])
-            );
+            out.global.push(...(Array.isArray(value) ? value : [String(value)]));
         } else {
-            out.fieldErrors[key] = Array.isArray(value)
-                ? value
-                : [String(value)];
+            out.fieldErrors[key] = Array.isArray(value) ? value : [String(value)];
         }
     }
 
     if (!out.global.length && !Object.keys(out.fieldErrors).length) {
-        return buildGlobalError('Request failed.');
+        return buildGlobalError(fallbackMessage);
     }
 
     return out;
@@ -48,13 +45,11 @@ function handleObjectErrors(data) {
  * Handles string or unexpected primitive response values.
  *
  * @param {unknown} data - Primitive response data
- * @returns {{ fieldErrors: Object<string, string[]>, global: string[] }}
+ * @returns {{ fieldErrors, global: string[] }}
  */
 
 function handlePrimitiveError(data) {
-    return buildGlobalError(
-        typeof data === 'string' ? data : 'Request failed.'
-    );
+    return buildGlobalError(typeof data === 'string' ? data : fallbackMessage);
 }
 
 /**
@@ -73,7 +68,7 @@ function handlePrimitiveError(data) {
  * -- plain string responses
  *
  * @param {unknown} err - Error thrown during an API request
- * @returns {{ fieldErrors: Object<string, string[]>, global: string[] }}
+ * @returns {{ fieldErrors, global: string[] }}
  */
 
 export function formatApiError(err) {
