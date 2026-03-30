@@ -35,12 +35,3 @@ class SaveTimeBlockSerializer(serializers.Serializer):
             raise serializers.ValidationError("end_time must be after start_time")
 
         return attrs
-
-
-class SaveWeeklyPlanSerializer(serializers.Serializer):
-    """
-    Serializer for saving weekly plans with multiple time block events.
-    """
-
-    week_start = serializers.DateField(input_formats=["%Y-%m-%d", "%d/%m/%Y"])
-    events = SaveTimeBlockSerializer(many=True, allow_empty=False)

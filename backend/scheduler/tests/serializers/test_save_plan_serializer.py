@@ -1,5 +1,5 @@
 from django.test import TestCase
-from scheduler.serializers.save_plan_serializer import SaveTimeBlockSerializer, SaveWeeklyPlanSerializer
+from backend.scheduler.serializers.save_time_block_serializer import SaveTimeBlockSerializer, SaveWeeklyPlanSerializer
 from scheduler.models.TimeBlock import TimeBlock
 
 def valid_event(**overrides):
