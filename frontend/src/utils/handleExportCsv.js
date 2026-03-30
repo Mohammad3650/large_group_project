@@ -1,19 +1,24 @@
 import { api } from '../api.js';
+import downloadFile from './downloadFile.js';
 
+
+
+const EXPORT_CSV_ENDPOINT = '/api/time-blocks/export/csv/';
+const EXPORT_CSV_FILENAME = 'studysync_schedule.csv';
+
+/**
+ * Export the user's schedule as a CSV file.
+ *
+ * @param {Function} setError - Error state setter
+ * @returns {Promise<void>} Resolves when export completes
+ */
 async function handleExportCsv(setError) {
     try {
-        const response = await api.get('/api/time-blocks/export/csv/', {
+        const response = await api.get(EXPORT_CSV_ENDPOINT, {
             responseType: 'blob'
         });
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'studysync_schedule.csv');
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(url);
+        downloadFile(response.data, EXPORT_CSV_FILENAME);
     } catch (err) {
         setError('Failed to export CSV');
     }
