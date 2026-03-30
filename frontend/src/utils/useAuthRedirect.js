@@ -1,28 +1,26 @@
 import { useEffect } from 'react';
-import { isTokenValid } from '../utils/authToken';
-import { useNavigate } from 'react-router-dom';
+import { isTokenValid } from './authToken';
 
 /**
  * Custom hook that redirects the user if they are already authenticated.
  *
- * Description:
+ * Behavior:
  * - Checks if a valid authentication token exists
  * - If valid, redirects the user to a specified path (default: /dashboard)
  *
+ * @param {Function} nav - The navigation function
  * @param {string} [path='/dashboard'] - Route to redirect authenticated users to
  */
 
-function useRedirectIfAuthenticated(path = '/dashboard') {
-    const navigate = useNavigate();
-    
+function useAuthRedirect(nav, path = '/dashboard') {
     useEffect(() => {
         async function redirectUser() {
             const isAuthenticated = await isTokenValid();
-            if (isAuthenticated) navigate(path);
+            if (isAuthenticated) nav(path);
         }
 
         redirectUser();
-    }, [navigate, path]);
+    }, [nav, path]);
 }
 
-export default useRedirectIfAuthenticated;
+export default useAuthRedirect;
