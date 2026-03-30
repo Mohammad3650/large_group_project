@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import formatDateTime from "../formatDateTime.js";
+import formatDateTime from "../Formatters/formatDateTime.js";
 
 describe("Tests for formatDateTime", () => {
     it("formats the date and time into a human-readable string", () => {

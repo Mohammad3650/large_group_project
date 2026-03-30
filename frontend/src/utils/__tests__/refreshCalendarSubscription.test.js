@@ -1,5 +1,5 @@
 import { api } from '../../api.js';
-import refreshCalendarSubscription from '../refreshCalendarSubscription.js';
+import refreshCalendarSubscription from '../Api/refreshCalendarSubscription.js';
 
 vi.mock('../../api.js', () => ({
     api: {

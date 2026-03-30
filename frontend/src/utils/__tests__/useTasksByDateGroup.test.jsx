@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import useTasksByDateGroup from "../useTasksByDateGroup.js";
+import useTasksByDateGroup from "../Hooks/useTasksByDateGroup.js";
 
 const makeTask = (daysFromToday, startTime = "09:00") => {
     const date = new Date();

@@ -2,19 +2,19 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Navbar from "../Navbar";
-import useAuthStatus from "../../utils/authStatus";
-import * as useUsernameModule from "../../utils/useUsername.js";
-import * as useDropdownModule from "../../utils/useDropdown.js";
+import useAuthStatus from "../../utils/Auth/authStatus";
+import * as useUsernameModule from "../../utils/Hooks/useUsername.js";
+import * as useDropdownModule from "../../utils/Hooks/useDropdown.js";
 
-vi.mock("../../utils/authStatus", () => ({
+vi.mock("../../utils/Auth/authStatus", () => ({
     default: vi.fn(),
 }));
 
-vi.mock("../../utils/useUsername.js", () => ({
+vi.mock("../../utils/Hooks/useUsername.js", () => ({
     default: vi.fn(),
 }));
 
-vi.mock("../../utils/useDropdown.js", () => ({
+vi.mock("../../utils/Hooks/useDropdown.js", () => ({
     default: vi.fn(),
 }));
 

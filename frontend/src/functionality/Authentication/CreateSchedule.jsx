@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../../api';
 import TimeBlockForm from '../../components/TimeBlockForm';
 import GeneratorForm from '../../components/GeneratorForm.jsx';
-import generateSchedule from '../../utils/generateSchedule.js';
+import generateSchedule from '../../utils/Api/generateSchedule.js';
 
 const TABS = [
     { id: 'timeblock', label: 'Time Block' },

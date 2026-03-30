@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { api } from '../../api.js';
-import downloadFile from '../downloadFile.js';
-import handleExportCsv from '../handleExportCsv.js';
+import downloadFile from '../Helpers/downloadFile.js';
+import handleExportCsv from '../Api/handleExportCsv.js';
 import { api } from '../../api.js';
-import downloadFile from '../downloadFile.js';
-import handleExportCsv from '../handleExportCsv.js';
+import downloadFile from '../Helpers/downloadFile.js';
+import handleExportCsv from '../Api/handleExportCsv.js';
 
 vi.mock('../../api.js', () => ({
     api: {
@@ -12,7 +12,7 @@ vi.mock('../../api.js', () => ({
     }
 }));
 
-vi.mock('../downloadFile.js', () => ({
+vi.mock('../Helpers/downloadFile.js', () => ({
     default: vi.fn()
 }));
 

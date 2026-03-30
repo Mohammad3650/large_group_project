@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { publicApi } from '../../api';
-import { saveTokens } from '../../utils/authStorage';
-import { formatApiError } from '../../utils/errors';
-import { validateSignupForm } from '../../utils/signupValidation';
-import useRedirectIfAuthenticated from '../../utils/useRedirectIfAuthenticated';
+import { saveTokens } from '../../utils/Auth/authStorage';
+import { formatApiError } from '../../utils/Errors/errors';
+import { validateSignupForm } from '../../utils/Validation/signupValidation';
+import useRedirectIfAuthenticated from '../../utils/Hooks/useRedirectIfAuthenticated';
 import AuthCard from '../../components/AuthCard';
 import AuthField from '../../components/AuthField';
 import './stylesheets/AuthPages.css';
