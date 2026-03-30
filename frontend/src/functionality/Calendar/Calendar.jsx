@@ -2,10 +2,10 @@ import '@schedule-x/theme-default/dist/index.css';
 import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 
-import useTimeBlocks from '../../utils/useTimeBlocks.js';
+import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import CalendarView from './CalendarView.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
-import useUsername from '../../utils/useUsername.js';
+import useUsername from '../../utils/Hooks/useUsername.js';
 import { useNavigate } from 'react-router-dom';
 import CalendarPlaceholder from './CalendarPlaceholder.jsx';
 

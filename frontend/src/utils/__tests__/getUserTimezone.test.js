@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import getUserTimezone from "../getUserTimezone";
+import getUserTimezone from "../Helpers/getUserTimezone";
 
 const mockTimezone = (timezone) => {
     return vi.spyOn(Intl, "DateTimeFormat").mockReturnValue({

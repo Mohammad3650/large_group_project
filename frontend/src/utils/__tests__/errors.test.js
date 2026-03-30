@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import axios from "axios";
-import { formatApiError } from "../errors";
+import { formatApiError } from "../Errors/errors";
 
 describe("Tests for formatApiError", () => {
     const mockAxiosError = () => {

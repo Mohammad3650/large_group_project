@@ -33,6 +33,8 @@ Password: password123
 - Schedule Generation
 - Interactive Calendar
 - Dashboard
+- Subscriptions
+- Export Functionality
 
 ## Tech Stack
 

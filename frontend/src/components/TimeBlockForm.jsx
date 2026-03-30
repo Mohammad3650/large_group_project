@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './stylesheets/TimeBlockForm.css';
-import getUserTimezone from '../utils/getUserTimezone.js';
+import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
 
 /**
  * TimeBlockForm

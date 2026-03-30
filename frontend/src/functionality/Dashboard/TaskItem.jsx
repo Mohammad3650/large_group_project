@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './stylesheets/TaskItem.css';
-import formatDateTime from '../../utils/formatDateTime.js';
-import playDing from '../../utils/playDing.js';
+import formatDateTime from '../../utils/Formatters/formatDateTime.js';
+import playDing from '../../utils/Audio/playDing.js';
 
 /**
  * Displays a single task item with a checkbox, name, start time and end time.

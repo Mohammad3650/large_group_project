@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import { api } from '../api.js';
-import mapTimeBlocks from './mapTimeBlocks.js';
+import { api } from '../../api.js';
+import mapTimeBlocks from '../Helpers/mapTimeBlocks.js';
 
 const TIME_BLOCKS_ENDPOINT = '/api/time-blocks/get/';
 

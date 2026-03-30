@@ -1,4 +1,4 @@
-import dingSound from '../assets/Dashboard/ding.mp3';
+import dingSound from '../../assets/Dashboard/ding.mp3';
 
 /**
  * Plays the ding sound when the user completes a task.

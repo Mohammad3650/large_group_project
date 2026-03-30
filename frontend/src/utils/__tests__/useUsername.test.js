@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
-import useUsername from "../useUsername";
+import useUsername from "../Hooks/useUsername";
 import * as apiModule from "../../api.js";
 
 vi.mock("../../api.js", () => ({

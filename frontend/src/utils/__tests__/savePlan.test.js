@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import savePlan from "../savePlan";
+import savePlan from "../Api/savePlan";
 import { api } from "../../api";
 
 vi.mock("../../api", () => ({

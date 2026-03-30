@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import getDate from './getDate.js';
-import sortTasksByDate from './sortTasksByDate.js';
+import getDate from '../Helpers/getDate.js';
+import sortTasksByDate from '../Helpers/sortTasksByDate.js';
 
 /**
  * Groups an array of time blocks into date-based categories for display on the dashboard.

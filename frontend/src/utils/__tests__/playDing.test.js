@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import playDing from "../playDing.js";
+import playDing from "../Audio/playDing.js";
 
 vi.mock("../../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
 
