@@ -1,9 +1,9 @@
 import './stylesheets/Navbar.css';
 import { Link } from 'react-router-dom';
 import LogoutButton from './LogoutButton.jsx';
-import useUsername from '../utils/useUsername.js';
-import useAuthStatus from '../utils/authStatus';
-import useDropdown from '../utils/useDropdown.js';
+import useUsername from '../utils/Hooks/useUsername.js';
+import useAuthStatus from '../utils/Auth/authStatus';
+import useDropdown from '../utils/Hooks/useDropdown.js';
 import ToggleDarkMode from './ToggleDarkMode.jsx';
 
 import userIcon from '../assets/Navbar/user.png';

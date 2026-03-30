@@ -4,16 +4,16 @@ import { api } from '../../api.js';
 import TaskGroup from './TaskGroup.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
-import useTimeBlocks from '../../utils/useTimeBlocks.js';
-import handleExportCsv from '../../utils/handleExportCsv.js';
+import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
+import handleExportCsv from '../../utils/Api/handleExportCsv.js';
 import SubscriptionForm from './SubscriptionForm.jsx';
 import SubscriptionList from './SubscriptionList.jsx';
-import createCalendarSubscription from '../../utils/createCalendarSubscription.js';
-import deleteCalendarSubscription from '../../utils/deleteCalendarSubscription.js';
-import getCalendarSubscriptions from '../../utils/getCalendarSubscriptions.js';
-import handleExportIcs from '../../utils/handleExportIcs.js';
-import refreshCalendarSubscription from '../../utils/refreshCalendarSubscription.js';
-import useTasksByDateGroup from '../../utils/useTasksByDateGroup.js';
+import createCalendarSubscription from '../../utils/Api/createCalendarSubscription.js';
+import deleteCalendarSubscription from '../../utils/Api/deleteCalendarSubscription.js';
+import getCalendarSubscriptions from '../../utils/Api/getCalendarSubscriptions.js';
+import handleExportIcs from '../../utils/Api/handleExportIcs.js';
+import refreshCalendarSubscription from '../../utils/Api/refreshCalendarSubscription.js';
+import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
 import './stylesheets/Dashboard.css';
 
 /**

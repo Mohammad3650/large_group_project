@@ -18,28 +18,28 @@ vi.mock('react-router-dom', async () => {
 vi.mock('../../../api.js', () => ({
     api: { get: vi.fn() }
 }));
-vi.mock('../../../utils/useTimeBlocks.js', () => ({
+vi.mock('../../../utils/Hooks/useTimeBlocks.js', () => ({
     default: vi.fn()
 }));
-vi.mock('../../../utils/useTasksByDateGroup.js', () => ({
+vi.mock('../../../utils/Hooks/useTasksByDateGroup.js', () => ({
     default: vi.fn()
 }));
-vi.mock('../../../utils/handleExportCsv.js', () => ({
+vi.mock('../../../utils/Api/handleExportCsv.js', () => ({
     default: vi.fn()
 }));
-vi.mock('../../../utils/handleExportIcs.js', () => ({
+vi.mock('../../../utils/Api/handleExportIcs.js', () => ({
     default: vi.fn()
 }));
-vi.mock('../../../utils/getCalendarSubscriptions.js', () => ({
+vi.mock('../../../utils/Api/getCalendarSubscriptions.js', () => ({
     default: vi.fn()
 }));
-vi.mock('../../../utils/createCalendarSubscription.js', () => ({
+vi.mock('../../../utils/Api/createCalendarSubscription.js', () => ({
     default: vi.fn()
 }));
-vi.mock('../../../utils/deleteCalendarSubscription.js', () => ({
+vi.mock('../../../utils/Api/deleteCalendarSubscription.js', () => ({
     default: vi.fn()
 }));
-vi.mock('../../../utils/refreshCalendarSubscription.js', () => ({
+vi.mock('../../../utils/Api/refreshCalendarSubscription.js', () => ({
     default: vi.fn()
 }));
 vi.mock('../../../components/Navbar.jsx', () => ({
@@ -85,14 +85,14 @@ vi.mock('../TaskGroup.jsx', () => ({
 }));
 
 import * as apiModule from '../../../api.js';
-import * as useTimeBlocksModule from '../../../utils/useTimeBlocks.js';
-import * as useTasksByDateGroupModule from '../../../utils/useTasksByDateGroup.js';
-import * as handleExportCsvModule from '../../../utils/handleExportCsv.js';
-import * as handleExportIcsModule from '../../../utils/handleExportIcs.js';
-import * as getCalendarSubscriptionsModule from '../../../utils/getCalendarSubscriptions.js';
-import * as createCalendarSubscriptionModule from '../../../utils/createCalendarSubscription.js';
-import * as deleteCalendarSubscriptionModule from '../../../utils/deleteCalendarSubscription.js';
-import * as refreshCalendarSubscriptionModule from '../../../utils/refreshCalendarSubscription.js';
+import * as useTimeBlocksModule from '../../../utils/Hooks/useTimeBlocks.js';
+import * as useTasksByDateGroupModule from '../../../utils/Hooks/useTasksByDateGroup.js';
+import * as handleExportCsvModule from '../../../utils/Api/handleExportCsv.js';
+import * as handleExportIcsModule from '../../../utils/Api/handleExportIcs.js';
+import * as getCalendarSubscriptionsModule from '../../../utils/Api/getCalendarSubscriptions.js';
+import * as createCalendarSubscriptionModule from '../../../utils/Api/createCalendarSubscription.js';
+import * as deleteCalendarSubscriptionModule from '../../../utils/Api/deleteCalendarSubscription.js';
+import * as refreshCalendarSubscriptionModule from '../../../utils/Api/refreshCalendarSubscription.js';
 
 const today = new Date();
 today.setHours(0, 0, 0, 0);

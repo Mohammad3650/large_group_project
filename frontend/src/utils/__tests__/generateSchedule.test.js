@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import generateSchedule from "../generateSchedule";
+import generateSchedule from "../Api/generateSchedule";
 import { api } from "../../api";
 
 vi.mock("../../api", () => ({

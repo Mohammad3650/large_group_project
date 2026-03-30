@@ -285,7 +285,7 @@ describe('EditProfile', () => {
         await screen.findByDisplayValue('test@example.com');
 
         await user.click(
-            screen.getByRole('button', { name: /delete account/i })
+            screen.getByRole('button', { name: /delete your account permanently/i })
         );
 
         expect(confirmSpy).toHaveBeenCalled();
@@ -312,7 +312,7 @@ describe('EditProfile', () => {
         await screen.findByDisplayValue('test@example.com');
 
         await user.click(
-            screen.getByRole('button', { name: /delete account/i })
+            screen.getByRole('button', { name: /delete your account permanently/i })
         );
 
         expect(api.delete).toHaveBeenCalledWith('/api/user/delete/');
@@ -335,7 +335,7 @@ describe('EditProfile', () => {
         await screen.findByDisplayValue('test@example.com');
 
         await user.click(
-            screen.getByRole('button', { name: /delete account/i })
+            screen.getByRole('button', { name: /delete your account permanently/i })
         );
 
         expect(

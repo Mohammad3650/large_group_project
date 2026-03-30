@@ -4,10 +4,10 @@ import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/vitest';
 import userEvent from '@testing-library/user-event';
 import Signup from '../Signup';
-import { isTokenValid } from '../../../utils/authToken';
+import { isTokenValid } from '../../../utils/Auth/authToken';
 import { publicApi } from '../../../api';
-import { saveTokens } from '../../../utils/authStorage';
-import { formatApiError } from '../../../utils/errors';
+import { saveTokens } from '../../../utils/Auth/authStorage';
+import { formatApiError } from '../../../utils/Errors/errors';
 
 const mockNavigate = vi.fn();
 
@@ -19,7 +19,7 @@ vi.mock('react-router-dom', async () => {
     };
 });
 
-vi.mock('../../../utils/authToken', () => ({
+vi.mock('../../../utils/Auth/authToken', () => ({
     isTokenValid: vi.fn()
 }));
 
@@ -29,11 +29,11 @@ vi.mock('../../../api', () => ({
     }
 }));
 
-vi.mock('../../../utils/authStorage', () => ({
+vi.mock('../../../utils/Auth/authStorage', () => ({
     saveTokens: vi.fn()
 }));
 
-vi.mock('../../../utils/errors', () => ({
+vi.mock('../../../utils/Errors/errors', () => ({
     formatApiError: vi.fn()
 }));
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import createCalendarSubscription from '../createCalendarSubscription.js';
+import createCalendarSubscription from '../Api/createCalendarSubscription.js';
 import { api } from '../../api.js';
 
 vi.mock('../../api.js', () => ({

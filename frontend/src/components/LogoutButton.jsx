@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../utils/authStorage';
+import { logout } from '../utils/Auth/authStorage';
 import './stylesheets/Navbar.css';
 
 /**

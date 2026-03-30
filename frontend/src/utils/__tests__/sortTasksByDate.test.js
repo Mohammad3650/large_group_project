@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import sortTasksByDate from "../sortTasksByDate.js";
+import sortTasksByDate from "../Helpers/sortTasksByDate.js";
 
 describe("Tests for sortTasksByDate", () => {
     it("sorts earlier tasks before later tasks (same date)", () => {

@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
-import useRedirectIfAuthenticated from '../useRedirectIfAuthenticated.js';
-import { isTokenValid } from '../authToken.js';
+import useRedirectIfAuthenticated from '../Hooks/useRedirectIfAuthenticated.js';
+import { isTokenValid } from '../Auth/authToken.js';
 
 const mockNavigate = vi.fn();
 
-vi.mock('../authToken.js', () => ({
+vi.mock('../Auth/authToken.js', () => ({
     isTokenValid: vi.fn()
 }));
 

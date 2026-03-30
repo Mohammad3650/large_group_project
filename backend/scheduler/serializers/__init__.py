@@ -2,5 +2,6 @@ from .unscheduled_serializer import UnscheduledSerializer
 
 from .window_serializer import WindowSerializer
 
-from .generator_serializers import GenerateScheduleRequestSerializer
-from .save_plan_serializer import SaveTimeBlockSerializer, SaveWeeklyPlanSerializer
+from .generator_serializer import GenerateScheduleRequestSerializer
+from .save_time_block_serializer import SaveTimeBlockSerializer
+from .save_weekly_plan_serializer import SaveWeeklyPlanSerializer

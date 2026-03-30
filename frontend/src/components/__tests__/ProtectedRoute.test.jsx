@@ -2,12 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from '../ProtectedRoute.jsx';
-import { isTokenValid } from '../../utils/authToken.js';
+import { isTokenValid } from '../../utils/Auth/authToken.js';
 
 /**
  * Mock the authToken utility to control authentication behaviour in tests.
  */
-vi.mock('../../utils/authToken.js', () => ({
+vi.mock('../../utils/Auth/authToken.js', () => ({
     isTokenValid: vi.fn()
 }));
 

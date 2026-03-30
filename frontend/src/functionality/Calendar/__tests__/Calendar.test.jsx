@@ -12,11 +12,11 @@ vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate
 }));
 
-vi.mock('../../../utils/useTimeBlocks.js', () => ({
+vi.mock('../../../utils/Hooks/useTimeBlocks.js', () => ({
     default: mockUseTimeBlocks
 }));
 
-vi.mock('../../../utils/useUsername.js', () => ({
+vi.mock('../../../utils/Hooks/useUsername.js', () => ({
     default: mockUseUsername
 }));
 

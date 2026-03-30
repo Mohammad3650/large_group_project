@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TaskGroup from '../TaskGroup';
-import * as deleteTimeBlockModule from '../../../utils/deleteTimeBlock.js';
+import * as deleteTimeBlockModule from '../../../utils/Api/deleteTimeBlock.js';
 
 vi.mock('../stylesheets/TaskGroup.css', () => ({}));
-vi.mock('../../../utils/deleteTimeBlock.js', () => ({
+vi.mock('../../../utils/Api/deleteTimeBlock.js', () => ({
     default: vi.fn()
 }));
 vi.mock('../TaskItem.jsx', () => ({

@@ -283,6 +283,6 @@ class SchedulerGeneratorTest(SimpleTestCase):
         recurring_events = [1, 2, 3]  # length = 3 > days = 2
 
         with patch.object(scheduler, "_enforce_max_one_per_day") as mocked:
-            scheduler.reccur_once_per_day_constraint(recurring_events)
+            scheduler.recur_once_per_day_constraint(recurring_events)
             mocked.assert_not_called()
 

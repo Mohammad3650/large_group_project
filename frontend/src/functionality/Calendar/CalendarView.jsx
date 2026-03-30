@@ -23,8 +23,8 @@ import locationIconDark from '../../assets/CalendarEvent/location_icon_black.png
 import timeIconLight from '../../assets/CalendarEvent/time_icon.png';
 import timeIconDark from '../../assets/CalendarEvent/time_icon_black.png';
 
-import deleteTimeBlock from '../../utils/deleteTimeBlock.js';
-import getUserTimezone from '../../utils/getUserTimezone.js';
+import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
+import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
 
 /**
  * Renders the Schedule-X calendar with the configured views, plugins,
@@ -34,11 +34,16 @@ function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsSe
     const eventModalPlugin = useMemo(() => createEventModalPlugin(), []);
 
     const calendar = useCalendarApp({
-        views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
+        views: [
+            createViewDay(),
+            createViewWeek(),
+            createViewMonthGrid(),
+        ],
         plugins: [eventModalPlugin, eventsService],
         events: Array.isArray(blocks) ? blocks : [],
         timezone: calendarTimezone,
-        selectedDate: Temporal.Now.plainDateISO(calendarTimezone)
+        selectedDate: Temporal.Now.plainDateISO(calendarTimezone),
+        isResponsive: false,
     });
 
     return <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />;
