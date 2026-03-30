@@ -21,6 +21,7 @@ icalendar==5.0.11
 
 ortools==9.15.6755
 Faker
+python-dotenv
 
 # Django – core backend framework
 
