@@ -10,9 +10,17 @@ describe("api config", () => {
 
   it("creates api and publicApi with the correct baseURL", async () => {
     apiModule = await import("./api");
+    const expectedBase = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+    expect(apiModule.api.defaults.baseURL).toBe(expectedBase);
+    expect(apiModule.publicApi.defaults.baseURL).toBe(expectedBase);
+  });
 
+  it("falls back to http://127.0.0.1:8000 when VITE_API_BASE_URL is not set", async () => {
+    vi.stubEnv("VITE_API_BASE_URL", "");
+    apiModule = await import("./api");
     expect(apiModule.api.defaults.baseURL).toBe("http://127.0.0.1:8000");
     expect(apiModule.publicApi.defaults.baseURL).toBe("http://127.0.0.1:8000");
+    vi.unstubAllEnvs();
   });
 
   it("sets the Authorization header when a token is provided", async () => {
