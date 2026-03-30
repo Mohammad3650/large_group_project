@@ -1,4 +1,21 @@
 /**
+ * Reusable action button for subscription actions.
+ *
+ * @param {Object} props - Component props
+ * @param {string} props.className - Button CSS class
+ * @param {Function} props.onClick - Click handler
+ * @param {React.ReactNode} props.children - Button text/content
+ * @returns {JSX.Element} Subscription action button
+ */
+function SubscriptionActionButton({ className, onClick, children }) {
+    return (
+        <button type="button" className={className} onClick={onClick}>
+            {children}
+        </button>
+    );
+}
+
+/**
  * Render the saved calendar subscription list.
  *
  * @param {Object} props - Component props
@@ -22,6 +39,7 @@ function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
 
         onDelete(subscriptionId);
     }
+
     if (!subscriptions.length) {
         return (
             <div className="subscription-list">
@@ -57,21 +75,19 @@ function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
                     </div>
 
                     <div className="subscription-actions">
-                        <button
-                            type="button"
+                        <SubscriptionActionButton
                             className="subscription-action-button"
                             onClick={() => onRefresh(subscription.id)}
                         >
                             Refresh
-                        </button>
+                        </SubscriptionActionButton>
 
-                        <button
-                            type="button"
+                        <SubscriptionActionButton
                             className="subscription-delete-button"
                             onClick={() => handleDeleteClick(subscription.id)}
                         >
                             Delete
-                        </button>
+                        </SubscriptionActionButton>
                     </div>
                 </div>
             ))}

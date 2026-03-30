@@ -1,6 +1,29 @@
 import { useState } from 'react';
 
 /**
+ * Reusable input field for the subscription form.
+ *
+ * @param {Object} props - Component props
+ * @param {string} props.type - Input type
+ * @param {string} props.placeholder - Input placeholder
+ * @param {string} props.value - Current input value
+ * @param {Function} props.onChange - Change handler
+ * @returns {JSX.Element} Subscription form input
+ */
+function SubscriptionInput({ type, placeholder, value, onChange }) {
+    return (
+        <input
+            type={type}
+            className="subscription-input"
+            placeholder={placeholder}
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            required
+        />
+    );
+}
+
+/**
  * Render the calendar subscription import form.
  *
  * @param {Object} props - Component props
@@ -14,27 +37,50 @@ function SubscriptionForm({ onImport }) {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    /**
+     * Reset form fields after a successful import.
+     */
+    function resetForm() {
+        setName('');
+        setSourceUrl('');
+    }
 
-/**
- * Reset form fields after a successful import.
- */
-function resetForm() {
-    setName('');
-    setSourceUrl('');
-}
+    /**
+     * Clear local feedback messages.
+     */
+    function clearMessages() {
+        setSuccessMessage('');
+        setErrorMessage('');
+    }
 
-/**
- * Clear local feedback messages.
- */
-function clearMessages() {
-    setSuccessMessage('');
-    setErrorMessage('');
-}
+    /**
+     * Build the payload sent to the import handler.
+     *
+     * @returns {{name: string, sourceUrl: string}} Subscription payload
+     */
+    function buildPayload() {
+        return { name, sourceUrl };
+    }
+
+    /**
+     * Handle a successful timetable import.
+     */
+    function handleImportSuccess() {
+        resetForm();
+        setSuccessMessage('Timetable imported successfully.');
+    }
+
+    /**
+     * Handle a failed timetable import.
+     */
+    function handleImportFailure() {
+        setErrorMessage('Failed to import timetable.');
+    }
 
     /**
      * Handle timetable subscription form submission.
      *
-     * @param {SubmitEvent} event - Form submit event
+     * @param {Event} event - Form submit event
      * @returns {Promise<void>}
      */
     async function handleSubmit(event) {
@@ -46,11 +92,10 @@ function clearMessages() {
         setLoading(true);
 
         try {
-            await onImport({ name, sourceUrl });
-            resetForm();
-            setSuccessMessage('Timetable imported successfully.');
+            await onImport(buildPayload());
+            handleImportSuccess();
         } catch {
-            setErrorMessage('Failed to import timetable.');
+            handleImportFailure();
         } finally {
             setLoading(false);
         }
@@ -68,22 +113,18 @@ function clearMessages() {
                 <p className="subscription-error-text">{errorMessage}</p>
             )}
 
-            <input
+            <SubscriptionInput
                 type="text"
-                className="subscription-input"
                 placeholder="Subscription name"
                 value={name}
-                onChange={(event) => setName(event.target.value)}
-                required
+                onChange={setName}
             />
 
-            <input
+            <SubscriptionInput
                 type="url"
-                className="subscription-input"
                 placeholder="ICS or webcal URL"
                 value={sourceUrl}
-                onChange={(event) => setSourceUrl(event.target.value)}
-                required
+                onChange={setSourceUrl}
             />
 
             <button
