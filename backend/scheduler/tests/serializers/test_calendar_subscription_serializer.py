@@ -6,13 +6,18 @@ from scheduler.serializers.calendar_subscription_serializer import (
 
 
 class CalendarSubscriptionSerializerTest(TestCase):
+    """Tests for the CalendarSubscriptionSerializer."""
+
+    def setUp(self):
+        """Create a base valid data dictionary for reuse across tests."""
+        self.data = {
+            "name": "KCL Timetable",
+            "source_url": "https://example.com/calendar.ics",
+        }
+
     def test_valid_data_passes(self):
-        serializer = CalendarSubscriptionSerializer(
-            data={
-                "name": "KCL Timetable",
-                "source_url": "https://example.com/calendar.ics",
-            }
-        )
+        """Verify the serializer is valid and returns expected values for valid input."""
+        serializer = CalendarSubscriptionSerializer(data=self.data)
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
         self.assertEqual(serializer.validated_data["name"], "KCL Timetable")
@@ -22,23 +27,17 @@ class CalendarSubscriptionSerializerTest(TestCase):
         )
 
     def test_name_is_trimmed(self):
-        serializer = CalendarSubscriptionSerializer(
-            data={
-                "name": "  My Calendar  ",
-                "source_url": "https://example.com/calendar.ics",
-            }
-        )
+        """Verify leading and trailing whitespace is removed from the name field."""
+        self.data["name"] = "  My Calendar  "
+        serializer = CalendarSubscriptionSerializer(data=self.data)
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
         self.assertEqual(serializer.validated_data["name"], "My Calendar")
 
     def test_blank_name_fails(self):
-        serializer = CalendarSubscriptionSerializer(
-            data={
-                "name": "",
-                "source_url": "https://example.com/calendar.ics",
-            }
-        )
+        """Verify the serializer rejects a blank name with the correct error message."""
+        self.data["name"] = ""
+        serializer = CalendarSubscriptionSerializer(data=self.data)
 
         self.assertFalse(serializer.is_valid())
         self.assertIn("name", serializer.errors)
@@ -48,12 +47,9 @@ class CalendarSubscriptionSerializerTest(TestCase):
         )
 
     def test_webcal_url_is_normalised_to_https(self):
-        serializer = CalendarSubscriptionSerializer(
-            data={
-                "name": "KCL Calendar",
-                "source_url": "webcal://example.com/calendar.ics",
-            }
-        )
+        """Verify webcal URLs are converted to https during validation."""
+        self.data["source_url"] = "webcal://example.com/calendar.ics"
+        serializer = CalendarSubscriptionSerializer(data=self.data)
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
         self.assertEqual(
@@ -62,12 +58,9 @@ class CalendarSubscriptionSerializerTest(TestCase):
         )
 
     def test_source_url_is_trimmed(self):
-        serializer = CalendarSubscriptionSerializer(
-            data={
-                "name": "KCL Calendar",
-                "source_url": "  https://example.com/calendar.ics  ",
-            }
-        )
+        """Verify leading and trailing whitespace is removed from the source_url field."""
+        self.data["source_url"] = "  https://example.com/calendar.ics  "
+        serializer = CalendarSubscriptionSerializer(data=self.data)
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
         self.assertEqual(
@@ -76,12 +69,9 @@ class CalendarSubscriptionSerializerTest(TestCase):
         )
 
     def test_blank_source_url_fails(self):
-        serializer = CalendarSubscriptionSerializer(
-            data={
-                "name": "KCL Calendar",
-                "source_url": "",
-            }
-        )
+        """Verify the serializer rejects a blank source_url with the correct error message."""
+        self.data["source_url"] = ""
+        serializer = CalendarSubscriptionSerializer(data=self.data)
 
         self.assertFalse(serializer.is_valid())
         self.assertIn("source_url", serializer.errors)
@@ -91,12 +81,9 @@ class CalendarSubscriptionSerializerTest(TestCase):
         )
 
     def test_invalid_scheme_fails(self):
-        serializer = CalendarSubscriptionSerializer(
-            data={
-                "name": "KCL Calendar",
-                "source_url": "ftp://example.com/calendar.ics",
-            }
-        )
+        """Verify URLs with unsupported schemes are rejected with the correct error."""
+        self.data["source_url"] = "ftp://example.com/calendar.ics"
+        serializer = CalendarSubscriptionSerializer(data=self.data)
 
         self.assertFalse(serializer.is_valid())
         self.assertIn("source_url", serializer.errors)
@@ -107,12 +94,9 @@ class CalendarSubscriptionSerializerTest(TestCase):
         )
 
     def test_missing_netloc_fails(self):
-        serializer = CalendarSubscriptionSerializer(
-            data={
-                "name": "KCL Calendar",
-                "source_url": "https:///calendar.ics",
-            }
-        )
+        """Verify URLs without a valid network location are rejected."""
+        self.data["source_url"] = "https:///calendar.ics"
+        serializer = CalendarSubscriptionSerializer(data=self.data)
 
         self.assertFalse(serializer.is_valid())
         self.assertIn("source_url", serializer.errors)
