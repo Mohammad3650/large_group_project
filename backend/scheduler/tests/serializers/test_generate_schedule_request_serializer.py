@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from scheduler.serializers.generator_serializer import GenerateScheduleRequestSerializer
-from tests.helpers.serializer_data import (
+from scheduler.tests.helpers.serializer_data import (
     make_generate_schedule_data,
     make_unscheduled_data,
     make_window_data,

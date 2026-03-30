@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from scheduler.serializers.window_serializer import WindowSerializer
-from tests.helpers.serializer_data import make_window_data
+from scheduler.tests.helpers.serializer_data import make_window_data
 
 
 class WindowSerializerTest(TestCase):

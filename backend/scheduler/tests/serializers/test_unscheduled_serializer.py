@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from scheduler.serializers.unscheduled_serializer import UnscheduledSerializer
-from tests.helpers.serializer_data import make_unscheduled_data
+from scheduler.tests.helpers.serializer_data import make_unscheduled_data
 
 
 class UnscheduledSerializerTest(TestCase):
