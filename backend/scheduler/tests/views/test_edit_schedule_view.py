@@ -143,3 +143,52 @@ class EditScheduleViewTest(APITestCase):
 
         # Ensure a new DayPlan was created
         self.assertTrue(DayPlan.objects.filter(user=self.user, date=new_date).exists())
+
+    def test_patch_only_start_time(self):
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("api-edit-timeblock", args=[self.block.id])
+
+        data_with_new_start_time = self.base_data.copy()
+        data_with_new_start_time.update({"start_time": "08:00"})
+
+        response = self.client.patch(url, data_with_new_start_time, format="json")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_patch_only_end_time(self):
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("api-edit-timeblock", args=[self.block.id])
+
+        data_with_new_end_time = self.base_data.copy()
+        data_with_new_end_time.update({"end_time": "11:00"})
+
+        response = self.client.patch(url, data_with_new_end_time, format="json")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_patch_same_date_does_not_move_block(self):
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("api-edit-timeblock", args=[self.block.id])
+
+        data = self.base_data.copy()
+
+        old_day_plan_id = self.block.day.id
+
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(response.status_code, 200)
+
+        self.block.refresh_from_db()
+        self.assertEqual(self.block.day.id, old_day_plan_id)
+
+    def test_get_time_block_success(self):
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("api-edit-timeblock", args=[self.block.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("date", response.data)
