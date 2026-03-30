@@ -38,12 +38,12 @@ vi.mock('@schedule-x/react', () => ({
     }
 }));
 
-vi.mock('../../../utils/deleteTimeBlock.js', () => ({
+vi.mock('../../../utils/Api/deleteTimeBlock.js', () => ({
     default: mockDeleteTimeBlock
 }));
 
 import CalendarView from '../CalendarView';
-import getUserTimezone from '../../../utils/getUserTimezone.js';
+import getUserTimezone from '../../../utils/Helpers/getUserTimezone.js';
 
 const blocks = [
     {

@@ -1,5 +1,5 @@
 import 'temporal-polyfill/global';
-import getUserTimezone from './getUserTimezone.js';
+import getUserTimezone from '../Helpers/getUserTimezone.js';
 
 /**
  * Converts a UTC date and time into the user's local timezone.

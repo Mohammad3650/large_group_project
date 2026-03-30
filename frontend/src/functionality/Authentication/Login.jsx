@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { publicApi } from '../../api';
-import { formatApiError } from '../../utils/errors';
-import { saveTokens } from '../../utils/authStorage';
-import useRedirectIfAuthenticated from '../../utils/useRedirectIfAuthenticated';
+import { formatApiError } from '../../utils/Errors/errors';
+import { saveTokens } from '../../utils/Auth/authStorage';
+import useRedirectIfAuthenticated from '../../utils/Hooks/useRedirectIfAuthenticated';
 import AuthCard from '../../components/AuthCard';
 import AuthField from '../../components/AuthField';
 import './stylesheets/AuthPages.css';

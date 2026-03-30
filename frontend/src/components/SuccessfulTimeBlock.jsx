@@ -14,12 +14,30 @@ function SuccessfulTimeBlock() {
     const nav = useNavigate();
     const location = useLocation();
     const blockId = location.state?.id;
+    const action = location.state?.action || 'created';
+    const buttons = [
+    {
+        label: "New Time Block",
+        className: "go-timeblock-btn",
+        action: () => nav('/create-schedule'),
+    },
+    {
+        label: "Return To Dashboard",
+        className: "go-dashboard-btn",
+        action: () => nav('/dashboard'),
+    },
+    {
+        label: "View in Calendar",
+        className: "go-calendar-btn",
+        action: () => nav('/calendar'),
+    },
+    ];
 
     return (
         <div className="success-page">
             <div className="success-card">
                 <h1 className="success-text">
-                    Time Block Created Successfully
+                    Time Block {action === 'edited' ? 'Updated' : 'Created'} Successfully
                 </h1>
 
                 <div className="tick-image">
@@ -30,15 +48,18 @@ function SuccessfulTimeBlock() {
                     ></img>
                 </div>
 
-                <h3>Your time block was created successfully</h3>
+                <h3>Your time block was {action === 'edited' ? 'updated' : 'created'} successfully</h3>
 
                 <div className="success-btns">
-                    <button
-                        className="go-timeblock-btn"
-                        onClick={() => nav('/create-schedule')}
-                    >
-                        New Time Block
-                    </button>
+                    {buttons.map((btn, index) => (
+                        <button
+                            key={index}
+                            className={btn.className}
+                            onClick={btn.action}
+                        >
+                            {btn.label}
+                        </button>
+                    ))}
 
                     {blockId && (
                         <button
@@ -48,20 +69,6 @@ function SuccessfulTimeBlock() {
                             Edit Time Block
                         </button>
                     )}
-
-                    <button
-                        className="go-dashboard-btn"
-                        onClick={() => nav('/dashboard')}
-                    >
-                        Return To Dashboard
-                    </button>
-
-                    <button
-                        className="go-calendar-btn"
-                        onClick={() => nav('/calendar')}
-                    >
-                        View in Calendar
-                    </button>
                 </div>
             </div>
         </div>

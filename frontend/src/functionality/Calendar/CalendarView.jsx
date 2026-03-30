@@ -23,8 +23,8 @@ import locationIconDark from '../../assets/CalendarEvent/location_icon_black.png
 import timeIconLight from '../../assets/CalendarEvent/time_icon.png';
 import timeIconDark from '../../assets/CalendarEvent/time_icon_black.png';
 
-import deleteTimeBlock from '../../utils/deleteTimeBlock.js';
-import getUserTimezone from '../../utils/getUserTimezone.js';
+import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
+import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
 
 /**
  * Renders the Schedule-X calendar with the configured views, plugins,

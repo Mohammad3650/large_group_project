@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isTokenValid } from '../utils/authToken';
+import { isTokenValid } from '../Auth/authToken';
 import { useNavigate } from 'react-router-dom';
 
 /**

@@ -6,14 +6,14 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import Login from '../Login';
 import { publicApi } from '../../../api';
-import { isTokenValid } from '../../../utils/authToken';
-import { saveTokens } from '../../../utils/authStorage';
+import { isTokenValid } from '../../../utils/Auth/authToken';
+import { saveTokens } from '../../../utils/Auth/authStorage';
 
-vi.mock('../../../utils/authToken', () => ({
+vi.mock('../../../utils/Auth/authToken', () => ({
     isTokenValid: vi.fn()
 }));
 
-vi.mock('../../../utils/authStorage', () => ({
+vi.mock('../../../utils/Auth/authStorage', () => ({
     saveTokens: vi.fn()
 }));
 

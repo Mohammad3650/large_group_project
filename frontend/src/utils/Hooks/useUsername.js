@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { api } from '../api.js';
+import { api } from '../../api.js';
 
 /**
  * Custom hook to fetch and return the current user's username from the API.

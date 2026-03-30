@@ -1,4 +1,4 @@
-import { setAuthToken } from '../api';
+import { setAuthToken } from '../../api';
 
 const ACCESS_KEY = 'access';
 const REFRESH_KEY = 'refresh';

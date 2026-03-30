@@ -10,11 +10,11 @@ vi.mock('../../../api.js', () => ({
         put: vi.fn()
     }
 }));
-vi.mock('../../../utils/useAutoSave.js', () => ({
+vi.mock('../../../utils/Hooks/useAutoSave.js', () => ({
     default: vi.fn(() => {})
 }));
 
-import useAutoSave from '../../../utils/useAutoSave.js';
+import useAutoSave from '../../../utils/Hooks/useAutoSave.js';
 import { useEffect } from 'react';
 
 const renderAndLoad = async (content = '') => {

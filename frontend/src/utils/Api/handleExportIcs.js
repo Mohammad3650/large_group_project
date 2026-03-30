@@ -1,4 +1,5 @@
-import { api } from '../api.js';
+import { api } from '../../api.js';
+import downloadFile from '../Helpers/downloadFile.js';
 
 const EXPORT_ICS_ENDPOINT = '/api/time-blocks/export/ics/';
 const EXPORT_ICS_FILENAME = 'studysync_schedule.ics';
@@ -15,15 +16,7 @@ async function handleExportIcs(setError) {
             responseType: 'blob'
         });
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-
-        link.href = url;
-        link.setAttribute('download', EXPORT_ICS_FILENAME);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(url);
+        downloadFile(response.data, EXPORT_ICS_FILENAME);
     } catch {
         setError('Failed to export ICS');
     }

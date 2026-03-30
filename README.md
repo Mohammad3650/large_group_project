@@ -19,7 +19,7 @@ The members of this team are:
 
 ## Deployment
 
-Live URL: [currently not available]
+Live URL: https://razascrew.netlify.app/
 
 ## Demo Accounts 
 
@@ -31,8 +31,10 @@ Password: password123
 - Authentication & Profile Management
 - User Preferences & Inputs
 - Schedule Generation
-- Interactive Calender
+- Interactive Calendar
 - Dashboard
+- Subscriptions
+- Export Functionality
 
 ## Tech Stack
 
@@ -48,7 +50,7 @@ Password: password123
 ### Tooling & Development Environment
 - Git & Github - version control & collaboration
 - npm - frontend dependency management
-- Python virtal environment (venv) - backend dependency isolation
+- Python virtual environment (venv) - backend dependency isolation
 
 ## Setup Instructions (Quick Start)
 
@@ -78,7 +80,7 @@ source venv\bin\activate
 ```
 Install the backend dependencies:
 ```
-pip install -r ../requirements.txt
+pip install -r requirements.txt
 ```
 Apply the database migrations:
 ```
@@ -113,8 +115,10 @@ Run tests using:
 
 ## External Resources
 
-The project relies on several external frameworks and libraries:
+The project relies on several external resources, frameworks and libraries:
 - React - https://react.dev/
 - Django - https://www.djangoproject.com/
 - Django REST Framework - https://www.django-rest-framework.org/
 - Bootstrap - https://getbootstrap.com/
+- PythonAnywhere (backend deployment) - https://www.pythonanywhere.com/
+- Netlify (frontend deployment) - https://www.netlify.com/

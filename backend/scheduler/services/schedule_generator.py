@@ -72,7 +72,7 @@ class Scheduler:
             sessions = self._create_sessions(name, duration, frequency, location, block_type, description)
             self._apply_preference(sessions, preference)
             if daily:
-                self.reccur_once_per_day_constraint(sessions)
+                self.recur_once_per_day_constraint(sessions)
     
     def _create_sessions(self, name, duration, frequency, location, block_type, description):
         """
@@ -109,7 +109,7 @@ class Scheduler:
         if weight is None:
             return
         for session in sessions:
-            self.objectives.append(self.event_start_bias_constrains(session, weight))
+            self.objectives.append(self.event_start_bias_constraints(session, weight))
 
     def _create_decision_variables(self, name, duration, i):
         """
@@ -313,7 +313,7 @@ class Scheduler:
         self.model.AddMinEquality(min_count, counts)
         return max_count, min_count
 
-    def reccur_once_per_day_constraint(self, recurring_events):
+    def recur_once_per_day_constraint(self, recurring_events):
         """
         Enforces that recurring events of one type appear at most once per day.
 
@@ -340,7 +340,7 @@ class Scheduler:
             self.model.Add(count_d == sum(bools))
             self.model.Add(count_d <= 1)
 
-    def event_start_bias_constrains(self, event, weight=1):
+    def event_start_bias_constraints(self, event, weight=1):
         """
         Bias the scheduler toward early (weight=1) or late (weight=-1) starts.
         """
@@ -368,7 +368,6 @@ class Scheduler:
         Returns:
             List of scheduled session tuples (start, end, date, name, location, block_type, description).
         """
-        """self._startSolver(self.model)"""""
         self._start_solver()
 
         if self.status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):

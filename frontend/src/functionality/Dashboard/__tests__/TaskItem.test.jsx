@@ -3,13 +3,13 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 
 vi.mock('../../../assets/Dashboard/ding.mp3', () => ({ default: 'ding.mp3' }));
 vi.mock('../stylesheets/TaskItem.css', () => ({}));
-vi.mock('../../../utils/playDing.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/formatDateTime.js', () => ({
+vi.mock('../../../utils/Audio/playDing.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Formatters/formatDateTime.js', () => ({
     default: vi.fn(() => '09:00 - 10:00 18 Mar')
 }));
 
 import TaskItem from '../TaskItem';
-import * as playDingModule from '../../../utils/playDing.js';
+import * as playDingModule from '../../../utils/Audio/playDing.js';
 
 const defaultProps = {
     name: 'Finish coursework',

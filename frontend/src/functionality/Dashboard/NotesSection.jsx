@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api.js';
-import useAutoSave from '../../utils/useAutoSave.js';
+import useAutoSave from '../../utils/Hooks/useAutoSave.js';
 import './stylesheets/NotesSection.css';
 
 /**

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import getDate from "../getDate.js";
+import getDate from "../Helpers/getDate.js";
 
 describe("Tests for getDate", () => {
     

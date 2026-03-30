@@ -1,5 +1,5 @@
-import toLocalDateTime from './toLocalDateTime.js';
-import Capitalise from './capitalise.js';
+import toLocalDateTime from '../Formatters/toLocalDateTime.js';
+import Capitalise from '../Formatters/capitalise.js';
 
 /**
  * Maps raw time block data into the standard format used by the calendar and dashboard.

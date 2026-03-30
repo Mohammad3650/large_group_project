@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { api } from '../api.js';
+import { api } from '../../api.js';
 
 /**
  * Auto-saves content to the API with a debounce delay.

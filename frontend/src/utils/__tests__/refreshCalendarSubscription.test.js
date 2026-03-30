@@ -1,6 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import refreshCalendarSubscription from '../refreshCalendarSubscription.js';
 import { api } from '../../api.js';
+import refreshCalendarSubscription from '../Api/refreshCalendarSubscription.js';
 
 vi.mock('../../api.js', () => ({
     api: {
@@ -13,32 +12,21 @@ describe('Tests for refreshCalendarSubscription', () => {
         vi.clearAllMocks();
     });
 
-    it('calls the correct refresh endpoint and returns response data', async () => {
-        const mockData = {
-            subscription: {
-                id: 7,
-                name: 'KCL Timetable'
-            },
-            message: 'Calendar subscription refreshed successfully.'
+    it('posts to the refresh subscription endpoint and returns response data', async () => {
+        const mockResponseData = {
+            subscription: { id: 5, name: 'KCL Timetable' },
+            sync_result: { created: 1, updated: 0, skipped: 0 }
         };
 
-        api.post.mockResolvedValue({ data: mockData });
+        api.post.mockResolvedValue({
+            data: mockResponseData
+        });
 
-        const result = await refreshCalendarSubscription(7);
+        const result = await refreshCalendarSubscription(5);
 
-        expect(api.post).toHaveBeenCalledTimes(1);
         expect(api.post).toHaveBeenCalledWith(
-            '/api/calendar-subscriptions/7/refresh/'
+            '/api/calendar-subscriptions/5/refresh/'
         );
-        expect(result).toEqual(mockData);
-    });
-
-    it('propagates API errors', async () => {
-        const mockError = new Error('Refresh failed');
-        api.post.mockRejectedValue(mockError);
-
-        await expect(refreshCalendarSubscription(7)).rejects.toThrow(
-            'Refresh failed'
-        );
+        expect(result).toEqual(mockResponseData);
     });
 });

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import TimeBlockForm from './TimeBlockForm';
-import toLocalDateTime from '../utils/toLocalDateTime.js';
-import getUserTimezone from '../utils/getUserTimezone.js';
+import toLocalDateTime from '../utils/Formatters/toLocalDateTime.js';
+import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
 
 /**
  * Component for editing an existing time block.
@@ -68,10 +68,10 @@ function EditTimeBlock() {
         };
 
         try {
-            await api.patch(`/api/timeblocks/${id}/edit`, cleanedData);
+            await api.patch(`/api/timeblocks/${id}/edit/`, cleanedData);
 
             // redirect after success
-            nav('/successful-timeblock', { state: { id: id } });
+            nav('/successful-timeblock', { state: { id: id, action: 'edited' } });
         } catch (err) {
             console.log('UPDATE ERROR:', err.response?.data);
             setServerErrors([err.response?.data || {}]);
