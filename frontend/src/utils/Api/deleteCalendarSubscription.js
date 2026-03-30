@@ -1,4 +1,4 @@
-import { api } from '../api.js';
+import { api } from '../../api.js';
 
 const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions/';
 
@@ -9,7 +9,11 @@ const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions/';
  * @returns {Promise<void>} Resolves when deletion completes
  */
 async function deleteCalendarSubscription(subscriptionId) {
-    await api.delete(`${CALENDAR_SUBSCRIPTIONS_ENDPOINT}${subscriptionId}/`);
+    const response = await api.delete(
+        `${CALENDAR_SUBSCRIPTIONS_ENDPOINT}${subscriptionId}/`
+    );
+
+    return response.data;
 }
 
 export default deleteCalendarSubscription;
