@@ -76,9 +76,17 @@ class UnscheduledSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         """
-        Validate frequency based on daily flag.
-        @param attrs: Input attributes dict
-        @return: Validated attributes dict
+        Validate frequency based on the daily flag.
+
+        Args:
+            attrs (Dict[str, Any]): Input attributes to validate.
+
+        Returns:
+            Dict[str, Any]: Validated attributes.
+
+        Raises:
+            serializers.ValidationError: If frequency constraints based on the
+            daily flag are violated.
         """
         errors = {}
 
