@@ -1,5 +1,5 @@
-import { publicApi } from '../api';
-import { saveTokens } from './authStorage';
+import { publicApi } from '../../api';
+import { saveTokens } from '../Auth/authStorage';
 
 /**
  * Logs in a user and stores tokens.
