@@ -11,8 +11,8 @@ describe("api config", () => {
   it("creates api and publicApi with the correct baseURL", async () => {
     apiModule = await import("./api");
 
-    expect(apiModule.api.defaults.baseURL).toBe("http://127.0.0.1:8000");
-    expect(apiModule.publicApi.defaults.baseURL).toBe("http://127.0.0.1:8000");
+    expect(apiModule.api.defaults.baseURL).toBe("https://hamzakhan887.pythonanywhere.com");
+    expect(apiModule.publicApi.defaults.baseURL).toBe("https://hamzakhan887.pythonanywhere.com");
   });
 
   it("sets the Authorization header when a token is provided", async () => {
