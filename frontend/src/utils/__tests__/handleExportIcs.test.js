@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { api } from '../../api.js';
-import downloadFile from '../downloadFile.js';
-import handleExportIcs from '../handleExportIcs.js';
+import downloadFile from '../Helpers/downloadFile.js';
+import handleExportIcs from '../Api/handleExportIcs.js';
 
 vi.mock('../../api.js', () => ({
     api: {
@@ -9,7 +9,7 @@ vi.mock('../../api.js', () => ({
     }
 }));
 
-vi.mock('../downloadFile.js', () => ({
+vi.mock('../Helpers/downloadFile.js', () => ({
     default: vi.fn()
 }));
 

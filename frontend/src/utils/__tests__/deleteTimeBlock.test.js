@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import deleteTimeBlock from "../deleteTimeBlock";
+import deleteTimeBlock from "../Api/deleteTimeBlock.js";
 import * as apiModule from "../../api.js";
 
 vi.mock("../../api.js", () => ({

@@ -1,5 +1,5 @@
-import { api } from '../api.js';
-import downloadFile from './downloadFile.js';
+import { api } from '../../api.js';
+import downloadFile from '../Helpers/downloadFile.js';
 
 
 

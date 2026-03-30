@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import TimeBlockForm from './TimeBlockForm';
-import toLocalDateTime from '../utils/toLocalDateTime.js';
-import getUserTimezone from '../utils/getUserTimezone.js';
+import toLocalDateTime from '../utils/Formatters/toLocalDateTime.js';
+import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
 
 /**
  * Component for editing an existing time block.

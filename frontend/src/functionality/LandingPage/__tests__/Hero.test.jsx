@@ -9,7 +9,7 @@ vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate
 }));
 
-vi.mock('../../../utils/authStatus', () => ({
+vi.mock('../../../utils/Auth/authStatus', () => ({
     default: () => mockUseAuthStatus()
 }));
 

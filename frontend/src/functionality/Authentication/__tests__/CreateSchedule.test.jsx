@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import CreateSchedule from '../CreateSchedule.jsx';
 import { api } from '../../../api.js';
-import generateSchedule from '../../../utils/generateSchedule.js';
+import generateSchedule from '../../../utils/Api/generateSchedule.js';
 
 const mockNavigate = vi.fn();
 
@@ -22,7 +22,7 @@ vi.mock('../../../api.js', () => ({
     }
 }));
 
-vi.mock('../../../utils/generateSchedule.js', () => ({
+vi.mock('../../../utils/Api/generateSchedule.js', () => ({
     default: vi.fn()
 }));
 

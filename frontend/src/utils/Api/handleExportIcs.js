@@ -1,5 +1,5 @@
-import { api } from '../api.js';
-import downloadFile from './downloadFile.js';
+import { api } from '../../api.js';
+import downloadFile from '../Helpers/downloadFile.js';
 
 const EXPORT_ICS_ENDPOINT = '/api/time-blocks/export/ics/';
 const EXPORT_ICS_FILENAME = 'studysync_schedule.ics';

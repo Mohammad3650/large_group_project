@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
-import toLocalDateTime from "../toLocalDateTime";
-import getUserTimezone from "../getUserTimezone";
+import toLocalDateTime from "../Formatters/toLocalDateTime";
+import getUserTimezone from "../Helpers/getUserTimezone";
 
-vi.mock("../getUserTimezone", () => ({
+vi.mock("../Helpers/getUserTimezone", () => ({
     default: vi.fn(),
 }));
 
