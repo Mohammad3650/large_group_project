@@ -75,7 +75,13 @@ function Signup() {
     return (
         <div className="signup-page">
             <div className="signup-card-section">
-                <AuthCard title="Create your account" subtitle="Sign up to get started with StudySync" footerText="Already have an account?" footerLinkText="Log in" footerLinkTo="/login">
+                <AuthCard
+                    title="Create your account"
+                    subtitle="Sign up to get started with StudySync"
+                    footerText="Already have an account?"
+                    footerLinkText="Log in"
+                    footerLinkTo="/login"
+                >
                     {errors.global.length > 0 && (
                         <div className="alert alert-danger text-center">
                             {errors.global.map((message) => (
@@ -86,31 +92,87 @@ function Signup() {
 
                     <form noValidate onSubmit={handleSubmit}>
                         <div className="row g-3">
-                            <AuthField name="email" label="Email" type="email" placeholder="you@example.com" value={form.email} onChange={(value) => updateField('email', value)} error={errors.fieldErrors.email} />
+                            <AuthField
+                                name="email"
+                                label="Email"
+                                type="email"
+                                placeholder="you@example.com"
+                                value={form.email}
+                                onChange={(value) => updateField('email', value)}
+                                error={errors.fieldErrors.email}
+                            />
 
-                            <AuthField name="username" label="Username" placeholder="Choose a username" value={form.username} onChange={(value) => updateField('username', value)} error={errors.fieldErrors.username} />
+                            <AuthField
+                                name="username"
+                                label="Username"
+                                placeholder="Choose a username"
+                                value={form.username}
+                                onChange={(value) => updateField('username', value)}
+                                error={errors.fieldErrors.username}
+                            />
 
                             <div className="col-12 col-md-6">
-                                <AuthField name="firstName" label="First name" placeholder="First name" value={form.firstName} onChange={(value) => updateField('firstName', value)} error={errors.fieldErrors.first_name} />
+                                <AuthField
+                                    name="firstName"
+                                    label="First name"
+                                    placeholder="First name"
+                                    value={form.firstName}
+                                    onChange={(value) => updateField('firstName', value)}
+                                    error={errors.fieldErrors.first_name}
+                                />
                             </div>
 
                             <div className="col-12 col-md-6">
-                                <AuthField name="lastName" label="Last name" placeholder="Last name" value={form.lastName} onChange={(value) => updateField('lastName', value)} error={errors.fieldErrors.last_name} />
+                                <AuthField
+                                    name="lastName"
+                                    label="Last name"
+                                    placeholder="Last name"
+                                    value={form.lastName}
+                                    onChange={(value) => updateField('lastName', value)}
+                                    error={errors.fieldErrors.last_name}
+                                />
                             </div>
 
-                            <AuthField name="phoneNumber" label="Phone number" placeholder="e.g. 07123 456 789" value={form.phoneNumber} onChange={(value) => updateField('phoneNumber', value)} error={errors.fieldErrors.phone_number} />
+                            <AuthField
+                                name="phoneNumber"
+                                label="Phone number"
+                                placeholder="e.g. 07123 456 789"
+                                value={form.phoneNumber}
+                                onChange={(value) => updateField('phoneNumber', value)}
+                                error={errors.fieldErrors.phone_number}
+                            />
 
                             <div className="col-12 col-md-6">
-                                <AuthField name="password" label="Password" type="password" placeholder="Create a password" value={form.password} onChange={(value) => updateField('password', value)} error={errors.fieldErrors.password} />
+                                <AuthField
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    placeholder="Create a password"
+                                    value={form.password}
+                                    onChange={(value) => updateField('password', value)}
+                                    error={errors.fieldErrors.password}
+                                />
                             </div>
 
                             <div className="col-12 col-md-6">
-                                <AuthField name="confirmPassword" label="Confirm password" type="password" placeholder="Confirm password" value={form.confirmPassword} onChange={(value) => updateField('confirmPassword', value)} error={errors.fieldErrors.confirmPassword} />
+                                <AuthField
+                                    name="confirmPassword"
+                                    label="Confirm password"
+                                    type="password"
+                                    placeholder="Confirm password"
+                                    value={form.confirmPassword}
+                                    onChange={(value) => updateField('confirmPassword', value)}
+                                    error={errors.fieldErrors.confirmPassword}
+                                />
                             </div>
                         </div>
 
                         <div className="d-grid mt-4">
-                            <button className="btn btn-dark btn-lg rounded-3" disabled={loading} type="submit">
+                            <button
+                                className="btn btn-dark btn-lg rounded-3"
+                                disabled={loading}
+                                type="submit"
+                            >
                                 {loading ? (
                                     <>
                                         <span className="spinner-border spinner-border-sm me-2" />

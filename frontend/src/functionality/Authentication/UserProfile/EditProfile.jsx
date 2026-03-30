@@ -61,9 +61,7 @@ function EditProfile() {
     }
 
     async function deleteAccount() {
-        const confirmDelete = window.confirm(
-            'Are you sure you want to delete your account?'
-        );
+        const confirmDelete = window.confirm('Are you sure you want to delete your account?');
 
         if (!confirmDelete) return;
 
@@ -106,9 +104,7 @@ function EditProfile() {
                 const fieldErrors = {};
 
                 for (const [field, value] of Object.entries(data)) {
-                    fieldErrors[field] = Array.isArray(value)
-                        ? value[0]
-                        : String(value);
+                    fieldErrors[field] = Array.isArray(value) ? value[0] : String(value);
                 }
 
                 setErrors({ fieldErrors, global: [] });
@@ -146,9 +142,7 @@ function EditProfile() {
             footerLinkTo="/dashboard"
         >
             {successMessage && (
-                <div className="alert alert-success text-center">
-                    {successMessage}
-                </div>
+                <div className="alert alert-success text-center">{successMessage}</div>
             )}
 
             {errors.global.length > 0 && (
@@ -186,9 +180,7 @@ function EditProfile() {
                             label="First name"
                             placeholder="First name"
                             value={formData.first_name}
-                            onChange={(value) =>
-                                updateField('first_name', value)
-                            }
+                            onChange={(value) => updateField('first_name', value)}
                             error={errors.fieldErrors.first_name}
                         />
                     </div>
@@ -199,9 +191,7 @@ function EditProfile() {
                             label="Last name"
                             placeholder="Last name"
                             value={formData.last_name}
-                            onChange={(value) =>
-                                updateField('last_name', value)
-                            }
+                            onChange={(value) => updateField('last_name', value)}
                             error={errors.fieldErrors.last_name}
                         />
                     </div>
@@ -217,29 +207,17 @@ function EditProfile() {
                 </div>
 
                 <div className="d-grid gap-2 mt-4">
-                    <button
-                        type="submit"
-                        className="btn btn-dark btn-lg rounded-3"
-                        disabled={saving}
-                    >
+                    <button type="submit" className="btn btn-dark rounded-3" disabled={saving}>
                         {saving ? 'Saving...' : 'Save Changes'}
                     </button>
 
                     <button
                         type="button"
-                        className="btn btn-outline-dark rounded-3"
+                        className="btn btn-dark rounded-3"
                         onClick={() => navigate('/change-password')}
                     >
                         Change Password
                     </button>
-
-                    {/* <button
-            type="button"
-            className="btn btn-outline-secondary rounded-3"
-            onClick={() => navigate("/dashboard")}
-          >
-            Back to Dashboard
-          </button> */}
 
                     <button
                         type="button"

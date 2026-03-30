@@ -57,7 +57,13 @@ function Login() {
     return (
         <div className="login-page">
             <div className="login-card-section">
-                <AuthCard title="Welcome Back" subtitle="Log in to continue to StudySync" footerText="No account?" footerLinkText="Sign up" footerLinkTo="/signup">
+                <AuthCard
+                    title="Welcome Back"
+                    subtitle="Log in to continue to StudySync"
+                    footerText="No account?"
+                    footerLinkText="Sign up"
+                    footerLinkTo="/signup"
+                >
                     {errors.global.length > 0 && (
                         <div className="alert alert-danger text-center" role="alert">
                             {errors.global.map((message) => (
@@ -68,13 +74,33 @@ function Login() {
 
                     <form onSubmit={handleSubmit} noValidate>
                         <div className="row g-3">
-                            <AuthField name="email" label="Email" type="email" placeholder="you@example.com" value={email} onChange={setEmail} error={errors.fieldErrors.email} />
+                            <AuthField
+                                name="email"
+                                label="Email"
+                                type="email"
+                                placeholder="you@example.com"
+                                value={email}
+                                onChange={setEmail}
+                                error={errors.fieldErrors.email}
+                            />
 
-                            <AuthField name="password" label="Password" type="password" placeholder="Enter your password..." value={password} onChange={setPassword} error={errors.fieldErrors.password} />
+                            <AuthField
+                                name="password"
+                                label="Password"
+                                type="password"
+                                placeholder="Enter your password..."
+                                value={password}
+                                onChange={setPassword}
+                                error={errors.fieldErrors.password}
+                            />
                         </div>
 
                         <div className="d-grid mt-4">
-                            <button className="btn btn-dark btn-lg rounded-3" disabled={loading} type="submit">
+                            <button
+                                className="btn btn-dark btn-lg rounded-3"
+                                disabled={loading}
+                                type="submit"
+                            >
                                 {loading ? (
                                     <>
                                         <span className="spinner-border spinner-border-sm me-2" />

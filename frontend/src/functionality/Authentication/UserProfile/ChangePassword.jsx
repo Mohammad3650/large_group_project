@@ -12,7 +12,7 @@ const initialErrors = {
 const MESSAGES = {
     currentPasswordRequired: 'Current password is required.',
     newPasswordRequired: 'New password is required.',
-    passwordChangeFailed: 'Password change failed.',
+    passwordChangeFailed: 'Password change failed.'
 };
 
 function ChangePassword() {
@@ -34,7 +34,6 @@ function ChangePassword() {
         return () => clearTimeout(timer);
     }, [message, navigate]);
 
-
     function validateForm() {
         const fieldErrors = {};
 
@@ -48,7 +47,7 @@ function ChangePassword() {
 
         return fieldErrors;
     }
-    
+
     async function handleSubmit(event) {
         event.preventDefault();
         if (loading) return;
@@ -96,9 +95,7 @@ function ChangePassword() {
                 </div>
             )}
 
-            {message && (
-                <div className="alert alert-success text-center">{message}</div>
-            )}
+            {message && <div className="alert alert-success text-center">{message}</div>}
 
             <form onSubmit={handleSubmit} noValidate>
                 <div className="row g-3">
@@ -124,11 +121,7 @@ function ChangePassword() {
                 </div>
 
                 <div className="d-grid mt-4">
-                    <button
-                        type="submit"
-                        className="btn btn-dark btn-lg rounded-3"
-                        disabled={loading}
-                    >
+                    <button type="submit" className="btn btn-dark rounded-3" disabled={loading}>
                         {loading ? 'Updating...' : 'Update Password'}
                     </button>
                 </div>
