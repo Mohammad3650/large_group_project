@@ -6,9 +6,9 @@ import { saveTokens } from './authStorage';
  *
  * @returns {Promise<{ access: string, refresh: string, user?: Object }>}
  */
-export async function loginUser(username, password) {
-    const response = await publicApi.post('/auth/login/', {
-        username,
+export async function loginUser(email, password) {
+    const response = await publicApi.post('/api/token/', {
+        email,
         password
     });
 
