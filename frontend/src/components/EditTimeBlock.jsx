@@ -68,10 +68,10 @@ function EditTimeBlock() {
         };
 
         try {
-            await api.patch(`/api/timeblocks/${id}/edit`, cleanedData);
+            await api.patch(`/api/timeblocks/${id}/edit/`, cleanedData);
 
             // redirect after success
-            nav('/successful-timeblock', { state: { id: id } });
+            nav('/successful-timeblock', { state: { id: id, action: 'edited' } });
         } catch (err) {
             console.log('UPDATE ERROR:', err.response?.data);
             setServerErrors([err.response?.data || {}]);
