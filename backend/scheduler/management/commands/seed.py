@@ -124,23 +124,61 @@ def create_note_for_user(user):
 class Command(BaseSeeder):
     help = "Seeds the database with test users, events and notes."
 
-    def handle(self, *args, **kwargs):
-        if User.objects.filter(username__startswith=SEEDED_USER_PREFIX).exists():
-            self.error("Database has already been seeded")
-            return
+    def _is_already_seeded(self):
+        """
+        Checks whether the database has already been seeded.
 
-        guaranteed_users = create_guaranteed_users()
+        Returns:
+            bool: True if seeded users already exist, False otherwise.
+        """
+        return User.objects.filter(username__startswith=SEEDED_USER_PREFIX).exists()
 
+    def _create_all_users(self):
+        """
+        Creates all guaranteed and randomly generated users.
+
+        Returns:
+            list: A list of all created User objects.
+        """
         self.log(f"Seeding {NUM_TOTAL_USERS} users with {NUM_EVENTS_PER_USER} events each...")
-
-        all_users = guaranteed_users
-
+        all_users = create_guaranteed_users()
         for i in range(NUM_RANDOM_USERS):
             all_users.append(create_user(i))
+        return all_users
 
+    def _seed_users(self, all_users):
+        """
+        Creates events and notes for each user and logs the result.
+
+        Args:
+            all_users (list): A list of User objects to seed data for.
+
+        Returns:
+            None
+        """
         for user in all_users:
             create_events_for_user(user, NUM_EVENTS_PER_USER)
             create_note_for_user(user)
             self.log(f"  Created user: {user.username}, Email: {user.email}, Password: {DEFAULT_PASSWORD}")
 
+    def handle(self, *args, **kwargs):
+        """
+        Entry point for the seed command.
+
+        Checks whether the database has already been seeded, then creates
+        all users, their associated events, and notes.
+
+        Args:
+           *args: Positional arguments passed by Django's management command framework.
+           **kwargs: Keyword arguments passed by Django's management command framework.
+
+        Returns:
+           None
+        """
+        if self._is_already_seeded():
+            self.error("Database has already been seeded")
+            return
+
+        all_users = self._create_all_users()
+        self._seed_users(all_users)
         self.success(f"Successfully seeded {len(all_users)} users.")

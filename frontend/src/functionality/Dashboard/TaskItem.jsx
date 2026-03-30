@@ -7,15 +7,15 @@ import playDing from '../../utils/playDing.js';
  * Displays a single task item with a checkbox, name, start time and end time.
  * Plays a ding sound and fades out on click before deleting.
  *
- * @param {string} props.name - The task name
- * @param {string} props.date - Date string (e.g. "2026-02-19")
- * @param {string} props.startTime - Start time string (e.g. "09:00:00")
- * @param {string} props.endTime - End time string (e.g. "10:00:00")
- * @param {Function} props.onDelete - Callback to the handleDelete function from the TaskGroup component
- * @param {boolean} [props.overdue=false] - Whether the task is overdue
+ * @param {string} name - The task name
+ * @param {string} date - Date string (e.g. "2026-02-19")
+ * @param {string} startTime - Start time string (e.g. "09:00:00")
+ * @param {string} endTime - End time string (e.g. "10:00:00")
+ * @param {Function} onDelete - Callback to the handleDelete function from the TaskGroup component
+ * @param {boolean} [overdue=false] - Whether the task is overdue
  * @returns {JSX.Element} A single task
  */
-function TaskItem(props) {
+function TaskItem({ name, date, startTime, endTime, onDelete, overdue = false }) {
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
 
@@ -24,7 +24,7 @@ function TaskItem(props) {
         playDing();
         setChecked(true);
         setFading(true);
-        setTimeout(() => props.onDelete(), 500);
+        setTimeout(() => onDelete(), 500);
     }
 
     return (
@@ -39,12 +39,12 @@ function TaskItem(props) {
                 checked={checked}
             />
             <label
-                className={`form-check-label ${props.overdue ? 'overdue-text' : ''}`}
+                className={`form-check-label ${overdue ? 'overdue-text' : ''}`}
             >
-                {props.name}
+                {name}
             </label>
             <span className="task-datetime">
-                {formatDateTime(props.date, props.startTime, props.endTime)}
+                {formatDateTime(date, startTime, endTime)}
             </span>
         </div>
     );

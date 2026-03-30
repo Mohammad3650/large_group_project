@@ -25,6 +25,7 @@ frontend/coverage/
 # Coverage (backend)
 backend/.coverage
 backend/htmlcov
+backend/.env
 .coverage
 coverage.xml
 coverage/
