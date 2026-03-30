@@ -10,6 +10,7 @@ User = get_user_model()
 
 
 class UserRegistrationSerializerTest(TestCase):
+    """Tests for the UserRegistrationSerializer"""
     def setUp(self):
         self.data = {
             "email": "test@example.com",

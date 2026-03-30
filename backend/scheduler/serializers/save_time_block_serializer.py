@@ -22,9 +22,15 @@ class SaveTimeBlockSerializer(serializers.Serializer):
 
     def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Validate required fields and ensure end_time is after start_time.
-        @param attrs: Input attributes dict
-        @return: Validated attributes dict
+        Args:
+        attrs (Dict[str, Any]): Input attributes to validate.
+
+        Returns:
+            Dict[str, Any]: Validated attributes.
+
+        Raises:
+            serializers.ValidationError: If required fields are missing or
+            end_time is not after start_time.
         """
         has_date_times = all(k in attrs for k in ("date", "start_time", "end_time"))
 
@@ -35,12 +41,3 @@ class SaveTimeBlockSerializer(serializers.Serializer):
             raise serializers.ValidationError("end_time must be after start_time")
 
         return attrs
-
-
-class SaveWeeklyPlanSerializer(serializers.Serializer):
-    """
-    Serializer for saving weekly plans with multiple time block events.
-    """
-
-    week_start = serializers.DateField(input_formats=["%Y-%m-%d", "%d/%m/%Y"])
-    events = SaveTimeBlockSerializer(many=True, allow_empty=False)

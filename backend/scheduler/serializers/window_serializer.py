@@ -27,8 +27,15 @@ class WindowSerializer(serializers.Serializer):
     def validate(self, attrs):
         """
         Validate that wake and sleep times are not identical.
-        @param attrs: Input attributes dict
-        @return: Validated attributes dict
+
+        Args:
+            attrs (Dict[str, Any]): Input attributes to validate.
+
+        Returns:
+            Dict[str, Any]: Validated attributes.
+
+        Raises:
+            serializers.ValidationError: If wake and sleep times are the same.
         """
         errors = {}
 
