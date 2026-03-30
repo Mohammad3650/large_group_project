@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../utils/authService';
-import useAuthRedirect from '../../utils/Hooks/useAuthRedirect';
+import useAuthRedirect from '../../utils/Hooks/useAut.hRedirect';
+import useAuthRedirect from '../../utils/Hooks/useAut.hRedirect';
 import useAuthForm from '../../utils/Hooks/useAuthForm';
 import AuthCard from '../../components/AuthCard';
 import AuthField from '../../components/AuthField';

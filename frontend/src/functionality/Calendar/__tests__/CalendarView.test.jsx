@@ -1,11 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const { mockCreateViewDay, mockCreateViewWeek, mockCreateViewMonthGrid, mockCreateViewMonthAgenda, mockCreateEventModalPlugin, mockUseCalendarApp, mockRemove, mockDeleteTimeBlock, mockScheduleXCalendar } = vi.hoisted(() => ({
+const { mockCreateViewDay, mockCreateViewWeek, mockCreateViewMonthGrid, mockCreateEventModalPlugin, mockUseCalendarApp, mockRemove, mockDeleteTimeBlock, mockScheduleXCalendar } = vi.hoisted(() => ({
     mockCreateViewDay: vi.fn(() => 'day-view'),
     mockCreateViewWeek: vi.fn(() => 'week-view'),
     mockCreateViewMonthGrid: vi.fn(() => 'month-view'),
-    mockCreateViewMonthAgenda: vi.fn(() => 'month-agenda-view'),
     mockCreateEventModalPlugin: vi.fn(() => 'event-modal-plugin'),
     mockUseCalendarApp: vi.fn(() => 'mock-calendar-app'),
     mockRemove: vi.fn(),
@@ -16,8 +15,7 @@ const { mockCreateViewDay, mockCreateViewWeek, mockCreateViewMonthGrid, mockCrea
 vi.mock('@schedule-x/calendar', () => ({
     createViewDay: mockCreateViewDay,
     createViewWeek: mockCreateViewWeek,
-    createViewMonthGrid: mockCreateViewMonthGrid,
-    createViewMonthAgenda: mockCreateViewMonthAgenda
+    createViewMonthGrid: mockCreateViewMonthGrid
 }));
 
 vi.mock('@schedule-x/event-modal', () => ({
@@ -97,13 +95,13 @@ describe('Tests for CalendarView', () => {
         expect(mockCreateViewDay).toHaveBeenCalled();
         expect(mockCreateViewWeek).toHaveBeenCalled();
         expect(mockCreateViewMonthGrid).toHaveBeenCalled();
-        expect(mockCreateViewMonthAgenda).toHaveBeenCalled();
         expect(mockCreateEventModalPlugin).toHaveBeenCalled();
 
-        expect(mockUseCalendarApp).toHaveBeenCalledWith({
-            views: ['day-view', 'week-view', 'month-view', 'month-agenda-view'],
+        expect(mockUseCalendarApp.mock.calls[0][0]).toEqual({
+            views: ['day-view', 'week-view', 'month-view'],
             plugins: ['event-modal-plugin', { remove: mockRemove }],
             events: blocks,
+            isResponsive: false,
             selectedDate: Temporal.Now.plainDateISO(getUserTimezone()),
             timezone: getUserTimezone()
         });
@@ -224,10 +222,11 @@ describe('Tests for CalendarView', () => {
 it('passes an empty events array when blocks is not an array', () => {
     renderCalendarView({ blocks: null });
 
-    expect(mockUseCalendarApp).toHaveBeenCalledWith({
-        views: ['day-view', 'week-view', 'month-view', 'month-agenda-view'],
+    expect(mockUseCalendarApp.mock.calls.at(-1)[0]).toEqual({
+        views: ['day-view', 'week-view', 'month-view'],
         plugins: ['event-modal-plugin', { remove: mockRemove }],
         events: [],
+        isResponsive: false,
         selectedDate: Temporal.Now.plainDateISO(getUserTimezone()),
         timezone: getUserTimezone()
     });
