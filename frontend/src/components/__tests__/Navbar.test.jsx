@@ -43,7 +43,7 @@ const renderNavbar = (theme = "light") =>
         </MemoryRouter>
     );
 
-describe("Navbar", () => {
+describe('Tests for Navbar', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         useDropdownModule.default.mockReturnValue({

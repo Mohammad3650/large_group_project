@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ToggleDarkMode from '../ToggleDarkMode';
 
-describe('ToggleDarkMode', () => {
+describe('Tests for ToggleDarkMode', () => {
     test('renders Dark label when current theme is light', () => {
         render(<ToggleDarkMode theme="light" toggleTheme={vi.fn()} />);
         expect(

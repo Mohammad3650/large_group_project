@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import SubscriptionList from '../SubscriptionList.jsx';
 
-describe('SubscriptionList', () => {
+describe('Tests for SubscriptionList', () => {
     it('renders the empty state when there are no subscriptions', () => {
         render(
             <SubscriptionList

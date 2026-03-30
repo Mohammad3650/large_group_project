@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../../api.js';
 import AuthCard from '../../../components/AuthCard.jsx';
@@ -7,6 +7,12 @@ import AuthField from '../../../components/AuthField.jsx';
 const initialErrors = {
     fieldErrors: {},
     global: []
+};
+
+const MESSAGES = {
+    currentPasswordRequired: 'Current password is required.',
+    newPasswordRequired: 'New password is required.',
+    passwordChangeFailed: 'Password change failed.',
 };
 
 function ChangePassword() {
@@ -18,20 +24,31 @@ function ChangePassword() {
     const [errors, setErrors] = useState(initialErrors);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        if (!message) return;
+
+        const timer = setTimeout(() => {
+            navigate('/profile');
+        }, 1200);
+
+        return () => clearTimeout(timer);
+    }, [message, navigate]);
+
+
     function validateForm() {
         const fieldErrors = {};
 
         if (!currentPassword) {
-            fieldErrors.currentPassword = 'Current password is required.';
+            fieldErrors.currentPassword = MESSAGES.currentPasswordRequired;
         }
 
         if (!newPassword) {
-            fieldErrors.newPassword = 'New password is required.';
+            fieldErrors.newPassword = MESSAGES.newPasswordRequired;
         }
 
         return fieldErrors;
     }
-
+    
     async function handleSubmit(event) {
         event.preventDefault();
         if (loading) return;
@@ -53,14 +70,10 @@ function ChangePassword() {
             });
 
             setMessage(res.data.message);
-
-            setTimeout(() => {
-                navigate('/profile');
-            }, 1200);
         } catch {
             setErrors({
                 fieldErrors: {},
-                global: ['Password change failed.']
+                global: [MESSAGES.passwordChangeFailed]
             });
         } finally {
             setLoading(false);

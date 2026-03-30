@@ -43,7 +43,7 @@ const renderTaskGroup = (props = {}) =>
         />
     );
 
-describe('TaskGroup component', () => {
+describe('Tests for TaskGroup', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

@@ -6,7 +6,7 @@ function renderFeatures() {
     return render(<Features />);
 }
 
-describe('Features component', () => {
+describe('Tests for Features', () => {
     it('renders the header and description', () => {
         renderFeatures();
 

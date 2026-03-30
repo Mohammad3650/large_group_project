@@ -22,24 +22,51 @@
  * @returns {Object<string, string>} Validation errors keyed by field name
  */
 
+const REQUIRED_MESSAGES = {
+    email: 'Email is required.',
+    username: 'Username is required.',
+    first_name: 'First name is required.',
+    last_name: 'Last name is required.',
+    phone_number: 'Phone number is required.',
+    password: 'Password is required.',
+    confirmPassword: 'Please confirm your password.',
+};
+
+function isBlank(value) {
+    return typeof value === 'string' ? !value.trim() : !value;
+}
+
 export function validateSignupForm(form) {
     const errors = {};
 
-    // Required field checks
-    if (!form.email.trim()) errors.email = 'Email is required.';
-    if (!form.username.trim()) errors.username = 'Username is required.';
-    if (!form.firstName.trim()) errors.first_name = 'First name is required.';
-    if (!form.lastName.trim()) errors.last_name = 'Last name is required.';
-    if (!form.phoneNumber.trim())
-        errors.phone_number = 'Phone number is required.';
-    if (!form.password) errors.password = 'Password is required.';
-
-    // Confirm password must be provided
-    if (!form.confirmPassword) {
-        errors.confirmPassword = 'Please confirm your password.';
+    if (isBlank(form.email)) {
+        errors.email = REQUIRED_MESSAGES.email;
     }
 
-    // Confirm password must match password
+    if (isBlank(form.username)) {
+        errors.username = REQUIRED_MESSAGES.username;
+    }
+
+    if (isBlank(form.firstName)) {
+        errors.first_name = REQUIRED_MESSAGES.first_name;
+    }
+
+    if (isBlank(form.lastName)) {
+        errors.last_name = REQUIRED_MESSAGES.last_name;
+    }
+
+    if (isBlank(form.phoneNumber)) {
+        errors.phone_number = REQUIRED_MESSAGES.phone_number;
+    }
+
+    if (!form.password) {
+        errors.password = REQUIRED_MESSAGES.password;
+    }
+
+    if (!form.confirmPassword) {
+        errors.confirmPassword = REQUIRED_MESSAGES.confirmPassword;
+    }
+
     if (
         form.password &&
         form.confirmPassword &&

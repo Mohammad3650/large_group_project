@@ -51,7 +51,7 @@ async function fillLoginForm(user, overrides = {}) {
     );
 }
 
-describe('Tests for login page', () => {
+describe('Tests for Login', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         isTokenValid.mockResolvedValue(false);

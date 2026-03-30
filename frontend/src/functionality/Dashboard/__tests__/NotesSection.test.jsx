@@ -23,7 +23,7 @@ const renderAndLoad = async (content = '') => {
     await waitFor(() => expect(apiModule.api.get).toHaveBeenCalled());
 };
 
-describe('NotesSection component', () => {
+describe('Tests for NotesSection', () => {
     beforeEach(() => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
