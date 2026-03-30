@@ -5,6 +5,7 @@ from tests.helpers.serializer_data import make_window_data
 
 
 class WindowSerializerTest(TestCase):
+    """Tests for the WindowSerializer"""
     def setUp(self):
         """Set up reusable valid payload data for window serializer tests."""
         self.data = make_window_data(start_min="07:00", end_min="22:00", daily=False)
