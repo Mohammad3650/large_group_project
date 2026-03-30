@@ -34,11 +34,16 @@ function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsSe
     const eventModalPlugin = useMemo(() => createEventModalPlugin(), []);
 
     const calendar = useCalendarApp({
-        views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
+        views: [
+            createViewDay(),
+            createViewWeek(),
+            createViewMonthGrid(),
+        ],
         plugins: [eventModalPlugin, eventsService],
         events: Array.isArray(blocks) ? blocks : [],
         timezone: calendarTimezone,
-        selectedDate: Temporal.Now.plainDateISO(calendarTimezone)
+        selectedDate: Temporal.Now.plainDateISO(calendarTimezone),
+        isResponsive: false,
     });
 
     return <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />;

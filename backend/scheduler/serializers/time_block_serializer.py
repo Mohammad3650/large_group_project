@@ -3,6 +3,13 @@ from ..models import TimeBlock
 
 
 class TimeBlockSerializer(serializers.ModelSerializer):
+    """
+    Serializer for TimeBlock model instances.
+
+    Handles serialization of time block data, including derived date formatting,
+    and validates required fields and time ordering.
+    """
+
     date = serializers.SerializerMethodField()
 
     def get_date(self, obj):
@@ -48,7 +55,16 @@ class TimeBlockSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def _validate_required_fields(self, attrs):
+    def _validate_required_fields(self, attrs):    
+        """
+        Validate that all required fields are present and non-empty.
+
+        Args:
+            attrs (Dict[str, Any]): Input attributes to validate.
+
+        Returns:
+            Dict[str, List[str]]: Dictionary of field-specific validation errors.
+        """
         required_fields = ["name", "location", "start_time", "end_time", "timezone"]
         errors = {}
 
@@ -61,6 +77,15 @@ class TimeBlockSerializer(serializers.ModelSerializer):
         return errors
 
     def _validate_time_order(self, attrs):
+        """
+        Validate that start_time occurs before end_time.
+
+        Args:
+            attrs (Dict[str, Any]): Input attributes to validate.
+
+        Returns:
+            Dict[str, List[str]]: Dictionary containing time-related validation errors.
+        """
         errors = {}
 
         start_time = attrs.get("start_time")

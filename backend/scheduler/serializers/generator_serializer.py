@@ -36,9 +36,16 @@ class GenerateScheduleRequestSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         """
-        Validate week dates and windows, add days count to attrs.
-        @param attrs: Input attributes dict
-        @return: Validated attributes dict with added 'days' field
+        Validate week dates and scheduling windows, and add the number of days to the attributes.
+
+        Args:
+            attrs (Dict[str, Any]): Input attributes to validate.
+
+        Returns:
+            Dict[str, Any]: Validated attributes with an added 'days' field.
+
+        Raises:
+            serializers.ValidationError: If validation rules for dates or windows are violated.
         """
         errors = {}
 
