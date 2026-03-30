@@ -17,7 +17,7 @@ function toLocalDateTime(date, time) {
     const localDate = zonedDateTime.toPlainDate().toString();
     const localTime = `${String(zonedDateTime.hour).padStart(2, '0')}:${String(zonedDateTime.minute).padStart(2, '0')}`;
 
-    return { zonedDateTime: zonedDateTime, localDate, localTime };
+    return { zonedDateTime, localDate, localTime };
 }
 
 export default toLocalDateTime;
