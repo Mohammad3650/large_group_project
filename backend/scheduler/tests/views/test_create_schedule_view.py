@@ -154,7 +154,6 @@ class CreateScheduleViewTest(APITestCase):
 
         # Use a timezone that will push the time to the next UTC day
         # For example, 23:30 in New York (UTC-5) becomes 04:30 UTC next day
-        url = reverse("api-create-timeblock")
         data = {
             "date": "2026-01-15",  # local date
             "name": "Late Night Study",
@@ -165,7 +164,7 @@ class CreateScheduleViewTest(APITestCase):
             "timezone": "America/New_York",  # UTC-5
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, 201)
 
         # The TimeBlock should now be associated with the next day in UTC
