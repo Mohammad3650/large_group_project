@@ -15,6 +15,7 @@ class MockAudio {
         instances.push(this);
     }
 }
+
 vi.stubGlobal("Audio", MockAudio);
 
 describe("Tests for playDing", () => {
@@ -39,12 +40,10 @@ describe("Tests for playDing", () => {
         expect(instances[0].currentTime).toBe(0);
     });
 
-    it("logs an error when the audio fails to play", async () => {
-        const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    it("does not throw when audio fails to play", async () => {
         mockPlay.mockRejectedValue(new Error("Audio error"));
         playDing();
         await new Promise(resolve => setTimeout(resolve, 0));
-        expect(consoleSpy).toHaveBeenCalledWith("Audio failed:", expect.any(Error));
-        consoleSpy.mockRestore();
+        expect(mockPlay).toHaveBeenCalled();
     });
 });

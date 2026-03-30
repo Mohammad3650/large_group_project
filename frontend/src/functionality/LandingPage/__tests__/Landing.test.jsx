@@ -21,20 +21,18 @@ vi.mock('../Card', () => ({
     )
 }));
 
-describe('Landing', () => {
+function renderLanding() {
+    return render(<Landing />);
+}
+
+describe('Tests for Landing', () => {
     it('renders the main layout and child components', () => {
-        const { container } = render(<Landing />);
+        const { container } = renderLanding();
 
         expect(container.querySelector('.landing')).toBeInTheDocument();
-        expect(
-            container.querySelector('.landing-testimonials-wrapper')
-        ).toBeInTheDocument();
-        expect(
-            container.querySelector('.landing-testimonials')
-        ).toBeInTheDocument();
-        expect(
-            container.querySelector('.landing-testimonials-title')
-        ).toBeInTheDocument();
+        expect(container.querySelector('.landing-testimonials-wrapper')).toBeInTheDocument();
+        expect(container.querySelector('.landing-testimonials')).toBeInTheDocument();
+        expect(container.querySelector('.landing-testimonials-title')).toBeInTheDocument();
 
         expect(screen.getByText('Mock Hero')).toBeInTheDocument();
         expect(screen.getByText('Mock Features')).toBeInTheDocument();
@@ -42,13 +40,13 @@ describe('Landing', () => {
     });
 
     it('renders all six testimonial cards', () => {
-        render(<Landing />);
+        renderLanding();
 
         expect(screen.getAllByTestId('mock-card')).toHaveLength(6);
     });
 
     it('renders the correct testimonial content', () => {
-        render(<Landing />);
+        renderLanding();
 
         expect(screen.getByText('Omar Kassam')).toBeInTheDocument();
         expect(screen.getByText('Ijaj Ahmed')).toBeInTheDocument();
@@ -66,43 +64,19 @@ describe('Landing', () => {
     });
 
     it('renders the review text and star ratings', () => {
-        render(<Landing />);
+        renderLanding();
 
-        expect(
-            screen.getByText(
-                '“StudySync helped me actually plan my week instead of just hoping for the best. It’s simple and clear.”'
-            )
-        ).toBeInTheDocument();
+        expect(screen.getByText('“StudySync helped me actually plan my week instead of just hoping for the best. It’s simple and clear.”')).toBeInTheDocument();
 
-        expect(
-            screen.getByText(
-                '“I used to miss deadlines all the time. Having everything in one place made a huge difference.”'
-            )
-        ).toBeInTheDocument();
+        expect(screen.getByText('“I used to miss deadlines all the time. Having everything in one place made a huge difference.”')).toBeInTheDocument();
 
-        expect(
-            screen.getByText(
-                '“Perfect for university life. I like that it focuses on planning, not distractions or unncessary clutter.”'
-            )
-        ).toBeInTheDocument();
+        expect(screen.getByText('“Perfect for university life. I like that it focuses on planning, not distractions or unncessary clutter.”')).toBeInTheDocument();
 
-        expect(
-            screen.getByText(
-                '“Straightforward, easy to use, and actually helpful. Exactly what I needed as a student.”'
-            )
-        ).toBeInTheDocument();
+        expect(screen.getByText('“Straightforward, easy to use, and actually helpful. Exactly what I needed as a student.”')).toBeInTheDocument();
 
-        expect(
-            screen.getByText(
-                '“Using StudySync made my weeks feel more organised, and far less chaotic.”'
-            )
-        ).toBeInTheDocument();
+        expect(screen.getByText('“Using StudySync made my weeks feel more organised, and far less chaotic.”')).toBeInTheDocument();
 
-        expect(
-            screen.getByText(
-                '“It’s really helped me balance lectures, coursework, and revision without feeling overwhelmed.”'
-            )
-        ).toBeInTheDocument();
+        expect(screen.getByText('“It’s really helped me balance lectures, coursework, and revision without feeling overwhelmed.”')).toBeInTheDocument();
 
         expect(screen.getAllByText('⭐⭐⭐⭐⭐')).toHaveLength(5);
         expect(screen.getByText('⭐⭐⭐⭐')).toBeInTheDocument();

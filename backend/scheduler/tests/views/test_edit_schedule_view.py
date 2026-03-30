@@ -7,8 +7,16 @@ from scheduler.models.TimeBlock import TimeBlock
 
 
 class EditScheduleViewTest(APITestCase):
-
     def setUp(self):
+        """
+        Set up two users, their associated DayPlans, and TimeBlocks for testing
+        edit functionality.
+
+        Includes:
+        - A primary user and a second user (for access control tests)
+        - A DayPlan and TimeBlock for each user
+        - A reusable valid payload for PATCH requests
+        """
         self.user = User.objects.create_user(
             username="test-user", email="test@test.com", password="password123"
         )
@@ -54,7 +62,7 @@ class EditScheduleViewTest(APITestCase):
             "description": "Studying OSC for the exam soon",
         }
 
-    def test_patch_timeblock(self):
+    def test_patch_time_block(self):
         """Authenticated user should be able to edit their own timeblocks."""
         self.client.force_authenticate(user=self.user)
 
@@ -67,7 +75,7 @@ class EditScheduleViewTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "Updated Session")
 
-    def test_get_timeblock_not_found(self):
+    def test_get_time_block_not_found(self):
         """Authenticated user should not be able to edit non-existent timeblocks."""
         self.client.force_authenticate(user=self.user)
 
@@ -82,7 +90,7 @@ class EditScheduleViewTest(APITestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_patch_timeblock_invalid(self):
+    def test_patch_time_block_invalid(self):
         """Authenticated user should not be able to edit timeblocks and make them invalid."""
         self.client.force_authenticate(user=self.user)
 
@@ -95,7 +103,7 @@ class EditScheduleViewTest(APITestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_patch_timeblock_forbidden_for_other_user(self):
+    def test_patch_time_block_forbidden_for_other_user(self):
         """Users cannot edit TimeBlocks belonging to other users."""
         self.client.force_authenticate(user=self.user)
 
@@ -107,7 +115,7 @@ class EditScheduleViewTest(APITestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_get_timeblock_forbidden_for_other_user(self):
+    def test_get_time_block_forbidden_for_other_user(self):
         """Users cannot view TimeBlocks belonging to other users."""
         self.client.force_authenticate(user=self.user)
 
@@ -116,7 +124,7 @@ class EditScheduleViewTest(APITestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_patch_timeblock_moves_to_new_dayplan_when_date_changes(self):
+    def test_patch_time_block_moves_to_new_day_plan_when_date_changes(self):
         """Editing a timeblock with a new date should move it to a new DayPlan."""
         self.client.force_authenticate(user=self.user)
 

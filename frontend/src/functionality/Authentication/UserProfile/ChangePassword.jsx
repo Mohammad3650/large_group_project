@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../../api.js';
 import AuthCard from '../../../components/AuthCard.jsx';
@@ -7,6 +7,15 @@ import AuthField from '../../../components/AuthField.jsx';
 const initialErrors = {
     fieldErrors: {},
     global: []
+};
+
+const PASSWORD_CHANGE_REDIRECT_DELAY_MS = 1200;
+
+const MESSAGES = {
+    currentPasswordRequired: 'Current password is required.',
+    newPasswordRequired: 'New password is required.',
+    passwordChangeFailed: 'Password change failed.',
+    passwordChangeSuccess: 'Password updated successfully.'
 };
 
 function ChangePassword() {
@@ -18,15 +27,25 @@ function ChangePassword() {
     const [errors, setErrors] = useState(initialErrors);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        if (!message) return;
+
+        const timer = setTimeout(() => {
+            navigate('/profile');
+        }, PASSWORD_CHANGE_REDIRECT_DELAY_MS);
+
+        return () => clearTimeout(timer);
+    }, [message, navigate]);
+
     function validateForm() {
         const fieldErrors = {};
 
         if (!currentPassword) {
-            fieldErrors.currentPassword = 'Current password is required.';
+            fieldErrors.currentPassword = MESSAGES.currentPasswordRequired;
         }
 
         if (!newPassword) {
-            fieldErrors.newPassword = 'New password is required.';
+            fieldErrors.newPassword = MESSAGES.newPasswordRequired;
         }
 
         return fieldErrors;
@@ -52,15 +71,11 @@ function ChangePassword() {
                 new_password: newPassword
             });
 
-            setMessage(res.data.message);
-
-            setTimeout(() => {
-                navigate('/profile');
-            }, 1200);
+            setMessage(res.data.message || MESSAGES.passwordChangeSuccess);
         } catch {
             setErrors({
                 fieldErrors: {},
-                global: ['Password change failed.']
+                global: [MESSAGES.passwordChangeFailed]
             });
         } finally {
             setLoading(false);

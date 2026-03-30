@@ -29,6 +29,14 @@ function Calendar() {
     const nav = useNavigate();
 
     if (blocks === null) return <CalendarPlaceholder />;
+    if (blocks.length === 0) {
+        return (
+            <div className="calendar-content">
+                <h1>{`Welcome to your calendar, ${username}!`}</h1>
+                <div className="empty-state">No events yet.</div>
+            </div>
+        );
+    }
 
     return (
         <CalendarView
@@ -42,20 +50,12 @@ function Calendar() {
                 <>
                     {/* Navigate to edit page for selected event */}
 
-                    <button
-                        className="button"
-                        onClick={() =>
-                            nav(`/timeblocks/${calendarEvent.id}/edit`)
-                        }
-                    >
+                    <button className="button" aria-label="Edit event" onClick={() => nav(`/timeblocks/${calendarEvent.id}/edit`)}>
                         Edit
                     </button>
                     {/* Delete event using handler from CalendarView */}
 
-                    <button
-                        className="button"
-                        onClick={() => handleDelete(calendarEvent.id)}
-                    >
+                    <button className="button" aria-label="Delete event" onClick={() => handleDelete(calendarEvent.id)}>
                         Delete
                     </button>
                 </>

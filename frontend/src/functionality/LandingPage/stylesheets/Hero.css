@@ -18,6 +18,7 @@
     font-weight: 600;
     letter-spacing: -0.3px;
     text-align: center;
+    justify-content: center;
     transition: all 250ms;
 }
 
@@ -85,4 +86,59 @@
     width: 100%;
     max-width: 750px;
     height: auto;
+}
+
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 30px 20px 50px;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .hero-left,
+    .hero-right {
+        width: 100%;
+        flex: none;
+    }
+
+    .hero-quote {
+        padding-left: 0;
+    }
+
+    .hero-text-top,
+    .hero-text-bottom {
+        font-size: clamp(42px, 12vw, 64px);
+        line-height: 1.05;
+        word-break: break-word;
+    }
+
+    .hero-buttons {
+    margin: 40px;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+    .hero-button {
+        min-width: 140px;
+        padding: 0.9rem 1.4rem;
+        font-size: 1.1rem;
+        flex: 1 1 140px;
+    }
+
+    .hero-right {
+        justify-content: center;
+    }
+
+    .hero-image {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+    }
 }

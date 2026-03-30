@@ -114,3 +114,66 @@
 .features-grid .features-card:nth-child(5) {
     grid-column: span 2; /* normal */
 }
+
+@media (max-width: 768px) {
+    .features {
+        padding: 60px 16px;
+    }
+
+    .features-container {
+        max-width: 100%;
+    }
+
+    .features-header {
+        padding-left: 0;
+        padding-top: 20px;
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+    }
+
+    .features-header h1 {
+        font-size: 42px;
+        text-align: center;
+        line-height: 1.1;
+        margin: 0 0 12px;
+    }
+
+    .features-header p {
+        font-size: 16px;
+        text-align: center;
+        line-height: 1.6;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    .features-grid .features-card:nth-child(4),
+    .features-grid .features-card:nth-child(5) {
+        grid-column: span 1;
+    }
+
+    .features-card {
+        min-height: auto;
+        padding: 24px 20px;
+    }
+
+    .features-card-image {
+        height: 120px;
+        padding: 10px;
+    }
+
+    .features-card-title {
+        font-size: 22px;
+        line-height: 1.2;
+    }
+
+    .features-card-text {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+}

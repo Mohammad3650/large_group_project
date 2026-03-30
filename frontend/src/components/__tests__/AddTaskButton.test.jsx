@@ -19,7 +19,7 @@ const renderAddTaskButton = () => {
     );
 };
 
-describe('Tests for the add task button', () => {
+describe('Tests for AddTaskButton', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });

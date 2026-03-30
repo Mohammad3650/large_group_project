@@ -7,7 +7,7 @@ function playDing() {
     const ding = new Audio(dingSound);
     ding.volume = 0.3;
     ding.currentTime = 0;
-    ding.play().catch((err) => console.error('Audio failed:', err));
+    ding.play().catch(() => {});
 }
 
 export default playDing;

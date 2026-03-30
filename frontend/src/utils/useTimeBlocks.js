@@ -21,7 +21,7 @@ function useTimeBlocks() {
 
             const response = await api.get(TIME_BLOCKS_ENDPOINT);
             setBlocks(mapTimeBlocks(response.data));
-        } catch {
+        } catch (err){
             setError('Failed to load time blocks');
         } finally {
             setLoading(false);

@@ -8,6 +8,20 @@
  * @returns {JSX.Element} The subscription list
  */
 function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
+    /**
+     * Confirm before deleting a saved calendar subscription.
+     *
+     * @param {number} subscriptionId - Subscription identifier
+     */
+    function handleDeleteClick(subscriptionId) {
+        const confirmed = window.confirm(
+            'Are you sure you want to delete this calendar subscription?'
+        );
+
+        if (!confirmed) return;
+
+        onDelete(subscriptionId);
+    }
     if (!subscriptions.length) {
         return (
             <div className="subscription-list">
@@ -54,7 +68,7 @@ function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
                         <button
                             type="button"
                             className="subscription-delete-button"
-                            onClick={() => onDelete(subscription.id)}
+                            onClick={() => handleDeleteClick(subscription.id)}
                         >
                             Delete
                         </button>

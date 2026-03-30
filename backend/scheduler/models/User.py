@@ -28,11 +28,11 @@ class User(AbstractUser):
         phone_number (str): User's phone number validated against UK format.
     """
     
+    # Override default username field (not unique)
     username = models.CharField(max_length=150, unique=False, blank=False)
+    
+    # Email is used as the unique login field
     email = models.EmailField(unique=True, blank=False)
-
-    # Username is still stored as a required display/identity field
-    username = models.CharField(max_length=150, blank=False)
 
     # Basic profile fields required for each user
     first_name = models.CharField(max_length=50, blank=False)

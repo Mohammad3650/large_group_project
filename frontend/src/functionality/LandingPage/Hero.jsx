@@ -22,6 +22,16 @@ function Hero() {
 
     const isDark = document.body.classList.contains('dark-theme');
     const heropic = !isDark ? heroPicDark : heroPicLight;
+	// Button configurations based on authentication states
+    const buttons = isLoggedIn
+        ? [
+              { label: 'Calendar', path: '/calendar', style: 'black' },
+              { label: 'Dashboard', path: '/dashboard', style: 'white' }
+          ]
+        : [
+              { label: 'Sign Up', path: '/signup', style: 'black' },
+              { label: 'Login', path: '/login', style: 'white' }
+          ];
 
     return (
         <div className="hero">
@@ -30,53 +40,21 @@ function Hero() {
                 <div className="hero-left">
                     <div className="hero-quote">
                         <span className="hero-text-top">Plan your study.</span>
-                        <br></br>
-                        <span className="hero-text-bottom">
-                            Live your life.
-                        </span>
+                        <br/>
+                        <span className="hero-text-bottom">Live your life.</span>
                     </div>
 
                     <div className="hero-buttons">
-                        {isLoggedIn ? (
-                            <>
-                                <button
-                                    className="hero-button black"
-                                    onClick={() => nav('/calendar')}
-                                >
-                                    Calendar
-                                </button>
-                                <button
-                                    className="hero-button white"
-                                    onClick={() => nav('/dashboard')}
-                                >
-                                    Dashboard
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    className="hero-button black"
-                                    onClick={() => nav('/signup')}
-                                >
-                                    Sign Up
-                                </button>
-                                <button
-                                    className="hero-button white"
-                                    onClick={() => nav('/login')}
-                                >
-                                    Login
-                                </button>
-                            </>
-                        )}
+                        {buttons.map((btn) => (
+                            <button key={btn.label} className={`hero-button ${btn.style}`} onClick={() => nav(btn.path)}>
+                                {btn.label}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
                 <div className="hero-right">
-                    <img
-                        className="hero-image"
-                        src={heropic}
-                        alt="StudySync hero"
-                    ></img>
+                    <img className="hero-image" src={heropic} alt="StudySync hero"/>
                 </div>
             </div>
         </div>

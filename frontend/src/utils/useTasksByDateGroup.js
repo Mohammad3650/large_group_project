@@ -25,6 +25,7 @@ function useTasksByDateGroup(blocks) {
 
     useEffect(() => {
         if (blocks === null) return;
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
@@ -34,33 +35,19 @@ function useTasksByDateGroup(blocks) {
         const weekEnd = new Date(today);
         weekEnd.setDate(today.getDate() + 7);
 
-        setOverdueTasks(
-            blocks.filter((b) => getDate(b) < today).sort(sortTasksByDate)
-        );
-        setTodayTasks(
-            blocks
-                .filter((b) => getDate(b) >= today && getDate(b) < tomorrow)
-                .sort(sortTasksByDate)
-        );
-        setTomorrowTasks(
-            blocks
-                .filter(
-                    (b) =>
-                        getDate(b) >= tomorrow && getDate(b) < dayAfterTomorrow
-                )
-                .sort(sortTasksByDate)
-        );
-        setWeekTasks(
-            blocks
-                .filter(
-                    (b) =>
-                        getDate(b) >= dayAfterTomorrow && getDate(b) <= weekEnd
-                )
-                .sort(sortTasksByDate)
-        );
-        setBeyondWeekTasks(
-            blocks.filter((b) => getDate(b) > weekEnd).sort(sortTasksByDate)
-        );
+        const blocksWithDates = blocks.map((block) => ({ block, date: getDate(block) }));
+
+        const filterAndSortByDate = (predicate) =>
+            blocksWithDates
+                .filter(({ date }) => predicate(date))
+                .map(({ block }) => block)
+                .sort(sortTasksByDate);
+
+        setOverdueTasks(filterAndSortByDate((date) => date < today));
+        setTodayTasks(filterAndSortByDate((date) => date >= today && date < tomorrow));
+        setTomorrowTasks(filterAndSortByDate((date) => date >= tomorrow && date < dayAfterTomorrow));
+        setWeekTasks(filterAndSortByDate((date) => date >= dayAfterTomorrow && date <= weekEnd));
+        setBeyondWeekTasks(filterAndSortByDate((date) => date > weekEnd));
     }, [blocks]);
 
     const totalTasks =

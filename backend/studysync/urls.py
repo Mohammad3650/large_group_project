@@ -31,7 +31,7 @@ from scheduler.views.calendar_subscription_view import (
 from scheduler.views.create_schedule_view import create_schedule
 from scheduler.views.generator_view import GenerateScheduleView
 from scheduler.views.get_schedule_view import get_schedule
-from scheduler.views.edit_schedule_view import edit_timeblock
+from scheduler.views.edit_schedule_view import edit_time_block
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.get_note_view import get_note
 from scheduler.views.save_note_view import save_note
@@ -46,31 +46,61 @@ from scheduler.views.user_details_view import UserDetailsView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path("api/", include("scheduler.api.urls")),
     path("api-auth/", include("rest_framework.urls")),
     path("auth/signup/", UserRegistrationView.as_view(), name="user-signup"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
     # JWT auth
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
-    # path("", TokenVerifyView.as_view(), name="Landing_Page"),
+    path("api/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
+    path("api/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
+
+    #Time blocks
     path("api/time-blocks/", create_schedule, name="api-create-timeblock"),
     path("api/time-blocks/get/", get_schedule, name="api-get-timeblocks"),
-    path(
-        "api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"
-    ),
+    path("api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"),
+    path("api/timeblocks/<int:id>/edit/", edit_time_block, name="api-edit-timeblock"),
+
+    #Notes
     path("api/notes/get/", get_note, name="api-get-note"),
     path("api/notes/save/", save_note, name="api-save-note"),
-    path("api/timeblocks/<int:id>/edit", edit_timeblock, name="api-edit-timeblock"),
-    path("api/user/", UserDetailsView.as_view(), name="user-details"),
+
+    #Schedule generation
     path("schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"),
+
+    #Plans
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
+
+    #User
+    path("api/user/", UserDetailsView.as_view(), name="user-details"),
     path("api/user/change-password/", change_password),
     path("api/user/delete/", delete_user, name="delete_user_view"),
-    path("api/time-blocks/export/csv/", export_schedule_csv, name="api-export-timeblocks-csv"),
-    path("api/time-blocks/export/ics/", export_schedule_ics, name="api-export-timeblocks-ics"),
-    path("api/calendar-subscriptions/", calendar_subscriptions, name="api-calendar-subscriptions"),
-    path("api/calendar-subscriptions/<int:subscription_id>/refresh/", refresh_calendar_subscription, name="api-refresh-calendar-subscription"),
-    path("api/calendar-subscriptions/<int:subscription_id>/", delete_calendar_subscription, name="api-delete-calendar-subscription"), 
+
+    #Export
+    path(
+        "api/time-blocks/export/csv/",
+        export_schedule_csv,
+        name="api-export-timeblocks-csv",
+    ),
+    path(
+        "api/time-blocks/export/ics/",
+        export_schedule_ics,
+        name="api-export-timeblocks-ics",
+    ),
+
+    #Calendar subscriptions
+    path(
+        "api/calendar-subscriptions/",
+        calendar_subscriptions,
+        name="api-calendar-subscriptions",
+    ),
+    path(
+        "api/calendar-subscriptions/<int:subscription_id>/refresh/",
+        refresh_calendar_subscription,
+        name="api-refresh-calendar-subscription",
+    ),
+    path(
+        "api/calendar-subscriptions/<int:subscription_id>/",
+        delete_calendar_subscription,
+        name="api-delete-calendar-subscription",
+    ),
 ]

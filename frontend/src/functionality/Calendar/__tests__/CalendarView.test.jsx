@@ -1,22 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const {
-    mockCreateViewWeek,
-    mockCreateViewMonthGrid,
-    mockCreateEventModalPlugin,
-    mockCreateEventsServicePlugin,
-    mockUseCalendarApp,
-    mockRemove,
-    mockDeleteTimeBlock,
-    mockScheduleXCalendar
-} = vi.hoisted(() => ({
+const { mockCreateViewDay, mockCreateViewWeek, mockCreateViewMonthGrid, mockCreateViewMonthAgenda, mockCreateEventModalPlugin, mockUseCalendarApp, mockRemove, mockDeleteTimeBlock, mockScheduleXCalendar } = vi.hoisted(() => ({
+    mockCreateViewDay: vi.fn(() => 'day-view'),
     mockCreateViewWeek: vi.fn(() => 'week-view'),
     mockCreateViewMonthGrid: vi.fn(() => 'month-view'),
+    mockCreateViewMonthAgenda: vi.fn(() => 'month-agenda-view'),
     mockCreateEventModalPlugin: vi.fn(() => 'event-modal-plugin'),
-    mockCreateEventsServicePlugin: vi.fn(() => ({
-        remove: vi.fn()
-    })),
     mockUseCalendarApp: vi.fn(() => 'mock-calendar-app'),
     mockRemove: vi.fn(),
     mockDeleteTimeBlock: vi.fn(),
@@ -24,8 +14,10 @@ const {
 }));
 
 vi.mock('@schedule-x/calendar', () => ({
+    createViewDay: mockCreateViewDay,
     createViewWeek: mockCreateViewWeek,
-    createViewMonthGrid: mockCreateViewMonthGrid
+    createViewMonthGrid: mockCreateViewMonthGrid,
+    createViewMonthAgenda: mockCreateViewMonthAgenda
 }));
 
 vi.mock('@schedule-x/event-modal', () => ({
@@ -53,73 +45,72 @@ vi.mock('../../../utils/deleteTimeBlock.js', () => ({
 import CalendarView from '../CalendarView';
 import getUserTimezone from '../../../utils/getUserTimezone.js';
 
-describe('CalendarView', () => {
-    const blocks = [
-        {
-            id: 7,
-            title: 'Algorithms Lecture',
-            date: '2026-02-19',
-            startTime: '09:00',
-            endTime: '11:00',
-            location: 'Bush House',
-            blockType: 'Lecture',
-            description: 'Graphs and shortest paths'
-        }
-    ];
+const blocks = [
+    {
+        id: 7,
+        title: 'Algorithms Lecture',
+        date: '2026-02-19',
+        startTime: '09:00',
+        endTime: '11:00',
+        location: 'Bush House',
+        blockType: 'Lecture',
+        description: 'Graphs and shortest paths'
+    }
+];
 
+function renderCalendarView(overrides = {}) {
+    const defaultProps = {
+        blocks,
+        setBlocks: vi.fn(),
+        title: 'Calendar'
+    };
+
+    return render(<CalendarView {...defaultProps} {...overrides} />);
+}
+
+function renderEventModal() {
+    const scheduleProps = mockScheduleXCalendar.mock.calls[0][0];
+    const EventModal = scheduleProps.customComponents.eventModal;
+    return render(<EventModal calendarEvent={blocks[0]} />);
+}
+
+describe('Tests for CalendarView', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         global.confirm = vi.fn();
     });
 
     it('renders the title, header buttons and calendar', () => {
-        render(
-            <CalendarView
-                blocks={blocks}
-                setBlocks={vi.fn()}
-                title="Welcome to your calendar, Mohammad!"
-                headerButtons={<button>Add Task</button>}
-            />
-        );
+        renderCalendarView({
+            title: 'Welcome to your calendar, Mohammad!',
+            headerButtons: <button>Add Task</button>
+        });
 
-        expect(
-            screen.getByText('Welcome to your calendar, Mohammad!')
-        ).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: 'Add Task' })
-        ).toBeInTheDocument();
+        expect(screen.getByText('Welcome to your calendar, Mohammad!')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Add Task' })).toBeInTheDocument();
         expect(screen.getByText('Mock ScheduleXCalendar')).toBeInTheDocument();
     });
 
     it('creates the calendar app with the correct configuration', () => {
-        render(
-            <CalendarView
-                blocks={blocks}
-                setBlocks={vi.fn()}
-                title="Calendar"
-            />
-        );
+        renderCalendarView();
 
+        expect(mockCreateViewDay).toHaveBeenCalled();
         expect(mockCreateViewWeek).toHaveBeenCalled();
         expect(mockCreateViewMonthGrid).toHaveBeenCalled();
+        expect(mockCreateViewMonthAgenda).toHaveBeenCalled();
         expect(mockCreateEventModalPlugin).toHaveBeenCalled();
+
         expect(mockUseCalendarApp).toHaveBeenCalledWith({
-            views: ['week-view', 'month-view'],
+            views: ['day-view', 'week-view', 'month-view', 'month-agenda-view'],
             plugins: ['event-modal-plugin', { remove: mockRemove }],
             events: blocks,
-            selectedDate: Temporal.Now.plainDateISO(),
+            selectedDate: Temporal.Now.plainDateISO(getUserTimezone()),
             timezone: getUserTimezone()
         });
     });
 
-    it('passes customComponents to ScheduleXCalendar and renders the event modal content correctly', () => {
-        render(
-            <CalendarView
-                blocks={blocks}
-                setBlocks={vi.fn()}
-                title="Calendar"
-            />
-        );
+    it('passes custom components to ScheduleXCalendar and renders event modal content', () => {
+        renderCalendarView();
 
         expect(mockScheduleXCalendar).toHaveBeenCalled();
 
@@ -127,17 +118,14 @@ describe('CalendarView', () => {
         expect(scheduleProps.calendarApp).toBe('mock-calendar-app');
         expect(scheduleProps.customComponents).toBeTruthy();
 
-        const EventModal = scheduleProps.customComponents.eventModal;
-        const { container } = render(<EventModal calendarEvent={blocks[0]} />);
+        const { container } = renderEventModal();
 
         expect(screen.getByText('Algorithms Lecture')).toBeInTheDocument();
         expect(screen.getByText('19/02/2026')).toBeInTheDocument();
         expect(screen.getByText('09:00 - 11:00')).toBeInTheDocument();
         expect(screen.getByText('Bush House')).toBeInTheDocument();
         expect(screen.getByText('Lecture')).toBeInTheDocument();
-        expect(
-            screen.getByText('Graphs and shortest paths')
-        ).toBeInTheDocument();
+        expect(screen.getByText('Graphs and shortest paths')).toBeInTheDocument();
 
         expect(screen.getByAltText('Date')).toBeInTheDocument();
         expect(screen.getByAltText('Time')).toBeInTheDocument();
@@ -145,52 +133,25 @@ describe('CalendarView', () => {
         expect(screen.getByAltText('Block Type')).toBeInTheDocument();
         expect(screen.getByAltText('Description')).toBeInTheDocument();
 
-        expect(
-            container.querySelector('.sx__event-modal__title')
-        ).toBeInTheDocument();
-        expect(
-            container.querySelector('.sx__event-modal__description')
-        ).toBeInTheDocument();
+        expect(container.querySelector('.sx__event-modal__title')).toBeInTheDocument();
+        expect(container.querySelector('.sx__event-modal__description')).toBeInTheDocument();
         expect(container.querySelector('.buttons')).toBeInTheDocument();
     });
 
-    it('renders event buttons when eventButtons is provided and uses the edit button callback', () => {
-        const eventButtons = vi.fn((calendarEvent) => (
-            <button>Edit {calendarEvent.id}</button>
-        ));
+    it('renders event buttons when eventButtons is provided', () => {
+        const eventButtons = vi.fn((calendarEvent) => <button>Edit {calendarEvent.id}</button>);
 
-        render(
-            <CalendarView
-                blocks={blocks}
-                setBlocks={vi.fn()}
-                title="Calendar"
-                eventButtons={eventButtons}
-            />
-        );
-
-        const scheduleProps = mockScheduleXCalendar.mock.calls[0][0];
-        const EventModal = scheduleProps.customComponents.eventModal;
-
-        render(<EventModal calendarEvent={blocks[0]} />);
+        renderCalendarView({ eventButtons });
+        renderEventModal();
 
         expect(eventButtons).toHaveBeenCalled();
-        expect(
-            screen.getByRole('button', { name: 'Edit 7' })
-        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Edit 7' })).toBeInTheDocument();
     });
 
     it('renders no event buttons when eventButtons is not provided', () => {
-        render(
-            <CalendarView
-                blocks={blocks}
-                setBlocks={vi.fn()}
-                title="Calendar"
-            />
-        );
+        renderCalendarView();
 
-        const scheduleProps = mockScheduleXCalendar.mock.calls[0][0];
-        const EventModal = scheduleProps.customComponents.eventModal;
-        const { container } = render(<EventModal calendarEvent={blocks[0]} />);
+        const { container } = renderEventModal();
 
         expect(container.querySelector('.buttons')).toBeInTheDocument();
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
@@ -201,25 +162,10 @@ describe('CalendarView', () => {
         mockDeleteTimeBlock.mockResolvedValue({});
         const setBlocks = vi.fn();
 
-        const eventButtons = (calendarEvent, handleDelete) => (
-            <button onClick={() => handleDelete(calendarEvent.id)}>
-                Delete
-            </button>
-        );
+        const eventButtons = (calendarEvent, handleDelete) => <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>;
 
-        render(
-            <CalendarView
-                blocks={blocks}
-                setBlocks={setBlocks}
-                title="Calendar"
-                eventButtons={eventButtons}
-            />
-        );
-
-        const scheduleProps = mockScheduleXCalendar.mock.calls[0][0];
-        const EventModal = scheduleProps.customComponents.eventModal;
-
-        render(<EventModal calendarEvent={blocks[0]} />);
+        renderCalendarView({ setBlocks, eventButtons });
+        renderEventModal();
 
         fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
@@ -238,25 +184,10 @@ describe('CalendarView', () => {
         global.confirm.mockReturnValue(false);
         const setBlocks = vi.fn();
 
-        const eventButtons = (calendarEvent, handleDelete) => (
-            <button onClick={() => handleDelete(calendarEvent.id)}>
-                Delete
-            </button>
-        );
+        const eventButtons = (calendarEvent, handleDelete) => <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>;
 
-        render(
-            <CalendarView
-                blocks={blocks}
-                setBlocks={setBlocks}
-                title="Calendar"
-                eventButtons={eventButtons}
-            />
-        );
-
-        const scheduleProps = mockScheduleXCalendar.mock.calls[0][0];
-        const EventModal = scheduleProps.customComponents.eventModal;
-
-        render(<EventModal calendarEvent={blocks[0]} />);
+        renderCalendarView({ setBlocks, eventButtons });
+        renderEventModal();
 
         fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
@@ -270,34 +201,17 @@ describe('CalendarView', () => {
         const error = new Error('Delete failed');
         mockDeleteTimeBlock.mockRejectedValue(error);
         const setBlocks = vi.fn();
-        const consoleSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {});
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-        const eventButtons = (calendarEvent, handleDelete) => (
-            <button onClick={() => handleDelete(calendarEvent.id)}>
-                Delete
-            </button>
-        );
+        const eventButtons = (calendarEvent, handleDelete) => <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>;
 
-        render(
-            <CalendarView
-                blocks={blocks}
-                setBlocks={setBlocks}
-                title="Calendar"
-                eventButtons={eventButtons}
-            />
-        );
-
-        const scheduleProps = mockScheduleXCalendar.mock.calls[0][0];
-        const EventModal = scheduleProps.customComponents.eventModal;
-
-        render(<EventModal calendarEvent={blocks[0]} />);
+        renderCalendarView({ setBlocks, eventButtons });
+        renderEventModal();
 
         fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
         await waitFor(() => {
-            expect(consoleSpy).toHaveBeenCalledWith('Failed to delete', error);
+            expect(consoleSpy).toHaveBeenCalledWith('Failed to delete event with ID', 7, error);
         });
 
         expect(mockRemove).not.toHaveBeenCalled();
@@ -305,4 +219,27 @@ describe('CalendarView', () => {
 
         consoleSpy.mockRestore();
     });
+});
+
+it('passes an empty events array when blocks is not an array', () => {
+    renderCalendarView({ blocks: null });
+
+    expect(mockUseCalendarApp).toHaveBeenCalledWith({
+        views: ['day-view', 'week-view', 'month-view', 'month-agenda-view'],
+        plugins: ['event-modal-plugin', { remove: mockRemove }],
+        events: [],
+        selectedDate: Temporal.Now.plainDateISO(getUserTimezone()),
+        timezone: getUserTimezone()
+    });
+});
+
+it('renders the event modal in dark theme', () => {
+    document.body.classList.add('dark-theme');
+
+    renderCalendarView();
+    renderEventModal();
+
+    expect(screen.getByText('Algorithms Lecture')).toBeInTheDocument();
+
+    document.body.classList.remove('dark-theme');
 });
