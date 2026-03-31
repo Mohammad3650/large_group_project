@@ -106,14 +106,6 @@ function Dashboard() {
                     </div>
                 </div>
 
-                <input
-                    type="text"
-                    className="task-search-input"
-                    placeholder="Search tasks..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-
                 <div
                     className="day-section"
                     onClick={() => setShowSubscriptions((prev) => !prev)}
@@ -137,6 +129,14 @@ function Dashboard() {
                         />
                     </div>
                 )}
+
+                <input
+                    type="text"
+                    className="task-search-input"
+                    placeholder="Search tasks..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
 
                 {totalTasks === 0 && (
                     <p className="no-tasks-message">

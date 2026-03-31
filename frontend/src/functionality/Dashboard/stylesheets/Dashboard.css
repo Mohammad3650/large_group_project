@@ -10,7 +10,7 @@ body.dashboard-page {
     width: 100vw;
     height: calc(100vh - 75px - var(--space-lg));
     box-sizing: border-box;
-    padding: 0 var(--space-navbar-x) var(--space-3xl) var(--space-navbar-x);
+    padding: 0 var(--space-navbar-x) var(--space-2xl) calc(var(--space-navbar-x) - var(--space-xs));
     justify-content: space-between;
     align-items: stretch;
     background: var(--bg-main);
@@ -21,6 +21,7 @@ body.dashboard-page {
     width: 58%;
     overflow-y: auto;
     display: flex;
+    padding-left: var(--space-xs);
     flex-direction: column;
     padding-right: var(--space-sm);
     color: var(--text-main);
@@ -85,18 +86,19 @@ body.dashboard-page {
     padding: var(--space-md);
     background-color: var(--bg-soft);
     box-sizing: border-box;
-    border: none;
+    border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
     font-size: 1rem;
     color: var(--text-muted);
-    margin-top: var(--space-xl);
+    margin-top: var(--space-md);
     margin-bottom: var(--space-xl);
     transition: background-color 0.2s;
     outline: none;
 }
 
 .task-search-input:focus {
-    background-color: var(--bg-soft-hover);
+    border-color: var(--blue);
+    box-shadow: var(--shadow-focus);
 }
 
 .task-search-input::placeholder {
