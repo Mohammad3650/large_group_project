@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../../api.js';
+import { useState } from 'react';
 import TaskGroup from './TaskGroup.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
@@ -8,12 +6,16 @@ import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import handleExportCsv from '../../utils/Api/handleExportCsv.js';
 import SubscriptionForm from './SubscriptionForm.jsx';
 import SubscriptionList from './SubscriptionList.jsx';
-import createCalendarSubscription from '../../utils/Api/createCalendarSubscription.js';
-import deleteCalendarSubscription from '../../utils/Api/deleteCalendarSubscription.js';
-import getCalendarSubscriptions from '../../utils/Api/getCalendarSubscriptions.js';
 import handleExportIcs from '../../utils/Api/handleExportIcs.js';
-import refreshCalendarSubscription from '../../utils/Api/refreshCalendarSubscription.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
+import useDashboard from '../../utils/Hooks/useDashboard.js';
+import useSubscriptions from '../../utils/Hooks/useSubscriptions.js';
+import useBodyClass from '../../utils/Hooks/useBodyClass.js';
+import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
+import useAutoResetError from '../../utils/Hooks/useAutoResetError.js';
+import handleImportSubscription from '../../utils/Helpers/handleImportSubscription.js';
+import handleRefreshSubscription from '../../utils/Helpers/handleRefreshSubscription.js';
+import handleDeleteSubscription from '../../utils/Helpers/handleDeleteSubscription.js';
 import './stylesheets/Dashboard.css';
 
 /**
@@ -22,136 +24,26 @@ import './stylesheets/Dashboard.css';
  * @returns {JSX.Element} The dashboard page
  */
 function Dashboard() {
-    const nav = useNavigate();
-    const [message, setMessage] = useState('Loading...');
-    const [error, setError] = useState('');
-    const [subscriptions, setSubscriptions] = useState([]);
     const [showSubscriptions, setShowSubscriptions] = useState(true);
 
+    const { message, error, setError } = useDashboard();
     const { blocks, refetchBlocks, error: blocksError } = useTimeBlocks();
+    const { subscriptions, setSubscriptions } = useSubscriptions(setError);
 
     const {
-        overdueTasks,
-        setOverdueTasks,
-        todayTasks,
-        setTodayTasks,
-        tomorrowTasks,
-        setTomorrowTasks,
-        weekTasks,
-        setWeekTasks,
-        beyondWeekTasks,
-        setBeyondWeekTasks,
-        totalTasks
+        overdueTasks, setOverdueTasks,
+        todayTasks, setTodayTasks,
+        tomorrowTasks, setTomorrowTasks,
+        weekTasks, setWeekTasks,
+        beyondWeekTasks, setBeyondWeekTasks,
+        totalTasks,
     } = useTasksByDateGroup(blocks);
 
-    useEffect(() => {
-        async function fetchDashboard() {
-            try {
-                const response = await api.get('/dashboard/');
-                setMessage(response.data.message);
-            } catch (err) {
-                if (err?.response?.status === 401) {
-                    nav('/login');
-                } else {
-                    setError('Failed to load dashboard');
-                }
-            }
-        }
+    useBodyClass('dashboard-page');
+    useScrollToTopOnResize();
+    useAutoResetError(error, setError);
 
-        fetchDashboard();
-    }, [nav]);
-
-    useEffect(() => {
-        async function fetchSubscriptions() {
-            try {
-                const data = await getCalendarSubscriptions();
-                setSubscriptions(data);
-            } catch {
-                setError('Failed to load calendar subscriptions');
-            }
-        }
-
-        fetchSubscriptions();
-    }, []);
-
-    useEffect(() => {
-        document.body.classList.add('dashboard-page');
-        window.scrollTo(0, 0);
-
-        const handleResize = () => window.scrollTo(0, 0);
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            document.body.classList.remove('dashboard-page');
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
-    async function handleImportSubscription(payload) {
-        try {
-            setError('');
-            const responseData = await createCalendarSubscription(payload);
-            setSubscriptions((currentSubscriptions) => [
-                responseData.subscription,
-                ...currentSubscriptions
-            ]);
-            await refetchBlocks();
-        } catch (requestError) {
-            const detail =
-                requestError?.response?.data?.source_url?.[0] ||
-                requestError?.response?.data?.name?.[0] ||
-                requestError?.response?.data?.message ||
-                'Failed to import timetable';
-            setError(detail);
-        }
-    }
-
-    async function handleRefreshSubscription(subscriptionId) {
-        try {
-            setError('');
-            const responseData =
-                await refreshCalendarSubscription(subscriptionId);
-
-            setSubscriptions((currentSubscriptions) =>
-                currentSubscriptions.map((subscription) =>
-                    subscription.id === subscriptionId
-                        ? responseData.subscription
-                        : subscription
-                )
-            );
-
-            await refetchBlocks();
-        } catch {
-            setError('Failed to refresh timetable subscription');
-        }
-    }
-
-    async function handleDeleteSubscription(subscriptionId) {
-        try {
-            setError('');
-            await deleteCalendarSubscription(subscriptionId);
-
-            setSubscriptions((currentSubscriptions) =>
-                currentSubscriptions.filter(
-                    (subscription) => subscription.id !== subscriptionId
-                )
-            );
-
-            await refetchBlocks();
-        } catch {
-            setError('Failed to delete timetable subscription');
-        }
-    }
-
-    useEffect(() => {
-        if (!error) return;
-
-        const timer = setTimeout(() => {
-            setError('');
-        }, 5000);
-
-        return () => clearTimeout(timer);
-    }, [error]);
+    const context = { setSubscriptions, setError, refetchBlocks };
 
     if (blocksError) {
         return <p>{blocksError}</p>;
@@ -206,20 +98,22 @@ function Dashboard() {
                             )}
 
                             <SubscriptionForm
-                                onImport={handleImportSubscription}
+                                onImport={(payload) => handleImportSubscription(payload, context)}
                             />
                             <SubscriptionList
                                 subscriptions={subscriptions}
-                                onRefresh={handleRefreshSubscription}
-                                onDelete={handleDeleteSubscription}
+                                onRefresh={(id) => handleRefreshSubscription(id, context)}
+                                onDelete={(id) => handleDeleteSubscription(id, context)}
                             />
                         </div>
                     )}
+
                     {totalTasks === 0 && (
                         <p className="no-tasks-message">
                             🎉 Congrats, you have no tasks!
                         </p>
                     )}
+
                     <TaskGroup
                         title="Overdue"
                         tasks={overdueTasks}
