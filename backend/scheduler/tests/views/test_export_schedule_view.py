@@ -51,8 +51,8 @@ class ExportScheduleViewTest(TestCase):
             timezone="Europe/London",
         )
 
-        self.csv_url = reverse("export_schedule_csv")
-        self.ics_url = reverse("export_schedule_ics")
+        self.csv_url = reverse("api-export-timeblocks-csv")
+        self.ics_url = reverse("api-export-timeblocks-ics")
 
     def test_export_csv_requires_authentication(self):
         """It should require authentication for CSV export."""
