@@ -73,7 +73,7 @@ body.dark-theme {
     --border-input: #4a4a4a;
 
     --danger: #ff6b6b;
-    --danger-soft: #5c2323;
+    --danger-soft: rgba(255, 107, 107, 0.65);
 
     --success: #7ee787;
     --success-soft: #1f3a28;

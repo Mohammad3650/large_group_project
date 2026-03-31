@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api.js';
 
+/**
+ * Custom hook to fetch and manage the user's notes.
+ *
+ * @returns {{
+ *   notes: string,
+ *   setNotes: Function,
+ *   loaded: boolean,
+ *   loading: boolean,
+ *   error: string
+ * }}
+ */
 function useNotes() {
     const [notes, setNotes] = useState('');
     const [loaded, setLoaded] = useState(false);

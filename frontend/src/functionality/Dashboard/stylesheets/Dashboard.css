@@ -64,6 +64,29 @@ body.dashboard-page {
     margin-bottom: 0;
 }
 
+.task-search-input {
+    width: 100%;
+    padding: var(--space-md);
+    background-color: var(--bg-soft);
+    box-sizing: border-box;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xl);
+    transition: background-color 0.2s;
+    outline: none;
+}
+
+.task-search-input:focus {
+    background-color: var(--bg-soft-hover);
+}
+
+.task-search-input::placeholder {
+    color: var(--text-muted);
+}
+
 .export-buttons {
     display: flex;
     align-items: center;

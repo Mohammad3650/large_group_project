@@ -2,10 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../api.js';
 
-function useDashboard() {
+/**
+ * Custom hook to fetch the dashboard welcome message.
+ *
+ * @param {Function} setError - Setter function for the parent error state
+ * @returns {{ message: string }}
+ */
+function useDashboard(setError) {
     const nav = useNavigate();
     const [message, setMessage] = useState('Loading...');
-    const [error, setError] = useState('');
 
     useEffect(() => {
         async function fetchDashboard() {
@@ -20,11 +25,10 @@ function useDashboard() {
                 }
             }
         }
-
         fetchDashboard();
     }, [nav]);
 
-    return { message, error, setError };
+    return { message };
 }
 
 export default useDashboard;
