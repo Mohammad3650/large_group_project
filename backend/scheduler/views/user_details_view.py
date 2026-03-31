@@ -14,7 +14,9 @@ class UserDetailsView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         """
-        Returns the currently authenticated user.
-        """
+        Return the currently authenticated user.
 
+        Returns:
+            User: The logged-in user attached to the request.
+        """
         return self.request.user

@@ -101,11 +101,11 @@ def delete_calendar_subscription(request, subscription_id):
         user=request.user,
     )
 
-    imported_event_qs = subscription.imported_events.select_related("time_block")
-    time_block_ids = [event.time_block_id for event in imported_event_qs]
+    imported_events = subscription.imported_events.select_related("time_block")
+    time_block_ids = [event.time_block_id for event in imported_events]
 
     with transaction.atomic():
-        imported_event_qs.delete()
+        imported_events.delete()
         TimeBlock.objects.filter(
             id__in=time_block_ids,
             day__user=request.user,
