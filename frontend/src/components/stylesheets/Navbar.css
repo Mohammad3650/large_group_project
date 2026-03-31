@@ -49,15 +49,15 @@
     object-fit: contain;
 }
 
-.navbar-tagline {
-    font-size: var(--font-size-sm);
-    color: var(--text-muted);
-}
-
 .navbar-right {
     display: flex;
     align-items: center;
     gap: var(--space-md);
+}
+
+.navbar-tagline {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
 }
 
 .navbar-user {
@@ -87,14 +87,8 @@
     gap: var(--space-sm);
 }
 
-.theme-toggle-btn {
-    background: var(--bg-soft);
-    color: var(--text-main);
-    border: 1px solid var(--border-light);
-}
-
 .dropdown-username {
-    font-size: 0.95rem;
+    font-size: var(--font-size-sm);
     color: var(--text-dark);
     font-weight: normal;
     border-bottom: 1px solid var(--border-light);
@@ -104,7 +98,7 @@
 .dropdown-link {
     text-decoration: none;
     color: var(--text-dark);
-    font-size: 0.95rem;
+    font-size: var(--font-size-sm);
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--radius-sm);
 }
@@ -114,6 +108,12 @@
     background-color: var(--bg-soft-hover);
 }
 
+.theme-toggle-btn {
+    background: var(--bg-soft);
+    color: var(--text-main);
+    border: 1px solid var(--border-light);
+}
+
 .logout-button {
     width: 100%;
     text-align: left;
@@ -121,7 +121,7 @@
     background: var(--bg-soft);
     color: var(--text-main);
     border: 1px solid var(--border-light);
-    padding: 8px 10px;
+    padding: var(--space-sm) var(--space-md);
 }
 
 .logout-button:hover {
@@ -129,42 +129,42 @@
 }
 
 @media (max-width: 768px) {
-    .navbar-link span {
-        display: none;
-    }
-
     .navbar-container {
         padding: var(--space-sm) var(--space-md);
-    }
-
-    .user-dropdown {
-        min-width: 140px;
     }
 
     .navbar-title {
         font-size: var(--font-size-lg);
     }
+
+    .navbar-link span {
+        display: none;
+    }
+
+    .user-dropdown {
+        min-width: 140px;
+    }
 }
 
 @media (max-width: 360px) {
-    .navbar-right {
-        gap: var(--space-xs);
+    .navbar-container {
+        padding: var(--space-xs) var(--space-sm);
     }
 
     .navbar-left {
         gap: var(--space-md);
     }
 
-    .navbar-container {
-        padding: var(--space-xs) var(--space-sm);
+    .navbar-right {
+        gap: var(--space-xs);
+    }
+
+    .navbar-title {
+        font-size: 1.2rem;
     }
 
     .user-icon {
         width: 32px;
         height: 32px;
-    }
-
-    .navbar-title {
-        font-size: 1.2rem;
     }
 }

@@ -1,20 +1,20 @@
 .day-section {
     display: flex;
-    gap: 5px;
+    gap: var(--space-xs);
     align-items: center;
     cursor: pointer;
     user-select: none;
 }
 
 .arrow {
-    font-size: 0.8rem;
+    font-size: var(--font-size-xs);
     transform: rotate(180deg);
     transition: transform 0.2s;
     color: var(--text-light);
     display: inline-block;
     vertical-align: middle;
     position: relative;
-    top: -3px;
+    top: var(--arrow-offset);
 }
 
 .arrow.closed {
