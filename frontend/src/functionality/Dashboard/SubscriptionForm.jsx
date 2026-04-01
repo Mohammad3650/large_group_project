@@ -28,23 +28,14 @@ function SubscriptionInput({ type, placeholder, value, onChange }) {
  *
  * @param {Object} props - Component props
  * @param {Function} props.onImport - Import handler
- * @param {string} [props.feedbackMessage] - Parent-provided feedback message
- * @param {string} [props.feedbackType] - Parent-provided feedback type
  * @returns {JSX.Element} The subscription form
  */
-function SubscriptionForm({
-    onImport,
-    feedbackMessage = '',
-    feedbackType = '',
-}) {
+function SubscriptionForm({ onImport }) {
     const [name, setName] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
     const [loading, setLoading] = useState(false);
-    const [localFeedbackMessage, setLocalFeedbackMessage] = useState('');
-    const [localFeedbackType, setLocalFeedbackType] = useState('');
-
-    const activeFeedbackMessage = feedbackMessage || localFeedbackMessage;
-    const activeFeedbackType = feedbackMessage ? feedbackType : localFeedbackType;
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     /**
      * Reset form fields after a successful import.
@@ -57,9 +48,9 @@ function SubscriptionForm({
     /**
      * Clear local feedback messages.
      */
-    function clearLocalFeedback() {
-        setLocalFeedbackMessage('');
-        setLocalFeedbackType('');
+    function clearMessages() {
+        setSuccessMessage('');
+        setErrorMessage('');
     }
 
     /**
@@ -69,6 +60,21 @@ function SubscriptionForm({
      */
     function buildPayload() {
         return { name, sourceUrl };
+    }
+
+    /**
+     * Handle a successful timetable import.
+     */
+    function handleImportSuccess() {
+        resetForm();
+        setSuccessMessage('Timetable imported successfully.');
+    }
+
+    /**
+     * Handle a failed timetable import.
+     */
+    function handleImportFailure() {
+        setErrorMessage('Failed to import timetable.');
     }
 
     /**
@@ -82,29 +88,14 @@ function SubscriptionForm({
 
         if (loading) return;
 
-        clearLocalFeedback();
+        clearMessages();
         setLoading(true);
 
         try {
             await onImport(buildPayload());
-            resetForm();
-
-            if (!feedbackMessage) {
-                setLocalFeedbackMessage('Timetable imported successfully.');
-                setLocalFeedbackType('success');
-            }
-        } catch (error) {
-            if (!feedbackMessage) {
-                const backendMessage =
-                    error?.response?.data?.source_url?.[0] ||
-                    error?.response?.data?.name?.[0] ||
-                    error?.response?.data?.message ||
-                    error?.response?.data?.detail ||
-                    'Failed to import timetable.';
-
-                setLocalFeedbackMessage(backendMessage);
-                setLocalFeedbackType('error');
-            }
+            handleImportSuccess();
+        } catch {
+            handleImportFailure();
         } finally {
             setLoading(false);
         }
@@ -114,12 +105,12 @@ function SubscriptionForm({
         <form className="subscription-form" onSubmit={handleSubmit}>
             <h2 className="subscription-title">Subscribe to timetable</h2>
 
-            {activeFeedbackMessage && activeFeedbackType === 'success' && (
-                <p className="subscription-success-text">{activeFeedbackMessage}</p>
+            {successMessage && (
+                <p className="subscription-success-text">{successMessage}</p>
             )}
 
-            {activeFeedbackMessage && activeFeedbackType === 'error' && (
-                <p className="subscription-error-text">{activeFeedbackMessage}</p>
+            {errorMessage && (
+                <p className="subscription-error-text">{errorMessage}</p>
             )}
 
             <SubscriptionInput
