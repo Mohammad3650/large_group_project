@@ -18,6 +18,8 @@ import CalendarPlaceholder from './CalendarPlaceholder.jsx';
  * Handles navigation (edit) and deletion of events.
  * Displays a placeholder while data is loading.
  *
+ * @param {Object} props
+ * @param {string} props.theme - Current theme ('light' or 'dark')
  */
 
 function Calendar({ theme }) {
