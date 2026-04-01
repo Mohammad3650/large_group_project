@@ -39,13 +39,15 @@ def calendar_subscriptions(request):
             {"source_url": ["You have already added this calendar subscription."]}
         )
 
-    subscription = CalendarSubscription.objects.create(
-        user=request.user,
-        name=serializer.validated_data["name"],
-        source_url=source_url,
-    )
+    with transaction.atomic():
+        subscription = CalendarSubscription.objects.create(
+            user=request.user,
+            name=serializer.validated_data["name"],
+            source_url=source_url,
+        )
 
-    sync_result = sync_calendar_subscription(subscription)
+        sync_result = sync_calendar_subscription(subscription)
+
     response_serializer = CalendarSubscriptionSerializer(subscription)
 
     return Response(
