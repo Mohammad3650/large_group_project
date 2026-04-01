@@ -1,3 +1,4 @@
+from typing import Optional
 from zoneinfo import ZoneInfo
 
 from django.db import transaction
@@ -38,12 +39,12 @@ def classify_block_type(summary):
     return DEFAULT_BLOCK_TYPE
 
 
-def clean_event_description(description):
+def clean_event_description(description: Optional[str]) -> str:
     """
     Remove repeated metadata lines from imported calendar descriptions.
 
     Args:
-        description (str): Raw imported description.
+        description (str | None): Raw imported description.
 
     Returns:
         str: Cleaned description.
@@ -133,6 +134,7 @@ def should_import_event(event):
     """
     return event["end_datetime"] >= timezone.now()
 
+
 def get_event_date(event):
     """
     Get the local event date in Europe/London.
@@ -180,7 +182,7 @@ def create_imported_event(
     Args:
         subscription (CalendarSubscription): Subscription being synced.
         external_event_uid (str): Stable external event identifier.
-        dayplan (DayPlan): Target DayPlan.
+        dayplan (DayPlan): Target day plan.
         timeblock_data (dict): TimeBlock payload.
         event_date (date): Local event date.
 
@@ -201,7 +203,7 @@ def update_imported_event(imported_event, dayplan, timeblock_data, event_date):
 
     Args:
         imported_event (ImportedCalendarEvent): Existing imported event mapping.
-        dayplan (DayPlan): Target DayPlan.
+        dayplan (DayPlan): Target day plan.
         timeblock_data (dict): Updated TimeBlock payload.
         event_date (date): Local event date.
 
@@ -251,6 +253,34 @@ def sync_single_event(subscription, event):
     return "updated"
 
 
+def build_sync_result():
+    """
+    Build an empty sync result dictionary.
+
+    Returns:
+        dict: Fresh sync counters for created, updated, and skipped events.
+    """
+    return {
+        "created": 0,
+        "updated": 0,
+        "skipped": 0,
+    }
+
+
+def fetch_subscription_events(subscription):
+    """
+    Fetch and parse external ICS events for a subscription.
+
+    Args:
+        subscription (CalendarSubscription): Subscription being synced.
+
+    Returns:
+        list[dict]: Parsed ICS events.
+    """
+    ics_content = fetch_ics_content(subscription.source_url)
+    return parse_ics_events(ics_content)
+
+
 def finalise_subscription_sync(subscription):
     """
     Update sync metadata after a successful subscription sync.
@@ -269,7 +299,7 @@ def finalise_subscription_sync(subscription):
 @transaction.atomic
 def sync_calendar_subscription(subscription):
     """
-    Fetch and sync external calendar events into StudySync TimeBlocks.
+    Fetch and sync external calendar events into StudySync time blocks.
 
     Args:
         subscription (CalendarSubscription): The subscription to sync.
@@ -277,14 +307,8 @@ def sync_calendar_subscription(subscription):
     Returns:
         dict: A summary of created, updated, and skipped events.
     """
-    ics_content = fetch_ics_content(subscription.source_url)
-    events = parse_ics_events(ics_content)
-
-    sync_result = {
-        "created": 0,
-        "updated": 0,
-        "skipped": 0,
-    }
+    events = fetch_subscription_events(subscription)
+    sync_result = build_sync_result()
 
     for event in events:
         outcome = sync_single_event(subscription, event)
