@@ -6,12 +6,10 @@
     flex-direction: column;
     box-sizing: border-box;
     margin-left: var(--space-xl);
-    padding: var(--space-md);
-    background: var(--bg-soft);
-    border: 1px solid var(--border-light);
+    background: var(--bg-main);
+    border: none;
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    overflow-y: auto;
+    overflow: visible;
 }
 
 .notes-header {
@@ -41,7 +39,8 @@
     padding: var(--space-sm);
     background-color: var(--bg-soft);
     color: var(--text-main);
-    border: 1px solid var(--border-soft);
+    border: none;
+    box-shadow: var(--shadow-sm);
     outline: none;
 }
 
