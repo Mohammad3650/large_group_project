@@ -85,7 +85,7 @@ function App() {
                     path="/calendar"
                     element={
                         <ProtectedRoute>
-                            <Calendar />
+                            <Calendar theme={theme}/>
                         </ProtectedRoute>
                     }
                 />
@@ -94,7 +94,7 @@ function App() {
                     path="/preview-calendar"
                     element={
                         <ProtectedRoute>
-                            <PreviewCalendar />
+                            <PreviewCalendar theme={theme}/>
                         </ProtectedRoute>
                     }
                 />

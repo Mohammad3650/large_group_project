@@ -20,7 +20,7 @@ import CalendarPlaceholder from './CalendarPlaceholder.jsx';
  *
  */
 
-function Calendar() {
+function Calendar({ theme }) {
     // Custom hook for fetching and updating time blocks
     const { blocks, setBlocks } = useTimeBlocks();
     // Fetches the current user's username
@@ -43,6 +43,7 @@ function Calendar() {
             //Data passed into calendar
             blocks={blocks}
             setBlocks={setBlocks}
+            theme={theme}
             //Dynamic title for each user
             title={`Welcome to your calendar, ${username}!`}
             headerButtons={<AddTaskButton />}

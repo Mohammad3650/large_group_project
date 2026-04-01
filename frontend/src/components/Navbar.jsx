@@ -28,8 +28,10 @@ function Navbar({ theme, toggleTheme }) {
     const { username } = useUsername(isLoggedIn);
     const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
 
-    const taskList = theme === 'dark' ? taskListDark : taskListLight;
-    const calendarIcon = theme === 'dark' ? calendarIconDark : calendarIconLight;
+    const isDark = theme === 'dark';
+
+    const taskList = isDark ? taskListDark : taskListLight;
+    const calendarIcon = isDark ? calendarIconDark : calendarIconLight;
 
     return (
         <header>
