@@ -24,6 +24,7 @@
     --border-light: #e5e5e5;
     --border-soft: #dcdcdc;
     --border-input: #cfcfcf;
+    --border-strong: #808080;
 
     /* action colours */
     --danger: red;
@@ -78,9 +79,10 @@ body.dark-theme {
     --border-light: #2f2f2f;
     --border-soft: #3a3a3a;
     --border-input: #4a4a4a;
+    --border-strong: #787878;
 
     --danger: #ff6b6b;
-    --danger-soft: rgba(255, 107, 107, 0.65);
+    --danger-soft: rgba(255, 85, 85, 0.65);
 
     --success: #7ee787;
     --success-soft: #1f3a28;
