@@ -128,7 +128,7 @@
     text-align: left;
     background: none;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     padding: var(--space-sm) var(--space-md);
     cursor: pointer;
     font-size: var(--font-size-sm);

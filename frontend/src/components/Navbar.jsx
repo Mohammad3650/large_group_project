@@ -75,10 +75,11 @@ function Navbar({ theme, toggleTheme }) {
                             />
 
                             {dropdownOpen && (
-                                <div className="user-dropdown">
+                                <div className="navbar-dropdown">
                                     <span className="dropdown-username">
                                         {username}
                                     </span>
+                                    <hr className="navbar-dropdown-divider"/>
                                     <Link
                                         to="/profile"
                                         className="dropdown-link"
@@ -86,6 +87,7 @@ function Navbar({ theme, toggleTheme }) {
                                     >
                                         Profile
                                     </Link>
+                                    <hr className="navbar-dropdown-divider"/>
                                     <LogoutButton />
                                 </div>
                             )}
