@@ -210,6 +210,10 @@ body.dashboard-page {
     transition: opacity 0.3s ease;
 }
 
+.subscription-error-text {
+    color: var(--danger);
+}
+
 .toggle-icon {
     font-size: 14px;
     opacity: 0.7;

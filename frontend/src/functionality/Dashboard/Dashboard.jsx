@@ -24,9 +24,11 @@ import './stylesheets/Dashboard.css';
 function Dashboard() {
     const nav = useNavigate();
     const [message, setMessage] = useState('Loading...');
-    const [error, setError] = useState('');
+    const [subscriptionFeedback, setSubscriptionFeedback] = useState('');
+    const [subscriptionFeedbackType, setSubscriptionFeedbackType] = useState('');
     const [subscriptions, setSubscriptions] = useState([]);
     const [showSubscriptions, setShowSubscriptions] = useState(true);
+    const [pageError, setPageError] = useState('');
 
     const { blocks, refetchBlocks, error: blocksError } = useTimeBlocks();
 
@@ -53,7 +55,7 @@ function Dashboard() {
                 if (err?.response?.status === 401) {
                     nav('/login');
                 } else {
-                    setError('Failed to load dashboard');
+                    setPageError('Failed to load dashboard');
                 }
             }
         }
@@ -67,7 +69,7 @@ function Dashboard() {
                 const data = await getCalendarSubscriptions();
                 setSubscriptions(data);
             } catch {
-                setError('Failed to load calendar subscriptions');
+                setPageError('Failed to load calendar subscriptions');
             }
         }
 
@@ -89,26 +91,40 @@ function Dashboard() {
 
     async function handleImportSubscription(payload) {
         try {
-            setError('');
+            setSubscriptionFeedback('');
+            setSubscriptionFeedbackType('');
+
             const responseData = await createCalendarSubscription(payload);
+
             setSubscriptions((currentSubscriptions) => [
                 responseData.subscription,
                 ...currentSubscriptions
             ]);
+
+            setSubscriptionFeedback(
+                responseData.message || 'Timetable imported successfully.'
+            );
+            setSubscriptionFeedbackType('success');
+
             await refetchBlocks();
         } catch (requestError) {
             const detail =
                 requestError?.response?.data?.source_url?.[0] ||
                 requestError?.response?.data?.name?.[0] ||
                 requestError?.response?.data?.message ||
+                requestError?.response?.data?.detail ||
                 'Failed to import timetable';
-            setError(detail);
+
+            setSubscriptionFeedback(detail);
+            setSubscriptionFeedbackType('error');
         }
     }
 
     async function handleRefreshSubscription(subscriptionId) {
         try {
-            setError('');
+            setSubscriptionFeedback('');
+            setSubscriptionFeedbackType('');
+
             const responseData =
                 await refreshCalendarSubscription(subscriptionId);
 
@@ -120,15 +136,30 @@ function Dashboard() {
                 )
             );
 
+            setSubscriptionFeedback(
+                responseData.message || 'Timetable subscription refreshed successfully.'
+            );
+            setSubscriptionFeedbackType('success');
+
             await refetchBlocks();
-        } catch {
-            setError('Failed to refresh timetable subscription');
+        } catch (requestError) {
+            const detail =
+                requestError?.response?.data?.source_url?.[0] ||
+                requestError?.response?.data?.name?.[0] ||
+                requestError?.response?.data?.message ||
+                requestError?.response?.data?.detail ||
+                'Failed to refresh timetable subscription';
+
+            setSubscriptionFeedback(detail);
+            setSubscriptionFeedbackType('error');
         }
     }
 
     async function handleDeleteSubscription(subscriptionId) {
         try {
-            setError('');
+            setSubscriptionFeedback('');
+            setSubscriptionFeedbackType('');
+
             await deleteCalendarSubscription(subscriptionId);
 
             setSubscriptions((currentSubscriptions) =>
@@ -137,31 +168,43 @@ function Dashboard() {
                 )
             );
 
+            setSubscriptionFeedback('Calendar subscription deleted successfully.');
+            setSubscriptionFeedbackType('success');
+
             await refetchBlocks();
-        } catch {
-            setError('Failed to delete timetable subscription');
+        } catch (requestError) {
+            const detail =
+                requestError?.response?.data?.message ||
+                requestError?.response?.data?.detail ||
+                'Failed to delete timetable subscription';
+
+            setSubscriptionFeedback(detail);
+            setSubscriptionFeedbackType('error');
         }
     }
 
     useEffect(() => {
-        if (!error) return;
+        if (!subscriptionFeedback) return;
 
         const timer = setTimeout(() => {
-            setError('');
+            setSubscriptionFeedback('');
+            setSubscriptionFeedbackType('');
         }, 5000);
 
         return () => clearTimeout(timer);
-    }, [error]);
+    }, [subscriptionFeedback]);
 
     if (blocksError) {
-        return <p>{blocksError}</p>;
+    return <p>{blocksError}</p>;
     }
-
+    
     return (
         <>
             <div className="dashboard-content">
                 <div className="task-section">
                     <h1>{message}</h1>
+                    
+                    {pageError && <p className="subscription-error-text">{pageError}</p>}
 
                     <div className="dashboard-header-actions">
                         <div className="dashboard-add-task">
@@ -172,7 +215,7 @@ function Dashboard() {
                             <button
                                 type="button"
                                 className="export-csv-button"
-                                onClick={() => handleExportCsv(setError)}
+                                onClick={() => handleExportCsv(setPageError)}
                             >
                                 Export CSV
                             </button>
@@ -180,7 +223,7 @@ function Dashboard() {
                             <button
                                 type="button"
                                 className="export-csv-button"
-                                onClick={() => handleExportIcs(setError)}
+                                onClick={() => handleExportIcs(setPageError)}
                             >
                                 Export ICS
                             </button>
@@ -201,12 +244,18 @@ function Dashboard() {
 
                     {showSubscriptions && (
                         <div className="subscription-section">
-                            {error && (
-                                <p className="subscription-error">{error}</p>
+                            {subscriptionFeedback && subscriptionFeedbackType === 'error' && (
+                                <p className="subscription-error-text">{subscriptionFeedback}</p>
+                            )}
+
+                            {subscriptionFeedback && subscriptionFeedbackType === 'success' && (
+                                <p className="subscription-success-text">{subscriptionFeedback}</p>
                             )}
 
                             <SubscriptionForm
                                 onImport={handleImportSubscription}
+                                feedbackMessage={subscriptionFeedback}
+                                feedbackType={subscriptionFeedbackType}
                             />
                             <SubscriptionList
                                 subscriptions={subscriptions}
