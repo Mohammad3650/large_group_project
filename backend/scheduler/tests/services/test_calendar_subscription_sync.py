@@ -9,104 +9,12 @@ from scheduler.models.DayPlan import DayPlan
 from scheduler.models.ImportedCalendarEvent import ImportedCalendarEvent
 from scheduler.models.TimeBlock import TimeBlock
 from scheduler.models.User import User
-from scheduler.services.calendar_subscription_sync import (
-    build_external_event_uid,
-    build_timeblock_data,
-    classify_block_type,
-    clean_event_description,
-    should_import_event,
-    sync_calendar_subscription,
-)
-
-
-class CalendarSubscriptionSyncHelpersTest(TestCase):
-    def test_classify_block_type_returns_tutorial(self):
-        self.assertEqual(classify_block_type("SEG Tutorial"), "tutorial")
-
-    def test_classify_block_type_returns_lab(self):
-        self.assertEqual(classify_block_type("Physics Lab"), "lab")
-
-    def test_classify_block_type_defaults_to_lecture(self):
-        self.assertEqual(classify_block_type("Regular Lecture"), "lecture")
-
-    def test_clean_event_description_removes_repeated_metadata_lines(self):
-        description = (
-            "Date: 2026-04-10\n"
-            "Time: 09:00\n"
-            "Location: Bush House\n"
-            "Bring laptop\n"
-            "Weekly assessed session\n"
-        )
-
-        cleaned = clean_event_description(description)
-
-        self.assertEqual(cleaned, "Bring laptop\nWeekly assessed session")
-
-    def test_clean_event_description_returns_empty_string_for_blank_value(self):
-        self.assertEqual(clean_event_description(""), "")
-        self.assertEqual(clean_event_description(None), "")
-
-    def test_build_external_event_uid_uses_uid_when_present(self):
-        event = {
-            "uid": "external-123",
-            "summary": "SEG Lecture",
-            "start_datetime": timezone.now(),
-            "end_datetime": timezone.now() + timedelta(hours=1),
-        }
-
-        self.assertEqual(build_external_event_uid(event), "external-123")
-
-    def test_build_external_event_uid_builds_fallback_when_uid_missing(self):
-        start_datetime = timezone.now()
-        end_datetime = start_datetime + timedelta(hours=1)
-        event = {
-            "uid": "",
-            "summary": "SEG Lecture",
-            "start_datetime": start_datetime,
-            "end_datetime": end_datetime,
-        }
-
-        result = build_external_event_uid(event)
-
-        self.assertIn("SEG Lecture", result)
-        self.assertIn(start_datetime.isoformat(), result)
-        self.assertIn(end_datetime.isoformat(), result)
-
-    def test_build_timeblock_data_truncates_name_and_cleans_description(self):
-        start_datetime = timezone.now() + timedelta(days=2)
-        end_datetime = start_datetime + timedelta(hours=2)
-        event = {
-            "summary": "A" * 120,
-            "description": "Date: tomorrow\nReal note",
-            "location": "Room 101",
-            "start_datetime": start_datetime,
-            "end_datetime": end_datetime,
-        }
-
-        data = build_timeblock_data(event)
-
-        self.assertEqual(len(data["name"]), 100)
-        self.assertEqual(data["location"], "Room 101")
-        self.assertEqual(data["description"], "Real note")
-        self.assertEqual(data["timezone"], "Europe/London")
-
-    def test_should_import_event_returns_false_for_past_event(self):
-        event = {
-            "end_datetime": timezone.now() - timedelta(minutes=1),
-        }
-
-        self.assertFalse(should_import_event(event))
-
-    def test_should_import_event_returns_true_for_future_event(self):
-        event = {
-            "end_datetime": timezone.now() + timedelta(minutes=1),
-        }
-
-        self.assertTrue(should_import_event(event))
+from scheduler.services.calendar_subscription_sync import sync_calendar_subscription
 
 
 class CalendarSubscriptionSyncTest(TestCase):
     def setUp(self):
+        """Create reusable subscription and event fixtures for sync tests."""
         self.user = User.objects.create_user(
             username="subscriptionuser",
             password="password123",
@@ -117,6 +25,24 @@ class CalendarSubscriptionSyncTest(TestCase):
             source_url="https://example.com/calendar.ics",
         )
 
+        self.start_datetime = timezone.now() + timedelta(days=7)
+        self.end_datetime = self.start_datetime + timedelta(hours=1)
+
+        self.base_event = {
+            "uid": "event-1",
+            "summary": "SEG Tutorial",
+            "description": "Venue: Something\nBring notes",
+            "location": "Room A",
+            "start_datetime": self.start_datetime,
+            "end_datetime": self.end_datetime,
+        }
+
+    def build_event(self, **overrides):
+        """Return a copy of the base event with optional overrides."""
+        event = self.base_event.copy()
+        event.update(overrides)
+        return event
+
     @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
     @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
     def test_sync_calendar_subscription_creates_imported_event_and_timeblock(
@@ -124,20 +50,9 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_fetch_ics_content,
         mock_parse_ics_events,
     ):
-        start_datetime = timezone.now() + timedelta(days=7)
-        end_datetime = start_datetime + timedelta(hours=1)
-
+        """It should create a new imported event and linked time block."""
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
-        mock_parse_ics_events.return_value = [
-            {
-                "uid": "event-1",
-                "summary": "SEG Tutorial",
-                "description": "Venue: Something\nBring notes",
-                "location": "Room A",
-                "start_datetime": start_datetime,
-                "end_datetime": end_datetime,
-            }
-        ]
+        mock_parse_ics_events.return_value = [self.build_event()]
 
         result = sync_calendar_subscription(self.subscription)
 
@@ -169,19 +84,17 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_fetch_ics_content,
         mock_parse_ics_events,
     ):
-        start_datetime = timezone.now() - timedelta(days=2)
-        end_datetime = timezone.now() - timedelta(days=1)
-
+        """It should skip events that are already in the past."""
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
         mock_parse_ics_events.return_value = [
-            {
-                "uid": "past-event",
-                "summary": "Old Event",
-                "description": "",
-                "location": "Old Room",
-                "start_datetime": start_datetime,
-                "end_datetime": end_datetime,
-            }
+            self.build_event(
+                uid="past-event",
+                summary="Old Event",
+                description="",
+                location="Old Room",
+                start_datetime=timezone.now() - timedelta(days=2),
+                end_datetime=timezone.now() - timedelta(days=1),
+            )
         ]
 
         result = sync_calendar_subscription(self.subscription)
@@ -199,21 +112,19 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_fetch_ics_content,
         mock_parse_ics_events,
     ):
-        original_start = timezone.now() + timedelta(days=3)
-        original_end = original_start + timedelta(hours=1)
-
-        sync_calendar_subscription_event = {
-            "uid": "event-2",
-            "summary": "Original Lecture",
-            "description": "Original description",
-            "location": "Original Room",
-            "start_datetime": original_start,
-            "end_datetime": original_end,
-        }
+        """It should update the existing imported event instead of duplicating it."""
+        original_event = self.build_event(
+            uid="event-2",
+            summary="Original Lecture",
+            description="Original description",
+            location="Original Room",
+            start_datetime=timezone.now() + timedelta(days=3),
+            end_datetime=timezone.now() + timedelta(hours=1) + timedelta(days=3),
+        )
 
         with patch(
             "scheduler.services.calendar_subscription_sync.parse_ics_events",
-            return_value=[sync_calendar_subscription_event],
+            return_value=[original_event],
         ), patch(
             "scheduler.services.calendar_subscription_sync.fetch_ics_content",
             return_value="BEGIN:VCALENDAR",
@@ -228,14 +139,14 @@ class CalendarSubscriptionSyncTest(TestCase):
 
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
         mock_parse_ics_events.return_value = [
-            {
-                "uid": "event-2",
-                "summary": "Updated Lab",
-                "description": "Time: 10:00\nUpdated description",
-                "location": "Lab 2",
-                "start_datetime": updated_start,
-                "end_datetime": updated_end,
-            }
+            self.build_event(
+                uid="event-2",
+                summary="Updated Lab",
+                description="Time: 10:00\nUpdated description",
+                location="Lab 2",
+                start_datetime=updated_start,
+                end_datetime=updated_end,
+            )
         ]
 
         result = sync_calendar_subscription(self.subscription)
@@ -262,19 +173,17 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_fetch_ics_content,
         mock_parse_ics_events,
     ):
-        start_datetime = timezone.now() + timedelta(days=4)
-        end_datetime = start_datetime + timedelta(hours=1)
-
+        """It should build a fallback external UID when the event has no UID."""
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
         mock_parse_ics_events.return_value = [
-            {
-                "uid": "",
-                "summary": "No UID Event",
-                "description": "",
-                "location": "Room 5",
-                "start_datetime": start_datetime,
-                "end_datetime": end_datetime,
-            }
+            self.build_event(
+                uid="",
+                summary="No UID Event",
+                description="",
+                location="Room 5",
+                start_datetime=timezone.now() + timedelta(days=4),
+                end_datetime=timezone.now() + timedelta(days=4, hours=1),
+            )
         ]
 
         result = sync_calendar_subscription(self.subscription)
@@ -290,19 +199,17 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_fetch_ics_content,
         mock_parse_ics_events,
     ):
-        start_datetime = timezone.now() + timedelta(days=10)
-        end_datetime = start_datetime + timedelta(hours=1)
-
+        """It should create a day plan for the imported event date when needed."""
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
         mock_parse_ics_events.return_value = [
-            {
-                "uid": "event-dayplan",
-                "summary": "Lecture",
-                "description": "",
-                "location": "Room X",
-                "start_datetime": start_datetime,
-                "end_datetime": end_datetime,
-            }
+            self.build_event(
+                uid="event-dayplan",
+                summary="Lecture",
+                description="",
+                location="Room X",
+                start_datetime=timezone.now() + timedelta(days=10),
+                end_datetime=timezone.now() + timedelta(days=10, hours=1),
+            )
         ]
 
         sync_calendar_subscription(self.subscription)

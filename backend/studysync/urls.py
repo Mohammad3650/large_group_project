@@ -72,7 +72,7 @@ urlpatterns = [
 
     #User
     path("api/user/", UserDetailsView.as_view(), name="user-details"),
-    path("api/user/change-password/", change_password),
+    path("api/user/change-password/", change_password, name="change_password_view"),
     path("api/user/delete/", delete_user, name="delete_user_view"),
 
     #Export
