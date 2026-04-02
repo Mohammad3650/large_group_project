@@ -20,10 +20,10 @@ import { useNavigate } from 'react-router-dom';
  * @param {Function} [onUndoComplete] - Callback to undo completion
  * @param {boolean} [overdue=false] - Whether the task is overdue
  * @param {boolean} [completed=false] - Whether the task is already completed
- * @param {boolean} [dropUp=false] - Whether the dropdown should open upwards
+ * @param {boolean} [dropup=false] - Whether the dropdown should open upwards
  * @returns {JSX.Element} A single task
  */
-function TaskItem({ id, name, date, startTime, endTime, onDelete, onComplete, onUndoComplete, overdue = false, completed = false, dropUp = false }) {
+function TaskItem({ id, name, date, startTime, endTime, onDelete, onComplete, onUndoComplete, overdue = false, completed = false, dropup = false }) {
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
     const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
@@ -89,7 +89,7 @@ function TaskItem({ id, name, date, startTime, endTime, onDelete, onComplete, on
                 </button>
 
                 {dropdownOpen && (
-                    <div className={`task-options-dropdown${dropUp ? ' dropUp' : ''}`}>
+                    <div className={`task-options-dropdown${dropup ? ' dropup' : ''}`}>
                         {completed && (
                             <>
                                 <button className="task-options-edit-btn" onClick={handleUndoCompleteClick}>

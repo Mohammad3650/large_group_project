@@ -80,6 +80,10 @@
     color: var(--danger-soft);
 }
 
+.completed-text {
+    color: var(--success);
+}
+
 .task-datetime {
     color: var(--link-blue);
     font-size: var(--font-size-md);
@@ -120,6 +124,11 @@
     flex-direction: column;
     gap: var(--space-xs);
     min-width: 140px;
+}
+
+.task-options-dropdown.dropup {
+    top: auto;
+    bottom: calc(100% + var(--space-xs));
 }
 
 .task-options-edit-btn,
