@@ -8,7 +8,7 @@ import './stylesheets/SubscriptionSection.css';
  * Displays a toggle header and, when expanded, any errors, the import form,
  * and the list of existing subscriptions.
  *
- * @param {object} props
+ * @param {Object} props
  * @param {Array} props.subscriptions - List of current subscriptions
  * @param {string} props.error - Error message to display, if any
  * @param {Function} props.onImport - Callback to import a new subscription

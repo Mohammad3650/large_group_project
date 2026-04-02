@@ -4,7 +4,7 @@ import './stylesheets/ExportButton.css';
 /**
  * Button that triggers a CSV export of the user's schedule.
  *
- * @param {object} props
+ * @param {Object} props
  * @param {Function} props.setError - Setter for the error message state
  * @returns {JSX.Element} The export CSV button
  */

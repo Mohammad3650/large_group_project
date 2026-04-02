@@ -2,7 +2,7 @@ import completeTimeBlock from '../Api/completeTimeBlock.js';
 import sortTasksByCompletedAt from './sortTasksByCompletedAt.js';
 
 /**
- * Marks a task as complete by calling the API and optimistically updating
+ * Marks a task as complete by calling the API and updates
  * the source task group and the completed tasks list.
  *
  * @param {Object} task - The task to mark as complete

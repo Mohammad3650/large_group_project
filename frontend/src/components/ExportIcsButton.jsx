@@ -4,7 +4,7 @@ import './stylesheets/ExportButton.css';
 /**
  * Button that triggers an ICS export of the user's schedule.
  *
- * @param {object} props
+ * @param {Object} props
  * @param {Function} props.setError - Setter for the error message state
  * @returns {JSX.Element} The export ICS button
  */

@@ -5,7 +5,7 @@ import './stylesheets/NoTasksMessage.css';
  * Shows a congratulatory message when the user has no tasks at all,
  * or a "no results" message when a search yields no matches.
  *
- * @param {object} props
+ * @param {Object} props
  * @param {number} props.totalTasks - Total number of tasks across all groups
  * @param {Array} props.filteredOverdue - Filtered overdue tasks
  * @param {Array} props.filteredToday - Filtered today's tasks
