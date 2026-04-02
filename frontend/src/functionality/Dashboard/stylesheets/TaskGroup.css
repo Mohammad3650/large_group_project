@@ -25,6 +25,19 @@
     color: var(--danger-soft);
 }
 
+.completed-title {
+    color: var(--success);
+}
+
+.completed-text {
+    color: var(--success);
+}
+
 .number-of-tasks {
     color: var(--text-light);
+}
+
+.task-options-dropdown.dropUp {
+    top: auto;
+    bottom: calc(100% + var(--space-xs));
 }

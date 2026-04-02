@@ -27,6 +27,7 @@ class TimeBlockSerializer(serializers.ModelSerializer):
             "timezone",
             "start_time",
             "end_time",
+            "completed_at",
         ]
 
     def validate(self, attrs):

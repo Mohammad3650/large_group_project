@@ -22,6 +22,7 @@ function useTasksByDateGroup(blocks) {
     const [tomorrowTasks, setTomorrowTasks] = useState([]);
     const [weekTasks, setWeekTasks] = useState([]);
     const [beyondWeekTasks, setBeyondWeekTasks] = useState([]);
+    const [completedTasks, setCompletedTasks] = useState([]);
 
     useEffect(() => {
         if (blocks === null) return;
@@ -35,7 +36,8 @@ function useTasksByDateGroup(blocks) {
         const weekEnd = new Date(today);
         weekEnd.setDate(today.getDate() + 7);
 
-        const blocksWithDates = blocks.map((block) => ({ block, date: getDate(block) }));
+        const pendingBlocks = blocks.filter((block) => !block.completed_at);
+        const blocksWithDates = pendingBlocks.map((block) => ({ block, date: getDate(block) }));
 
         const filterAndSortByDate = (predicate) =>
             blocksWithDates
@@ -48,6 +50,7 @@ function useTasksByDateGroup(blocks) {
         setTomorrowTasks(filterAndSortByDate((date) => date >= tomorrow && date < dayAfterTomorrow));
         setWeekTasks(filterAndSortByDate((date) => date >= dayAfterTomorrow && date <= weekEnd));
         setBeyondWeekTasks(filterAndSortByDate((date) => date > weekEnd));
+        setCompletedTasks(blocks.filter((block) => block.completed_at));
     }, [blocks]);
 
     const totalTasks =
@@ -58,17 +61,13 @@ function useTasksByDateGroup(blocks) {
         beyondWeekTasks.length;
 
     return {
-        overdueTasks,
-        setOverdueTasks,
-        todayTasks,
-        setTodayTasks,
-        tomorrowTasks,
-        setTomorrowTasks,
-        weekTasks,
-        setWeekTasks,
-        beyondWeekTasks,
-        setBeyondWeekTasks,
-        totalTasks
+        overdueTasks, setOverdueTasks,
+        todayTasks, setTodayTasks,
+        tomorrowTasks, setTomorrowTasks,
+        weekTasks, setWeekTasks,
+        beyondWeekTasks, setBeyondWeekTasks,
+        completedTasks, setCompletedTasks,
+        totalTasks,
     };
 }
 

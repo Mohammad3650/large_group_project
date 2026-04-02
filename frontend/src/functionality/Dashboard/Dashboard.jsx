@@ -16,6 +16,9 @@ import useAutoResetError from '../../utils/Hooks/useAutoResetError.js';
 import handleImportSubscription from '../../utils/Helpers/handleImportSubscription.js';
 import handleRefreshSubscription from '../../utils/Helpers/handleRefreshSubscription.js';
 import handleDeleteSubscription from '../../utils/Helpers/handleDeleteSubscription.js';
+import completeTimeBlock from '../../utils/Api/completeTimeBlock.js';
+import undoCompleteTimeBlock from '../../utils/Api/undoCompleteTimeBlock.js';
+import sortTasksByDate from '../../utils/Helpers/sortTasksByDate.js';
 import './stylesheets/Dashboard.css';
 
 /**
@@ -35,7 +38,7 @@ function filterTasks(tasks, searchTerm) {
 
 /**
  * Dashboard component - main page displayed after successful login.
- * Displays tasks grouped by day sections (overdue, today, tomorrow, next 7 days) alongside a notes section.
+ * Displays tasks grouped by day sections (overdue, today, tomorrow, next 7 days, completed) alongside a notes section.
  *
  * @returns {JSX.Element} The dashboard page
  */
@@ -54,6 +57,7 @@ function Dashboard() {
         tomorrowTasks, setTomorrowTasks,
         weekTasks, setWeekTasks,
         beyondWeekTasks, setBeyondWeekTasks,
+        completedTasks, setCompletedTasks,
         totalTasks,
     } = useTasksByDateGroup(blocks);
 
@@ -67,11 +71,54 @@ function Dashboard() {
     const onRefresh = (id) => handleRefreshSubscription(id, context);
     const onDelete = (id) => handleDeleteSubscription(id, context);
 
+    function handleComplete(task, setSourceTasks) {
+        completeTimeBlock(task.id)
+            .then(() => {
+                setSourceTasks((t) => t.filter((t) => t.id !== task.id));
+                setCompletedTasks((t) => [...t, { ...task, completed_at: new Date().toISOString() }]);
+            })
+            .catch(() => {});
+    }
+
+    function handleUndoComplete(task) {
+        undoCompleteTimeBlock(task.id)
+            .then(() => {
+                setCompletedTasks((t) => t.filter((t) => t.id !== task.id));
+
+                const taskDate = new Date(`${task.date}T${task.startTime}`);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);
+                const dayAfterTomorrow = new Date(today);
+                dayAfterTomorrow.setDate(today.getDate() + 2);
+                const weekEnd = new Date(today);
+                weekEnd.setDate(today.getDate() + 7);
+
+                const restoredTask = { ...task, completed_at: null };
+
+                if (taskDate < today) {
+                    setOverdueTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
+                } else if (taskDate < tomorrow) {
+                    setTodayTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
+                } else if (taskDate < dayAfterTomorrow) {
+                    setTomorrowTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
+                } else if (taskDate <= weekEnd) {
+                    setWeekTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
+                } else {
+                    setBeyondWeekTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
+                }
+            })
+            .catch(() => {});
+    }
+
+
     const filteredOverdue = useMemo(() => filterTasks(overdueTasks, searchTerm), [overdueTasks, searchTerm]);
     const filteredToday = useMemo(() => filterTasks(todayTasks, searchTerm), [todayTasks, searchTerm]);
     const filteredTomorrow = useMemo(() => filterTasks(tomorrowTasks, searchTerm), [tomorrowTasks, searchTerm]);
     const filteredWeek = useMemo(() => filterTasks(weekTasks, searchTerm), [weekTasks, searchTerm]);
     const filteredBeyondWeek = useMemo(() => filterTasks(beyondWeekTasks, searchTerm), [beyondWeekTasks, searchTerm]);
+    const filteredCompleted = useMemo(() => filterTasks(completedTasks, searchTerm), [completedTasks, searchTerm]);
 
     if (blocksError) {
         return <p>{blocksError}</p>;
@@ -138,7 +185,7 @@ function Dashboard() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
 
-                {totalTasks === 0 && (
+                {totalTasks === 0 && completedTasks.length === 0 && (
                     <p className="no-tasks-message">
                         🎉 Congrats, you have no tasks!
                     </p>
@@ -156,11 +203,18 @@ function Dashboard() {
                         </p>
                     )}
 
-                <TaskGroup title="Overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true} />
-                <TaskGroup title="Today" tasks={filteredToday} setTasks={setTodayTasks} />
-                <TaskGroup title="Tomorrow" tasks={filteredTomorrow} setTasks={setTomorrowTasks} />
-                <TaskGroup title="Next 7 Days" tasks={filteredWeek} setTasks={setWeekTasks} />
-                <TaskGroup title="After Next 7 Days" tasks={filteredBeyondWeek} setTasks={setBeyondWeekTasks} />
+                <TaskGroup title="Overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true}
+                           onComplete={(task) => handleComplete(task, setOverdueTasks)} />
+                <TaskGroup title="Today" tasks={filteredToday} setTasks={setTodayTasks}
+                           onComplete={(task) => handleComplete(task, setTodayTasks)} />
+                <TaskGroup title="Tomorrow" tasks={filteredTomorrow} setTasks={setTomorrowTasks}
+                           onComplete={(task) => handleComplete(task, setTomorrowTasks)} />
+                <TaskGroup title="Next 7 Days" tasks={filteredWeek} setTasks={setWeekTasks}
+                           onComplete={(task) => handleComplete(task, setWeekTasks)} />
+                <TaskGroup title="After Next 7 Days" tasks={filteredBeyondWeek} setTasks={setBeyondWeekTasks}
+                           onComplete={(task) => handleComplete(task, setBeyondWeekTasks)} />
+                <TaskGroup title="Completed" tasks={filteredCompleted} setTasks={setCompletedTasks} completed={true}
+                           onUndoComplete={(task) => handleUndoComplete(task)} />
             </div>
             <NotesSection />
         </div>

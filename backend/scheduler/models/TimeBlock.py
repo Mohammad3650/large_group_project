@@ -34,3 +34,4 @@ class TimeBlock(models.Model):
     timezone = models.CharField(max_length=50, default="UTC")
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True, default=None)

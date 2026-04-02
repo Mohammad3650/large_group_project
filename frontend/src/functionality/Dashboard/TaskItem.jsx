@@ -7,30 +7,34 @@ import { useNavigate } from 'react-router-dom';
 
 /**
  * Displays a single task item with a checkbox, name, start time and end time.
- * Plays a ding sound and fades out on click before deleting.
- * Provides a dropdown menu for editing and deleting the task.
+ * Plays a ding sound and fades out on click before completing.
+ * Provides a dropdown menu for editing, undoing completion, and deleting the task.
  *
  * @param {number} id - The task ID
  * @param {string} name - The task name
  * @param {string} date - Date string (e.g. "2026-02-19")
  * @param {string} startTime - Start time string (e.g. "09:00:00")
  * @param {string} endTime - End time string (e.g. "10:00:00")
- * @param {Function} onDelete - Callback to the handleDelete function from the TaskGroup component
+ * @param {Function} onDelete - Callback to delete the task
+ * @param {Function} [onComplete] - Callback to mark the task as completed
+ * @param {Function} [onUndoComplete] - Callback to undo completion
  * @param {boolean} [overdue=false] - Whether the task is overdue
+ * @param {boolean} [completed=false] - Whether the task is already completed
+ * @param {boolean} [dropUp=false] - Whether the dropdown should open upwards
  * @returns {JSX.Element} A single task
  */
-function TaskItem({ id, name, date, startTime, endTime, onDelete, overdue = false }) {
+function TaskItem({ id, name, date, startTime, endTime, onDelete, onComplete, onUndoComplete, overdue = false, completed = false, dropUp = false }) {
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
     const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
     const nav = useNavigate();
 
     function handleClick() {
-        if (checked) return;
+        if (checked || completed) return;
         playDing();
         setChecked(true);
         setFading(true);
-        setTimeout(() => onDelete(), 500);
+        setTimeout(() => onComplete(), 500);
     }
 
     function handleOptionsClick(e) {
@@ -42,6 +46,12 @@ function TaskItem({ id, name, date, startTime, endTime, onDelete, overdue = fals
         e.stopPropagation();
         setDropdownOpen(false);
         nav(`/timeblocks/${id}/edit`);
+    }
+
+    function handleUndoCompleteClick(e) {
+        e.stopPropagation();
+        setDropdownOpen(false);
+        onUndoComplete();
     }
 
     function handleDeleteClick(e) {
@@ -65,12 +75,12 @@ function TaskItem({ id, name, date, startTime, endTime, onDelete, overdue = fals
                     readOnly
                     checked={checked}
                 />
-                <label className={`form-check-label ${overdue ? 'overdue-text' : ''}`}>
+                <label className={`form-check-label ${overdue ? 'overdue-text' : ''} ${completed ? 'completed-text' : ''}`}>
                     {name}
                 </label>
                 <span className="task-datetime">
-                {formatDateTime(date, startTime, endTime)}
-            </span>
+                    {formatDateTime(date, startTime, endTime)}
+                </span>
             </div>
 
             <div className="task-options" ref={dropdownRef}>
@@ -79,7 +89,15 @@ function TaskItem({ id, name, date, startTime, endTime, onDelete, overdue = fals
                 </button>
 
                 {dropdownOpen && (
-                    <div className="task-options-dropdown">
+                    <div className={`task-options-dropdown${dropUp ? ' dropUp' : ''}`}>
+                        {completed && (
+                            <>
+                                <button className="task-options-edit-btn" onClick={handleUndoCompleteClick}>
+                                    Undo Complete
+                                </button>
+                                <hr className="task-options-divider" />
+                            </>
+                        )}
                         <button className="task-options-edit-btn" onClick={handleEditClick}>
                             Edit
                         </button>
