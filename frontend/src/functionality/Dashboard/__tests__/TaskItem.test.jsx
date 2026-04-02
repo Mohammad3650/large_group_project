@@ -8,7 +8,7 @@ vi.mock('../../../utils/Formatters/formatDateTime.js', () => ({
     default: vi.fn(() => '09:00 - 10:00 18 Mar')
 }));
 
-import TaskItem from '../TaskItem';
+import TaskItem from '../TaskItem.jsx';
 import * as playDingModule from '../../../utils/Audio/playDing.js';
 
 const defaultProps = {
