@@ -19,8 +19,7 @@ import sortTasksByDate from './sortTasksByDate.js';
 function handleUndoCompleteTask(task, { setCompletedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks }) {
     undoCompleteTimeBlock(task.id)
         .then(() => {
-            setCompletedTasks((prev) => prev.filter((task) => task.id !== task.id));
-
+            setCompletedTasks((prev) => prev.filter((item) => item.id !== task.id));
             const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
             const taskDate = getDate(task);
             const restoredTask = { ...task, completed_at: null };

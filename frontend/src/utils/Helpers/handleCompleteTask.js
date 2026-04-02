@@ -12,7 +12,7 @@ import sortTasksByCompletedAt from './sortTasksByCompletedAt.js';
 function handleCompleteTask(task, setSourceTasks, setCompletedTasks) {
     completeTimeBlock(task.id)
         .then(() => {
-            setSourceTasks((prev) => prev.filter((task) => task.id !== task.id));
+            setSourceTasks((prev) => prev.filter((item) => item.id !== task.id));
             setCompletedTasks((prev) =>
                 [...prev, { ...task, completed_at: new Date().toISOString() }]
                     .sort(sortTasksByCompletedAt)
