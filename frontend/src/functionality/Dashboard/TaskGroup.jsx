@@ -20,7 +20,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
 
     function handleDelete(id) {
         deleteTimeBlock(id)
-            .then(() => setTasks((t) => t.filter((task) => task.id !== id)))
+            .then(() => setTasks((prev) => prev.filter((task) => task.id !== id)))
             .catch(() => {});
     }
 
@@ -47,7 +47,6 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
                         onUndoComplete={onUndoComplete ? () => onUndoComplete(task) : undefined}
                         overdue={overdue}
                         completed={completed}
-                        dropUp={completed}
                     />
 
                 ))}
