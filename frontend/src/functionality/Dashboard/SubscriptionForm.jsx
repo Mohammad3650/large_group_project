@@ -43,8 +43,7 @@ function SubscriptionForm({
     const [localFeedbackMessage, setLocalFeedbackMessage] = useState('');
     const [localFeedbackType, setLocalFeedbackType] = useState('');
 
-    const activeFeedbackMessage = feedbackMessage || localFeedbackMessage;
-    const activeFeedbackType = feedbackMessage ? feedbackType : localFeedbackType;
+    const hasParentFeedback = Boolean(feedbackMessage);
 
     /**
      * Reset form fields after a successful import.
@@ -114,12 +113,12 @@ function SubscriptionForm({
         <form className="subscription-form" onSubmit={handleSubmit}>
             <h2 className="subscription-title">Subscribe to timetable</h2>
 
-            {activeFeedbackMessage && activeFeedbackType === 'success' && (
-                <p className="subscription-success-text">{activeFeedbackMessage}</p>
+            {!hasParentFeedback && localFeedbackMessage && localFeedbackType === 'success' && (
+                <p className="subscription-success-text">{localFeedbackMessage}</p>
             )}
 
-            {activeFeedbackMessage && activeFeedbackType === 'error' && (
-                <p className="subscription-error-text">{activeFeedbackMessage}</p>
+            {!hasParentFeedback && localFeedbackMessage && localFeedbackType === 'error' && (
+                <p className="subscription-error-text">{localFeedbackMessage}</p>
             )}
 
             <SubscriptionInput
