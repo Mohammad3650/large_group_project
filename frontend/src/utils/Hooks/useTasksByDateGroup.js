@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import getDate from '../Helpers/getDate.js';
-import sortTasksByDate from '../Helpers/sortTasksByDate.js';
 import getDateBoundaries from '../Helpers/getDateBoundaries.js';
+import filterTasksAndSortByDate from '../Helpers/filterTasksAndSortByDate.js';
 
 /**
  * Groups an array of time blocks into date-based categories for display on the dashboard.
@@ -34,17 +34,12 @@ function useTasksByDateGroup(blocks) {
         const pendingBlocks = blocks.filter((block) => !block.completed_at);
         const blocksWithDates = pendingBlocks.map((block) => ({ block, date: getDate(block) }));
 
-        const filterAndSortByDate = (predicate) =>
-            blocksWithDates
-                .filter(({ date }) => predicate(date))
-                .map(({ block }) => block)
-                .sort(sortTasksByDate);
-
-        setOverdueTasks(filterAndSortByDate((date) => date < today));
-        setTodayTasks(filterAndSortByDate((date) => date >= today && date < tomorrow));
-        setTomorrowTasks(filterAndSortByDate((date) => date >= tomorrow && date < dayAfterTomorrow));
-        setWeekTasks(filterAndSortByDate((date) => date >= dayAfterTomorrow && date <= weekEnd));
-        setBeyondWeekTasks(filterAndSortByDate((date) => date > weekEnd));
+        setOverdueTasks(filterTasksAndSortByDate(blocksWithDates, (date) => date < today));
+        setTodayTasks(filterTasksAndSortByDate(blocksWithDates, (date) => date >= today && date < tomorrow));
+        setTomorrowTasks(filterTasksAndSortByDate(blocksWithDates, (date) => date >= tomorrow && date < dayAfterTomorrow));
+        setWeekTasks(filterTasksAndSortByDate(blocksWithDates, (date) => date >= dayAfterTomorrow && date <= weekEnd));
+        setBeyondWeekTasks(filterTasksAndSortByDate(blocksWithDates, (date) => date > weekEnd));
+        // want to sort completed tasks by order of completion rather than date time
         setCompletedTasks(blocks.filter((block) => block.completed_at));
     }, [blocks]);
 
