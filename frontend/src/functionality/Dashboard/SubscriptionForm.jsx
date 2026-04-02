@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './stylesheets/SubscriptionForm.css';
 
 /**
  * Reusable input field for the subscription form.

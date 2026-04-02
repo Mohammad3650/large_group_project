@@ -1,41 +1,35 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import TaskGroup from './TaskGroup.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
-import handleExportCsv from '../../utils/Api/handleExportCsv.js';
-import SubscriptionForm from './SubscriptionForm.jsx';
-import SubscriptionList from './SubscriptionList.jsx';
-import handleExportIcs from '../../utils/Api/handleExportIcs.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
 import useDashboard from '../../utils/Hooks/useDashboard.js';
 import useSubscriptions from '../../utils/Hooks/useSubscriptions.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
 import useAutoResetError from '../../utils/Hooks/useAutoResetError.js';
-import handleImportSubscription from '../../utils/Helpers/handleImportSubscription.js';
-import handleRefreshSubscription from '../../utils/Helpers/handleRefreshSubscription.js';
-import handleDeleteSubscription from '../../utils/Helpers/handleDeleteSubscription.js';
-import completeTimeBlock from '../../utils/Api/completeTimeBlock.js';
-import undoCompleteTimeBlock from '../../utils/Api/undoCompleteTimeBlock.js';
-import filterTasksForSearch from '../../utils/Helpers/filterTasksForSearch.js';
-import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
-import getDate from '../../utils/Helpers/getDate.js';
-import sortTasksByDate from '../../utils/Helpers/sortTasksByDate.js';
-import './stylesheets/Dashboard.css';
+import useSubscriptionActions from '../../utils/Hooks/useSubscriptionActions.js';
+import handleCompleteTask from '../../utils/Helpers/handleCompleteTask.js';
+import handleUndoCompleteTask from '../../utils/Helpers/handleUndoCompleteTask.js';
+import useFilterTasks from '../../utils/Hooks/useFilterTasks.js';
+import SubscriptionSection from './SubscriptionSection.jsx';
+import NoTasksMessage from './NoTasksMessage.jsx';
 import TaskSearchBar from '../../components/TaskSearchBar.jsx';
-import sortTasksByCompletedAt from '../../utils/Helpers/sortTasksByCompletedAt.js';
+import ExportCsvButton from '../../components/ExportCsvButton.jsx';
+import ExportIcsButton from '../../components/ExportIcsButton.jsx';
+import './stylesheets/Dashboard.css';
 
 /**
- * Dashboard component - main page displayed after successful login.
- * Displays tasks grouped by day sections (overdue, today, tomorrow, next 7 days, completed)
- * alongside a notes section.
+ * Dashboard component — main page displayed after successful login.
+ * Displays a searchable task list grouped by date (overdue, today, tomorrow,
+ * next 7 days, beyond next 7 days, and completed), export buttons, a timetable
+ * subscription manager, and a notes section.
  *
  * @returns {JSX.Element} The dashboard page
  */
 function Dashboard() {
     const [error, setError] = useState('');
-    const [showSubscriptions, setShowSubscriptions] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
     const { message } = useDashboard(setError);
@@ -56,144 +50,66 @@ function Dashboard() {
     useScrollToTopOnResize();
     useAutoResetError(error, setError);
 
-    const context = { setSubscriptions, setError, refetchBlocks };
+    const { onImport, onRefresh, onDelete } = useSubscriptionActions({ setSubscriptions, setError, refetchBlocks });
 
-    const onImport = (payload) => handleImportSubscription(payload, context);
-    const onRefresh = (id) => handleRefreshSubscription(id, context);
-    const onDelete = (id) => handleDeleteSubscription(id, context);
+    const taskSetters = { setCompletedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks };
 
-    function handleComplete(task, setSourceTasks) {
-        completeTimeBlock(task.id)
-            .then(() => {
-                setSourceTasks((prev) => prev.filter((t) => t.id !== task.id));
-                setCompletedTasks((prev) =>
-                    [...prev, { ...task, completed_at: new Date().toISOString() }]
-                        .sort(sortTasksByCompletedAt)
-                );
-            })
-            .catch(() => {});
-    }
+    const { filteredOverdue, filteredToday, filteredTomorrow,
+        filteredWeek, filteredBeyondWeek, filteredCompleted } =
+        useFilterTasks({ overdueTasks, todayTasks, tomorrowTasks,
+            weekTasks, beyondWeekTasks, completedTasks }, searchTerm);
 
-    function handleUndoComplete(task) {
-        undoCompleteTimeBlock(task.id)
-            .then(() => {
-                setCompletedTasks((prev) => prev.filter((t) => t.id !== task.id));
-
-                const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
-                const taskDate = getDate(task);
-                const restoredTask = { ...task, completed_at: null };
-
-                if (taskDate < today)
-                    setOverdueTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
-                else if (taskDate < tomorrow)
-                    setTodayTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
-                else if (taskDate < dayAfterTomorrow)
-                    setTomorrowTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
-                else if (taskDate <= weekEnd)
-                    setWeekTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
-                else
-                    setBeyondWeekTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
-            })
-            .catch(() => {});
-    }
-
-    const filteredOverdue = useMemo(() => filterTasksForSearch(overdueTasks, searchTerm), [overdueTasks, searchTerm]);
-    const filteredToday = useMemo(() => filterTasksForSearch(todayTasks, searchTerm), [todayTasks, searchTerm]);
-    const filteredTomorrow = useMemo(() => filterTasksForSearch(tomorrowTasks, searchTerm), [tomorrowTasks, searchTerm]);
-    const filteredWeek = useMemo(() => filterTasksForSearch(weekTasks, searchTerm), [weekTasks, searchTerm]);
-    const filteredBeyondWeek = useMemo(() => filterTasksForSearch(beyondWeekTasks, searchTerm), [beyondWeekTasks, searchTerm]);
-    const filteredCompleted = useMemo(() => filterTasksForSearch(completedTasks, searchTerm), [completedTasks, searchTerm]);
-
-    if (blocksError) {
-        return <p>{blocksError}</p>;
-    }
+    if (blocksError) return <p>{blocksError}</p>;
 
     return (
         <div className="dashboard-content">
             <div className="task-section">
                 <h1>{message}</h1>
 
-                <div className="dashboard-header-actions">
-                    <div className="dashboard-add-task">
+                <div className="header-actions">
+                    <div className="add-task">
                         <AddTaskButton />
                     </div>
 
                     <div className="export-buttons">
-                        <button
-                            type="button"
-                            className="export-csv-button"
-                            onClick={() => handleExportCsv(setError)}
-                        >
-                            Export CSV
-                        </button>
-
-                        <button
-                            type="button"
-                            className="export-csv-button"
-                            onClick={() => handleExportIcs(setError)}
-                        >
-                            Export ICS
-                        </button>
+                        <ExportCsvButton setError={setError} />
+                        <ExportIcsButton setError={setError} />
                     </div>
                 </div>
 
-                <div
-                    className="day-section"
-                    onClick={() => setShowSubscriptions((prev) => !prev)}
-                >
-                    <span className={`arrow ${showSubscriptions ? 'open' : 'closed'}`}>
-                        ^
-                    </span>
-                    <h5>Timetable Subscriptions</h5>
-                </div>
-
-                {showSubscriptions && (
-                    <div className="subscription-section">
-                        {error && (
-                            <p className="subscription-error">{error}</p>
-                        )}
-                        <SubscriptionForm onImport={onImport} />
-                        <SubscriptionList
-                            subscriptions={subscriptions}
-                            onRefresh={onRefresh}
-                            onDelete={onDelete}
-                        />
-                    </div>
-                )}
+                <SubscriptionSection
+                    subscriptions={subscriptions}
+                    error={error}
+                    onImport={onImport}
+                    onRefresh={onRefresh}
+                    onDelete={onDelete}
+                />
 
                 <TaskSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-                {totalTasks === 0 && (
-                    <p className="no-tasks-message">
-                        🎉 Congrats, you have no tasks!
-                    </p>
-                )}
-
-                {totalTasks > 0 &&
-                    filteredOverdue.length === 0 &&
-                    filteredToday.length === 0 &&
-                    filteredTomorrow.length === 0 &&
-                    filteredWeek.length === 0 &&
-                    filteredBeyondWeek.length === 0 &&
-                    filteredCompleted.length === 0 &&
-                    searchTerm.trim() !== '' && (
-                        <p className="no-tasks-message">
-                            No tasks found matching "{searchTerm.trim()}"
-                        </p>
-                    )}
+                <NoTasksMessage
+                    totalTasks={totalTasks}
+                    filteredOverdue={filteredOverdue}
+                    filteredToday={filteredToday}
+                    filteredTomorrow={filteredTomorrow}
+                    filteredWeek={filteredWeek}
+                    filteredBeyondWeek={filteredBeyondWeek}
+                    filteredCompleted={filteredCompleted}
+                    searchTerm={searchTerm}
+                />
 
                 <TaskGroup title="Overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true}
-                           onComplete={(task) => handleComplete(task, setOverdueTasks)} />
+                           onComplete={(task) => handleCompleteTask(task, setOverdueTasks, setCompletedTasks)} />
                 <TaskGroup title="Today" tasks={filteredToday} setTasks={setTodayTasks}
-                           onComplete={(task) => handleComplete(task, setTodayTasks)} />
+                           onComplete={(task) => handleCompleteTask(task, setTodayTasks, setCompletedTasks)} />
                 <TaskGroup title="Tomorrow" tasks={filteredTomorrow} setTasks={setTomorrowTasks}
-                           onComplete={(task) => handleComplete(task, setTomorrowTasks)} />
+                           onComplete={(task) => handleCompleteTask(task, setTomorrowTasks, setCompletedTasks)} />
                 <TaskGroup title="Next 7 Days" tasks={filteredWeek} setTasks={setWeekTasks}
-                           onComplete={(task) => handleComplete(task, setWeekTasks)} />
+                           onComplete={(task) => handleCompleteTask(task, setWeekTasks, setCompletedTasks)} />
                 <TaskGroup title="After Next 7 Days" tasks={filteredBeyondWeek} setTasks={setBeyondWeekTasks}
-                           onComplete={(task) => handleComplete(task, setBeyondWeekTasks)} />
+                           onComplete={(task) => handleCompleteTask(task, setBeyondWeekTasks, setCompletedTasks)} />
                 <TaskGroup title="Completed" tasks={filteredCompleted} setTasks={setCompletedTasks} completed={true}
-                           onUndoComplete={(task) => handleUndoComplete(task)} />
+                           onUndoComplete={(task) => handleUndoCompleteTask(task, taskSetters)} />
             </div>
             <NotesSection />
         </div>

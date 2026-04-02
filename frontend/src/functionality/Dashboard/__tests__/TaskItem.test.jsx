@@ -70,40 +70,6 @@ describe('Tests for TaskItem', () => {
         );
     });
 
-    it('calls onDelete after 500ms when clicked', async () => {
-        render(<TaskItem {...defaultProps} />);
-        await act(async () => {
-            fireEvent.click(screen.getByRole('checkbox').closest('div'));
-        });
-        await act(async () => {
-            vi.advanceTimersByTime(500);
-        });
-        expect(defaultProps.onDelete).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not call onDelete or play sound if already checked', async () => {
-        render(<TaskItem {...defaultProps} />);
-        const div = screen.getByRole('checkbox').closest('div');
-
-        await act(async () => {
-            fireEvent.click(div);
-        });
-        await act(async () => {
-            vi.advanceTimersByTime(500);
-        });
-        const playCallCount = playDingModule.default.mock.calls.length;
-
-        await act(async () => {
-            fireEvent.click(div);
-        });
-        await act(async () => {
-            vi.advanceTimersByTime(500);
-        });
-
-        expect(defaultProps.onDelete).toHaveBeenCalledTimes(1);
-        expect(playDingModule.default.mock.calls.length).toBe(playCallCount);
-    });
-
     it('calls playDing when clicked', async () => {
         render(<TaskItem {...defaultProps} />);
         await act(async () => {

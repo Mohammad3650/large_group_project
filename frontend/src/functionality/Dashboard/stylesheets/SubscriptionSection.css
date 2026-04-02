@@ -1,0 +1,16 @@
+.subscription-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--bg-soft);
+    box-shadow: var(--shadow-sm);
+}
+
+.subscription-error {
+    color: var(--danger-soft);
+    margin-bottom: var(--space-md);
+    transition: opacity 0.3s ease;
+}

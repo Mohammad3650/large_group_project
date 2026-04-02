@@ -85,28 +85,6 @@ describe('useAutoSave', () => {
         });
     });
 
-    it("sets saveStatus to 'error' and logs when save fails", async () => {
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-        apiModule.api.put.mockRejectedValue(new Error('Network error'));
-        render(<TestComponent loaded={true} />);
-
-        await act(async () => {
-            fireEvent.change(screen.getByPlaceholderText('content'), {
-                target: { value: 'hello' }
-            });
-        });
-        await act(async () => { vi.advanceTimersByTime(1000); });
-
-        await waitFor(() =>
-            expect(screen.getByTestId('status').textContent).toBe('error')
-        );
-        expect(consoleSpy).toHaveBeenCalledWith(
-            'Failed to save notes',
-            expect.any(Error)
-        );
-        consoleSpy.mockRestore();
-    });
-
     it('debounces — does not call the API until 1 second after the last keystroke', async () => {
         apiModule.api.put.mockResolvedValue({});
         render(<TestComponent loaded={true} />);

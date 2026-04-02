@@ -32,7 +32,7 @@ body.dashboard-page {
     margin-bottom: var(--space-md);
 }
 
-.dashboard-header-actions {
+.header-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -40,12 +40,12 @@ body.dashboard-page {
     margin-bottom: var(--space-md);
 }
 
-.dashboard-add-task {
+.add-task {
     flex: 1;
     min-width: 0;
 }
 
-.dashboard-add-task .add-task-btn {
+.add-task .add-task-btn {
     width: 100%;
     margin-top: 0;
     margin-bottom: 0;
@@ -56,164 +56,6 @@ body.dashboard-page {
     align-items: center;
     gap: var(--space-md);
     flex-shrink: 0;
-}
-
-.export-csv-button {
-    min-width: 140px;
-    height: 44px;
-    padding: 0 var(--space-xl);
-    border-radius: var(--radius-lg);
-    font-size: var(--font-size-sm);
-    background: var(--blue);
-    color: var(--text-white);
-    border: none;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    transition:
-            background-color 0.2s ease,
-            box-shadow 0.2s ease,
-            transform 0.15s ease;
-}
-
-.export-csv-button:hover {
-    background: var(--link-blue);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
-.subscription-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    margin-bottom: var(--space-lg);
-    padding: var(--space-lg);
-    border-radius: var(--radius-lg);
-    background: var(--bg-soft);
-    box-shadow: var(--shadow-sm);
-}
-
-.subscription-error {
-    color: var(--danger-soft);
-    margin-bottom: var(--space-md);
-    transition: opacity 0.3s ease;
-}
-
-.subscription-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-}
-
-.subscription-title {
-    margin: 0;
-    color: var(--text-main);
-}
-
-.subscription-input {
-    width: 100%;
-    padding: var(--space-md) var(--space-md);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-md);
-    background: var(--bg-main);
-    color: var(--text-main);
-    box-sizing: border-box;
-}
-
-.subscription-button,
-.subscription-action-button,
-.subscription-delete-button {
-    padding: var(--space-sm) var(--space-md);
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-}
-
-.subscription-button,
-.subscription-action-button {
-    background: var(--blue);
-    color: var(--text-white);
-}
-
-.subscription-delete-button {
-    background: var(--danger-soft);
-    color: var(--text-white);
-}
-
-.subscription-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-}
-
-.subscription-card {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-md);
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-    background: var(--bg-main);
-    box-shadow: var(--shadow-sm);
-}
-
-.subscription-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    min-width: 0;
-}
-
-.subscription-url,
-.subscription-meta,
-.subscription-empty,
-.subscription-error-text {
-    margin: 0;
-    word-break: break-word;
-}
-
-.subscription-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    justify-content: center;
-}
-
-.subscription-wrapper {
-    margin-bottom: var(--space-lg);
-}
-
-.subscription-toggle {
-    width: 100%;
-    text-align: left;
-    padding: var(--space-md) var(--space-md);
-    border: none;
-    border-radius: var(--radius-lg);
-    background: var(--bg-soft);
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: var(--space-sm);
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-}
-
-.subscription-error-text {
-    color: var(--danger);
-}
-
-.toggle-icon {
-    font-size: var(--font-size-xs);
-    opacity: 0.7;
-}
-
-.no-tasks-message {
-    color: var(--text-muted);
-    font-size: 2rem;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -234,26 +76,17 @@ body.dashboard-page {
         overflow-y: visible;
     }
 
-    .dashboard-header-actions {
+    .header-actions {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .dashboard-add-task {
+    .add-task {
         width: 100%;
     }
 
     .export-buttons {
         justify-content: flex-start;
         flex-wrap: wrap;
-    }
-
-    .subscription-card {
-        flex-direction: column;
-    }
-
-    .subscription-actions {
-        flex-direction: row;
-        justify-content: flex-start;
     }
 }
