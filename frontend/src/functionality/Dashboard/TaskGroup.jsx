@@ -36,7 +36,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
             {isOpen &&
                 tasks.map((task) => (
                     <TaskItem
-                        key={task.id}
+                        key={`${title}-${task.id}`}
                         id={task.id}
                         name={task.name}
                         date={task.date}

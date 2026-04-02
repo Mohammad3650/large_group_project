@@ -23,6 +23,8 @@ import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
 import getDate from '../../utils/Helpers/getDate.js';
 import sortTasksByDate from '../../utils/Helpers/sortTasksByDate.js';
 import './stylesheets/Dashboard.css';
+import TaskSearchBar from '../../components/TaskSearchBar.jsx';
+import sortTasksByCompletedAt from '../../utils/Helpers/sortTasksByCompletedAt.js';
 
 /**
  * Dashboard component - main page displayed after successful login.
@@ -64,7 +66,10 @@ function Dashboard() {
         completeTimeBlock(task.id)
             .then(() => {
                 setSourceTasks((prev) => prev.filter((t) => t.id !== task.id));
-                setCompletedTasks((prev) => [...prev, { ...task, completed_at: new Date().toISOString() }]);
+                setCompletedTasks((prev) =>
+                    [...prev, { ...task, completed_at: new Date().toISOString() }]
+                        .sort(sortTasksByCompletedAt)
+                );
             })
             .catch(() => {});
     }
@@ -156,15 +161,9 @@ function Dashboard() {
                     </div>
                 )}
 
-                <input
-                    type="text"
-                    className="task-search-input"
-                    placeholder="Search tasks..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <TaskSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-                {totalTasks === 0 && completedTasks.length === 0 && (
+                {totalTasks === 0 && (
                     <p className="no-tasks-message">
                         🎉 Congrats, you have no tasks!
                     </p>
@@ -176,6 +175,7 @@ function Dashboard() {
                     filteredTomorrow.length === 0 &&
                     filteredWeek.length === 0 &&
                     filteredBeyondWeek.length === 0 &&
+                    filteredCompleted.length === 0 &&
                     searchTerm.trim() !== '' && (
                         <p className="no-tasks-message">
                             No tasks found matching "{searchTerm.trim()}"

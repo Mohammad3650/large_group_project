@@ -26,6 +26,7 @@ import Capitalise from '../Formatters/capitalise.js';
  *   location: string,
  *   blockType: string,
  *   description: string,
+ *   completed_at: string|null,
  *   _options: {additionalClasses: string[]}
  * }>} The mapped time blocks
  */
@@ -53,6 +54,7 @@ function mapTimeBlocks(blocks) {
             location: block.location,
             blockType: block.block_type ? Capitalise(block.block_type) : 'N/A',
             description: block.description || 'N/A',
+            completed_at: block.completed_at ?? null,
             // _options is required by the schedule-x calendar library to apply custom CSS classes to events
             _options: { additionalClasses: [`sx-type-${block.block_type}`] }
         };
