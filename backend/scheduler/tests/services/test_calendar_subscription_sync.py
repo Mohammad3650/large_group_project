@@ -200,6 +200,9 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_parse_ics_events,
     ):
         """It should create a day plan for the imported event date when needed."""
+        start_datetime = timezone.now() + timedelta(days=10)
+        end_datetime = start_datetime + timedelta(hours=1)
+
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
         mock_parse_ics_events.return_value = [
             self.build_event(
@@ -207,8 +210,8 @@ class CalendarSubscriptionSyncTest(TestCase):
                 summary="Lecture",
                 description="",
                 location="Room X",
-                start_datetime=timezone.now() + timedelta(days=10),
-                end_datetime=timezone.now() + timedelta(days=10, hours=1),
+                start_datetime=start_datetime,
+                end_datetime=end_datetime,
             )
         ]
 
