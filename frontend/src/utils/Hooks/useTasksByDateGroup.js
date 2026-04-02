@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import getDate from '../Helpers/getDate.js';
 import sortTasksByDate from '../Helpers/sortTasksByDate.js';
+import getDateBoundaries from '../Helpers/getDateBoundaries.js';
 
 /**
  * Groups an array of time blocks into date-based categories for display on the dashboard.
- * Categories are: overdue, today, tomorrow, next 7 days, and after next 7 days.
- * Each category is sorted in ascending order of datetime.
+ * Categories are: overdue, today, tomorrow, next 7 days, after next 7 days, and completed.
+ * Each pending category is sorted in ascending order of datetime.
+ *
  * @param {Array|null} blocks - Array of time block objects to group, or null if not yet loaded
  * @returns {{
  *   overdueTasks: Array, setOverdueTasks: Function,
@@ -13,8 +15,9 @@ import sortTasksByDate from '../Helpers/sortTasksByDate.js';
  *   tomorrowTasks: Array, setTomorrowTasks: Function,
  *   weekTasks: Array, setWeekTasks: Function,
  *   beyondWeekTasks: Array, setBeyondWeekTasks: Function,
+ *   completedTasks: Array, setCompletedTasks: Function,
  *   totalTasks: number
- * }} The grouped task arrays, their setters, and the total task count
+ * }} The grouped task arrays, their setters, and the total pending task count
  */
 function useTasksByDateGroup(blocks) {
     const [overdueTasks, setOverdueTasks] = useState([]);
@@ -27,15 +30,7 @@ function useTasksByDateGroup(blocks) {
     useEffect(() => {
         if (blocks === null) return;
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        const dayAfterTomorrow = new Date(today);
-        dayAfterTomorrow.setDate(today.getDate() + 2);
-        const weekEnd = new Date(today);
-        weekEnd.setDate(today.getDate() + 7);
-
+        const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
         const pendingBlocks = blocks.filter((block) => !block.completed_at);
         const blocksWithDates = pendingBlocks.map((block) => ({ block, date: getDate(block) }));
 

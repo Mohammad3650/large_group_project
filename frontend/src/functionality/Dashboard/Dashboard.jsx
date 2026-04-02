@@ -18,27 +18,16 @@ import handleRefreshSubscription from '../../utils/Helpers/handleRefreshSubscrip
 import handleDeleteSubscription from '../../utils/Helpers/handleDeleteSubscription.js';
 import completeTimeBlock from '../../utils/Api/completeTimeBlock.js';
 import undoCompleteTimeBlock from '../../utils/Api/undoCompleteTimeBlock.js';
+import filterTasksForSearch from '../../utils/Helpers/filterTasksForSearch.js';
+import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
+import getDate from '../../utils/Helpers/getDate.js';
 import sortTasksByDate from '../../utils/Helpers/sortTasksByDate.js';
 import './stylesheets/Dashboard.css';
 
 /**
- * Filters a list of tasks by a search term, case-insensitively and ignoring leading/trailing whitespace.
- *
- * @param {Array} tasks - The list of tasks to filter
- * @param {string} searchTerm - The search term to filter by
- * @returns {Array} The filtered list of tasks
- */
-function filterTasks(tasks, searchTerm) {
-    const cleanedSearchTerm = searchTerm.trim().toLowerCase();
-    if (!cleanedSearchTerm) return tasks;
-    return tasks.filter((task) =>
-        task.name.toLowerCase().includes(cleanedSearchTerm)
-    );
-}
-
-/**
  * Dashboard component - main page displayed after successful login.
- * Displays tasks grouped by day sections (overdue, today, tomorrow, next 7 days, completed) alongside a notes section.
+ * Displays tasks grouped by day sections (overdue, today, tomorrow, next 7 days, completed)
+ * alongside a notes section.
  *
  * @returns {JSX.Element} The dashboard page
  */
@@ -74,8 +63,8 @@ function Dashboard() {
     function handleComplete(task, setSourceTasks) {
         completeTimeBlock(task.id)
             .then(() => {
-                setSourceTasks((t) => t.filter((t) => t.id !== task.id));
-                setCompletedTasks((t) => [...t, { ...task, completed_at: new Date().toISOString() }]);
+                setSourceTasks((prev) => prev.filter((t) => t.id !== task.id));
+                setCompletedTasks((prev) => [...prev, { ...task, completed_at: new Date().toISOString() }]);
             })
             .catch(() => {});
     }
@@ -83,42 +72,32 @@ function Dashboard() {
     function handleUndoComplete(task) {
         undoCompleteTimeBlock(task.id)
             .then(() => {
-                setCompletedTasks((t) => t.filter((t) => t.id !== task.id));
+                setCompletedTasks((prev) => prev.filter((t) => t.id !== task.id));
 
-                const taskDate = new Date(`${task.date}T${task.startTime}`);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const tomorrow = new Date(today);
-                tomorrow.setDate(today.getDate() + 1);
-                const dayAfterTomorrow = new Date(today);
-                dayAfterTomorrow.setDate(today.getDate() + 2);
-                const weekEnd = new Date(today);
-                weekEnd.setDate(today.getDate() + 7);
-
+                const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
+                const taskDate = getDate(task);
                 const restoredTask = { ...task, completed_at: null };
 
-                if (taskDate < today) {
-                    setOverdueTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
-                } else if (taskDate < tomorrow) {
-                    setTodayTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
-                } else if (taskDate < dayAfterTomorrow) {
-                    setTomorrowTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
-                } else if (taskDate <= weekEnd) {
-                    setWeekTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
-                } else {
-                    setBeyondWeekTasks((t) => [...t, restoredTask].sort(sortTasksByDate));
-                }
+                if (taskDate < today)
+                    setOverdueTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
+                else if (taskDate < tomorrow)
+                    setTodayTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
+                else if (taskDate < dayAfterTomorrow)
+                    setTomorrowTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
+                else if (taskDate <= weekEnd)
+                    setWeekTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
+                else
+                    setBeyondWeekTasks((prev) => [...prev, restoredTask].sort(sortTasksByDate));
             })
             .catch(() => {});
     }
 
-
-    const filteredOverdue = useMemo(() => filterTasks(overdueTasks, searchTerm), [overdueTasks, searchTerm]);
-    const filteredToday = useMemo(() => filterTasks(todayTasks, searchTerm), [todayTasks, searchTerm]);
-    const filteredTomorrow = useMemo(() => filterTasks(tomorrowTasks, searchTerm), [tomorrowTasks, searchTerm]);
-    const filteredWeek = useMemo(() => filterTasks(weekTasks, searchTerm), [weekTasks, searchTerm]);
-    const filteredBeyondWeek = useMemo(() => filterTasks(beyondWeekTasks, searchTerm), [beyondWeekTasks, searchTerm]);
-    const filteredCompleted = useMemo(() => filterTasks(completedTasks, searchTerm), [completedTasks, searchTerm]);
+    const filteredOverdue = useMemo(() => filterTasksForSearch(overdueTasks, searchTerm), [overdueTasks, searchTerm]);
+    const filteredToday = useMemo(() => filterTasksForSearch(todayTasks, searchTerm), [todayTasks, searchTerm]);
+    const filteredTomorrow = useMemo(() => filterTasksForSearch(tomorrowTasks, searchTerm), [tomorrowTasks, searchTerm]);
+    const filteredWeek = useMemo(() => filterTasksForSearch(weekTasks, searchTerm), [weekTasks, searchTerm]);
+    const filteredBeyondWeek = useMemo(() => filterTasksForSearch(beyondWeekTasks, searchTerm), [beyondWeekTasks, searchTerm]);
+    const filteredCompleted = useMemo(() => filterTasksForSearch(completedTasks, searchTerm), [completedTasks, searchTerm]);
 
     if (blocksError) {
         return <p>{blocksError}</p>;
