@@ -49,12 +49,12 @@ function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsSe
     return <ScheduleXCalendar calendarApp={calendar} customComponents={customComponents} />;
 }
 
-function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
+function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons, theme}) {
     const eventsService = useState(() => createEventsServicePlugin())[0];
     const [calendarKey, setCalendarKey] = useState(0);
     const calendarTimezone = getUserTimezone();
 
-    const isDark = document.body.classList.contains('dark-theme');
+    const isDark = theme === 'dark';
 
     const blockTypeIcon = isDark ? blockTypeIconDark : blockTypeIconLight;
     const calendarIcon = isDark ? calendarIconDark : calendarIconLight;
