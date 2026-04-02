@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from 'react';import './stylesheets/TaskItem.css';
+import { useState, useRef, useEffect } from 'react';
 import formatDateTime from '../../utils/Formatters/formatDateTime.js';
 import playDing from '../../utils/Audio/playDing.js';
 import useDropdown from '../../utils/Hooks/useDropdown.js';
 import { useNavigate } from 'react-router-dom';
+import './stylesheets/TaskItem.css';
 
 /**
  * Displays a single task item with a checkbox, name, start time and end time.
@@ -36,16 +37,23 @@ function TaskItem({ id, name, date, startTime, endTime, onDelete, onComplete, on
     }
 
     const optionsBtnRef = useRef(null);
-    const [dropup, setdropup] = useState(false);
+    const [dropup, setDropup] = useState(false);
 
     function handleOptionsClick(e) {
         e.stopPropagation();
-        if (!dropdownOpen && optionsBtnRef.current) {
-            const rect = optionsBtnRef.current.getBoundingClientRect();
-            setdropup(window.innerHeight - rect.bottom < 150);
-        }
         setDropdownOpen((prev) => !prev);
     }
+
+    useEffect(() => {
+        if (dropdownOpen && optionsBtnRef.current) {
+            const rect = optionsBtnRef.current.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const dropdown = dropdownRef.current?.querySelector('.task-options-dropdown');
+            const dropdownHeight = dropdown ? dropdown.getBoundingClientRect().height : 150;
+            const padding = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--space-xl'));
+            setDropup(spaceBelow < dropdownHeight + padding);
+        }
+    }, [dropdownOpen]);
 
 
     function handleEditClick(e) {
@@ -85,17 +93,16 @@ function TaskItem({ id, name, date, startTime, endTime, onDelete, onComplete, on
                     {name}
                 </label>
                 <span className="task-datetime">
-                    {formatDateTime(date, startTime, endTime)}
-                </span>
+                {formatDateTime(date, startTime, endTime)}
+            </span>
             </div>
 
             <div className="task-options" ref={dropdownRef}>
                 <button className="task-options-btn" onClick={handleOptionsClick} ref={optionsBtnRef}>
                     ⋮
                 </button>
-
                 {dropdownOpen && (
-                    <div className={`task-options-dropdown${dropup ? ' dropup' : ''}`}>
+                    <div className={`task-options-dropdown${dropup ? ' drop-up' : ''}`}>
                         {completed && (
                             <>
                                 <button className="task-options-edit-btn" onClick={handleUndoCompleteClick}>
