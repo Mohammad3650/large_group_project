@@ -1,5 +1,6 @@
 import './stylesheets/Navbar.css';
 import { Link } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
 import LogoutButton from './LogoutButton.jsx';
 import useUsername from '../utils/Hooks/useUsername.js';
 import useAuthStatus from '../utils/Auth/authStatus';
@@ -13,7 +14,7 @@ import calendarIconLight from '../assets/calendar_icon.png';
 import calendarIconDark from '../assets/calendar_icon_black.png';
 
 /**
- * Navbar component - site-wide navigation header.
+ * Navbar component — site-wide navigation header.
  * Displays the app title, navigation links, theme toggle, and user account controls.
  * Shows dashboard and calendar links when the user is logged in,
  * and a user dropdown (with username, profile link, and logout) on authentication.
@@ -81,15 +82,15 @@ function Navbar({ theme, toggleTheme }) {
                                     <span className="dropdown-username">
                                         {username}
                                     </span>
-                                    <hr className="navbar-dropdown-divider"/>
+                                    <hr className="navbar-dropdown-divider" />
                                     <Link
                                         to="/profile"
                                         className="dropdown-link"
                                         onClick={() => setDropdownOpen(false)}
                                     >
-                                        Profile
+                                        <FaUser /> Profile
                                     </Link>
-                                    <hr className="navbar-dropdown-divider"/>
+                                    <hr className="navbar-dropdown-divider" />
                                     <LogoutButton />
                                 </div>
                             )}

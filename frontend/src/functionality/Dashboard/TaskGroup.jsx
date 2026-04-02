@@ -42,13 +42,15 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
                         date={task.date}
                         startTime={task.startTime}
                         endTime={task.endTime}
+                        location={task.location}
+                        blockType={task.blockType}
+                        description={task.description}
                         onDelete={() => handleDelete(task.id)}
                         onComplete={onComplete ? () => onComplete(task) : undefined}
                         onUndoComplete={onUndoComplete ? () => onUndoComplete(task) : undefined}
                         overdue={overdue}
                         completed={completed}
                     />
-
                 ))}
         </>
     );
