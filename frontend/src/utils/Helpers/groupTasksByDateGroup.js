@@ -17,7 +17,7 @@ import sortTasksByDate from './sortTasksByDate.js';
  *   completedTasks: Array
  * }} The grouped task arrays
  */
-function groupTasksByTaskGroup(blocks) {
+function groupTasksByDateGroup(blocks) {
     const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
     const nonCompletedBlocks = blocks.filter((block) => !block.completed_at);
     const completedBlocks = blocks.filter((block) => block.completed_at);
@@ -36,4 +36,4 @@ function groupTasksByTaskGroup(blocks) {
     };
 }
 
-export default groupTasksByTaskGroup;
+export default groupTasksByDateGroup;

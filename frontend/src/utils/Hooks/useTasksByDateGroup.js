@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import groupTasksByTaskGroup from '../Helpers/groupTasksByTaskGroup.js';
+import groupTasksByDateGroup from '../Helpers/groupTasksByDateGroup.js';
 import sumTotalTasks from '../Helpers/sumTotalTasks.js';
 
 /**
@@ -29,7 +29,7 @@ function useTasksByDateGroup(blocks) {
 
     useEffect(() => {
         if (blocks === null) return;
-        const groupedTasks = groupTasksByTaskGroup(blocks);
+        const groupedTasks = groupTasksByDateGroup(blocks);
         setOverdueTasks(groupedTasks.overdueTasks);
         setTodayTasks(groupedTasks.todayTasks);
         setTomorrowTasks(groupedTasks.tomorrowTasks);
