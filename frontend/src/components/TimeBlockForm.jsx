@@ -11,13 +11,16 @@ import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
  * - serverErrors: array of server validation errors per block
  * - clearErrors: function to clear server errors
  * - initialData: optional object for editing an existing block
+ * - onCancel: optional function to cancel editing
  */
 function TimeBlockForm({
     onSubmit,
     loading,
     serverErrors,
     clearErrors,
-    initialData = null
+    initialData = null,
+    onCancel = null
+
 }) {
     const [date, setDate] = useState(initialData?.date || '');
 
@@ -256,8 +259,20 @@ function TimeBlockForm({
                     </button>
                 )}
 
+                {initialData && onCancel && (
+                    <button
+                        className="btn cancel-btn"
+                        type="button"
+                        onClick={onCancel}
+                        disabled={loading}
+
+                    >
+                        Cancel
+                    </button>
+                )}
+
                 <button
-                    className="btn btn-primary"
+                    className={`btn ${initialData ? 'edit-btn' : 'btn-primary'}`}
                     type="submit"
                     disabled={loading}
                 >

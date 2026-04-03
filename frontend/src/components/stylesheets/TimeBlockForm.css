@@ -55,6 +55,28 @@
     width: 250px;
 }
 
+.btn.cancel-btn {
+    background-color: var(--blue);
+    color: var(--text-white);
+    border: 1px solid var(--blue);
+}
+
+.btn.cancel-btn:hover {
+    background-color: var(--blue);
+    color: var(--text-white);
+}
+
+.btn.edit-btn {
+    background-color: var(--edit);
+    color: var(--text-white);
+    border: 1px solid var(--edit);
+}
+
+.btn.edit-btn:hover {
+    background-color: var(--edit-soft);
+    color: var(--text-main);
+}
+
 .error-text-date {
     color: var(--danger);
     font-size: 0.9rem;

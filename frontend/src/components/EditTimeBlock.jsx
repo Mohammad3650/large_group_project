@@ -181,6 +181,11 @@ function EditTimeBlock() {
         }
     }
 
+    function handleCancel(){
+        setServerErrors([]);
+        navigate('/calendar');
+    }
+
     if (isFetching){
         return <p>Loading...</p>;
     }
@@ -194,6 +199,7 @@ function EditTimeBlock() {
                 <h2>Edit Time Block</h2>
                 <TimeBlockForm
                     onSubmit={handleUpdate}
+                    onCancel={handleCancel}
                     initialData={initialData}
                     loading={isSubmitting}
                     serverErrors={serverErrors}

@@ -28,7 +28,7 @@ describe('Tests for SuccessfulTimeBlock', () => {
         ).toBeInTheDocument();
 
         expect(
-            screen.getByText('Your time block was created successfully')
+            screen.getByText(/your time block was created successfully\./i)
         ).toBeInTheDocument();
     });
 
