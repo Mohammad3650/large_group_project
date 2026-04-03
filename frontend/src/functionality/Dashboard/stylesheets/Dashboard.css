@@ -3,6 +3,8 @@ body.dashboard-page {
     overflow: hidden;
     background: var(--bg-main);
     color: var(--text-main);
+    position: fixed;
+    width: 100%;
 }
 
 body.dashboard-page .navbar-container {

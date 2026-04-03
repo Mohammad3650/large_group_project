@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import useAutoSave from '../../utils/Hooks/useAutoSave.js';
-import './stylesheets/NotesSection.css';
 import useNotes from '../../utils/Hooks/useNotes.js';
+import './stylesheets/NotesSection.css';
 
 /**
  * Fetches and auto-saves the user's notes with a 1 second debounce.
