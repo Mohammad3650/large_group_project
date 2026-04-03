@@ -43,14 +43,12 @@ from scheduler.views.delete_user_view import delete_user
 from scheduler.views.export_schedule_view import export_schedule_csv
 from scheduler.views.export_ics_view import export_schedule_ics
 from scheduler.views.user_registration_view import UserRegistrationView
-from scheduler.views.dashboard_view import DashboardView
 from scheduler.views.user_details_view import UserDetailsView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
     path("auth/signup/", UserRegistrationView.as_view(), name="user-signup"),
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
     # JWT auth
     path("api/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),

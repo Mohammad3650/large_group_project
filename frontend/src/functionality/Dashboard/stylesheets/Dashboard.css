@@ -32,32 +32,6 @@ body.dashboard-page {
     margin-bottom: var(--space-md);
 }
 
-.header-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-lg);
-    margin-bottom: var(--space-md);
-}
-
-.add-task {
-    flex: 1;
-    min-width: 0;
-}
-
-.add-task .add-task-btn {
-    width: 100%;
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-.export-buttons {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    flex-shrink: 0;
-}
-
 @media (max-width: 768px) {
     body.dashboard-page {
         overflow: auto;
@@ -74,19 +48,5 @@ body.dashboard-page {
         width: 100%;
         max-height: none;
         overflow-y: visible;
-    }
-
-    .header-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .add-task {
-        width: 100%;
-    }
-
-    .export-buttons {
-        justify-content: flex-start;
-        flex-wrap: wrap;
     }
 }

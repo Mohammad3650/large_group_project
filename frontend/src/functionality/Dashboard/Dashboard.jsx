@@ -4,37 +4,28 @@ import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
-import useDashboard from '../../utils/Hooks/useDashboard.js';
-import useSubscriptions from '../../utils/Hooks/useSubscriptions.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
-import useAutoResetError from '../../utils/Hooks/useAutoResetError.js';
-import useSubscriptionActions from '../../utils/Hooks/useSubscriptionActions.js';
 import handleCompleteTask from '../../utils/Helpers/handleCompleteTask.js';
 import handleUndoCompleteTask from '../../utils/Helpers/handleUndoCompleteTask.js';
 import useFilterTasks from '../../utils/Hooks/useFilterTasks.js';
-import SubscriptionSection from './SubscriptionSection.jsx';
 import NoTasksMessage from './NoTasksMessage.jsx';
 import TaskSearchBar from '../../components/TaskSearchBar.jsx';
-import ExportCsvButton from '../../components/ExportCsvButton.jsx';
-import ExportIcsButton from '../../components/ExportIcsButton.jsx';
 import './stylesheets/Dashboard.css';
+import useUsername from '../../utils/Hooks/useUsername.js';
 
 /**
  * Dashboard component — main page displayed after successful login.
  * Displays a searchable task list grouped by date (overdue, today, tomorrow,
- * next 7 days, beyond next 7 days, and completed), export buttons, a timetable
- * subscription manager, and a notes section.
+ * next 7 days, beyond next 7 days, and completed) alongside a notes section.
  *
  * @returns {JSX.Element} The dashboard page
  */
 function Dashboard() {
-    const [error, setError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const { message } = useDashboard(setError);
-    const { blocks, refetchBlocks, error: blocksError } = useTimeBlocks();
-    const { subscriptions, setSubscriptions } = useSubscriptions(setError);
+    const { username } = useUsername(true);
+    const { blocks, error: blocksError } = useTimeBlocks();
 
     const {
         overdueTasks, setOverdueTasks,
@@ -48,9 +39,6 @@ function Dashboard() {
 
     useBodyClass('dashboard-page');
     useScrollToTopOnResize();
-    useAutoResetError(error, setError);
-
-    const { onImport, onRefresh, onDelete } = useSubscriptionActions({ setSubscriptions, setError, refetchBlocks });
 
     const taskSetters = { setCompletedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks };
 
@@ -64,26 +52,8 @@ function Dashboard() {
     return (
         <div className="dashboard-content">
             <div className="task-section">
-                <h1>{message}</h1>
-
-                <div className="header-actions">
-                    <div className="add-task">
-                        <AddTaskButton />
-                    </div>
-
-                    <div className="export-buttons">
-                        <ExportCsvButton setError={setError} />
-                        <ExportIcsButton setError={setError} />
-                    </div>
-                </div>
-
-                <SubscriptionSection
-                    subscriptions={subscriptions}
-                    error={error}
-                    onImport={onImport}
-                    onRefresh={onRefresh}
-                    onDelete={onDelete}
-                />
+                <h1>{`Welcome to your dashboard, ${username}!`}</h1>
+                <AddTaskButton />
 
                 <TaskSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
