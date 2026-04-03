@@ -16,7 +16,6 @@
     border-left: 3px solid transparent;
     margin-left: var(--space-lg);
     padding-left: var(--space-sm);
-    clip-path: inset(0 0 2px 0);
 }
 
 .task-items-container.overdue   { border-left-color: var(--danger-soft); }

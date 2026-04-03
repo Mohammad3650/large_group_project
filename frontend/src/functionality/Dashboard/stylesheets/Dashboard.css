@@ -12,10 +12,13 @@ body.dashboard-page .navbar-container {
 .dashboard-content {
     display: flex;
     width: 100%;
-    height: calc(100vh - var(--navbar-height));
+    height: calc(100vh - 75px);
     box-sizing: border-box;
+    justify-content: space-between;
+    align-items: stretch;
     background: var(--bg-main);
     color: var(--text-main);
+    overflow: hidden;
 }
 
 .task-section {
