@@ -8,7 +8,8 @@ class TimeBlock(models.Model):
 
     A TimeBlock can represent events such as study sessions,
     lectures, or exercise. It stores details including the activity name, type,
-    location, and time constraints (start and end times).
+    location, time constraints (start and end times),
+    and the time at which the time block was completed (completed_at).
     """
 
     BLOCK_TYPE_CHOICES = [
@@ -34,3 +35,4 @@ class TimeBlock(models.Model):
     timezone = models.CharField(max_length=50, default="UTC")
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True, default=None)

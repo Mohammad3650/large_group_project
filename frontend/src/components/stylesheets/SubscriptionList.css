@@ -1,0 +1,71 @@
+.subscription-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.subscription-card {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    background: var(--bg-main);
+    box-shadow: var(--shadow-sm);
+}
+
+.subscription-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: 0;
+}
+
+.subscription-url,
+.subscription-meta,
+.subscription-empty,
+.subscription-error-text {
+    margin: 0;
+    word-break: break-word;
+}
+
+.subscription-error-text {
+    color: var(--danger);
+}
+
+.subscription-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    justify-content: center;
+}
+
+.subscription-action-button,
+.subscription-delete-button {
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.subscription-action-button {
+    background: var(--blue);
+    color: var(--text-white);
+}
+
+.subscription-delete-button {
+    background: var(--danger-soft);
+    color: var(--text-white);
+}
+
+@media (max-width: 768px) {
+    .subscription-card {
+        flex-direction: column;
+    }
+
+    .subscription-actions {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+}

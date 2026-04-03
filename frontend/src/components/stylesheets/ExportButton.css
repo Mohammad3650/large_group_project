@@ -1,0 +1,25 @@
+.export-csv-button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-width: 140px;
+    height: 44px;
+    padding: 0 var(--space-xl);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    background: var(--blue);
+    color: var(--text-white);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition:
+            background-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.15s ease;
+}
+
+.export-csv-button:hover {
+    background: var(--link-blue);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}

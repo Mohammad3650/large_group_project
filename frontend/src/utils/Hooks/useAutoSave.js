@@ -17,8 +17,7 @@ function useAutoSave(content, loaded, setSaveStatus) {
             try {
                 await api.put('/api/notes/save/', { content });
                 setSaveStatus('saved');
-            } catch (err) {
-                console.error('Failed to save notes', err);
+            } catch {
                 setSaveStatus('error');
             }
         }, 1000);

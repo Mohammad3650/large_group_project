@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
+import { FaSignOutAlt } from 'react-icons/fa';
 import { logout } from '../utils/Auth/authStorage';
 import './stylesheets/Navbar.css';
 
 /**
- * Button component that logs the user out and redirects to login page
- *
- * Clears auth tokens and navigates the user to "/login"
+ * Button component that logs the user out and redirects to login page.
+ * Clears auth tokens and navigates the user to "/login".
  *
  * @returns {JSX.Element} A logout button element
  */
@@ -18,8 +18,8 @@ function LogoutButton() {
     }
 
     return (
-        <button className={'logout-button'} onClick={handleLogout}>
-            Logout
+        <button className="logout-button" onClick={handleLogout}>
+            <FaSignOutAlt /> Logout
         </button>
     );
 }

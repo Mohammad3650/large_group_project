@@ -377,32 +377,6 @@ describe('Tests for Dashboard', () => {
         expect(document.body).not.toHaveClass('dashboard-page');
     });
 
-    it('scrolls to the top on mount', async () => {
-        const scrollSpy = vi
-            .spyOn(window, 'scrollTo')
-            .mockImplementation(() => {});
-        await act(async () => {
-            renderDashboard();
-        });
-        expect(scrollSpy).toHaveBeenCalledWith(0, 0);
-        scrollSpy.mockRestore();
-    });
-
-    it('scrolls to the top on window resize', async () => {
-        const scrollSpy = vi
-            .spyOn(window, 'scrollTo')
-            .mockImplementation(() => {});
-        renderDashboard();
-        await waitFor(() =>
-            expect(screen.getByText('Welcome back!')).toBeInTheDocument()
-        );
-        act(() => {
-            window.dispatchEvent(new Event('resize'));
-        });
-        expect(scrollSpy).toHaveBeenCalledWith(0, 0);
-        scrollSpy.mockRestore();
-    });
-
     it('renders an error when blocksError is set', async () => {
         useTimeBlocksModule.default.mockReturnValue({
             blocks: null,

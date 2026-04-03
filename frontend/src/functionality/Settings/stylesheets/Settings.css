@@ -1,0 +1,38 @@
+body.settings-page {
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.settings-layout {
+    display: flex;
+    height: calc(100vh - 75px - var(--space-lg));
+    padding: 0 var(--space-navbar-x) var(--space-2xl);
+    box-sizing: border-box;
+    gap: var(--space-xl);
+}
+
+.settings-main {
+    flex: 1;
+    overflow-y: auto;
+    padding-top: var(--space-lg);
+}
+
+.settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-width: 600px;
+}
+
+.settings-section h2 {
+    margin: 0 0 var(--space-sm);
+    color: var(--text-main);
+}
+
+@media (max-width: 768px) {
+    .settings-layout {
+        flex-direction: column;
+        height: auto;
+        padding: 0 var(--space-lg) var(--space-2xl);
+    }
+}
