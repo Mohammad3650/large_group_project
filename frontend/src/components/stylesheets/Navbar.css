@@ -43,10 +43,8 @@
 }
 
 .navbar-icon {
-    width: 20px;
-    height: 20px;
+    font-size: 20px;
     flex-shrink: 0;
-    object-fit: contain;
 }
 
 .navbar-right {
@@ -65,9 +63,14 @@
 }
 
 .user-icon {
+    font-size: 38px;
     cursor: pointer;
-    width: 45px;
-    height: 45px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.user-icon:hover {
+    color: var(--text-main);
 }
 
 .navbar-dropdown {
@@ -97,7 +100,7 @@
 .navbar-dropdown-divider {
     border: none;
     border-top: 1px solid var(--border-strong);
-    margin: 0
+    margin: 0;
 }
 
 .dropdown-link {
@@ -180,7 +183,6 @@
     }
 
     .user-icon {
-        width: 32px;
-        height: 32px;
+        font-size: 30px;
     }
 }

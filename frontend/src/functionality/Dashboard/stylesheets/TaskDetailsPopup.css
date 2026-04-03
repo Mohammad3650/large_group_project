@@ -9,7 +9,7 @@
 }
 
 .task-details-popup {
-    background: var(--bg-main);
+    background: var(--bg-soft);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
@@ -60,7 +60,7 @@
 
 .task-details-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-sm);
     color: var(--text-main);
     font-size: var(--font-size-sm);
@@ -69,5 +69,4 @@
 .task-details-icon {
     color: var(--text-muted);
     flex-shrink: 0;
-    margin-top: 2px;
 }

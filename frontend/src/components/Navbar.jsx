@@ -1,17 +1,12 @@
 import './stylesheets/Navbar.css';
 import { Link } from 'react-router-dom';
-import { FaUser } from 'react-icons/fa';
+import { LuClipboardList, LuCalendar } from 'react-icons/lu';
+import { FaUser, FaUserCircle } from 'react-icons/fa'
 import LogoutButton from './LogoutButton.jsx';
 import useUsername from '../utils/Hooks/useUsername.js';
 import useAuthStatus from '../utils/Auth/authStatus';
 import useDropdown from '../utils/Hooks/useDropdown.js';
 import ToggleDarkMode from './ToggleDarkMode.jsx';
-
-import userIcon from '../assets/Navbar/user.png';
-import taskListLight from '../assets/Navbar/task_list.png';
-import taskListDark from '../assets/Navbar/task_list_black.png';
-import calendarIconLight from '../assets/calendar_icon.png';
-import calendarIconDark from '../assets/calendar_icon_black.png';
 
 /**
  * Navbar component — site-wide navigation header.
@@ -29,11 +24,6 @@ function Navbar({ theme, toggleTheme }) {
     const { username } = useUsername(isLoggedIn);
     const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
 
-    const isDark = theme === 'dark';
-
-    const taskList = isDark ? taskListDark : taskListLight;
-    const calendarIcon = isDark ? calendarIconDark : calendarIconLight;
-
     return (
         <header>
             <div className="navbar-container">
@@ -45,20 +35,12 @@ function Navbar({ theme, toggleTheme }) {
                     {isLoggedIn && (
                         <>
                             <Link to="/dashboard" className="navbar-link">
-                                <img
-                                    src={taskList}
-                                    alt="Dashboard"
-                                    className="navbar-icon"
-                                />
+                                <LuClipboardList className="navbar-icon" />
                                 <span>Dashboard</span>
                             </Link>
 
                             <Link to="/calendar" className="navbar-link">
-                                <img
-                                    src={calendarIcon}
-                                    alt="Calendar"
-                                    className="navbar-icon"
-                                />
+                                <LuCalendar className="navbar-icon" />
                                 <span>Calendar</span>
                             </Link>
                         </>
@@ -70,9 +52,7 @@ function Navbar({ theme, toggleTheme }) {
 
                     {isLoggedIn ? (
                         <div className="navbar-user" ref={dropdownRef}>
-                            <img
-                                src={userIcon}
-                                alt="User"
+                            <FaUserCircle
                                 className="navbar-icon user-icon"
                                 onClick={() => setDropdownOpen((prev) => !prev)}
                             />
