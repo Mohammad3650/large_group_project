@@ -2,16 +2,10 @@
     display: flex;
     align-items: center;
     gap: var(--space-xs);
-    margin-left: var(--space-lg);
-    width: calc(100% - var(--space-lg));
-    border-left: 3px solid transparent;
-    padding-left: var(--space-sm);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    width: 100%;
+    margin-bottom: var(--space-sm);
 }
 
-.task-item-wrapper.overdue  { border-left-color: var(--danger-soft); }
-.task-item-wrapper.today    { border-left-color: var(--blue); }
-.task-item-wrapper.tomorrow { border-left-color: var(--orange); }
-.task-item-wrapper.week     { border-left-color: var(--success); }
-.task-item-wrapper.beyond   { border-left-color: var(--text-light); }
-.task-item-wrapper.completed { border-left-color: var(--text-light); }
+.task-item-wrapper:last-child {
+    margin-bottom: 0;
+}
