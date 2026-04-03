@@ -6,13 +6,13 @@ import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
+import useUsername from '../../utils/Hooks/useUsername.js';
 import handleCompleteTask from '../../utils/Helpers/handleCompleteTask.js';
 import handleUndoCompleteTask from '../../utils/Helpers/handleUndoCompleteTask.js';
 import useFilterTasks from '../../utils/Hooks/useFilterTasks.js';
 import NoTasksMessage from './NoTasksMessage.jsx';
 import TaskSearchBar from '../../components/TaskSearchBar.jsx';
 import './stylesheets/Dashboard.css';
-import useUsername from '../../utils/Hooks/useUsername.js';
 
 /**
  * Dashboard component — main page displayed after successful login.
@@ -68,17 +68,17 @@ function Dashboard() {
                     searchTerm={searchTerm}
                 />
 
-                <TaskGroup title="Overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true}
+                <TaskGroup title="Overdue" variant="overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true}
                            onComplete={(task) => handleCompleteTask(task, setOverdueTasks, setCompletedTasks)} />
-                <TaskGroup title="Today" tasks={filteredToday} setTasks={setTodayTasks}
+                <TaskGroup title="Today" variant="today" tasks={filteredToday} setTasks={setTodayTasks}
                            onComplete={(task) => handleCompleteTask(task, setTodayTasks, setCompletedTasks)} />
-                <TaskGroup title="Tomorrow" tasks={filteredTomorrow} setTasks={setTomorrowTasks}
+                <TaskGroup title="Tomorrow" variant="tomorrow" tasks={filteredTomorrow} setTasks={setTomorrowTasks}
                            onComplete={(task) => handleCompleteTask(task, setTomorrowTasks, setCompletedTasks)} />
-                <TaskGroup title="Next 7 Days" tasks={filteredWeek} setTasks={setWeekTasks}
+                <TaskGroup title="Next 7 Days" variant="week" tasks={filteredWeek} setTasks={setWeekTasks}
                            onComplete={(task) => handleCompleteTask(task, setWeekTasks, setCompletedTasks)} />
-                <TaskGroup title="After Next 7 Days" tasks={filteredBeyondWeek} setTasks={setBeyondWeekTasks}
+                <TaskGroup title="After Next 7 Days" variant="beyond" tasks={filteredBeyondWeek} setTasks={setBeyondWeekTasks}
                            onComplete={(task) => handleCompleteTask(task, setBeyondWeekTasks, setCompletedTasks)} />
-                <TaskGroup title="Completed" tasks={filteredCompleted} setTasks={setCompletedTasks} completed={true}
+                <TaskGroup title="Completed" variant="completed" tasks={filteredCompleted} setTasks={setCompletedTasks} completed={true}
                            onUndoComplete={(task) => handleUndoCompleteTask(task, taskSetters)} />
             </div>
             <NotesSection />

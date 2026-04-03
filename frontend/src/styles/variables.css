@@ -39,6 +39,8 @@
     --edit: #f59e0b;
     --edit-soft: #fbbf24;
 
+    --orange: #f59e0b;
+
     /* radii */
     --radius-sm: 4px;
     --radius-md: 8px;
@@ -96,6 +98,8 @@ body.dark-theme {
 
     --edit: #fbbf24;
     --edit-soft: #fcd34d;
+
+    --orange: #fbbf24;
 
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);

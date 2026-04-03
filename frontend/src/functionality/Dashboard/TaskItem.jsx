@@ -27,7 +27,7 @@ import './stylesheets/TaskItem.css';
  * @param {boolean} [props.completed=false] - Whether the task is already completed
  * @returns {JSX.Element} A single task
  */
-function TaskItem({ id, name, date, startTime, endTime, location, blockType, description, onDelete, onComplete, onUndoComplete, overdue = false, completed = false }) {
+function TaskItem({ id, name, date, startTime, endTime, location, blockType, description, onDelete, onComplete, onUndoComplete, overdue = false, completed = false, variant = '' }) {
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
@@ -48,7 +48,7 @@ function TaskItem({ id, name, date, startTime, endTime, location, blockType, des
 
     return (
         <>
-            <div className="task-item-wrapper">
+            <div className={`task-item-wrapper ${variant}`}>
                 <TaskItemContent
                     name={name}
                     date={date}

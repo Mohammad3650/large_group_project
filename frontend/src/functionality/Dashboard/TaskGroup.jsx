@@ -15,7 +15,7 @@ import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
  * @param {Function} [onUndoComplete] - Callback to undo a task completion
  * @returns {JSX.Element|null} The day section, or null if no tasks
  */
-function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = false, onComplete, onUndoComplete }) {
+function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = false, variant = '', onComplete, onUndoComplete }) {
     const [isOpen, setIsOpen] = useState(true);
 
     function handleDelete(id) {
@@ -38,6 +38,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
                     <TaskItem
                         key={`${title}-${task.id}`}
                         id={task.id}
+                        variant={variant}
                         name={task.name}
                         date={task.date}
                         startTime={task.startTime}
