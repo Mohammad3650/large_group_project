@@ -1,18 +1,18 @@
 import './stylesheets/Navbar.css';
 import { Link } from 'react-router-dom';
-import { LuClipboardList, LuCalendar } from 'react-icons/lu';
-import { FaUser, FaUserCircle } from 'react-icons/fa'
 import LogoutButton from './LogoutButton.jsx';
 import useUsername from '../utils/Hooks/useUsername.js';
 import useAuthStatus from '../utils/Auth/authStatus';
 import useDropdown from '../utils/Hooks/useDropdown.js';
 import ToggleDarkMode from './ToggleDarkMode.jsx';
+import { LuClipboardList, LuCalendar } from 'react-icons/lu';
+import { FaUser, FaUserCircle, FaCog } from 'react-icons/fa';
 
 /**
- * Navbar component — site-wide navigation header.
+ * Navbar component - site-wide navigation header.
  * Displays the app title, navigation links, theme toggle, and user account controls.
  * Shows dashboard and calendar links when the user is logged in,
- * and a user dropdown (with username, profile link, and logout) on authentication.
+ * and a user dropdown (with username, settings link, and logout) on authentication.
  *
  * @param {Object} props
  * @param {string} props.theme - Current theme mode
@@ -60,15 +60,15 @@ function Navbar({ theme, toggleTheme }) {
                             {dropdownOpen && (
                                 <div className="navbar-dropdown">
                                     <span className="dropdown-username">
-                                        {username}
+                                        <FaUser /> {username}
                                     </span>
                                     <hr className="navbar-dropdown-divider" />
                                     <Link
-                                        to="/profile"
+                                        to="/settings"
                                         className="dropdown-link"
                                         onClick={() => setDropdownOpen(false)}
                                     >
-                                        <FaUser /> Profile
+                                        <FaCog /> Settings
                                     </Link>
                                     <hr className="navbar-dropdown-divider" />
                                     <LogoutButton />

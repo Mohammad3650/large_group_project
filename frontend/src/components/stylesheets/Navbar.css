@@ -45,6 +45,7 @@
 .navbar-icon {
     font-size: 20px;
     flex-shrink: 0;
+    opacity: 0.6;
 }
 
 .navbar-right {
@@ -66,10 +67,12 @@
     font-size: 38px;
     cursor: pointer;
     color: var(--text-muted);
-    transition: color 0.2s;
+    opacity: 0.6;
+    transition: color 0.2s, opacity 0.2s;
 }
 
 .user-icon:hover {
+    opacity: 1;
     color: var(--text-main);
 }
 
@@ -183,6 +186,6 @@
     }
 
     .user-icon {
-        font-size: 30px;
+        font-size: 32px;
     }
 }
