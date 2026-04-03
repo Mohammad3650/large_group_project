@@ -11,60 +11,6 @@ body.settings-page {
     gap: var(--space-xl);
 }
 
-/* Sidebar */
-
-.settings-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    width: 200px;
-    flex-shrink: 0;
-    padding-top: var(--space-lg);
-}
-
-.settings-nav-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    width: 100%;
-    padding: var(--space-sm) var(--space-md);
-    border: none;
-    border-radius: var(--radius-md);
-    background: none;
-    color: var(--text-muted);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.15s ease, color 0.15s ease;
-}
-
-.settings-nav-item:hover {
-    background: var(--bg-soft);
-    color: var(--text-main);
-}
-
-.settings-nav-item.active {
-    background: var(--bg-soft);
-    color: var(--text-main);
-}
-
-.settings-nav-icon {
-    font-size: 14px;
-    line-height: 1;
-    opacity: 0.7;
-    flex-shrink: 0;
-}
-
-
-.settings-nav-divider {
-    border: none;
-    border-top: 1px solid var(--border-light);
-    margin: var(--space-xs) 0;
-}
-
-/* Main content */
-
 .settings-main {
     flex: 1;
     overflow-y: auto;
@@ -76,54 +22,11 @@ body.settings-page {
     flex-direction: column;
     gap: var(--space-md);
     max-width: 600px;
-    padding: var(--space-lg);
-    border-radius: var(--radius-lg);
-    background: var(--bg-soft);
 }
-
 
 .settings-section h2 {
     margin: 0 0 var(--space-sm);
     color: var(--text-main);
-}
-
-/* Profile section */
-
-.settings-profile-links {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-}
-
-.settings-profile-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    text-decoration: none;
-    color: var(--text-main);
-    font-size: var(--font-size-sm);
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-md);
-    background: var(--bg-soft);
-    box-shadow: var(--shadow-sm);
-    transition: background 0.15s ease;
-}
-
-.settings-profile-link:hover {
-    background: var(--bg-soft-hover);
-}
-
-.settings-link-icon {
-    opacity: 0.6;
-    flex-shrink: 0;
-}
-
-/* Export section */
-
-.settings-export-buttons {
-    display: flex;
-    gap: var(--space-md);
-    flex-wrap: wrap;
 }
 
 @media (max-width: 768px) {
@@ -131,24 +34,5 @@ body.settings-page {
         flex-direction: column;
         height: auto;
         padding: 0 var(--space-lg) var(--space-2xl);
-    }
-
-    .settings-sidebar {
-        width: 100%;
-        flex-direction: row;
-        flex-wrap: wrap;
-        padding-top: var(--space-md);
-    }
-
-    .settings-nav-item {
-        width: auto;
-    }
-
-    .settings-nav-divider {
-        display: none;
-    }
-
-    .settings-export-buttons {
-        flex-direction: column;
     }
 }

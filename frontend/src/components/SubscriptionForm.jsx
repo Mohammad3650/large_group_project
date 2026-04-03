@@ -114,6 +114,7 @@ function SubscriptionForm({
 
     return (
         <form className="subscription-form" onSubmit={handleSubmit}>
+            <h2 className="subscription-title">Subscribe to timetable</h2>
             {!hasParentFeedback && localFeedbackMessage && localFeedbackType === 'success' && (
                 <p className="subscription-success-text">{localFeedbackMessage}</p>
             )}

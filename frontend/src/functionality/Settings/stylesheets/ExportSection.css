@@ -1,0 +1,11 @@
+.settings-export-buttons {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .settings-export-buttons {
+        flex-direction: column;
+    }
+}

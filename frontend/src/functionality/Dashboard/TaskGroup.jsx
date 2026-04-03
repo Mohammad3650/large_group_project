@@ -28,7 +28,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
 
     return (
         <>
-            <div className="day-section" data-testid="task-group-header" onClick={() => setIsOpen(!isOpen)}>
+            <div className="task-group" data-testid="task-group-header" onClick={() => setIsOpen(!isOpen)}>
                 <span className={`arrow ${isOpen ? 'open' : 'closed'}`}>^</span>
                 <h5 className={overdue ? 'overdue-title' : completed ? 'completed-title' : ''}>{title}</h5>
                 <h5 className="number-of-tasks">({tasks.length})</h5>

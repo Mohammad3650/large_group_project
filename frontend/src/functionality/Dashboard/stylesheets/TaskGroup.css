@@ -1,4 +1,4 @@
-.day-section {
+.task-group {
     display: flex;
     gap: var(--space-xs);
     align-items: center;
