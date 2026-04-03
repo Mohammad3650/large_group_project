@@ -3,9 +3,4 @@
     align-items: center;
     gap: var(--space-xs);
     width: 100%;
-    margin-bottom: var(--space-sm);
-}
-
-.task-item-wrapper:last-child {
-    margin-bottom: 0;
 }
