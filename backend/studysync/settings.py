@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     "scheduler",
     "rest_framework",
     "corsheaders",
-    "crispy_forms",
     "crispy_bootstrap5",
 ]
 
