@@ -27,6 +27,11 @@ body.dashboard-page {
     color: var(--text-main);
 }
 
+.task-section .add-task-btn {
+    margin-bottom: var(--space-sm);
+}
+
+
 .task-section h1 {
     color: var(--text-main);
     margin-bottom: var(--space-md);
