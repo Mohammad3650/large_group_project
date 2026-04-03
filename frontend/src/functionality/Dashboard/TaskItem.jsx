@@ -1,16 +1,15 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import playDing from '../../utils/Audio/playDing.js';
 import useDropdown from '../../utils/Hooks/useDropdown.js';
-import useDropup from '../../utils/Hooks/useDropup.js';
 import TaskItemContent from './TaskItemContent.jsx';
-import TaskOptionsDropdown from './TaskOptionsDropdown.jsx';
+import TaskOptionsDropup from './TaskOptionsDropup.jsx';
 import TaskDetailsPopup from './TaskDetailsPopup.jsx';
 import './stylesheets/TaskItem.css';
 
 /**
  * Displays a single task item with a checkbox, name, start time and end time.
  * Plays a ding sound and fades out on click before completing.
- * Provides a dropdown menu for viewing details, editing, undoing completion, and deleting.
+ * Provides a drop-up menu for viewing details, editing, undoing completion, and deleting.
  *
  * @param {Object} props
  * @param {number} props.id - The task ID
@@ -33,8 +32,6 @@ function TaskItem({ id, name, date, startTime, endTime, location, blockType, des
     const [fading, setFading] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
     const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
-    const optionsBtnRef = useRef(null);
-    const dropup = useDropup(dropdownOpen, optionsBtnRef, dropdownRef);
 
     function handleClick() {
         if (checked || completed) return;
@@ -64,14 +61,13 @@ function TaskItem({ id, name, date, startTime, endTime, location, blockType, des
                     onClick={handleClick}
                 />
                 <div className="task-options" ref={dropdownRef}>
-                    <button className="task-options-btn" onClick={handleOptionsClick} ref={optionsBtnRef}>
+                    <button className="task-options-btn" onClick={handleOptionsClick}>
                         ⋮
                     </button>
                     {dropdownOpen && (
-                        <TaskOptionsDropdown
+                        <TaskOptionsDropup
                             id={id}
                             completed={completed}
-                            dropup={dropup}
                             setDropdownOpen={setDropdownOpen}
                             onDelete={onDelete}
                             onUndoComplete={onUndoComplete}

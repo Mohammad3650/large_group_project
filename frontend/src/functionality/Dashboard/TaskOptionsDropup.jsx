@@ -1,20 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEdit, FaUndo, FaTrash } from 'react-icons/fa';
-import './stylesheets/TaskOptionsDropdown.css';
+import './stylesheets/TaskOptionsDropup.css';
 
 /**
- * Dropdown menu for a task item with options to view details, edit, delete, and undo completion.
+ * Drop-up menu for a task item with options to view details, edit, delete, and undo completion.
  *
+ * @param {Object} props
  * @param {number} props.id - The task ID
  * @param {boolean} props.completed - Whether the task is completed
- * @param {boolean} props.dropup - Whether the dropdown should open upwards
- * @param {Function} props.setDropdownOpen - Setter to close the dropdown
+ * @param {Function} props.setDropdownOpen - Setter to close the menu
  * @param {Function} props.onDelete - Callback to delete the task
  * @param {Function} props.onUndoComplete - Callback to undo completion
  * @param {Function} props.onViewDetails - Callback to open the details popup
- * @returns {JSX.Element} The dropdown menu
+ * @returns {JSX.Element} The drop-up menu
  */
-function TaskOptionsDropdown({ id, completed, dropup, setDropdownOpen, onDelete, onUndoComplete, onViewDetails }) {
+function TaskOptionsDropup({ id, completed, setDropdownOpen, onDelete, onUndoComplete, onViewDetails }) {
     const nav = useNavigate();
 
     function handleViewDetailsClick(e) {
@@ -45,7 +45,11 @@ function TaskOptionsDropdown({ id, completed, dropup, setDropdownOpen, onDelete,
     }
 
     return (
-        <div className={`task-options-dropdown${dropup ? ' drop-up' : ''}`}>
+        <div className="task-options-drop-up">
+            <button className="task-options-edit-btn" onClick={handleViewDetailsClick}>
+                <FaEye /> View Details
+            </button>
+            <hr className="task-options-divider" />
             {completed && (
                 <>
                     <button className="task-options-edit-btn" onClick={handleUndoCompleteClick}>
@@ -54,10 +58,6 @@ function TaskOptionsDropdown({ id, completed, dropup, setDropdownOpen, onDelete,
                     <hr className="task-options-divider" />
                 </>
             )}
-            <button className="task-options-edit-btn" onClick={handleViewDetailsClick}>
-                <FaEye /> View Details
-            </button>
-            <hr className="task-options-divider" />
             <button className="task-options-edit-btn" onClick={handleEditClick}>
                 <FaEdit /> Edit
             </button>
@@ -69,4 +69,4 @@ function TaskOptionsDropdown({ id, completed, dropup, setDropdownOpen, onDelete,
     );
 }
 
-export default TaskOptionsDropdown;
+export default TaskOptionsDropup;
