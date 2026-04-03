@@ -1,3 +1,4 @@
+import { FaFileCsv } from 'react-icons/fa';
 import handleExportCsv from '../utils/Api/handleExportCsv.js';
 import './stylesheets/ExportButton.css';
 
@@ -15,6 +16,7 @@ function ExportCsvButton({ setError }) {
             className="export-csv-button"
             onClick={() => handleExportCsv(setError)}
         >
+            <FaFileCsv />
             Export CSV
         </button>
     );

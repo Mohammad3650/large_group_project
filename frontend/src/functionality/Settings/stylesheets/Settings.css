@@ -3,35 +3,91 @@ body.settings-page {
     color: var(--text-main);
 }
 
-.settings-content {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: var(--space-xl) var(--space-navbar-x);
+.settings-layout {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-2xl);
+    height: calc(100vh - 75px - var(--space-lg));
+    padding: 0 var(--space-navbar-x) var(--space-2xl);
+    box-sizing: border-box;
+    gap: var(--space-xl);
 }
 
-.settings-content h1 {
+/* Sidebar */
+
+.settings-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    width: 200px;
+    flex-shrink: 0;
+    padding-top: var(--space-lg);
+}
+
+.settings-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    border-radius: var(--radius-md);
+    background: none;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.settings-nav-item:hover {
+    background: var(--bg-soft);
     color: var(--text-main);
-    margin: 0;
+}
+
+.settings-nav-item.active {
+    background: var(--bg-soft);
+    color: var(--text-main);
+}
+
+.settings-nav-icon {
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+
+.settings-nav-divider {
+    border: none;
+    border-top: 1px solid var(--border-light);
+    margin: var(--space-xs) 0;
+}
+
+/* Main content */
+
+.settings-main {
+    flex: 1;
+    overflow-y: auto;
+    padding-top: var(--space-lg);
 }
 
 .settings-section {
     display: flex;
     flex-direction: column;
-    gap: var(--space-lg);
-    padding: var(--space-xl);
+    gap: var(--space-md);
+    max-width: 600px;
+    padding: var(--space-lg);
     border-radius: var(--radius-lg);
     background: var(--bg-soft);
-    box-shadow: var(--shadow-sm);
 }
 
+
 .settings-section h2 {
-    margin: 0;
+    margin: 0 0 var(--space-sm);
     color: var(--text-main);
-    font-size: var(--font-size-lg);
 }
+
+/* Profile section */
 
 .settings-profile-links {
     display: flex;
@@ -48,7 +104,7 @@ body.settings-page {
     font-size: var(--font-size-sm);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-md);
-    background: var(--bg-main);
+    background: var(--bg-soft);
     box-shadow: var(--shadow-sm);
     transition: background 0.15s ease;
 }
@@ -62,140 +118,34 @@ body.settings-page {
     flex-shrink: 0;
 }
 
+/* Export section */
+
 .settings-export-buttons {
     display: flex;
     gap: var(--space-md);
     flex-wrap: wrap;
 }
 
-.subscription-error {
-    color: var(--danger-soft);
-    margin: 0;
-    transition: opacity 0.3s ease;
-}
-
-.subscription-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-}
-
-.subscription-title {
-    margin: 0;
-    color: var(--text-main);
-}
-
-.subscription-input {
-    width: 100%;
-    padding: var(--space-md);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-md);
-    background: var(--bg-main);
-    color: var(--text-main);
-    box-sizing: border-box;
-}
-
-.subscription-button,
-.subscription-action-button,
-.subscription-delete-button {
-    padding: var(--space-sm) var(--space-md);
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-}
-
-.subscription-button,
-.subscription-action-button {
-    background: var(--blue);
-    color: var(--text-white);
-}
-
-.subscription-delete-button {
-    background: var(--danger-soft);
-    color: var(--text-white);
-}
-
-.subscription-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-}
-
-.subscription-card {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-md);
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-    background: var(--bg-main);
-    box-shadow: var(--shadow-sm);
-}
-
-.subscription-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    min-width: 0;
-}
-
-.subscription-url,
-.subscription-meta,
-.subscription-empty,
-.subscription-error-text {
-    margin: 0;
-    word-break: break-word;
-}
-
-.subscription-error-text {
-    color: var(--danger);
-}
-
-.subscription-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-    justify-content: center;
-}
-
-.export-csv-button {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    min-width: 140px;
-    height: 44px;
-    padding: 0 var(--space-xl);
-    border-radius: var(--radius-lg);
-    font-size: var(--font-size-sm);
-    background: var(--blue);
-    color: var(--text-white);
-    border: none;
-    cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    transition:
-            background-color 0.2s ease,
-            box-shadow 0.2s ease,
-            transform 0.15s ease;
-}
-
-.export-csv-button:hover {
-    background: var(--link-blue);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-}
-
 @media (max-width: 768px) {
-    .settings-content {
-        padding: var(--space-lg);
-    }
-
-    .subscription-card {
+    .settings-layout {
         flex-direction: column;
+        height: auto;
+        padding: 0 var(--space-lg) var(--space-2xl);
     }
 
-    .subscription-actions {
+    .settings-sidebar {
+        width: 100%;
         flex-direction: row;
-        justify-content: flex-start;
+        flex-wrap: wrap;
+        padding-top: var(--space-md);
+    }
+
+    .settings-nav-item {
+        width: auto;
+    }
+
+    .settings-nav-divider {
+        display: none;
     }
 
     .settings-export-buttons {

@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { FaCloudDownloadAlt } from 'react-icons/fa';
 import './stylesheets/SubscriptionForm.css';
+
 
 /**
  * Reusable input field for the subscription form.
@@ -112,8 +114,6 @@ function SubscriptionForm({
 
     return (
         <form className="subscription-form" onSubmit={handleSubmit}>
-            <h2 className="subscription-title">Subscribe to timetable</h2>
-
             {!hasParentFeedback && localFeedbackMessage && localFeedbackType === 'success' && (
                 <p className="subscription-success-text">{localFeedbackMessage}</p>
             )}
@@ -141,6 +141,7 @@ function SubscriptionForm({
                 className="subscription-button"
                 disabled={loading}
             >
+                <FaCloudDownloadAlt />
                 {loading ? 'Importing...' : 'Import timetable'}
             </button>
         </form>

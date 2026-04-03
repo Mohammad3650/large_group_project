@@ -1,3 +1,4 @@
+import { FaCalendarAlt } from 'react-icons/fa';
 import handleExportIcs from '../utils/Api/handleExportIcs.js';
 import './stylesheets/ExportButton.css';
 
@@ -15,6 +16,7 @@ function ExportIcsButton({ setError }) {
             className="export-csv-button"
             onClick={() => handleExportIcs(setError)}
         >
+            <FaCalendarAlt />
             Export ICS
         </button>
     );
