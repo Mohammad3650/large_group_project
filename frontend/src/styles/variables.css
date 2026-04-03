@@ -36,6 +36,9 @@
     --blue: #2563eb;
     --link-blue: #4a90d9;
 
+    --edit: #f59e0b;
+    --edit-soft: #fbbf24;
+
     /* radii */
     --radius-sm: 4px;
     --radius-md: 8px;
@@ -90,6 +93,9 @@ body.dark-theme {
 
     --blue: #60a5fa;
     --link-blue: #7ab8ff;
+
+    --edit: #fbbf24;
+    --edit-soft: #fcd34d;
 
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
