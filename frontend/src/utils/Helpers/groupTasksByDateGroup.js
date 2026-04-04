@@ -23,10 +23,9 @@ import sortTasksByDate from './sortTasksByDate.js';
 function groupTasksByDateGroup(blocks) {
     const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
 
-    const pinnedBlocks = blocks.filter((block) => block.pinned && !block.completed_at);
+    const pinnedBlocks = blocks.filter((block) => block.pinned);
     const activeBlocks = blocks.filter((block) => !block.completed_at && !block.pinned);
-    const completedBlocks = blocks.filter((block) => block.completed_at);
-
+    const completedBlocks = blocks.filter((block) => block.completed_at && !block.pinned);
     const tasksWithDates = activeBlocks.map((block) => ({ block, date: getDate(block) }));
 
     return {

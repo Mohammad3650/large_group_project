@@ -13,7 +13,7 @@ function handlePinTask(task, setSourceTasks, setPinnedTasks) {
         .then(() => {
             setSourceTasks((prev) => prev.filter((item) => item.id !== task.id));
             setPinnedTasks((prev) =>
-                [{ ...task, pinned: true, pinned_at: new Date().toISOString(), completed_at: null }, ...prev]
+                [{ ...task, pinned: true, pinned_at: new Date().toISOString() }, ...prev]
             );
         })
         .catch(() => {});

@@ -1,7 +1,9 @@
-import TaskItem from './TaskItem.jsx';
 import { useState } from 'react';
-import './stylesheets/TaskGroup.css';
+import TaskItem from './TaskItem.jsx';
+import getDate from '../../utils/Helpers/getDate.js';
+import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
 import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
+import './stylesheets/TaskGroup.css';
 
 /**
  * Displays a collapsible section of tasks grouped by day or category.
@@ -45,19 +47,26 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
             </div>
             {isOpen && (
                 <div className={`task-items-container ${variant}`}>
-                    {tasks.map((task) => (
-                        <TaskItem
-                            key={`${title}-${task.id}`}
-                            task={task}
-                            onDelete={() => handleDelete(task.id)}
-                            onComplete={onComplete ? () => onComplete(task) : undefined}
-                            onUndoComplete={onUndoComplete ? () => onUndoComplete(task) : undefined}
-                            onPin={onPin ? () => onPin(task) : undefined}
-                            onUnpin={onUnpin ? () => onUnpin(task) : undefined}
-                            overdue={overdue}
-                            completed={completed}
-                        />
-                    ))}
+                    {(() => {
+                        const { today } = getDateBoundaries();
+                        return tasks.map((task) => {
+                            const taskCompleted = completed || !!task.completed_at;
+                            const taskOverdue = overdue || (!task.completed_at && getDate(task) < today);
+                            return (
+                                <TaskItem
+                                    key={`${title}-${task.id}`}
+                                    task={task}
+                                    onDelete={() => handleDelete(task.id)}
+                                    onComplete={onComplete ? () => onComplete(task) : undefined}
+                                    onUndoComplete={onUndoComplete ? () => onUndoComplete(task) : undefined}
+                                    onPin={onPin ? () => onPin(task) : undefined}
+                                    onUnpin={onUnpin ? () => onUnpin(task) : undefined}
+                                    overdue={taskOverdue}
+                                    completed={taskCompleted}
+                                />
+                            );
+                        });
+                    })()}
                 </div>
             )}
         </>

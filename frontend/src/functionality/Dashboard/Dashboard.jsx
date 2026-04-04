@@ -10,9 +10,9 @@ import handleCompleteTask from '../../utils/Helpers/handleCompleteTask.js';
 import handleUndoCompleteTask from '../../utils/Helpers/handleUndoCompleteTask.js';
 import handlePinTask from '../../utils/Helpers/handlePinTask.js';
 import handleUnpinTask from '../../utils/Helpers/handleUnpinTask.js';
+import TaskSearchBar from '../../components/TaskSearchBar.jsx';
 import filterTasksForSearch from '../../utils/Helpers/filterTasksForSearch.js';
 import './stylesheets/Dashboard.css';
-import TaskSearchBar from '../../components/TaskSearchBar.jsx';
 
 /**
  * Dashboard component — main page displayed after successful login.
@@ -85,7 +85,7 @@ function Dashboard() {
 
                 <TaskGroup title="Pinned" variant="pinned" tasks={filteredPinned} setTasks={setPinnedTasks}
                            onComplete={(task) => handleCompleteTask(task, setPinnedTasks, setCompletedTasks)}
-                           onUnpin={(task) => handleUnpinTask(task, { setPinnedTasks, ...dateGroupSetters })} />
+                           onUnpin={(task) => handleUnpinTask(task, { setPinnedTasks, setCompletedTasks, ...dateGroupSetters })} />
                 <TaskGroup title="Overdue" variant="overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true}
                            onComplete={(task) => handleCompleteTask(task, setOverdueTasks, setCompletedTasks)}
                            onPin={(task) => handlePinTask(task, setOverdueTasks, setPinnedTasks)} />
