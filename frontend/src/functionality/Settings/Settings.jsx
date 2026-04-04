@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SettingsSidebar from './SettingsSidebar.jsx';
 import ProfileSection from './ProfileSection.jsx';
-import SubscriptionSection from '../../components/SubscriptionSection.jsx';
+import SubscriptionSection from './SubscriptionSection.jsx';
 import ExportSection from './ExportSection.jsx';
 import useSubscriptions from '../../utils/Hooks/useSubscriptions.js';
 import useSubscriptionActions from '../../utils/Hooks/useSubscriptionActions.js';
