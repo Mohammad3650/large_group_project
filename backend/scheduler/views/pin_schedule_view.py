@@ -26,6 +26,7 @@ def pin_schedule(request, block_id):
         block = TimeBlock.objects.get(id=block_id, day__user=request.user)
         block.pinned = True
         block.pinned_at = timezone.now()
+        block.completed_at = None
         block.save()
         return Response(status=status.HTTP_200_OK)
     except TimeBlock.DoesNotExist:

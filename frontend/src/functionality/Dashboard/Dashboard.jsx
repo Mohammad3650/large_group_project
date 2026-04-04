@@ -84,6 +84,7 @@ function Dashboard() {
                     )}
 
                 <TaskGroup title="Pinned" variant="pinned" tasks={filteredPinned} setTasks={setPinnedTasks}
+                           onComplete={(task) => handleCompleteTask(task, setPinnedTasks, setCompletedTasks)}
                            onUnpin={(task) => handleUnpinTask(task, { setPinnedTasks, ...dateGroupSetters })} />
                 <TaskGroup title="Overdue" variant="overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true}
                            onComplete={(task) => handleCompleteTask(task, setOverdueTasks, setCompletedTasks)}
@@ -101,7 +102,8 @@ function Dashboard() {
                            onComplete={(task) => handleCompleteTask(task, setBeyondWeekTasks, setCompletedTasks)}
                            onPin={(task) => handlePinTask(task, setBeyondWeekTasks, setPinnedTasks)} />
                 <TaskGroup title="Completed" variant="completed" tasks={filteredCompleted} setTasks={setCompletedTasks} completed={true}
-                           onUndoComplete={(task) => handleUndoCompleteTask(task, { setCompletedTasks, ...dateGroupSetters })} />
+                           onUndoComplete={(task) => handleUndoCompleteTask(task, { setCompletedTasks, ...dateGroupSetters })}
+                           onPin={(task) => handlePinTask(task, setCompletedTasks, setPinnedTasks)} />
             </div>
             <NotesSection />
         </div>

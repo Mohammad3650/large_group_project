@@ -25,6 +25,8 @@ def complete_schedule(request, block_id):
     try:
         block = TimeBlock.objects.get(id=block_id, day__user=request.user)
         block.completed_at = timezone.now()
+        block.pinned = False
+        block.pinned_at = None
         block.save()
         return Response(status=status.HTTP_200_OK)
     except TimeBlock.DoesNotExist:
