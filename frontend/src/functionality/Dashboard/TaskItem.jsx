@@ -4,11 +4,12 @@ import useDropdown from '../../utils/Hooks/useDropdown.js';
 import TaskItemContent from './TaskItemContent.jsx';
 import TaskOptionsDropup from './TaskOptionsDropup.jsx';
 import TaskDetailsPopup from './TaskDetailsPopup.jsx';
+import PinButton from './PinButton.jsx';
 import './stylesheets/TaskItem.css';
 
 /**
- * Displays a single task item with a checkbox, name, start time and end time.
- * Plays a ding sound and fades out on click before completing.
+ * Displays a single task item with a pin button, checkbox, name, and time.
+ * Plays a ding sound and fades out on completion.
  * Provides a drop-up menu for viewing details, editing, undoing completion, and deleting.
  *
  * @param {Object} props
@@ -16,11 +17,13 @@ import './stylesheets/TaskItem.css';
  * @param {Function} props.onDelete - Callback to delete the task
  * @param {Function} [props.onComplete] - Callback to mark the task as completed
  * @param {Function} [props.onUndoComplete] - Callback to undo completion
+ * @param {Function} [props.onPin] - Callback to pin the task
+ * @param {Function} [props.onUnpin] - Callback to unpin the task
  * @param {boolean} [props.overdue=false] - Whether the task is overdue
  * @param {boolean} [props.completed=false] - Whether the task is already completed
  * @returns {JSX.Element} A single task item
  */
-function TaskItem({ task, onDelete, onComplete, onUndoComplete, overdue = false, completed = false }) {
+function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, overdue = false, completed = false }) {
     const { id, name, date, startTime, endTime } = task;
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
@@ -43,6 +46,13 @@ function TaskItem({ task, onDelete, onComplete, onUndoComplete, overdue = false,
     return (
         <>
             <div className="task-item-wrapper">
+                {(onPin || onUnpin) && (
+                    <PinButton
+                        pinned={task.pinned}
+                        onPin={onPin}
+                        onUnpin={onUnpin}
+                    />
+                )}
                 <TaskItemContent
                     name={name}
                     date={date}

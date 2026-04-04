@@ -28,6 +28,7 @@
     margin-bottom: 0;
 }
 
+.task-items-container.pinned { border-left-color: var(--yellow); }
 .task-items-container.overdue   { border-left-color: var(--danger-soft); }
 .task-items-container.today     { border-left-color: var(--blue); }
 .task-items-container.tomorrow  { border-left-color: var(--orange); }
@@ -49,6 +50,10 @@
 
 .arrow.closed {
     transform: rotate(90deg);
+}
+
+.pinned-title {
+    color: var(--yellow);
 }
 
 .overdue-title {
