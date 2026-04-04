@@ -28,5 +28,4 @@ sqlparse==0.5.5
 tzdata==2025.3
 coverage==7.13.4
 icalendar==5.0.11
-ortools==9.15.6755
 Faker==40.11.1
