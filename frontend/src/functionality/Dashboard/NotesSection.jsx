@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import useAutoSave from '../../utils/Hooks/useAutoSave.js';
 import useNotes from '../../utils/Hooks/useNotes.js';
+import useAutoSave from '../../utils/Hooks/useAutoSave.js';
 import './stylesheets/NotesSection.css';
 
 /**

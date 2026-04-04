@@ -12,22 +12,16 @@ import './stylesheets/TaskItem.css';
  * Provides a drop-up menu for viewing details, editing, undoing completion, and deleting.
  *
  * @param {Object} props
- * @param {number} props.id - The task ID
- * @param {string} props.name - The task name
- * @param {string} props.date - Date string (e.g. "2026-02-19")
- * @param {string} props.startTime - Start time string (e.g. "09:00:00")
- * @param {string} props.endTime - End time string (e.g. "10:00:00")
- * @param {string} props.location - Task location
- * @param {string} props.blockType - Block type
- * @param {string} props.description - Task description
+ * @param {Object} props.task - The task data object
  * @param {Function} props.onDelete - Callback to delete the task
  * @param {Function} [props.onComplete] - Callback to mark the task as completed
  * @param {Function} [props.onUndoComplete] - Callback to undo completion
  * @param {boolean} [props.overdue=false] - Whether the task is overdue
  * @param {boolean} [props.completed=false] - Whether the task is already completed
- * @returns {JSX.Element} A single task
+ * @returns {JSX.Element} A single task item
  */
-function TaskItem({ id, name, date, startTime, endTime, location, blockType, description, onDelete, onComplete, onUndoComplete, overdue = false, completed = false }) {
+function TaskItem({ task, onDelete, onComplete, onUndoComplete, overdue = false, completed = false }) {
+    const { id, name, date, startTime, endTime } = task;
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
@@ -48,7 +42,7 @@ function TaskItem({ id, name, date, startTime, endTime, location, blockType, des
 
     return (
         <>
-            <div className={'task-item-wrapper'}>
+            <div className="task-item-wrapper">
                 <TaskItemContent
                     name={name}
                     date={date}
@@ -78,7 +72,7 @@ function TaskItem({ id, name, date, startTime, endTime, location, blockType, des
             </div>
             {detailsOpen && (
                 <TaskDetailsPopup
-                    task={{ name, date, startTime, endTime, location, blockType, description }}
+                    task={task}
                     onClose={() => setDetailsOpen(false)}
                 />
             )}

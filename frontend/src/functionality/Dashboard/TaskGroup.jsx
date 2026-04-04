@@ -40,14 +40,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
                     {tasks.map((task) => (
                         <TaskItem
                             key={`${title}-${task.id}`}
-                            id={task.id}
-                            name={task.name}
-                            date={task.date}
-                            startTime={task.startTime}
-                            endTime={task.endTime}
-                            location={task.location}
-                            blockType={task.blockType}
-                            description={task.description}
+                            task={task}
                             onDelete={() => handleDelete(task.id)}
                             onComplete={onComplete ? () => onComplete(task) : undefined}
                             onUndoComplete={onUndoComplete ? () => onUndoComplete(task) : undefined}
