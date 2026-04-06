@@ -2,6 +2,7 @@ import TaskItem from './TaskItem.jsx';
 import handleDeleteTask from '../../utils/Helpers/handleDeleteTask.js';
 import getDate from '../../utils/Helpers/getDate.js';
 import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
+import './stylesheets/TaskItemList.css';
 
 /**
  * Renders the list of TaskItem components for a task group.
