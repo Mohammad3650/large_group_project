@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Dashboard from '../Dashboard';
 
+vi.mock('../../../utils/Hooks/useUsername.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Hooks/useTimeBlocks.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Hooks/useTasksByDateGroup.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Hooks/useFilterTasksForSearch.js', () => ({ default: vi.fn() }));
@@ -37,6 +38,7 @@ vi.mock('../TaskGroup.jsx', () => ({
         ),
 }));
 
+import * as useUsernameModule from '../../../utils/Hooks/useUsername.js';
 import * as useTimeBlocksModule from '../../../utils/Hooks/useTimeBlocks.js';
 import * as useTasksByDateGroupModule from '../../../utils/Hooks/useTasksByDateGroup.js';
 import * as useFilterTasksForSearchModule from '../../../utils/Hooks/useFilterTasksForSearch.js';
@@ -83,11 +85,17 @@ const renderDashboard = () => render(<Dashboard />);
 describe('Tests for Dashboard', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        useUsernameModule.default.mockReturnValue({ username: 'testuser', error: '' });
         useTimeBlocksModule.default.mockReturnValue({ blocks: [], error: null });
         useTasksByDateGroupModule.default.mockReturnValue(defaultTaskGroupState);
         useFilterTasksForSearchModule.default.mockReturnValue(defaultFilteredTasks);
         buildTaskGroupsModule.default.mockReturnValue(defaultTaskGroups);
         getNoSearchResultsModule.default.mockReturnValue(false);
+    });
+
+    it('renders the welcome heading with the username', () => {
+        renderDashboard();
+        expect(screen.getByText('Welcome to your Dashboard, testuser!')).toBeInTheDocument();
     });
 
     it('renders the notes section', () => {
