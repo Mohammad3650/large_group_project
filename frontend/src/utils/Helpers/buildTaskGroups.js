@@ -1,5 +1,6 @@
 import handleCompleteTask from './handleCompleteTask.js';
 import handleUndoCompleteTask from './handleUndoCompleteTask.js';
+import handleUndoCompletePinnedTask from './handleUndoCompletePinnedTask.js';
 import handlePinTask from './handlePinTask.js';
 import handleUnpinTask from './handleUnpinTask.js';
 
@@ -46,7 +47,8 @@ function buildTaskGroups(filteredTasks, setters) {
             tasks: filteredPinned,
             setTasks: setPinnedTasks,
             onComplete: (task) => handleCompleteTask(task, setPinnedTasks, setCompletedTasks),
-            onUnpin: (task) => handleUnpinTask(task, { setPinnedTasks, ...dateGroupSetters }),
+            onUndoComplete: (task) => handleUndoCompletePinnedTask(task, { setPinnedTasks }),
+            onUnpin: (task) => handleUnpinTask(task, { setPinnedTasks, setCompletedTasks, ...dateGroupSetters }),
         },
         {
             title: 'Overdue',
