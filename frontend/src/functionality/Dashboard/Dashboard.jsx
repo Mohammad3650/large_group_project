@@ -3,8 +3,8 @@ import TaskGroup from './TaskGroup.jsx';
 import TaskSearchBar from '../../components/TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
+import NoTasksMessage from './NoTasksMessage.jsx';
 import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
-import getNoSearchResults from '../../utils/Helpers/getNoSearchResults.js';
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
@@ -53,11 +53,6 @@ function Dashboard() {
 
     const filteredTasks = { filteredPinned, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted };
     const setters = { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks };
-
-    const noSearchResults = getNoSearchResults(totalTasks, searchTerm, [
-        filteredPinned, filteredOverdue, filteredToday, filteredTomorrow,
-        filteredWeek, filteredBeyondWeek, filteredCompleted,
-    ]);
     const taskGroups = buildTaskGroups(filteredTasks, setters);
 
     return (
@@ -69,17 +64,16 @@ function Dashboard() {
 
                 <TaskSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-                {totalTasks === 0 && (
-                    <p className="no-tasks-message">
-                        🎉 Congrats, you have no tasks!
-                    </p>
-                )}
-
-                {noSearchResults && (
-                    <p className="no-tasks-message">
-                        No tasks found matching "{searchTerm.trim()}"
-                    </p>
-                )}
+                <NoTasksMessage
+                    totalTasks={totalTasks}
+                    filteredOverdue={filteredOverdue}
+                    filteredToday={filteredToday}
+                    filteredTomorrow={filteredTomorrow}
+                    filteredWeek={filteredWeek}
+                    filteredBeyondWeek={filteredBeyondWeek}
+                    filteredCompleted={filteredCompleted}
+                    searchTerm={searchTerm}
+                />
 
                 {taskGroups.map(({ title, ...props }) => (
                     <TaskGroup key={title} title={title} {...props} />

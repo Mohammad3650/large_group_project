@@ -9,10 +9,24 @@ vi.mock('../../../utils/Hooks/useFilterTasksForSearch.js', () => ({ default: vi.
 vi.mock('../../../utils/Hooks/useBodyClass.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Hooks/useScrollToTopOnResize.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Helpers/buildTaskGroups.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Helpers/getNoSearchResults.js', () => ({ default: vi.fn() }));
 vi.mock('../stylesheets/Dashboard.css', () => ({}));
 vi.mock('../NotesSection.jsx', () => ({
     default: () => <div data-testid="notes-section" />,
+}));
+vi.mock('../NoTasksMessage.jsx', () => ({
+    default: ({ totalTasks, searchTerm, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted }) => {
+        if (totalTasks === 0) return <p>🎉 Congrats, you have no tasks!</p>;
+        const noResults =
+            filteredOverdue.length === 0 &&
+            filteredToday.length === 0 &&
+            filteredTomorrow.length === 0 &&
+            filteredWeek.length === 0 &&
+            filteredBeyondWeek.length === 0 &&
+            filteredCompleted.length === 0 &&
+            searchTerm.trim() !== '';
+        if (noResults) return <p>No tasks found matching "{searchTerm.trim()}"</p>;
+        return null;
+    },
 }));
 vi.mock('../../../components/AddTaskButton.jsx', () => ({
     default: () => <button data-testid="add-task-button">+ Add Task</button>,
@@ -43,7 +57,6 @@ import * as useTimeBlocksModule from '../../../utils/Hooks/useTimeBlocks.js';
 import * as useTasksByDateGroupModule from '../../../utils/Hooks/useTasksByDateGroup.js';
 import * as useFilterTasksForSearchModule from '../../../utils/Hooks/useFilterTasksForSearch.js';
 import * as buildTaskGroupsModule from '../../../utils/Helpers/buildTaskGroups.js';
-import * as getNoSearchResultsModule from '../../../utils/Helpers/getNoSearchResults.js';
 
 const mockTask = (id, name) => ({ id, name });
 
@@ -82,7 +95,7 @@ const defaultTaskGroups = [
 
 const renderDashboard = () => render(<Dashboard />);
 
-describe('Tests for Dashboard', () => {
+describe('Dashboard component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         useUsernameModule.default.mockReturnValue({ username: 'testuser', error: '' });
@@ -90,7 +103,6 @@ describe('Tests for Dashboard', () => {
         useTasksByDateGroupModule.default.mockReturnValue(defaultTaskGroupState);
         useFilterTasksForSearchModule.default.mockReturnValue(defaultFilteredTasks);
         buildTaskGroupsModule.default.mockReturnValue(defaultTaskGroups);
-        getNoSearchResultsModule.default.mockReturnValue(false);
     });
 
     it('renders the welcome heading with the username', () => {
@@ -125,13 +137,21 @@ describe('Tests for Dashboard', () => {
     });
 
     it('shows the no-search-results message when no tasks match the search term', () => {
-        getNoSearchResultsModule.default.mockReturnValue(true);
+        useFilterTasksForSearchModule.default.mockReturnValue({
+            filteredPinned: [],
+            filteredOverdue: [],
+            filteredToday: [],
+            filteredTomorrow: [],
+            filteredWeek: [],
+            filteredBeyondWeek: [],
+            filteredCompleted: [],
+        });
         renderDashboard();
         fireEvent.change(screen.getByTestId('search-bar'), { target: { value: 'xyz' } });
         expect(screen.getByText('No tasks found matching "xyz"')).toBeInTheDocument();
     });
 
-    it('does not show the no-search-results message when getNoSearchResults returns false', () => {
+    it('does not show the no-search-results message when tasks match the search', () => {
         renderDashboard();
         expect(screen.queryByText(/No tasks found matching/)).not.toBeInTheDocument();
     });
