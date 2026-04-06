@@ -4,8 +4,9 @@ import './stylesheets/TaskSearchBar.css';
 /**
  * Search bar component for filtering tasks by name.
  *
- * @param {string} searchTerm - The current search term
- * @param {Function} setSearchTerm - Setter to update the search term
+ * @param {Object} props
+ * @param {string} props.searchTerm - The current search term
+ * @param {Function} props.setSearchTerm - Setter to update the search term
  * @returns {JSX.Element} A search bar with a non-interactive search icon
  */
 function TaskSearchBar({ searchTerm, setSearchTerm }) {
