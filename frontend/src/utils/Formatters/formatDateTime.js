@@ -10,6 +10,7 @@ function formatDateTime(date, startTime, endTime) {
     const dateObj = new Date(`${date}T${startTime}`);
     const endObj = new Date(`${date}T${endTime}`);
     const day = dateObj.toLocaleDateString('en-GB', {
+        weekday: 'short',
         day: 'numeric',
         month: 'short'
     });
