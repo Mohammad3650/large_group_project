@@ -223,9 +223,6 @@ class Command(BaseSeeder):
 
         Args:
             all_users (list): A list of User objects to seed data for.
-
-        Returns:
-            None
         """
         for user in all_users:
             create_events_for_user(user, NUM_EVENTS_PER_USER)
@@ -246,9 +243,6 @@ class Command(BaseSeeder):
         Args:
            *args: Positional arguments passed by Django's management command framework.
            **kwargs: Keyword arguments passed by Django's management command framework.
-
-        Returns:
-           None
         """
         if self._is_already_seeded():
             self.error("Database has already been seeded")

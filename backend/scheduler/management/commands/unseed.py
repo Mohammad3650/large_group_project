@@ -27,9 +27,6 @@ class Command(BaseSeeder):
         Args:
             *args: Positional arguments passed by Django's management command framework.
             **kwargs: Keyword arguments passed by Django's management command framework.
-
-        Returns:
-            None
         """
         seeded_users = self._get_seeded_users()
         count = seeded_users.count()
