@@ -8,7 +8,7 @@ import PinButton from './PinButton.jsx';
 import './stylesheets/TaskItem.css';
 
 /**
- * Displays a single task item with a pin button, checkbox, name, and time.
+ * Displays a single task item with a pin button, checkbox, name, time and date.
  * Plays a ding sound and fades out on completion.
  * Provides a drop-up menu for viewing details, editing, undoing completion, and deleting.
  *

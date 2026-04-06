@@ -1,29 +1,79 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import TaskItem from '../TaskItem.jsx';
 
-vi.mock('../../../assets/Dashboard/ding.mp3', () => ({ default: 'ding.mp3' }));
 vi.mock('../stylesheets/TaskItem.css', () => ({}));
 vi.mock('../../../utils/Audio/playDing.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Formatters/formatDateTime.js', () => ({
-    default: vi.fn(() => '09:00 - 10:00 18 Mar')
+vi.mock('../../../utils/Hooks/useDropdown.js', () => ({ default: vi.fn() }));
+vi.mock('../TaskItemContent.jsx', () => ({
+    default: ({ name, checked, fading, overdue, completed, onClick }) => (
+        <div className={`task-content${fading ? ' fading' : ''}`} onClick={onClick}>
+            <input type="checkbox" readOnly checked={checked} />
+            <span className={overdue ? 'overdue-text' : completed ? 'completed-text' : ''}>
+                {name}
+            </span>
+        </div>
+    ),
+}));
+vi.mock('../TaskOptionsDropup.jsx', () => ({
+    default: ({ onDelete, onUndoComplete, onViewDetails }) => (
+        <div data-testid="task-options-dropup">
+            <button onClick={onDelete}>Delete</button>
+            {onUndoComplete && <button onClick={onUndoComplete}>Undo</button>}
+            <button onClick={onViewDetails}>View Details</button>
+        </div>
+    ),
+}));
+vi.mock('../TaskDetailsPopup.jsx', () => ({
+    default: ({ onClose }) => (
+        <div data-testid="task-details-popup">
+            <button onClick={onClose}>Close Details</button>
+        </div>
+    ),
+}));
+vi.mock('../PinButton.jsx', () => ({
+    default: ({ onPin, onUnpin }) => (
+        <div data-testid="pin-button">
+            {onPin && <button onClick={onPin}>Pin</button>}
+            {onUnpin && <button onClick={onUnpin}>Unpin</button>}
+        </div>
+    ),
 }));
 
-import TaskItem from '../TaskItem.jsx';
 import * as playDingModule from '../../../utils/Audio/playDing.js';
+import * as useDropdownModule from '../../../utils/Hooks/useDropdown.js';
 
-const defaultProps = {
+const mockTask = {
+    id: 1,
     name: 'Finish coursework',
     date: '2026-03-18',
     startTime: '09:00',
     endTime: '10:00',
-    onDelete: vi.fn(),
-    overdue: false
+    pinned: false,
+    completed_at: null,
 };
+
+const mockSetDropdownOpen = vi.fn();
+
+const defaultProps = {
+    task: mockTask,
+    onDelete: vi.fn(),
+    overdue: false,
+    completed: false,
+};
+
+const renderTaskItem = (props = {}) =>
+    render(<TaskItem {...defaultProps} {...props} />);
 
 describe('Tests for TaskItem', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.useFakeTimers();
+        useDropdownModule.default.mockReturnValue({
+            dropdownOpen: false,
+            setDropdownOpen: mockSetDropdownOpen,
+            dropdownRef: { current: null },
+        });
     });
 
     afterEach(() => {
@@ -31,50 +81,184 @@ describe('Tests for TaskItem', () => {
     });
 
     it('renders the task name', () => {
-        render(<TaskItem {...defaultProps} />);
+        renderTaskItem();
         expect(screen.getByText('Finish coursework')).toBeInTheDocument();
     });
 
-    it('renders the formatted date and time', () => {
-        render(<TaskItem {...defaultProps} />);
-        expect(screen.getByText('09:00 - 10:00 18 Mar')).toBeInTheDocument();
-    });
-
     it('renders the checkbox as unchecked by default', () => {
-        render(<TaskItem {...defaultProps} />);
+        renderTaskItem();
         expect(screen.getByRole('checkbox')).not.toBeChecked();
     });
 
-    it('applies the overdue-text class to the label when overdue is true', () => {
-        render(<TaskItem {...defaultProps} overdue={true} />);
-        expect(screen.getByText('Finish coursework')).toHaveClass(
-            'overdue-text'
-        );
+    it('applies the overdue-text class when overdue is true', () => {
+        renderTaskItem({ overdue: true });
+        expect(screen.getByText('Finish coursework')).toHaveClass('overdue-text');
     });
 
-    it('does not apply the overdue-text class when overdue is false', () => {
-        render(<TaskItem {...defaultProps} overdue={false} />);
-        expect(screen.getByText('Finish coursework')).not.toHaveClass(
-            'overdue-text'
-        );
+    it('applies the completed-text class when completed is true', () => {
+        renderTaskItem({ completed: true });
+        expect(screen.getByText('Finish coursework')).toHaveClass('completed-text');
+    });
+
+    it('does not apply any special class when neither overdue nor completed', () => {
+        renderTaskItem();
+        const nameEl = screen.getByText('Finish coursework');
+        expect(nameEl).not.toHaveClass('overdue-text');
+        expect(nameEl).not.toHaveClass('completed-text');
     });
 
     it('checks the checkbox and starts fading when clicked', async () => {
-        render(<TaskItem {...defaultProps} />);
+        renderTaskItem({ onComplete: vi.fn() });
         await act(async () => {
             fireEvent.click(screen.getByRole('checkbox').closest('div'));
         });
         expect(screen.getByRole('checkbox')).toBeChecked();
-        expect(screen.getByRole('checkbox').closest('div')).toHaveClass(
-            'fading'
-        );
+        expect(screen.getByRole('checkbox').closest('div')).toHaveClass('fading');
     });
 
-    it('calls playDing when clicked', async () => {
-        render(<TaskItem {...defaultProps} />);
+    it('calls playDing when the task content is clicked', async () => {
+        renderTaskItem({ onComplete: vi.fn() });
         await act(async () => {
             fireEvent.click(screen.getByRole('checkbox').closest('div'));
         });
         expect(playDingModule.default).toHaveBeenCalled();
+    });
+
+    it('calls onComplete after 500ms when the task content is clicked', async () => {
+        const onComplete = vi.fn();
+        renderTaskItem({ onComplete });
+        await act(async () => {
+            fireEvent.click(screen.getByRole('checkbox').closest('div'));
+            vi.advanceTimersByTime(500);
+        });
+        expect(onComplete).toHaveBeenCalled();
+    });
+
+    it('does not throw when onComplete is not provided and the task is clicked', () => {
+        renderTaskItem();
+        expect(() => {
+            fireEvent.click(screen.getByRole('checkbox').closest('div'));
+            act(() => vi.advanceTimersByTime(500));
+        }).not.toThrow();
+    });
+
+    it('does not call onComplete or playDing when the checkbox is already checked', async () => {
+        const onComplete = vi.fn();
+        renderTaskItem({ onComplete });
+        await act(async () => {
+            fireEvent.click(screen.getByRole('checkbox').closest('div'));
+            vi.advanceTimersByTime(500);
+        });
+        onComplete.mockClear();
+        playDingModule.default.mockClear();
+        await act(async () => {
+            fireEvent.click(screen.getByRole('checkbox').closest('div'));
+            vi.advanceTimersByTime(500);
+        });
+        expect(onComplete).not.toHaveBeenCalled();
+        expect(playDingModule.default).not.toHaveBeenCalled();
+    });
+
+    it('does not call onComplete or playDing when completed is true', async () => {
+        const onComplete = vi.fn();
+        renderTaskItem({ onComplete, completed: true });
+        await act(async () => {
+            fireEvent.click(screen.getByRole('checkbox').closest('div'));
+            vi.advanceTimersByTime(500);
+        });
+        expect(onComplete).not.toHaveBeenCalled();
+        expect(playDingModule.default).not.toHaveBeenCalled();
+    });
+
+    it('renders the PinButton when onPin is provided', () => {
+        renderTaskItem({ onPin: vi.fn() });
+        expect(screen.getByTestId('pin-button')).toBeInTheDocument();
+    });
+
+    it('renders the PinButton when onUnpin is provided', () => {
+        renderTaskItem({ onUnpin: vi.fn() });
+        expect(screen.getByTestId('pin-button')).toBeInTheDocument();
+    });
+
+    it('does not render the PinButton when neither onPin nor onUnpin is provided', () => {
+        renderTaskItem();
+        expect(screen.queryByTestId('pin-button')).not.toBeInTheDocument();
+    });
+
+    it('calls setDropdownOpen with a toggle function when the options button is clicked', () => {
+        const localSetDropdownOpen = vi.fn();
+        useDropdownModule.default.mockReturnValue({
+            dropdownOpen: false,
+            setDropdownOpen: localSetDropdownOpen,
+            dropdownRef: { current: null },
+        });
+        renderTaskItem();
+        fireEvent.click(screen.getByText('⋮'));
+        expect(localSetDropdownOpen).toHaveBeenCalledOnce();
+        const toggleFn = localSetDropdownOpen.mock.calls[0][0];
+        expect(toggleFn(false)).toBe(true);
+        expect(toggleFn(true)).toBe(false);
+    });
+
+    it('renders the TaskOptionsDropup when the dropdown is open', () => {
+        useDropdownModule.default.mockReturnValue({
+            dropdownOpen: true,
+            setDropdownOpen: mockSetDropdownOpen,
+            dropdownRef: { current: null },
+        });
+        renderTaskItem();
+        expect(screen.getByTestId('task-options-dropup')).toBeInTheDocument();
+    });
+
+    it('does not render the TaskOptionsDropup when the dropdown is closed', () => {
+        renderTaskItem();
+        expect(screen.queryByTestId('task-options-dropup')).not.toBeInTheDocument();
+    });
+
+    it('calls onDelete when the delete button in the dropup is clicked', () => {
+        const onDelete = vi.fn();
+        useDropdownModule.default.mockReturnValue({
+            dropdownOpen: true,
+            setDropdownOpen: mockSetDropdownOpen,
+            dropdownRef: { current: null },
+        });
+        renderTaskItem({ onDelete });
+        fireEvent.click(screen.getByText('Delete'));
+        expect(onDelete).toHaveBeenCalled();
+    });
+
+    it('calls onUndoComplete when the undo button in the dropup is clicked', () => {
+        const onUndoComplete = vi.fn();
+        useDropdownModule.default.mockReturnValue({
+            dropdownOpen: true,
+            setDropdownOpen: mockSetDropdownOpen,
+            dropdownRef: { current: null },
+        });
+        renderTaskItem({ onUndoComplete });
+        fireEvent.click(screen.getByText('Undo'));
+        expect(onUndoComplete).toHaveBeenCalled();
+    });
+
+    it('opens the TaskDetailsPopup when view details is clicked', () => {
+        useDropdownModule.default.mockReturnValue({
+            dropdownOpen: true,
+            setDropdownOpen: mockSetDropdownOpen,
+            dropdownRef: { current: null },
+        });
+        renderTaskItem();
+        fireEvent.click(screen.getByText('View Details'));
+        expect(screen.getByTestId('task-details-popup')).toBeInTheDocument();
+    });
+
+    it('closes the TaskDetailsPopup when the close button is clicked', () => {
+        useDropdownModule.default.mockReturnValue({
+            dropdownOpen: true,
+            setDropdownOpen: mockSetDropdownOpen,
+            dropdownRef: { current: null },
+        });
+        renderTaskItem();
+        fireEvent.click(screen.getByText('View Details'));
+        fireEvent.click(screen.getByText('Close Details'));
+        expect(screen.queryByTestId('task-details-popup')).not.toBeInTheDocument();
     });
 });
