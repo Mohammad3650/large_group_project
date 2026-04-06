@@ -10,6 +10,7 @@ import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
 import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
+import useUsername from '../../utils/Hooks/useUsername.js';
 import './stylesheets/Dashboard.css';
 
 /**
@@ -35,6 +36,8 @@ function Dashboard() {
         totalTasks,
     } = useTasksByDateGroup(blocks);
 
+    const { username } = useUsername(true);
+
     useBodyClass('dashboard-page');
     useScrollToTopOnResize();
 
@@ -46,6 +49,8 @@ function Dashboard() {
         searchTerm
     );
 
+    if (blocksError) return <p>{blocksError}</p>;
+
     const filteredTasks = { filteredPinned, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted };
     const setters = { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks };
 
@@ -55,12 +60,10 @@ function Dashboard() {
     ]);
     const taskGroups = buildTaskGroups(filteredTasks, setters);
 
-    if (blocksError) return <p>{blocksError}</p>;
-
     return (
         <div className="dashboard-content">
             <div className="task-section">
-                <h1>Test</h1>
+                <h1>Welcome to your Dashboard, {username}!</h1>
 
                 <AddTaskButton />
 
