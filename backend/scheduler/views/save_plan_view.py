@@ -27,11 +27,12 @@ class SaveWeeklyPlanView(APIView):
 
         user = request.user
         events = serializer.validated_data["events"]
-        timezone = request.data.get("timezone", "UTC")
+        timezone = request.data.get("timezone")
         created = []
 
         for event in events:
             date = event["date"]
+            # event["timezone"] = timezone
             dayplan = get_or_create_dayplan(user, date)
             created.append(create_timeblock(dayplan, event, str(date)))
 

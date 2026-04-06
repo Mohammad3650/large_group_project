@@ -14,7 +14,7 @@ class ParsedScheduleRequest:
     even_spread: bool
     include_scheduled: bool
     windows: List[Tuple[int, int, bool]]
-    unscheduled: List[Tuple[int, str, int, bool, str, str, str, str]] # unscheduled: (duration, name, frequency, daily, start_time_preference, location, block_type, description)
+    unscheduled: List[Tuple[int, str, int, bool, str, str, str, str]] # unscheduled: (name, duration, frequency, daily, start_time_preference, location, block_type, description)
 
 
 class ScheduleRequestParser:
@@ -44,13 +44,11 @@ class ScheduleRequestParser:
             start = self._time_to_abs_min(window["start_min"])
             end = self._time_to_abs_min(window["end_min"])
             daily = window["daily"]
-
             if start < end:
-                new_windows.append({"start_min": start, "end_min": end, "daily": daily})
-                
+                new_windows.append({"start_min": 0, "end_min": start, "daily": daily})
+                new_windows.append({"start_min": end, "end_min": 1440, "daily": daily})          
             else:
-                new_windows.append({"start_min": 0, "end_min": end, "daily": daily})
-                new_windows.append({"start_min": start, "end_min": 1440, "daily": daily})
+                new_windows.append({"start_min": end, "end_min": start, "daily": daily})
         
         return new_windows
 
@@ -67,12 +65,11 @@ class ScheduleRequestParser:
 
         even_spread = validated.get("even_spread", True)
         include_scheduled = validated.get("include_scheduled", True)
-
         windows = [(w["start_min"], w["end_min"], w.get("daily", False)) for w in self.create_windows(validated["windows"])]
         
         unscheduled = [
             (
-                u["duration"], u["name"], u.get("frequency", 1),
+                u["name"], u["duration"], u.get("frequency", 1),
                 u["daily"], u.get("start_time_preference", "None"), u.get("location", ""),
                 u.get("block_type", "study"), u.get("description", ""), 
                 )
