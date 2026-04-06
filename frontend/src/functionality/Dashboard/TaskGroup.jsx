@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import TaskItem from './TaskItem.jsx';
-import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
-import getDate from '../../utils/Helpers/getDate.js';
-import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
+import TaskItemList from './TaskItemList.jsx';
+import getTitleClass from '../../utils/Helpers/getTitleClass.js';
 import './stylesheets/TaskGroup.css';
 
 /**
@@ -28,48 +26,28 @@ function TaskGroup({ title, tasks = [], setTasks, variant = '', onComplete, onUn
     const overdue = variant === 'overdue';
     const completed = variant === 'completed';
 
-    function handleDelete(id) {
-        deleteTimeBlock(id)
-            .then(() => setTasks((prev) => prev.filter((task) => task.id !== id)))
-            .catch(() => {});
-    }
-
     if (tasks.length === 0) return null;
-
-    const titleClass =
-        overdue ? 'overdue-title' :
-            completed ? 'completed-title' :
-                variant === 'pinned' ? 'pinned-title' : '';
 
     return (
         <>
             <div className="task-group" data-testid="task-group-header" onClick={() => setIsOpen(!isOpen)}>
                 <span className={`arrow ${isOpen ? 'open' : 'closed'}`}>^</span>
-                <h5 className={titleClass}>{title}</h5>
+                <h5 className={getTitleClass(variant)}>{title}</h5>
                 <h5 className="number-of-tasks">({tasks.length})</h5>
             </div>
             {isOpen && (
                 <div className={`task-items-container ${variant}`}>
-                    {(() => {
-                        const { today } = getDateBoundaries();
-                        return tasks.map((task) => {
-                            const taskCompleted = completed || !!task.completed_at;
-                            const taskOverdue = overdue || (!task.completed_at && getDate(task) < today);
-                            return (
-                                <TaskItem
-                                    key={`${title}-${task.id}`}
-                                    task={task}
-                                    onDelete={() => handleDelete(task.id)}
-                                    onComplete={onComplete ? () => onComplete(task) : undefined}
-                                    onUndoComplete={onUndoComplete ? () => onUndoComplete(task) : undefined}
-                                    onPin={onPin ? () => onPin(task) : undefined}
-                                    onUnpin={onUnpin ? () => onUnpin(task) : undefined}
-                                    overdue={taskOverdue}
-                                    completed={taskCompleted}
-                                />
-                            );
-                        });
-                    })()}
+                    <TaskItemList
+                        tasks={tasks}
+                        title={title}
+                        overdue={overdue}
+                        completed={completed}
+                        setTasks={setTasks}
+                        onComplete={onComplete}
+                        onUndoComplete={onUndoComplete}
+                        onPin={onPin}
+                        onUnpin={onUnpin}
+                    />
                 </div>
             )}
         </>

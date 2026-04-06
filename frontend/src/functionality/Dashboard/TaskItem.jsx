@@ -35,7 +35,7 @@ function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, 
         playDing();
         setChecked(true);
         setFading(true);
-        setTimeout(() => onComplete(), 500);
+        setTimeout(() => onComplete?.(), 500);
     }
 
     function handleOptionsClick(e) {

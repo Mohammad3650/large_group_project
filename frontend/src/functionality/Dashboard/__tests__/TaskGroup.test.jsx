@@ -1,36 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TaskGroup from '../TaskGroup';
-import * as deleteTimeBlockModule from '../../../utils/Api/deleteTimeBlock.js';
 
 vi.mock('../stylesheets/TaskGroup.css', () => ({}));
-vi.mock('../../../utils/Api/deleteTimeBlock.js', () => ({
-    default: vi.fn()
-}));
-vi.mock('../TaskItem.jsx', () => ({
-    default: ({ name, onDelete }) => (
-        <div>
-            <span>{name}</span>
-            <button onClick={onDelete}>Delete</button>
-        </div>
-    )
+vi.mock('../../../utils/Helpers/getTitleClass.js', () => ({ default: vi.fn() }));
+vi.mock('../TaskItemList.jsx', () => ({
+    default: ({ tasks }) =>
+        tasks.map((t) => <div key={t.id} data-testid={`task-item-${t.id}`}>{t.name}</div>),
 }));
 
+import * as getTitleClassModule from '../../../utils/Helpers/getTitleClass.js';
+
 const mockTasks = [
-    {
-        id: 1,
-        name: 'Lecture',
-        date: '2026-03-18',
-        startTime: '09:00',
-        endTime: '10:00'
-    },
-    {
-        id: 2,
-        name: 'Seminar',
-        date: '2026-03-18',
-        startTime: '11:00',
-        endTime: '12:00'
-    }
+    { id: 1, name: 'Lecture' },
+    { id: 2, name: 'Seminar' },
 ];
 
 const renderTaskGroup = (props = {}) =>
@@ -39,6 +22,7 @@ const renderTaskGroup = (props = {}) =>
             title="Today"
             tasks={mockTasks}
             setTasks={vi.fn()}
+            variant="today"
             {...props}
         />
     );
@@ -46,6 +30,7 @@ const renderTaskGroup = (props = {}) =>
 describe('Tests for TaskGroup', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        getTitleClassModule.default.mockReturnValue('');
     });
 
     it('renders null when the tasks array is empty', () => {
@@ -65,7 +50,7 @@ describe('Tests for TaskGroup', () => {
         expect(screen.getByText('(2)')).toBeInTheDocument();
     });
 
-    it('renders all task items by default', () => {
+    it('renders all task items', () => {
         renderTaskGroup();
         expect(screen.getByText('Lecture')).toBeInTheDocument();
         expect(screen.getByText('Seminar')).toBeInTheDocument();
@@ -86,42 +71,14 @@ describe('Tests for TaskGroup', () => {
         expect(screen.getByText('Seminar')).toBeInTheDocument();
     });
 
-    it('applies the overdue-title class to the heading when overdue is true', () => {
-        renderTaskGroup({ title: 'Overdue', overdue: true });
+    it('passes the class returned by getTitleClass to the heading', () => {
+        getTitleClassModule.default.mockReturnValue('overdue-title');
+        renderTaskGroup({ variant: 'overdue', title: 'Overdue' });
         expect(screen.getByText('Overdue')).toHaveClass('overdue-title');
     });
 
-    it('does not apply the overdue-title class when overdue is false', () => {
-        renderTaskGroup({ overdue: false });
-        expect(screen.getByText('Today')).not.toHaveClass('overdue-title');
-    });
-
-    it('calls deleteTimeBlock and removes the task on successful deletion', async () => {
-        deleteTimeBlockModule.default.mockResolvedValue({});
-        const setTasks = vi.fn();
-        renderTaskGroup({ setTasks });
-
-        fireEvent.click(screen.getAllByText('Delete')[0]);
-
-        await vi.waitFor(() =>
-            expect(deleteTimeBlockModule.default).toHaveBeenCalledWith(1)
-        );
-        await vi.waitFor(() => expect(setTasks).toHaveBeenCalled());
-
-        const filterFn = setTasks.mock.calls[0][0];
-        expect(filterFn(mockTasks)).toEqual([mockTasks[1]]);
-    });
-
-    it('does not throw when deletion fails', async () => {
-        deleteTimeBlockModule.default.mockRejectedValue(
-            new Error('Network error')
-        );
-        renderTaskGroup();
-
-        fireEvent.click(screen.getAllByText('Delete')[0]);
-
-        await vi.waitFor(() =>
-            expect(deleteTimeBlockModule.default).toHaveBeenCalledWith(1)
-        );
+    it('calls getTitleClass with the variant prop', () => {
+        renderTaskGroup({ variant: 'completed' });
+        expect(getTitleClassModule.default).toHaveBeenCalledWith('completed');
     });
 });
