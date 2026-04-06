@@ -87,8 +87,12 @@ class Scheduler:
         self.scheduled = scheduled
         self.days = self.create_days(request.days)
 
-    # create a day object and add it to list of days. set the relative start tine of each day
     def create_days(self, days):
+        """
+        Creates day objects and adds to list of days. Sets relative start time of each day.
+        @param: days: Number of days in range.
+        @return: List of day objects
+        """
         created_days = []
         for count in range(days):
             created_days.append(Day(DAY_MINS * count))
@@ -105,7 +109,7 @@ class Scheduler:
         for start, end, name in self.scheduled:
             day_index = start // DAY_MINS
             day = self.days[day_index]
-            day.add_event(Event(True, start, end, name))
+            day.add_event(Event(True, start - day.relative_start, end - day.relative_start, name))
 
     def _get_ordered_days(self):
         if self.request.even_spread:
@@ -163,7 +167,7 @@ class Scheduler:
     def _handle_daily_unsched_events(self, event):
         days = self._get_ordered_days()
         for day in days:
-            if event[3]:
+            if event[4] == "Late":
                 result = self._handle_late_unsched_event(event)
             else:
                 event_obj = self._create_unsched_event_object(event)
