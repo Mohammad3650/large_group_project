@@ -1,28 +1,32 @@
 import { useState } from 'react';
 import TaskItem from './TaskItem.jsx';
+import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
 import getDate from '../../utils/Helpers/getDate.js';
 import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
-import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
 import './stylesheets/TaskGroup.css';
 
 /**
- * Displays a collapsible section of tasks grouped by day or category.
+ * Displays a collapsible section of tasks grouped by date or category.
+ *
+ * The overdue and completed states are derived from the variant prop, so callers
+ * only need to pass variant — no separate boolean flags are required.
  *
  * @param {string} title - The section heading (e.g. "Today", "Pinned")
  * @param {Array} tasks - Array of task objects to display
  * @param {Function} setTasks - State setter to update the tasks array
- * @param {boolean} [overdue=false] - Whether the section represents overdue tasks
- * @param {boolean} [completed=false] - Whether the section represents completed tasks
- * @param {boolean} [nextWeek=false] - Whether the section represents next 7 days tasks
- * @param {string} [variant=''] - CSS variant class for the coloured left border accent
- * @param {Function} [onComplete] - Callback to mark a task as completed
- * @param {Function} [onUndoComplete] - Callback to undo a task completion
- * @param {Function} [onPin] - Callback to pin a task
- * @param {Function} [onUnpin] - Callback to unpin a task
- * @returns {JSX.Element|null} The task group section, or null if no tasks
+ * @param {string} [variant=''] - CSS variant controlling the coloured left border and title colour.
+ *   Accepted values: 'pinned', 'overdue', 'today', 'tomorrow', 'week', 'beyond', 'completed'
+ * @param {Function} [onComplete] - Callback invoked when a task is marked as completed
+ * @param {Function} [onUndoComplete] - Callback invoked when a task completion is undone
+ * @param {Function} [onPin] - Callback invoked when a task is pinned
+ * @param {Function} [onUnpin] - Callback invoked when a task is unpinned
+ * @returns {JSX.Element|null} The task group section, or null if the tasks array is empty
  */
-function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = false, nextWeek = false, variant = '', onComplete, onUndoComplete, onPin, onUnpin }) {
+function TaskGroup({ title, tasks = [], setTasks, variant = '', onComplete, onUndoComplete, onPin, onUnpin }) {
     const [isOpen, setIsOpen] = useState(true);
+
+    const overdue = variant === 'overdue';
+    const completed = variant === 'completed';
 
     function handleDelete(id) {
         deleteTimeBlock(id)
@@ -35,8 +39,7 @@ function TaskGroup({ title, tasks = [], setTasks, overdue = false, completed = f
     const titleClass =
         overdue ? 'overdue-title' :
             completed ? 'completed-title' :
-                nextWeek ? 'next-week-title' :
-                    variant === 'pinned' ? 'pinned-title' : '';
+                variant === 'pinned' ? 'pinned-title' : '';
 
     return (
         <>

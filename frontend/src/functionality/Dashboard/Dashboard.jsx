@@ -1,23 +1,21 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import TaskGroup from './TaskGroup.jsx';
+import TaskSearchBar from '../../components/TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
+import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
+import getNoSearchResults from '../../utils/Helpers/getNoSearchResults.js';
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
-import handleCompleteTask from '../../utils/Helpers/handleCompleteTask.js';
-import handleUndoCompleteTask from '../../utils/Helpers/handleUndoCompleteTask.js';
-import handlePinTask from '../../utils/Helpers/handlePinTask.js';
-import handleUnpinTask from '../../utils/Helpers/handleUnpinTask.js';
-import TaskSearchBar from '../../components/TaskSearchBar.jsx';
-import filterTasksForSearch from '../../utils/Helpers/filterTasksForSearch.js';
+import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
 import './stylesheets/Dashboard.css';
 
 /**
  * Dashboard component — main page displayed after successful login.
  * Displays tasks grouped by category (pinned, overdue, today, tomorrow,
- * next 7 days, beyond, completed) alongside a notes section.
+ * next 7 days, beyond next 7 days, and completed) alongside a notes section.
  *
  * @returns {JSX.Element} The dashboard page
  */
@@ -40,19 +38,24 @@ function Dashboard() {
     useBodyClass('dashboard-page');
     useScrollToTopOnResize();
 
-    const dateGroupSetters = { setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks };
+    const {
+        filteredPinned, filteredOverdue, filteredToday, filteredTomorrow,
+        filteredWeek, filteredBeyondWeek, filteredCompleted,
+    } = useFilterTasksForSearch(
+        { pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks },
+        searchTerm
+    );
 
-    const filteredPinned = useMemo(() => filterTasksForSearch(pinnedTasks, searchTerm), [pinnedTasks, searchTerm]);
-    const filteredOverdue = useMemo(() => filterTasksForSearch(overdueTasks, searchTerm), [overdueTasks, searchTerm]);
-    const filteredToday = useMemo(() => filterTasksForSearch(todayTasks, searchTerm), [todayTasks, searchTerm]);
-    const filteredTomorrow = useMemo(() => filterTasksForSearch(tomorrowTasks, searchTerm), [tomorrowTasks, searchTerm]);
-    const filteredWeek = useMemo(() => filterTasksForSearch(weekTasks, searchTerm), [weekTasks, searchTerm]);
-    const filteredBeyondWeek = useMemo(() => filterTasksForSearch(beyondWeekTasks, searchTerm), [beyondWeekTasks, searchTerm]);
-    const filteredCompleted = useMemo(() => filterTasksForSearch(completedTasks, searchTerm), [completedTasks, searchTerm]);
+    const filteredTasks = { filteredPinned, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted };
+    const setters = { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks };
 
-    if (blocksError) {
-        return <p>{blocksError}</p>;
-    }
+    const noSearchResults = getNoSearchResults(totalTasks, searchTerm, [
+        filteredPinned, filteredOverdue, filteredToday, filteredTomorrow,
+        filteredWeek, filteredBeyondWeek, filteredCompleted,
+    ]);
+    const taskGroups = buildTaskGroups(filteredTasks, setters);
+
+    if (blocksError) return <p>{blocksError}</p>;
 
     return (
         <div className="dashboard-content">
@@ -69,41 +72,15 @@ function Dashboard() {
                     </p>
                 )}
 
-                {totalTasks > 0 &&
-                    filteredPinned.length === 0 &&
-                    filteredOverdue.length === 0 &&
-                    filteredToday.length === 0 &&
-                    filteredTomorrow.length === 0 &&
-                    filteredWeek.length === 0 &&
-                    filteredBeyondWeek.length === 0 &&
-                    filteredCompleted.length === 0 &&
-                    searchTerm.trim() !== '' && (
-                        <p className="no-tasks-message">
-                            No tasks found matching "{searchTerm.trim()}"
-                        </p>
-                    )}
+                {noSearchResults && (
+                    <p className="no-tasks-message">
+                        No tasks found matching "{searchTerm.trim()}"
+                    </p>
+                )}
 
-                <TaskGroup title="Pinned" variant="pinned" tasks={filteredPinned} setTasks={setPinnedTasks}
-                           onComplete={(task) => handleCompleteTask(task, setPinnedTasks, setCompletedTasks)}
-                           onUnpin={(task) => handleUnpinTask(task, { setPinnedTasks, setCompletedTasks, ...dateGroupSetters })} />
-                <TaskGroup title="Overdue" variant="overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true}
-                           onComplete={(task) => handleCompleteTask(task, setOverdueTasks, setCompletedTasks)}
-                           onPin={(task) => handlePinTask(task, setOverdueTasks, setPinnedTasks)} />
-                <TaskGroup title="Today" variant="today" tasks={filteredToday} setTasks={setTodayTasks}
-                           onComplete={(task) => handleCompleteTask(task, setTodayTasks, setCompletedTasks)}
-                           onPin={(task) => handlePinTask(task, setTodayTasks, setPinnedTasks)} />
-                <TaskGroup title="Tomorrow" variant="tomorrow" tasks={filteredTomorrow} setTasks={setTomorrowTasks}
-                           onComplete={(task) => handleCompleteTask(task, setTomorrowTasks, setCompletedTasks)}
-                           onPin={(task) => handlePinTask(task, setTomorrowTasks, setPinnedTasks)} />
-                <TaskGroup title="Next 7 Days" variant="week" nextWeek={true} tasks={filteredWeek} setTasks={setWeekTasks}
-                           onComplete={(task) => handleCompleteTask(task, setWeekTasks, setCompletedTasks)}
-                           onPin={(task) => handlePinTask(task, setWeekTasks, setPinnedTasks)} />
-                <TaskGroup title="After Next 7 Days" variant="beyond" tasks={filteredBeyondWeek} setTasks={setBeyondWeekTasks}
-                           onComplete={(task) => handleCompleteTask(task, setBeyondWeekTasks, setCompletedTasks)}
-                           onPin={(task) => handlePinTask(task, setBeyondWeekTasks, setPinnedTasks)} />
-                <TaskGroup title="Completed" variant="completed" tasks={filteredCompleted} setTasks={setCompletedTasks} completed={true}
-                           onUndoComplete={(task) => handleUndoCompleteTask(task, { setCompletedTasks, ...dateGroupSetters })}
-                           onPin={(task) => handlePinTask(task, setCompletedTasks, setPinnedTasks)} />
+                {taskGroups.map(({ title, ...props }) => (
+                    <TaskGroup key={title} title={title} {...props} />
+                ))}
             </div>
             <NotesSection />
         </div>
