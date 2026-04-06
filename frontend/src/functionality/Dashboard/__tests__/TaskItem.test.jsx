@@ -4,7 +4,6 @@ import TaskItem from '../TaskItem.jsx';
 
 vi.mock('../stylesheets/TaskItem.css', () => ({}));
 vi.mock('../../../utils/Audio/playDing.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Hooks/useDropdown.js', () => ({ default: vi.fn() }));
 vi.mock('../TaskItemContent.jsx', () => ({
     default: ({ name, checked, fading, overdue, completed, onClick }) => (
         <div className={`task-content${fading ? ' fading' : ''}`} onClick={onClick}>
@@ -15,9 +14,9 @@ vi.mock('../TaskItemContent.jsx', () => ({
         </div>
     ),
 }));
-vi.mock('../TaskOptionsDropup.jsx', () => ({
-    default: ({ onDelete, onUndoComplete, onViewDetails }) => (
-        <div data-testid="task-options-dropup">
+vi.mock('../TaskOptionsButton.jsx', () => ({
+    default: ({ onViewDetails, onDelete, onUndoComplete }) => (
+        <div data-testid="task-options-button">
             <button onClick={onDelete}>Delete</button>
             {onUndoComplete && <button onClick={onUndoComplete}>Undo</button>}
             <button onClick={onViewDetails}>View Details</button>
@@ -41,7 +40,6 @@ vi.mock('../PinButton.jsx', () => ({
 }));
 
 import * as playDingModule from '../../../utils/Audio/playDing.js';
-import * as useDropdownModule from '../../../utils/Hooks/useDropdown.js';
 
 const mockTask = {
     id: 1,
@@ -53,8 +51,6 @@ const mockTask = {
     completed_at: null,
 };
 
-const mockSetDropdownOpen = vi.fn();
-
 const defaultProps = {
     task: mockTask,
     onDelete: vi.fn(),
@@ -65,15 +61,10 @@ const defaultProps = {
 const renderTaskItem = (props = {}) =>
     render(<TaskItem {...defaultProps} {...props} />);
 
-describe('Tests for TaskItem', () => {
+describe('TaskItem component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.useFakeTimers();
-        useDropdownModule.default.mockReturnValue({
-            dropdownOpen: false,
-            setDropdownOpen: mockSetDropdownOpen,
-            dropdownRef: { current: null },
-        });
     });
 
     afterEach(() => {
@@ -185,77 +176,18 @@ describe('Tests for TaskItem', () => {
         expect(screen.queryByTestId('pin-button')).not.toBeInTheDocument();
     });
 
-    it('calls setDropdownOpen with a toggle function when the options button is clicked', () => {
-        const localSetDropdownOpen = vi.fn();
-        useDropdownModule.default.mockReturnValue({
-            dropdownOpen: false,
-            setDropdownOpen: localSetDropdownOpen,
-            dropdownRef: { current: null },
-        });
+    it('renders the TaskOptionsButton', () => {
         renderTaskItem();
-        fireEvent.click(screen.getByText('⋮'));
-        expect(localSetDropdownOpen).toHaveBeenCalledOnce();
-        const toggleFn = localSetDropdownOpen.mock.calls[0][0];
-        expect(toggleFn(false)).toBe(true);
-        expect(toggleFn(true)).toBe(false);
+        expect(screen.getByTestId('task-options-button')).toBeInTheDocument();
     });
 
-    it('renders the TaskOptionsDropup when the dropdown is open', () => {
-        useDropdownModule.default.mockReturnValue({
-            dropdownOpen: true,
-            setDropdownOpen: mockSetDropdownOpen,
-            dropdownRef: { current: null },
-        });
-        renderTaskItem();
-        expect(screen.getByTestId('task-options-dropup')).toBeInTheDocument();
-    });
-
-    it('does not render the TaskOptionsDropup when the dropdown is closed', () => {
-        renderTaskItem();
-        expect(screen.queryByTestId('task-options-dropup')).not.toBeInTheDocument();
-    });
-
-    it('calls onDelete when the delete button in the dropup is clicked', () => {
-        const onDelete = vi.fn();
-        useDropdownModule.default.mockReturnValue({
-            dropdownOpen: true,
-            setDropdownOpen: mockSetDropdownOpen,
-            dropdownRef: { current: null },
-        });
-        renderTaskItem({ onDelete });
-        fireEvent.click(screen.getByText('Delete'));
-        expect(onDelete).toHaveBeenCalled();
-    });
-
-    it('calls onUndoComplete when the undo button in the dropup is clicked', () => {
-        const onUndoComplete = vi.fn();
-        useDropdownModule.default.mockReturnValue({
-            dropdownOpen: true,
-            setDropdownOpen: mockSetDropdownOpen,
-            dropdownRef: { current: null },
-        });
-        renderTaskItem({ onUndoComplete });
-        fireEvent.click(screen.getByText('Undo'));
-        expect(onUndoComplete).toHaveBeenCalled();
-    });
-
-    it('opens the TaskDetailsPopup when view details is clicked', () => {
-        useDropdownModule.default.mockReturnValue({
-            dropdownOpen: true,
-            setDropdownOpen: mockSetDropdownOpen,
-            dropdownRef: { current: null },
-        });
+    it('opens the TaskDetailsPopup when onViewDetails is called', () => {
         renderTaskItem();
         fireEvent.click(screen.getByText('View Details'));
         expect(screen.getByTestId('task-details-popup')).toBeInTheDocument();
     });
 
     it('closes the TaskDetailsPopup when the close button is clicked', () => {
-        useDropdownModule.default.mockReturnValue({
-            dropdownOpen: true,
-            setDropdownOpen: mockSetDropdownOpen,
-            dropdownRef: { current: null },
-        });
         renderTaskItem();
         fireEvent.click(screen.getByText('View Details'));
         fireEvent.click(screen.getByText('Close Details'));

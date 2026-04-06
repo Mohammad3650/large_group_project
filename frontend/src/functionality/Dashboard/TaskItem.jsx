@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import playDing from '../../utils/Audio/playDing.js';
-import useDropdown from '../../utils/Hooks/useDropdown.js';
 import TaskItemContent from './TaskItemContent.jsx';
-import TaskOptionsDropup from './TaskOptionsDropup.jsx';
+import TaskOptionsButton from './TaskOptionsButton.jsx';
 import TaskDetailsPopup from './TaskDetailsPopup.jsx';
 import PinButton from './PinButton.jsx';
 import './stylesheets/TaskItem.css';
@@ -28,7 +27,6 @@ function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, 
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
-    const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
 
     function handleClick() {
         if (checked || completed) return;
@@ -36,11 +34,6 @@ function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, 
         setChecked(true);
         setFading(true);
         setTimeout(() => onComplete?.(), 500);
-    }
-
-    function handleOptionsClick(e) {
-        e.stopPropagation();
-        setDropdownOpen((prev) => !prev);
     }
 
     return (
@@ -64,21 +57,13 @@ function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, 
                     completed={completed}
                     onClick={handleClick}
                 />
-                <div className="task-options" ref={dropdownRef}>
-                    <button className="task-options-btn" onClick={handleOptionsClick}>
-                        ⋮
-                    </button>
-                    {dropdownOpen && (
-                        <TaskOptionsDropup
-                            id={id}
-                            completed={completed}
-                            setDropdownOpen={setDropdownOpen}
-                            onDelete={onDelete}
-                            onUndoComplete={onUndoComplete}
-                            onViewDetails={() => setDetailsOpen(true)}
-                        />
-                    )}
-                </div>
+                <TaskOptionsButton
+                    id={id}
+                    completed={completed}
+                    onDelete={onDelete}
+                    onUndoComplete={onUndoComplete}
+                    onViewDetails={() => setDetailsOpen(true)}
+                />
             </div>
             {detailsOpen && (
                 <TaskDetailsPopup
