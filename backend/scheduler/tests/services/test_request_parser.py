@@ -18,13 +18,13 @@ class TestScheduleRequestParser(TestCase):
     def test_create_windows_normal_window(self):
         windows = [ { "start_min": time(9, 0), "end_min": time(12, 0), "daily": True } ]
         result = self.parser.create_windows(windows)
-        expected = [ {"start_min": 540, "end_min": 720, "daily": True} ]
+        expected = [ {"start_min": 0, "end_min": 540, "daily": True}, {"start_min": 720, "end_min": 1440, "daily": True} ]
         self.assertEqual(result, expected)
 
     def test_create_windows_overnight_window(self):
         windows = [ { "start_min": time(22, 0), "end_min": time(2, 0), "daily": False } ]
         result = self.parser.create_windows(windows)
-        expected = [ {"start_min": 0, "end_min": 120, "daily": False}, {"start_min": 1320, "end_min": 1440, "daily": False} ]
+        expected = [ {"start_min": 120, "end_min": 1320, "daily": False} ]
         self.assertEqual(result, expected)
 
     def test_parse_with_defaults(self):
@@ -43,8 +43,8 @@ class TestScheduleRequestParser(TestCase):
         self.assertEqual(result.days, 7)
         self.assertTrue(result.even_spread)
         self.assertTrue(result.include_scheduled)
-        self.assertEqual(result.windows, [ (540, 660, True) ])
-        self.assertEqual(result.unscheduled, [ (60, "Maths Revision", 1, False, "None", "", "study", "") ])
+        self.assertEqual(result.windows, [ (0, 540, True), (660, 1440, True) ])
+        self.assertEqual(result.unscheduled, [ ("Maths Revision", 60, 1, False, "None", "", "study", "") ])
 
     def test_parse_with_explicit_values(self):
         validated = {
@@ -71,8 +71,8 @@ class TestScheduleRequestParser(TestCase):
         result = self.parser.parse(validated)
         self.assertFalse(result.even_spread)
         self.assertFalse(result.include_scheduled)
-        self.assertEqual(result.windows, [ (510, 600, False) ])
-        self.assertEqual(result.unscheduled, [ (90, "Gym", 3, False, "early", "Gym", "exercise", "workout") ])
+        self.assertEqual(result.windows, [(0, 510, False), (600, 1440, False) ])
+        self.assertEqual(result.unscheduled, [ ("Gym", 90, 3, False, "early", "Gym", "exercise", "workout") ])
 
     def test_parse_with_overnight_window(self):
         validated = {
@@ -83,4 +83,4 @@ class TestScheduleRequestParser(TestCase):
             "unscheduled": []
         }
         result = self.parser.parse(validated)
-        self.assertEqual(result.windows, [ (0, 90, True), (1380, 1440, True) ])
+        self.assertEqual(result.windows, [ (90, 1380, True)])

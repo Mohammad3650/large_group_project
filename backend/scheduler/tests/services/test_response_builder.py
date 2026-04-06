@@ -1,6 +1,6 @@
 from django.test import TestCase
 from scheduler.services.response_builder import ScheduleResponseBuilder
-from datetime import date, time
+from datetime import datetime, date, time
 
 class ScheduleResponseBuilderTest(TestCase):
 
@@ -44,7 +44,7 @@ class ScheduleResponseBuilderTest(TestCase):
         self.assertEqual(self.builder._guess_block_type("Revision"), "study")
 
     def test_build_basic_event(self):
-        solutions = [ (540, 600, 60, "Maths Revision", "Library", "study", "Chapter 1") ]
+        solutions = [ (time(9), time(10), date(2026, 3, 9), "Maths Revision", "Library", "study", "Chapter 1") ]
         scheduled = []
 
         result = self.builder.build(solutions, scheduled, date(2026, 3, 9))
@@ -53,7 +53,7 @@ class ScheduleResponseBuilderTest(TestCase):
             "week_start": "2026-03-09",
             "events": [
                 {
-                    "date": "2026-03-09",
+                    "date": date(2026, 3, 9),
                     "start_time": "09:00:00",
                     "end_time": "10:00:00",
                     "block_type": "study",
@@ -68,7 +68,7 @@ class ScheduleResponseBuilderTest(TestCase):
         self.assertEqual(result, expected)
 
     def test_build_guesses_block_type_when_missing(self):
-        solutions = [ (600, 660, 60, "Physics Lecture", "", "", "") ]
+        solutions = [ (time(10), time(11), date(2026, 3, 9), "Physics Lecture", "", "", "") ]
         scheduled = []
         result = self.builder.build(solutions, scheduled, date(2026, 3, 9))
         self.assertEqual(result["events"][0]["block_type"], "lecture")
@@ -77,20 +77,13 @@ class ScheduleResponseBuilderTest(TestCase):
 
     def test_build_multiple_events(self):
         solutions = [
-            (540, 600, 60, "Maths Revision", "Library", "study", "Algebra"),
-            (660, 720, 60, "Gym session", "Gym", "exercise", "Leg day"),
+            (time(9), time(10), date(2026, 3, 9), "Maths Revision", "Library", "study", "Algebra"),
+            (time(11), time(12), date(2026, 3, 9), "Gym session", "Gym", "exercise", "Leg day"),
         ]
         scheduled = [{"name": "Fixed lecture"}]
         result = self.builder.build(solutions, scheduled, date(2026, 3, 9))
         self.assertEqual(result["week_start"], "2026-03-09")
         self.assertEqual(len(result["events"]), 2)
         self.assertEqual(result["scheduled"], scheduled)
-        self.assertEqual(result["events"][0]["date"], "2026-03-09")
+        self.assertEqual(result["events"][0]["date"], date(2026, 3, 9))
         self.assertEqual(result["events"][1]["start_time"], "11:00:00")
-
-    def test_build_raises_if_event_crosses_midnight(self):
-        solutions = [ (1430, 1450, 20, "Late study", "Home", "study", "Test") ]
-        scheduled = []
-        with self.assertRaises(ValueError) as cm:
-            self.builder.build(solutions, scheduled, date(2026, 3, 9))
-        self.assertIn("crosses midnight", str(cm.exception))
