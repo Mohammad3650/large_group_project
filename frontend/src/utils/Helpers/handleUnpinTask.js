@@ -14,8 +14,9 @@ import sortTasksByCompletedAt from './sortTasksByCompletedAt.js';
  * @param {Function} setters.setTomorrowTasks - Setter for tomorrow's tasks
  * @param {Function} setters.setWeekTasks - Setter for next 7 days' tasks
  * @param {Function} setters.setBeyondWeekTasks - Setter for tasks beyond next 7 days
+ * @param {Function} setters.setCompletedTasks - Setter for completed tasks
  */
-function handleUnpinTask(task, { setPinnedTasks, setCompletedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks }) {
+function handleUnpinTask(task, { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks }) {
     unpinTimeBlock(task.id)
         .then(() => {
             setPinnedTasks((prev) => prev.filter((item) => item.id !== task.id));
