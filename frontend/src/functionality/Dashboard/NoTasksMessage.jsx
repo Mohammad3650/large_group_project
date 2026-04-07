@@ -7,6 +7,7 @@ import './stylesheets/NoTasksMessage.css';
  *
  * @param {Object} props
  * @param {number} props.totalTasks - Total number of tasks across all groups
+ * @param {Array} props.filteredPinned - Filtered pinned tasks
  * @param {Array} props.filteredOverdue - Filtered overdue tasks
  * @param {Array} props.filteredToday - Filtered today's tasks
  * @param {Array} props.filteredTomorrow - Filtered tomorrow's tasks
@@ -16,10 +17,11 @@ import './stylesheets/NoTasksMessage.css';
  * @param {string} props.searchTerm - The current search query
  * @returns {JSX.Element|null} The message, or null if no message is needed
  */
-function NoTasksMessage({ totalTasks, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted, searchTerm }) {
+function NoTasksMessage({ totalTasks, filteredPinned, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted, searchTerm }) {
     if (totalTasks === 0) return <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>;
 
     const foundNoResults =
+        filteredPinned.length === 0 &&
         filteredOverdue.length === 0 &&
         filteredToday.length === 0 &&
         filteredTomorrow.length === 0 &&
