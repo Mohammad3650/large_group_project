@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import isClickOutside from '../Helpers/isClickOutside.js';
 
 /**
  * Custom hook to manage dropdown open/close state with click-outside detection.
  *
- * @returns {{ dropdownOpen: boolean, setDropdownOpen: Function, dropdownRef: Object }}
+ * @returns {{ dropdownOpen: boolean, setDropdownOpen: Function, dropdownRef: React.RefObject }}
  */
 function useDropdown() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -11,7 +12,7 @@ function useDropdown() {
 
     useEffect(() => {
         function handleClickOutside(event) {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            if (isClickOutside(dropdownRef, event)) {
                 setDropdownOpen(false);
             }
         }

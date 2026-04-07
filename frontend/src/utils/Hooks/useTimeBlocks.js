@@ -1,16 +1,20 @@
 import { useEffect, useState, useCallback } from 'react';
-import { api } from '../../api.js';
+import getTimeBlocks from '../Api/getTimeBlocks.js';
 import mapTimeBlocks from '../Helpers/mapTimeBlocks.js';
 
-const TIME_BLOCKS_ENDPOINT = '/api/time-blocks/get/';
-
 /**
- * Fetch and manage the current user's time blocks.
+ * Fetches and manages the current user's time blocks.
  *
- * @returns {Object} Time block state, actions, and status flags
+ * @returns {{
+ *   blocks: Array|null,
+ *   setBlocks: Function,
+ *   error: string,
+ *   loading: boolean,
+ *   refetchBlocks: Function
+ * }} Time block state, actions, and status flags
  */
 function useTimeBlocks() {
-    const [blocks, setBlocks] = useState(null); // null = not yet fetched
+    const [blocks, setBlocks] = useState(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -18,10 +22,9 @@ function useTimeBlocks() {
         try {
             setLoading(true);
             setError('');
-
-            const response = await api.get(TIME_BLOCKS_ENDPOINT);
-            setBlocks(mapTimeBlocks(response.data));
-        } catch (err){
+            const data = await getTimeBlocks();
+            setBlocks(mapTimeBlocks(data));
+        } catch {
             setError('Failed to load time blocks');
         } finally {
             setLoading(false);

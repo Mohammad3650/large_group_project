@@ -41,17 +41,13 @@ function Dashboard() {
     useBodyClass('dashboard-page');
     useScrollToTopOnResize();
 
-    const {
-        filteredPinned, filteredOverdue, filteredToday, filteredTomorrow,
-        filteredWeek, filteredBeyondWeek, filteredCompleted,
-    } = useFilterTasksForSearch(
+    const { filteredTasks } = useFilterTasksForSearch(
         { pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks },
         searchTerm
     );
 
     if (blocksError) return <p>{blocksError}</p>;
 
-    const filteredTasks = { filteredPinned, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted };
     const setters = { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks };
     const taskGroups = buildTaskGroups(filteredTasks, setters);
 

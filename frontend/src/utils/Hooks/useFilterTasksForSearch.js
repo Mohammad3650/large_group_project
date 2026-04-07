@@ -14,16 +14,18 @@ import filterTasksForSearch from '../Helpers/filterTasksForSearch.js';
  * @param {Array} taskGroups.completedTasks - Completed tasks
  * @param {string} searchTerm - The current search query
  * @returns {{
- *   filteredPinned: Array,
- *   filteredOverdue: Array,
- *   filteredToday: Array,
- *   filteredTomorrow: Array,
- *   filteredWeek: Array,
- *   filteredBeyondWeek: Array,
- *   filteredCompleted: Array
+ *   filteredTasks: {
+ *     filteredPinned: Array,
+ *     filteredOverdue: Array,
+ *     filteredToday: Array,
+ *     filteredTomorrow: Array,
+ *     filteredWeek: Array,
+ *     filteredBeyondWeek: Array,
+ *     filteredCompleted: Array
+ *   }
  * }}
  */
-function useFilteredTasks({ pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks }, searchTerm) {
+function useFilterTasksForSearch({ pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks }, searchTerm) {
     const filteredPinned = useMemo(() => filterTasksForSearch(pinnedTasks, searchTerm), [pinnedTasks, searchTerm]);
     const filteredOverdue = useMemo(() => filterTasksForSearch(overdueTasks, searchTerm), [overdueTasks, searchTerm]);
     const filteredToday = useMemo(() => filterTasksForSearch(todayTasks, searchTerm), [todayTasks, searchTerm]);
@@ -32,7 +34,9 @@ function useFilteredTasks({ pinnedTasks, overdueTasks, todayTasks, tomorrowTasks
     const filteredBeyondWeek = useMemo(() => filterTasksForSearch(beyondWeekTasks, searchTerm), [beyondWeekTasks, searchTerm]);
     const filteredCompleted = useMemo(() => filterTasksForSearch(completedTasks, searchTerm), [completedTasks, searchTerm]);
 
-    return { filteredPinned, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted };
+    const filteredTasks = { filteredPinned, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted };
+
+    return { filteredTasks };
 }
 
-export default useFilteredTasks;
+export default useFilterTasksForSearch;

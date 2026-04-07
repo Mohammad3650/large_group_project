@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api } from '../../api.js';
+import getNotes from '../Api/getNotes.js';
 
 /**
  * Custom hook to fetch and manage the user's notes.
@@ -21,8 +21,8 @@ function useNotes() {
     useEffect(() => {
         async function fetchNotes() {
             try {
-                const res = await api.get('/api/notes/get/');
-                setNotes(res.data.content);
+                const content = await getNotes();
+                setNotes(content);
                 setLoaded(true);
             } catch {
                 setError('Failed to load notes. Please try again.');
@@ -34,13 +34,7 @@ function useNotes() {
         fetchNotes();
     }, []);
 
-    return {
-        notes,
-        setNotes,
-        loaded,
-        loading,
-        error,
-    };
+    return { notes, setNotes, loaded, loading, error };
 }
 
 export default useNotes;
