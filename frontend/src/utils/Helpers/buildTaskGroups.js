@@ -25,7 +25,7 @@ import handleUnpinTask from './handleUnpinTask.js';
  * @param {Function} setters.setWeekTasks
  * @param {Function} setters.setBeyondWeekTasks
  * @param {Function} setters.setCompletedTasks
- * @returns {Array<Object>} Array of task group configuration objects
+ * @returns {Array<{title: string, variant: string, tasks: Array, setTasks: Function}>} Array of task group configuration objects
  */
 function buildTaskGroups(filteredTasks, setters) {
     const {
