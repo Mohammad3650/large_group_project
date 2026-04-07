@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import './stylesheets/TimeBlockForm.css';
 import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
+import { BLOCK_TYPES } from '../constants/blockTypes';
+import TimeBlockItem from './TimeBlockItem';
 
 /**
  * TimeBlockForm
@@ -22,9 +24,17 @@ function TimeBlockForm({
     onCancel = null
 
 }) {
+    const emptyBlock = {
+    name: '',
+    location: '',
+    block_type: 'study',
+    description: '',
+    start_time: '',
+    end_time: ''
+    };
+
     const [date, setDate] = useState(initialData?.date || '');
 
-    //Load initial data for timeblock and none if no data has been added(initial form entry)
     const [blocks, setBlocks] = useState(
         initialData
             ? [
@@ -39,15 +49,7 @@ function TimeBlockForm({
                   }
               ]
             : [
-                  {
-                      date: '',
-                      name: '',
-                      location: '',
-                      block_type: 'study',
-                      description: '',
-                      start_time: '',
-                      end_time: ''
-                  }
+                  emptyBlock
               ]
     );
 
@@ -76,15 +78,7 @@ function TimeBlockForm({
     function addBlock() {
         setBlocks([
             ...blocks,
-            {
-                date: '',
-                name: '',
-                location: '',
-                block_type: 'study',
-                description: '',
-                start_time: '',
-                end_time: ''
-            }
+            emptyBlock
         ]);
         clearErrors();
     }
@@ -126,9 +120,7 @@ function TimeBlockForm({
         e.preventDefault();
         const timezone = getUserTimezone();
 
-        // Submit each block separately
-        const dataList = blocks.map((block) => {
-            const data = {
+        const dataList = blocks.map((block) => ({
                 id: block.id,
                 date: date,
                 name: block.name,
@@ -138,15 +130,12 @@ function TimeBlockForm({
                 start_time: block.start_time,
                 end_time: block.end_time,
                 timezone: timezone
-            };
-            return data;
-        });
+        }));
         onSubmit(dataList);
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            {/* Date once for whole schedule */}
             {serverErrors[0]?.date && (
                 <p className="error-text-date"> {serverErrors[0].date[0]} </p>
             )}
@@ -157,98 +146,19 @@ function TimeBlockForm({
             />
 
             {blocks.map((block, index) => (
-                <div key={index} className="time-block-section app-card">
-                    {serverErrors[index]?.name && (
-                        <p className="error-text">
-                            {serverErrors[index].name[0]}
-                        </p>
-                    )}
-                    <input
-                        placeholder="Name"
-                        value={block.name}
-                        onChange={(e) =>
-                            updateBlock(index, 'name', e.target.value)
-                        }
-                    />
-
-                    {serverErrors[index]?.location && (
-                        <p className="error-text">
-                            {serverErrors[index].location[0]}
-                        </p>
-                    )}
-                    <input
-                        placeholder="Location"
-                        value={block.location}
-                        onChange={(e) =>
-                            updateBlock(index, 'location', e.target.value)
-                        }
-                    />
-
-                    <select
-                        value={block.block_type}
-                        onChange={(e) =>
-                            updateBlock(index, 'block_type', e.target.value)
-                        }
-                    >
-                        <option value="sleep">Sleep</option>
-                        <option value="study">Study</option>
-                        <option value="lecture">Lecture</option>
-                        <option value="lab">Lab</option>
-                        <option value="tutorial">Tutorial</option>
-                        <option value="commute">Commute</option>
-                        <option value="exercise">Exercise</option>
-                        <option value="break">Break</option>
-                        <option value="work">Work</option>
-                        <option value="extracurricular">Extracurricular</option>
-                    </select>
-
-                    {serverErrors[index]?.start_time && (
-                        <p className="error-text">
-                            {serverErrors[index].start_time[0]}
-                        </p>
-                    )}
-                    <input
-                        type="time"
-                        value={block.start_time}
-                        onChange={(e) =>
-                            updateBlock(index, 'start_time', e.target.value)
-                        }
-                    />
-
-                    {serverErrors[index]?.end_time && (
-                        <p className="error-text">
-                            {serverErrors[index].end_time[0]}
-                        </p>
-                    )}
-                    <input
-                        type="time"
-                        value={block.end_time}
-                        onChange={(e) =>
-                            updateBlock(index, 'end_time', e.target.value)
-                        }
-                    />
-
-                    <textarea
-                        placeholder="Description (optional)"
-                        value={block.description}
-                        onChange={(e) =>
-                            updateBlock(index, 'description', e.target.value)
-                        }
-                        className="description-input"
-                    />
-
-                    {blocks.length > 1 && (
-                        <button
-                            type="button"
-                            onClick={() => deleteBlock(index)}
-                            className="delete-btn"
-                        >
-                            Delete Event
-                        </button>
-                    )}
-                </div>
+                <TimeBlockItem
+                    key={index}
+                    block={block}
+                    index={index}
+                    serverErrors={serverErrors}
+                    updateBlock={updateBlock}
+                    deleteBlock={deleteBlock}
+                    blocksLength={blocks.length}
+                />
             ))}
+
             <div className="time-block-form-btn">
+
                 {!initialData && (
                     <button
                         className="btn btn-secondary btn"
@@ -265,7 +175,6 @@ function TimeBlockForm({
                         type="button"
                         onClick={onCancel}
                         disabled={loading}
-
                     >
                         Cancel
                     </button>
@@ -277,9 +186,10 @@ function TimeBlockForm({
                     disabled={loading}
                 >
                     {loading && 'Saving...'}
-                    {!loading && initialData && 'Edit Schedule'}
-                    {!loading && !initialData && 'Create Schedule'}
+                    {!loading && initialData && 'Edit Time Block'}
+                    {!loading && !initialData && 'Create Time Block'}
                 </button>
+
             </div>
         </form>
     );

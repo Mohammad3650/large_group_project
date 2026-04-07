@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './stylesheets/TimeBlockForm.css';
+import { BLOCK_TYPES } from '../constants/blockTypes';
 
 /**
  * GeneratorForm renders schedule input fields and manages unscheduled block state.
@@ -321,16 +322,11 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                             updateBlock(index, 'block_type', e.target.value)
                         }
                     >
-                        <option value="sleep">Sleep</option>
-                        <option value="study">Study</option>
-                        <option value="lecture">Lecture</option>
-                        <option value="lab">Lab</option>
-                        <option value="tutorial">Tutorial</option>
-                        <option value="commute">Commute</option>
-                        <option value="exercise">Exercise</option>
-                        <option value="break">Break</option>
-                        <option value="work">Work</option>
-                        <option value="extracurricular">Extracurricular</option>
+                        {BLOCK_TYPES.map((type) => (
+                        <option key={type} value={type}>
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </option>
+                        ))}
                     </select>
 
                     <textarea
