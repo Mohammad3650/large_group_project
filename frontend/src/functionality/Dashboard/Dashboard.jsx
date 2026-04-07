@@ -66,13 +66,7 @@ function Dashboard() {
 
                 <NoTasksMessage
                     totalTasks={totalTasks}
-                    filteredPinned={filteredPinned}
-                    filteredOverdue={filteredOverdue}
-                    filteredToday={filteredToday}
-                    filteredTomorrow={filteredTomorrow}
-                    filteredWeek={filteredWeek}
-                    filteredBeyondWeek={filteredBeyondWeek}
-                    filteredCompleted={filteredCompleted}
+                    filteredTasks={filteredTasks}
                     searchTerm={searchTerm}
                 />
 

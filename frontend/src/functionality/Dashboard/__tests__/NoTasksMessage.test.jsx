@@ -4,7 +4,8 @@ import NoTasksMessage from '../NoTasksMessage.jsx';
 
 vi.mock('../stylesheets/NoTasksMessage.css', () => ({}));
 
-const emptyGroups = {
+const emptyFilteredTasks = {
+    filteredPinned: [],
     filteredOverdue: [],
     filteredToday: [],
     filteredTomorrow: [],
@@ -13,33 +14,33 @@ const emptyGroups = {
     filteredCompleted: [],
 };
 
-describe('Tests for NoTasksMessage', () => {
+describe('NoTasksMessage', () => {
     it('renders the congratulatory message when totalTasks is zero', () => {
-        render(<NoTasksMessage totalTasks={0} {...emptyGroups} searchTerm="" />);
+        render(<NoTasksMessage totalTasks={0} filteredTasks={emptyFilteredTasks} searchTerm="" />);
         expect(screen.getByText('🎉 Congrats, you have no tasks!')).toBeInTheDocument();
     });
 
     it('renders null when totalTasks is greater than zero and searchTerm is empty', () => {
         const { container } = render(
-            <NoTasksMessage totalTasks={3} {...emptyGroups} searchTerm="" />
+            <NoTasksMessage totalTasks={3} filteredTasks={emptyFilteredTasks} searchTerm="" />
         );
         expect(container.firstChild).toBeNull();
     });
 
     it('renders null when totalTasks is greater than zero and searchTerm is only whitespace', () => {
         const { container } = render(
-            <NoTasksMessage totalTasks={3} {...emptyGroups} searchTerm="   " />
+            <NoTasksMessage totalTasks={3} filteredTasks={emptyFilteredTasks} searchTerm="   " />
         );
         expect(container.firstChild).toBeNull();
     });
 
     it('renders the no results message when all filtered groups are empty and searchTerm is non-empty', () => {
-        render(<NoTasksMessage totalTasks={3} {...emptyGroups} searchTerm="lecture" />);
+        render(<NoTasksMessage totalTasks={3} filteredTasks={emptyFilteredTasks} searchTerm="lecture" />);
         expect(screen.getByText('No tasks found matching "lecture"')).toBeInTheDocument();
     });
 
     it('trims the searchTerm in the no results message', () => {
-        render(<NoTasksMessage totalTasks={3} {...emptyGroups} searchTerm="  lecture  " />);
+        render(<NoTasksMessage totalTasks={3} filteredTasks={emptyFilteredTasks} searchTerm="  lecture  " />);
         expect(screen.getByText('No tasks found matching "lecture"')).toBeInTheDocument();
     });
 
@@ -47,8 +48,7 @@ describe('Tests for NoTasksMessage', () => {
         const { container } = render(
             <NoTasksMessage
                 totalTasks={3}
-                {...emptyGroups}
-                filteredToday={[{ id: 1 }]}
+                filteredTasks={{ ...emptyFilteredTasks, filteredToday: [{ id: 1 }] }}
                 searchTerm="lecture"
             />
         );
