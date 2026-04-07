@@ -39,10 +39,11 @@ function PreviewCalendar() {
 
     // Save the schedule to the backend and navigate to dashboard
     async function save() {
+        const timezone = getUserTimezone();
         const data = {
             week_start: schedule.week_start,
-            events: schedule.events,
-            timezone: getUserTimezone()
+            events: schedule.events.map((event) => ({ ...event, timezone })),
+            timezone,
         };
         await savePlan(data);
         nav('/dashboard');

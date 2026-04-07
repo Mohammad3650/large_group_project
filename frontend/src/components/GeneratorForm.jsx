@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
 import './stylesheets/TimeBlockForm.css';
 
 /**
@@ -15,7 +16,8 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
     const [windows, setWindow] = useState({
         start_min: '',
         end_min: '',
-        daily: true
+        daily: true,
+        timezone: getUserTimezone(),
     });
 
     const [blocks, setBlocks] = useState([
@@ -27,7 +29,8 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
             start_time_preference: 'None',
             location: '',
             block_type: 'study',
-            description: ''
+            description: '',
+            timezone: getUserTimezone(),
         }
     ]);
 
@@ -46,7 +49,8 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                 start_time_preference: 'None',
                 location: '',
                 block_type: 'study',
-                description: ''
+                description: '',
+                timezone: getUserTimezone(),
             }
         ]);
         clearErrors();
