@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TaskItemList from '../TaskItemList';
 
-vi.mock('../../../utils/Helpers/handleDeleteTask.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/handleDeleteDashboardTask.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Helpers/getDate.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Helpers/getDateBoundaries.js', () => ({ default: vi.fn() }));
 vi.mock('../TaskItem.jsx', () => ({
@@ -22,7 +22,7 @@ vi.mock('../TaskItem.jsx', () => ({
     ),
 }));
 
-import * as handleDeleteTaskModule from '../../../utils/Helpers/handleDeleteTask.js';
+import * as handleDeleteTaskModule from '../../../utils/Helpers/handleDeleteDashboardTask.js';
 import * as getDateModule from '../../../utils/Helpers/getDate.js';
 import * as getDateBoundariesModule from '../../../utils/Helpers/getDateBoundaries.js';
 
@@ -103,11 +103,11 @@ describe('Tests for TaskItemList', () => {
         expect(screen.getByTestId('task-item-2')).toHaveAttribute('data-completed', 'true');
     });
 
-    it('calls handleDeleteTask with the correct id and setTasks when delete is clicked', () => {
+    it('calls handleDeleteDashboardTask with the correct id and setTasks when delete is clicked', () => {
         const setTasks = vi.fn();
         renderTaskItemList({ setTasks });
         fireEvent.click(screen.getAllByText('Delete')[0]);
-        expect(handleDeleteTaskModule.default).toHaveBeenCalledWith(1, setTasks);
+        expect(handleDeleteTaskModule.handleDeleteDashboardTask).toHaveBeenCalledWith(1, setTasks);
     });
 
     it('calls onComplete with the correct task when the complete button is clicked', () => {

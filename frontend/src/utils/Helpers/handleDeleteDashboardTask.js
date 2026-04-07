@@ -6,10 +6,10 @@ import deleteTimeBlock from '../Api/deleteTimeBlock.js';
  * @param {number} id - The ID of the task to delete
  * @param {Function} setTasks - State setter used to remove the deleted task from the list
  */
-function handleDeleteTask(id, setTasks) {
+function handleDeleteDashboardTask(id, setTasks) {
     deleteTimeBlock(id)
         .then(() => setTasks((prev) => prev.filter((task) => task.id !== id)))
         .catch(() => {});
 }
 
-export default handleDeleteTask;
+export default handleDeleteDashboardTask;

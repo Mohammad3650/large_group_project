@@ -1,5 +1,5 @@
 import TaskItem from './TaskItem.jsx';
-import handleDeleteTask from '../../utils/Helpers/handleDeleteTask.js';
+import handleDeleteDashboardTask from '../../utils/Helpers/handleDeleteDashboardTask.js';
 import getDate from '../../utils/Helpers/getDate.js';
 import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
 import './stylesheets/TaskItemList.css';
@@ -31,7 +31,7 @@ function TaskItemList({ tasks, title, overdue, completed, setTasks, onComplete, 
             <TaskItem
                 key={`${title}-${task.id}`}
                 task={task}
-                onDelete={() => handleDeleteTask(task.id, setTasks)}
+                onDelete={() => handleDeleteDashboardTask(task.id, setTasks)}
                 onComplete={onComplete ? () => onComplete(task) : undefined}
                 onUndoComplete={onUndoComplete ? () => onUndoComplete(task) : undefined}
                 onPin={onPin ? () => onPin(task) : undefined}
