@@ -23,7 +23,7 @@ describe('Tests for useUsername', () => {
     });
 
     it('fetches and returns the username when the user is logged in', async () => {
-        getUsernameModule.default.mockResolvedValue({ username: 'testuser' });
+        getUsernameModule.default.mockResolvedValue('testuser');
         const { result } = renderHook(() => useUsername(true));
         await waitFor(() => expect(result.current.username).toBe('testuser'));
         expect(getUsernameModule.default).toHaveBeenCalledTimes(1);
@@ -48,14 +48,14 @@ describe('Tests for useUsername', () => {
     });
 
     it('sets an error when the response contains no username', async () => {
-        getUsernameModule.default.mockResolvedValue({});
+        getUsernameModule.default.mockResolvedValue(undefined);
         const { result } = renderHook(() => useUsername(true));
         await waitFor(() => expect(result.current.error).toBe('Invalid response from server'));
         expect(result.current.username).toBe('');
     });
 
     it('fetches the username when isLoggedIn changes from false to true', async () => {
-        getUsernameModule.default.mockResolvedValue({ username: 'testuser' });
+        getUsernameModule.default.mockResolvedValue('testuser');
         const { result, rerender } = renderHook(
             ({ isLoggedIn }) => useUsername(isLoggedIn),
             { initialProps: { isLoggedIn: false } }

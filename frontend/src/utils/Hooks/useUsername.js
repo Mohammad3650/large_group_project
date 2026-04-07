@@ -18,12 +18,12 @@ function useUsername(isLoggedIn) {
 
         async function fetchUsername() {
             try {
-                const data = await getUsername();
-                if (!data?.username) {
+                const username = await getUsername();
+                if (!username) {
                     setError('Invalid response from server');
                     return;
                 }
-                setUsername(data.username);
+                setUsername(username);
             } catch (err) {
                 if (err.name === 'CanceledError') return;
                 setError('Failed to load user');
