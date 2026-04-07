@@ -32,7 +32,7 @@ class SaveWeeklyPlanView(APIView):
 
         for event in events:
             date = event["date"]
-            # event["timezone"] = timezone
+            event["timezone"] = timezone
             dayplan = get_or_create_dayplan(user, date)
             created.append(create_timeblock(dayplan, event, str(date)))
 

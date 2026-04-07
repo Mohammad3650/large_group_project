@@ -85,4 +85,5 @@ class ScheduleService:
         #: List[Tuple[int, int, int, str, str, str, str]]
         solutions = engine.solve()
         week_start = parsed.week_start
-        return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start)
+        timezone = validated_data.get("timezone")
+        return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start, timezone=timezone)

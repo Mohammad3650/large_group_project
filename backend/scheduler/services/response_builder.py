@@ -12,16 +12,11 @@ class ScheduleResponseBuilder:
     into the same structure expected by the SaveWeeklyPlan endpoint.
     """
 
-    def build( self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled ,week_start: str, ) -> Dict[str, Any]:
+    def build( self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled ,week_start: str, timezone: str) -> Dict[str, Any]:
         events = []
         for (start_time, end_time, date, name, location, block_type, description) in solutions:
-            # date_start, start_time = self._abs_min_to_date_time(week_start, start)
-            # date_end, end_time = self._abs_min_to_date_time(week_start, end)
             if not block_type:
                 block_type = self._guess_block_type(name)
-
-            # if date_start != date_end:
-            #     raise ValueError( f"Event '{name}' crosses midnight: start={date_end} {start_time}, end={date_end} {end_time}." )
 
             events.append(
                 {
