@@ -28,6 +28,8 @@ class TimeBlockSerializer(serializers.ModelSerializer):
             "start_time",
             "end_time",
             "completed_at",
+            "pinned",
+            "pinned_at",
         ]
 
     def validate(self, attrs):

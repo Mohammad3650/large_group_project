@@ -1,22 +1,21 @@
 import { useState } from 'react';
 import TaskGroup from './TaskGroup.jsx';
+import TaskSearchBar from '../../components/TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
+import NoTasksMessage from './NoTasksMessage.jsx';
+import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
-import handleCompleteTask from '../../utils/Helpers/handleCompleteTask.js';
-import handleUndoCompleteTask from '../../utils/Helpers/handleUndoCompleteTask.js';
-import useFilterTasks from '../../utils/Hooks/useFilterTasks.js';
-import NoTasksMessage from './NoTasksMessage.jsx';
-import TaskSearchBar from '../../components/TaskSearchBar.jsx';
-import './stylesheets/Dashboard.css';
+import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
 import useUsername from '../../utils/Hooks/useUsername.js';
+import './stylesheets/Dashboard.css';
 
 /**
  * Dashboard component — main page displayed after successful login.
- * Displays a searchable task list grouped by date (overdue, today, tomorrow,
+ * Displays tasks grouped by category (pinned, overdue, today, tomorrow,
  * next 7 days, beyond next 7 days, and completed) alongside a notes section.
  *
  * @returns {JSX.Element} The dashboard page
@@ -24,10 +23,10 @@ import useUsername from '../../utils/Hooks/useUsername.js';
 function Dashboard() {
     const [searchTerm, setSearchTerm] = useState('');
 
-    const { username } = useUsername(true);
     const { blocks, error: blocksError } = useTimeBlocks();
 
     const {
+        pinnedTasks, setPinnedTasks,
         overdueTasks, setOverdueTasks,
         todayTasks, setTodayTasks,
         tomorrowTasks, setTomorrowTasks,
@@ -37,49 +36,39 @@ function Dashboard() {
         totalTasks,
     } = useTasksByDateGroup(blocks);
 
+    const { username } = useUsername(true);
+
     useBodyClass('dashboard-page');
     useScrollToTopOnResize();
 
-    const taskSetters = { setCompletedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks };
-
-    const { filteredOverdue, filteredToday, filteredTomorrow,
-        filteredWeek, filteredBeyondWeek, filteredCompleted } =
-        useFilterTasks({ overdueTasks, todayTasks, tomorrowTasks,
-            weekTasks, beyondWeekTasks, completedTasks }, searchTerm);
+    const { filteredTasks } = useFilterTasksForSearch(
+        { pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks },
+        searchTerm
+    );
 
     if (blocksError) return <p>{blocksError}</p>;
+
+    const setters = { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks };
+    const taskGroups = buildTaskGroups(filteredTasks, setters);
 
     return (
         <div className="dashboard-content">
             <div className="task-section">
-                <h1>{`Welcome to your dashboard, ${username}!`}</h1>
+                <h1>Welcome to your Dashboard, {username}!</h1>
+
                 <AddTaskButton />
 
                 <TaskSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
                 <NoTasksMessage
                     totalTasks={totalTasks}
-                    filteredOverdue={filteredOverdue}
-                    filteredToday={filteredToday}
-                    filteredTomorrow={filteredTomorrow}
-                    filteredWeek={filteredWeek}
-                    filteredBeyondWeek={filteredBeyondWeek}
-                    filteredCompleted={filteredCompleted}
+                    filteredTasks={filteredTasks}
                     searchTerm={searchTerm}
                 />
 
-                <TaskGroup title="Overdue" tasks={filteredOverdue} setTasks={setOverdueTasks} overdue={true}
-                           onComplete={(task) => handleCompleteTask(task, setOverdueTasks, setCompletedTasks)} />
-                <TaskGroup title="Today" tasks={filteredToday} setTasks={setTodayTasks}
-                           onComplete={(task) => handleCompleteTask(task, setTodayTasks, setCompletedTasks)} />
-                <TaskGroup title="Tomorrow" tasks={filteredTomorrow} setTasks={setTomorrowTasks}
-                           onComplete={(task) => handleCompleteTask(task, setTomorrowTasks, setCompletedTasks)} />
-                <TaskGroup title="Next 7 Days" tasks={filteredWeek} setTasks={setWeekTasks}
-                           onComplete={(task) => handleCompleteTask(task, setWeekTasks, setCompletedTasks)} />
-                <TaskGroup title="After Next 7 Days" tasks={filteredBeyondWeek} setTasks={setBeyondWeekTasks}
-                           onComplete={(task) => handleCompleteTask(task, setBeyondWeekTasks, setCompletedTasks)} />
-                <TaskGroup title="Completed" tasks={filteredCompleted} setTasks={setCompletedTasks} completed={true}
-                           onUndoComplete={(task) => handleUndoCompleteTask(task, taskSetters)} />
+                {taskGroups.map(({ title, ...props }) => (
+                    <TaskGroup key={title} title={title} {...props} />
+                ))}
             </div>
             <NotesSection />
         </div>

@@ -4,6 +4,15 @@
     align-items: center;
     cursor: pointer;
     user-select: none;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.task-group h5 {
+    font-size: 1rem;
+    font-weight: 500;
 }
 
 .arrow {
@@ -19,6 +28,10 @@
 
 .arrow.closed {
     transform: rotate(90deg);
+}
+
+.pinned-title {
+    color: var(--yellow);
 }
 
 .overdue-title {

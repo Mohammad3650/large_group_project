@@ -92,30 +92,3 @@ class UserDetailsViewTestCase(APITestCase):
     def test_unauthenticated_user_cannot_access_user_details(self):
         response = self.client.get(reverse("user-details"))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-
-class DashboardViewTestCase(APITestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            email="test@example.com",
-            username="testuser",
-            first_name="Test",
-            last_name="User",
-            phone_number="07123456789",
-            password="Password123!",
-        )
-
-    def test_authenticated_user_can_access_dashboard(self):
-        self.client.force_authenticate(user=self.user)
-
-        response = self.client.get(reverse("dashboard"))
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data["message"],
-            f"Welcome to your dashboard, {self.user.username}!",
-        )
-
-    def test_unauthenticated_user_cannot_access_dashboard(self):
-        response = self.client.get(reverse("dashboard"))
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

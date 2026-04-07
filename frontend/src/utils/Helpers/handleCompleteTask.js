@@ -14,7 +14,7 @@ function handleCompleteTask(task, setSourceTasks, setCompletedTasks) {
         .then(() => {
             setSourceTasks((prev) => prev.filter((item) => item.id !== task.id));
             setCompletedTasks((prev) =>
-                [...prev, { ...task, completed_at: new Date().toISOString() }]
+                [...prev, { ...task, completed_at: new Date().toISOString(), pinned: false, pinned_at: null }]
                     .sort(sortTasksByCompletedAt)
             );
         })

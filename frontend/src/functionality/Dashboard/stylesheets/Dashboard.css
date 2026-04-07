@@ -3,38 +3,49 @@ body.dashboard-page {
     overflow: hidden;
     background: var(--bg-main);
     color: var(--text-main);
+    position: fixed;
+    width: 100%;
+}
+
+body.dashboard-page .navbar-container {
+    margin-bottom: 0;
 }
 
 .dashboard-content {
     display: flex;
-    width: 100vw;
-    height: calc(100vh - 75px - var(--space-lg));
+    width: 100%;
+    height: calc(100vh - 75px);
     box-sizing: border-box;
-    padding: 0 var(--space-navbar-x) var(--space-2xl) calc(var(--space-navbar-x) - var(--space-xs));
     justify-content: space-between;
     align-items: stretch;
     background: var(--bg-main);
     color: var(--text-main);
+    overflow: hidden;
 }
 
 .task-section {
-    width: 58%;
+    width: 65%;
     overflow-y: auto;
     display: flex;
-    padding-left: var(--space-xs);
     flex-direction: column;
-    padding-right: var(--space-sm);
+    padding: var(--space-lg) var(--space-sm) var(--space-2xl) var(--space-navbar-x);
     color: var(--text-main);
 }
-
-.task-section .add-task-btn {
-    margin-bottom: var(--space-sm);
-}
-
 
 .task-section h1 {
     color: var(--text-main);
-    margin-bottom: var(--space-md);
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+}
+
+.no-tasks-message {
+    color: var(--text-muted);
+    font-size: 2rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -42,16 +53,20 @@ body.dashboard-page {
         overflow: auto;
     }
 
+    body.dashboard-page .navbar-container {
+        margin-bottom: var(--space-lg);
+    }
+
     .dashboard-content {
         flex-direction: column;
         height: auto;
         overflow-y: auto;
-        padding: 0 var(--space-lg);
     }
 
     .task-section {
         width: 100%;
         max-height: none;
         overflow-y: visible;
+        padding: var(--space-md) var(--space-lg) var(--space-xl);
     }
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import useNotes from '../../utils/Hooks/useNotes.js';
 import useAutoSave from '../../utils/Hooks/useAutoSave.js';
 import './stylesheets/NotesSection.css';
-import useNotes from '../../utils/Hooks/useNotes.js';
 
 /**
  * Fetches and auto-saves the user's notes with a 1 second debounce.
@@ -13,13 +13,13 @@ function NotesSection() {
     const { notes, setNotes, loaded, loading, error } = useNotes();
     const [saveStatus, setSaveStatus] = useState('');
 
+    useAutoSave(notes, loaded, setSaveStatus);
+
     const statusText = {
         saving: 'Saving...',
         error: 'Error saving ✗',
         saved: 'Saved ✓',
     }[saveStatus] || '\u00A0';
-
-    useAutoSave(notes, loaded, setSaveStatus);
 
     if (loading) return <p className="notes-loading">Loading notes...</p>;
     if (error) return <p className="notes-error">{error}</p>;

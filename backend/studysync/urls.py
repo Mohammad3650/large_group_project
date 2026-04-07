@@ -35,6 +35,8 @@ from scheduler.views.edit_schedule_view import edit_time_block
 from scheduler.views.delete_schedule_view import delete_schedule
 from scheduler.views.complete_schedule_view import complete_schedule
 from scheduler.views.undo_complete_schedule_view import undo_complete_schedule
+from scheduler.views.pin_schedule_view import pin_schedule
+from scheduler.views.unpin_schedule_view import unpin_schedule
 from scheduler.views.get_note_view import get_note
 from scheduler.views.save_note_view import save_note
 from scheduler.views.save_plan_view import SaveWeeklyPlanView
@@ -61,6 +63,9 @@ urlpatterns = [
     path("api/timeblocks/<int:id>/edit/", edit_time_block, name="api-edit-timeblock"),
     path("api/time-blocks/<int:block_id>/complete/", complete_schedule, name="api-complete-timeblock"),
     path("api/time-blocks/<int:block_id>/undo-complete/", undo_complete_schedule, name="api-undo-complete-timeblock"),
+    path("api/time-blocks/<int:block_id>/pin/", pin_schedule, name="api-pin-timeblock"),
+    path("api/time-blocks/<int:block_id>/unpin/", unpin_schedule, name="api-unpin-timeblock"),
+
 
     #Notes
     path("api/notes/get/", get_note, name="api-get-note"),

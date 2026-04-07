@@ -5,6 +5,7 @@ import filterTasksForSearch from '../Helpers/filterTasksForSearch.js';
  * Filters all task groups by a search term using the useMemo hook.
  *
  * @param {Object} taskGroups - The task group arrays to filter
+ * @param {Array} taskGroups.pinnedTasks - Pinned tasks
  * @param {Array} taskGroups.overdueTasks - Overdue tasks
  * @param {Array} taskGroups.todayTasks - Today's tasks
  * @param {Array} taskGroups.tomorrowTasks - Tomorrow's tasks
@@ -13,15 +14,19 @@ import filterTasksForSearch from '../Helpers/filterTasksForSearch.js';
  * @param {Array} taskGroups.completedTasks - Completed tasks
  * @param {string} searchTerm - The current search query
  * @returns {{
- *   filteredOverdue: Array,
- *   filteredToday: Array,
- *   filteredTomorrow: Array,
- *   filteredWeek: Array,
- *   filteredBeyondWeek: Array,
- *   filteredCompleted: Array
+ *   filteredTasks: {
+ *     filteredPinned: Array,
+ *     filteredOverdue: Array,
+ *     filteredToday: Array,
+ *     filteredTomorrow: Array,
+ *     filteredWeek: Array,
+ *     filteredBeyondWeek: Array,
+ *     filteredCompleted: Array
+ *   }
  * }}
  */
-function useFilteredTasks({ overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks }, searchTerm) {
+function useFilterTasksForSearch({ pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks }, searchTerm) {
+    const filteredPinned = useMemo(() => filterTasksForSearch(pinnedTasks, searchTerm), [pinnedTasks, searchTerm]);
     const filteredOverdue = useMemo(() => filterTasksForSearch(overdueTasks, searchTerm), [overdueTasks, searchTerm]);
     const filteredToday = useMemo(() => filterTasksForSearch(todayTasks, searchTerm), [todayTasks, searchTerm]);
     const filteredTomorrow = useMemo(() => filterTasksForSearch(tomorrowTasks, searchTerm), [tomorrowTasks, searchTerm]);
@@ -29,7 +34,9 @@ function useFilteredTasks({ overdueTasks, todayTasks, tomorrowTasks, weekTasks, 
     const filteredBeyondWeek = useMemo(() => filterTasksForSearch(beyondWeekTasks, searchTerm), [beyondWeekTasks, searchTerm]);
     const filteredCompleted = useMemo(() => filterTasksForSearch(completedTasks, searchTerm), [completedTasks, searchTerm]);
 
-    return { filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted };
+    const filteredTasks = { filteredPinned, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted };
+
+    return { filteredTasks };
 }
 
-export default useFilteredTasks;
+export default useFilterTasksForSearch;

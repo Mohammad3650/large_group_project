@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { api } from '../../api.js';
+import saveNotes from '../Api/saveNotes.js';
 
 /**
  * Auto-saves content to the API with a debounce delay.
@@ -7,6 +7,7 @@ import { api } from '../../api.js';
  * @param {string} content - The content to save
  * @param {boolean} loaded - Whether the initial content has been loaded
  * @param {Function} setSaveStatus - Setter for the save status indicator
+ * @returns {void}
  */
 function useAutoSave(content, loaded, setSaveStatus) {
     useEffect(() => {
@@ -15,7 +16,7 @@ function useAutoSave(content, loaded, setSaveStatus) {
 
         const timer = setTimeout(async () => {
             try {
-                await api.put('/api/notes/save/', { content });
+                await saveNotes(content);
                 setSaveStatus('saved');
             } catch {
                 setSaveStatus('error');

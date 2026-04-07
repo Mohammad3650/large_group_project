@@ -1,5 +1,9 @@
 from django.test import TestCase
 from scheduler.serializers.time_block_serializer import TimeBlockSerializer
+from datetime import date, time
+from scheduler.models.User import User
+from scheduler.models.DayPlan import DayPlan
+from scheduler.models.TimeBlock import TimeBlock
 
 
 class TimeBlockSerializerTest(TestCase):
@@ -37,6 +41,21 @@ class TimeBlockSerializerTest(TestCase):
             "timezone": "Europe/London",
             "description": "Studying OSC for the exam soon",
         }
+
+    def test_get_date_returns_correct_date_string(self):
+        user = User.objects.create_user(username="testuser", password="password123")
+        day_plan = DayPlan.objects.create(user=user, date=date(2026, 2, 18))
+        block = TimeBlock.objects.create(
+            day=day_plan,
+            block_type="study",
+            start_time=time(9, 0),
+            end_time=time(10, 0),
+            name="Study Session",
+            location="Library",
+            timezone="Europe/London",
+        )
+        serializer = TimeBlockSerializer(block)
+        self.assertEqual(serializer.data["date"], "2026-02-18")
 
     def test_valid_data_without_description(self):
         data_without_description = self.base_data.copy()
@@ -89,3 +108,26 @@ class TimeBlockSerializerTest(TestCase):
         serializer = TimeBlockSerializer(data=data_without_location)
         self.assertFalse(serializer.is_valid())
         self.assertIn("location", serializer.errors)
+
+    def test_completed_at_included_in_serializer_fields(self):
+        self.assertIn("completed_at", TimeBlockSerializer.Meta.fields)
+
+    def test_pinned_included_in_serializer_fields(self):
+        self.assertIn("pinned", TimeBlockSerializer.Meta.fields)
+
+    def test_pinned_at_included_in_serializer_fields(self):
+        self.assertIn("pinned_at", TimeBlockSerializer.Meta.fields)
+
+    def test_valid_data_with_pinned_true(self):
+        data = self.base_data.copy()
+        data["pinned"] = "True"
+        data["pinned_at"] = "2026-02-18T09:00:00Z"
+        serializer = TimeBlockSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+
+    def test_valid_data_with_completed_at(self):
+        data = self.base_data.copy()
+        data["completed_at"] = "2026-02-18T10:00:00Z"
+        serializer = TimeBlockSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+

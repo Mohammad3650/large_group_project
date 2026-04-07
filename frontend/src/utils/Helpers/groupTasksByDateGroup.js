@@ -1,32 +1,35 @@
 import getDate from './getDate.js';
 import getDateBoundaries from './getDateBoundaries.js';
 import sortTasksByCompletedAt from './sortTasksByCompletedAt.js';
+import sortTasksByPinnedAt from './sortTasksByPinnedAt.js';
 import filterTasksByDatePredicate from './filterTasksByDatePredicate.js';
 import sortTasksByDate from './sortTasksByDate.js';
 
 /**
  * Groups an array of time blocks into date-based categories.
+ * Pinned tasks are extracted first and excluded from all date groups.
  *
- * @param {Array} blocks - Array of time block objects to group
+ * @param {Object[]} blocks - Array of time block objects to group
  * @returns {{
- *   overdueTasks: Array,
- *   todayTasks: Array,
- *   tomorrowTasks: Array,
- *   weekTasks: Array,
- *   beyondWeekTasks: Array,
- *   completedTasks: Array
+ *   pinnedTasks: Object[],
+ *   overdueTasks: Object[],
+ *   todayTasks: Object[],
+ *   tomorrowTasks: Object[],
+ *   weekTasks: Object[],
+ *   beyondWeekTasks: Object[],
+ *   completedTasks: Object[]
  * }} The grouped task arrays
  */
 function groupTasksByDateGroup(blocks) {
     const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
-    const nonCompletedBlocks = blocks.filter((block) => !block.completed_at);
-    const completedBlocks = blocks.filter((block) => block.completed_at);
 
-    const tasksWithDates =
-        nonCompletedBlocks
-        .map((block) => ({ block, date: getDate(block) }));
+    const pinnedBlocks = blocks.filter((block) => block.pinned);
+    const activeBlocks = blocks.filter((block) => !block.completed_at && !block.pinned);
+    const completedBlocks = blocks.filter((block) => block.completed_at && !block.pinned);
+    const tasksWithDates = activeBlocks.map((block) => ({ block, date: getDate(block) }));
 
     return {
+        pinnedTasks: pinnedBlocks.slice().sort(sortTasksByPinnedAt),
         overdueTasks: filterTasksByDatePredicate(tasksWithDates, (date) => date < today).sort(sortTasksByDate),
         todayTasks: filterTasksByDatePredicate(tasksWithDates, (date) => date >= today && date < tomorrow).sort(sortTasksByDate),
         tomorrowTasks: filterTasksByDatePredicate(tasksWithDates, (date) => date >= tomorrow && date < dayAfterTomorrow).sort(sortTasksByDate),

@@ -2,6 +2,7 @@ import { FaUser, FaCalendarAlt, FaFileExport } from 'react-icons/fa';
 import LogoutButton from '../../components/LogoutButton.jsx';
 import './stylesheets/SettingsSidebar.css';
 
+// Navigation items for the settings sidebar
 const NAV_ITEMS = [
     { key: 'profile',       label: 'Profile',      icon: FaUser },
     { key: 'subscriptions', label: 'Subscriptions', icon: FaCalendarAlt },
