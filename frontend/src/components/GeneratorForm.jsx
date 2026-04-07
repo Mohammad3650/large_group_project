@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import './stylesheets/TimeBlockForm.css';
-import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
 
 /**
  * GeneratorForm renders schedule input fields and manages unscheduled block state.
@@ -105,13 +104,11 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
      */
     function handleSubmit(e) {
         e.preventDefault();
-        const timezone = getUserTimezone();
         const k = {
             week_start: weekStart,
             week_end: weekEnd,
             even_spread: evenSpread,
             include_scheduled: includeScheduled,
-            timezone: timezone,
             windows: [windows],
             unscheduled: blocks
         };

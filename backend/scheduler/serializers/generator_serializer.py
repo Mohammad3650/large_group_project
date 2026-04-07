@@ -33,7 +33,6 @@ class GenerateScheduleRequestSerializer(serializers.Serializer):
         },
     )
     unscheduled = UnscheduledSerializer(many=True, required=False, default=list)
-    timezone = serializers.CharField(required=False, default = "UTC")
 
     def validate(self, attrs):
         """

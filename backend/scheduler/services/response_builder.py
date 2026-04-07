@@ -12,7 +12,7 @@ class ScheduleResponseBuilder:
     into the same structure expected by the SaveWeeklyPlan endpoint.
     """
 
-    def build( self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled ,week_start: str, timezone: str) -> Dict[str, Any]:
+    def build( self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled ,week_start: str) -> Dict[str, Any]:
         events = []
         for (start_time, end_time, date, name, location, block_type, description) in solutions:
             if not block_type:

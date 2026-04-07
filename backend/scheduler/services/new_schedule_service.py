@@ -435,10 +435,6 @@ class Scheduler:
         """
         self.create_daily_windows(self.request.windows)
         self.add_scheduled_events()
-        print("Pre unsched")
-        print(self.print_days())
-        print()
         self.add_unscheduled_events()
-        print(self.print_days())
         return self.create_output()
     
