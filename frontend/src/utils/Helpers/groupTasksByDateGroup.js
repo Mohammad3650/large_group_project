@@ -9,15 +9,15 @@ import sortTasksByDate from './sortTasksByDate.js';
  * Groups an array of time blocks into date-based categories.
  * Pinned tasks are extracted first and excluded from all date groups.
  *
- * @param {Array} blocks - Array of time block objects to group
+ * @param {Object[]} blocks - Array of time block objects to group
  * @returns {{
- *   pinnedTasks: Array,
- *   overdueTasks: Array,
- *   todayTasks: Array,
- *   tomorrowTasks: Array,
- *   weekTasks: Array,
- *   beyondWeekTasks: Array,
- *   completedTasks: Array
+ *   pinnedTasks: Object[],
+ *   overdueTasks: Object[],
+ *   todayTasks: Object[],
+ *   tomorrowTasks: Object[],
+ *   weekTasks: Object[],
+ *   beyondWeekTasks: Object[],
+ *   completedTasks: Object[]
  * }} The grouped task arrays
  */
 function groupTasksByDateGroup(blocks) {
