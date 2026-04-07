@@ -107,7 +107,7 @@ describe('Tests for TaskItemList', () => {
         const setTasks = vi.fn();
         renderTaskItemList({ setTasks });
         fireEvent.click(screen.getAllByText('Delete')[0]);
-        expect(handleDeleteTaskModule.handleDeleteDashboardTask).toHaveBeenCalledWith(1, setTasks);
+        expect(handleDeleteTaskModule.default).toHaveBeenCalledWith(1, setTasks);
     });
 
     it('calls onComplete with the correct task when the complete button is clicked', () => {

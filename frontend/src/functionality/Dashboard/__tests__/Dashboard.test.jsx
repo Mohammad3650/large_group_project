@@ -14,16 +14,9 @@ vi.mock('../NotesSection.jsx', () => ({
     default: () => <div data-testid="notes-section" />,
 }));
 vi.mock('../NoTasksMessage.jsx', () => ({
-    default: ({ totalTasks, searchTerm, filteredOverdue, filteredToday, filteredTomorrow, filteredWeek, filteredBeyondWeek, filteredCompleted }) => {
+    default: ({ totalTasks, filteredTasks, searchTerm }) => {
         if (totalTasks === 0) return <p>🎉 Congrats, you have no tasks!</p>;
-        const noResults =
-            filteredOverdue.length === 0 &&
-            filteredToday.length === 0 &&
-            filteredTomorrow.length === 0 &&
-            filteredWeek.length === 0 &&
-            filteredBeyondWeek.length === 0 &&
-            filteredCompleted.length === 0 &&
-            searchTerm.trim() !== '';
+        const noResults = Object.values(filteredTasks).every((t) => t.length === 0) && searchTerm.trim() !== '';
         if (noResults) return <p>No tasks found matching "{searchTerm.trim()}"</p>;
         return null;
     },
@@ -101,7 +94,7 @@ describe('Dashboard component', () => {
         useUsernameModule.default.mockReturnValue({ username: 'testuser', error: '' });
         useTimeBlocksModule.default.mockReturnValue({ blocks: [], error: null });
         useTasksByDateGroupModule.default.mockReturnValue(defaultTaskGroupState);
-        useFilterTasksForSearchModule.default.mockReturnValue(defaultFilteredTasks);
+        useFilterTasksForSearchModule.default.mockReturnValue({ filteredTasks: defaultFilteredTasks });
         buildTaskGroupsModule.default.mockReturnValue(defaultTaskGroups);
     });
 
@@ -138,13 +131,15 @@ describe('Dashboard component', () => {
 
     it('shows the no-search-results message when no tasks match the search term', () => {
         useFilterTasksForSearchModule.default.mockReturnValue({
-            filteredPinned: [],
-            filteredOverdue: [],
-            filteredToday: [],
-            filteredTomorrow: [],
-            filteredWeek: [],
-            filteredBeyondWeek: [],
-            filteredCompleted: [],
+            filteredTasks: {
+                filteredPinned: [],
+                filteredOverdue: [],
+                filteredToday: [],
+                filteredTomorrow: [],
+                filteredWeek: [],
+                filteredBeyondWeek: [],
+                filteredCompleted: [],
+            },
         });
         renderDashboard();
         fireEvent.change(screen.getByTestId('search-bar'), { target: { value: 'xyz' } });
