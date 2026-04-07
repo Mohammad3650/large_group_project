@@ -23,6 +23,7 @@ class WindowSerializer(serializers.Serializer):
     )
 
     daily = serializers.BooleanField(required=False, default=False)
+    timezone = serializers.CharField(required=False, default='UTC')
 
     def validate(self, attrs):
         """

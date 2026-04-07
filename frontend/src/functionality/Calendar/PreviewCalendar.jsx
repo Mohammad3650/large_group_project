@@ -7,8 +7,8 @@ import './stylesheets/Calendar.css';
 import CalendarView from './CalendarView.jsx';
 import CalendarPlaceholder from './CalendarPlaceholder.jsx';
 import mapTimeBlocks from '../../utils/Helpers/mapTimeBlocks.js';
-import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
 import savePlan from '../../utils/Api/savePlan.js';
+import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
 
 // Component for previewing a generated schedule before saving
 function PreviewCalendar() {
@@ -40,11 +40,18 @@ function PreviewCalendar() {
     // Save the schedule to the backend and navigate to dashboard
     async function save() {
         const timezone = getUserTimezone();
-        const data = {
-            week_start: schedule.week_start,
-            events: schedule.events.map((event) => ({ ...event, timezone })),
-            timezone,
-        };
+        const events = schedule.events.map((event) => {
+            const startZdt = Temporal.ZonedDateTime.from(`${event.date}T${event.start_time}[UTC]`).withTimeZone(timezone);
+            const endZdt = Temporal.ZonedDateTime.from(`${event.date}T${event.end_time}[UTC]`).withTimeZone(timezone);
+            return {
+                ...event,
+                date: startZdt.toPlainDate().toString(),
+                start_time: startZdt.toPlainTime().toString().slice(0, 8),
+                end_time: endZdt.toPlainTime().toString().slice(0, 8),
+                timezone,
+            };
+        });
+        const data = { week_start: schedule.week_start, events };
         await savePlan(data);
         nav('/dashboard');
     }
