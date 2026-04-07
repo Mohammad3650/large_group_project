@@ -120,7 +120,7 @@ class Day:
         Returns: None
         """
         bisect.insort(self.events, (event.start_time, event))
-        self.available -= event.start_time
+        self.available -= (event.end_time - event.start_time)
         if event.scheduled:
             self.sched_ev_count += 1
         else:
@@ -149,7 +149,6 @@ class Scheduler:
             created_days.append(Day(DAY_MINS * count))
         return created_days
     
-    # Create a window for each day. Assume daily to be true for all windows.
     def create_daily_windows(self, windows):
         """
         Create daily windows.
@@ -205,91 +204,98 @@ class Scheduler:
     
     def add_unscheduled_events(self):
         """
-        Add unscheduled events.
-        Returns: bool: Success.
+        Add all unscheduled events. Daily events are placed once per day.
+        Non-daily events are placed frequency times using even spread if enabled.
+        Returns: bool: False if any event cannot be placed, True otherwise.
         """
-        for event in self.request.unscheduled:
-            # check if event is daily event
+        for event in self._sort_unscheduled_events():
             daily = event[3]
-            preference = event[4]
+            late = event[4] == "Late"
             frequency = event[2]
-            result = False
-            
-            for i in range(frequency):
-                if daily:
-                    result = self._handle_daily_unsched_events(event)
-                elif preference == "Late":
-                    result = self._handle_late_unsched_event(event)
-                else:
-                    result = self._handle_simple_unsched_events(event)
 
-                if daily and result:
-                    break
-                elif not result: 
+            if daily:
+                success = self._place_daily_event(event, late)
+                if not success:
                     return False
-                
-    def _handle_simple_unsched_events(self, event):
-        """
-        Handle simple unscheduled events.
-        Args: event (tuple): Event data.
-        Returns: bool: Success.
-        """
-        result = False
-        event_obj = self._create_unsched_event_object(event)
-        days = self._get_ordered_days()
-        for day in days:
-            result = self._try_add_event_to_day(event_obj, day)
-            if result:
-                return True
-        if not result:
-            print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED")
-            return False # Could not place unscheduled event
-
-    def _handle_daily_unsched_events(self, event):
-        """
-        Handle placement of daily unscheduled events.
-        Args: event (tuple): The event data.
-        Returns: bool: True if placed successfully on all days, False otherwise.
-        """
-        days = self._get_ordered_days()
-        for day in days:
-            if event[4] == "Late":
-                result = self._handle_late_unsched_event(event)
             else:
-                event_obj = self._create_unsched_event_object(event)
-                result = self._try_add_event_to_day(event_obj, day)
-            if not result:
-                print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED")
-                return False # Couldn't be placed on any day
+                for _ in range(frequency):
+                    success = self._place_late_event(event) if late else self._place_event(event)
+                    if not success:
+                        return False
         return True
-    
-    def _handle_late_unsched_event(self, event):
+
+    def _place_daily_event(self, event, late):
         """
-        Handle placement of late unscheduled events using reverse first fit.
-        Args: event (tuple): The event data.
-        Returns: bool: True if placed successfully, False otherwise.
+        Place event once on every day. Fails immediately if any day cannot fit it.
+        Args:
+            event (tuple): Event data.
+            late (bool): Whether to use latest-slot placement.
+        Returns: bool: True if placed on all days, False otherwise.
         """
-        # Try place the event on each day using reverse first fit
-        # sort the results and select the latest
-        slots = []
-        unsched_event = self._create_unsched_event_object(event)
-        for i in range(len(self.days)):
-            start = self._find_latest_slot_for_event(unsched_event, self.days[i].events)
-            if start:
-                bisect.insort(slots, (start, i))
-        
-        if slots:
-            start, dayIdx = slots[-1]
-            unsched_event.start_time = start
-            unsched_event.end_time = start + unsched_event.duration
-            self.days[dayIdx].add_event(unsched_event)
-            return True
-        else:
+        for day in self.days:
+            event_obj = self._create_unsched_event_object(event)
+            if late:
+                success = self._place_event_in_latest_slot_on_day(event_obj, day)
+            else:
+                success = self._try_add_event_to_day(event_obj, day)
+            if not success:
+                print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED on day")
+                return False
+        return True
+
+    def _place_late_event(self, event):
+        """
+        Find the latest possible slot across all days and place the event there.
+        Args: event (tuple): Event data.
+        Returns: bool: True if placed, False if no slot found on any day.
+        """
+        candidates = []
+        for i, day in enumerate(self.days):
+            event_obj = self._create_unsched_event_object(event)
+            start = self._find_latest_slot_for_event(event_obj, day.events)
+            if start is not None:
+                bisect.insort(candidates, (start, i))
+
+        if not candidates:
             print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED")
             return False
 
+        start, day_idx = candidates[-1]
+        event_obj = self._create_unsched_event_object(event)
+        event_obj.start_time = start
+        event_obj.end_time = start + event_obj.duration
+        self.days[day_idx].add_event(event_obj)
+        return True
 
-    # Try to add the event to the given day
+    def _place_event(self, event):
+        """
+        Place event into the first available slot, using even spread ordering if enabled.
+        Args: event (tuple): Event data.
+        Returns: bool: True if placed, False if no slot found on any day.
+        """
+        for day in self._get_ordered_days():
+            event_obj = self._create_unsched_event_object(event)
+            if self._try_add_event_to_day(event_obj, day):
+                return True
+        print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED")
+        return False
+
+    def _place_event_in_latest_slot_on_day(self, event_obj, day):
+        """
+        Place an event into the latest available slot on a specific day.
+        Args:
+            event_obj (UnscheduledEvent): The event to place.
+            day (Day): The day to place it on.
+        Returns: bool: True if placed, False if no slot found.
+        """
+        start = self._find_latest_slot_for_event(event_obj, day.events)
+        if start is None:
+            return False
+        event_obj.start_time = start
+        event_obj.end_time = start + event_obj.duration
+        day.add_event(event_obj)
+        return True
+
     def _try_add_event_to_day(self, unsched_event, day):
         """
         Try to add an unscheduled event to a specific day.
@@ -306,7 +312,6 @@ class Scheduler:
         else:
             return False
 
-    # find the first available time slot in the given list of events
     def _try_find_slot_for_event(self, unsched_event, events_list):
         """
         Find the first available time slot for an event in the events list.
@@ -322,7 +327,6 @@ class Scheduler:
 
             # handle overlapping events
             if gap < 0:
-                # gap_start = event.end_time
                 if event.end_time > gap_start:
                     gap_start = event.end_time
                 continue
@@ -353,7 +357,6 @@ class Scheduler:
 
             # handle overlapping events
             if gap < 0:
-                # gap_start = event.end_time
                 if event.end_time > gap_start:
                     gap_start = event.end_time
                 continue
@@ -432,6 +435,10 @@ class Scheduler:
         """
         self.create_daily_windows(self.request.windows)
         self.add_scheduled_events()
+        print("Pre unsched")
+        print(self.print_days())
+        print()
         self.add_unscheduled_events()
+        print(self.print_days())
         return self.create_output()
     
