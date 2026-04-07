@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import useNotes from '../Hooks/useNotes.js';
 
 vi.mock('../Api/getNotes.js', () => ({ default: vi.fn() }));
@@ -12,7 +12,7 @@ describe('useNotes', () => {
     });
 
     it('initialises with an empty notes string, loaded false, loading true, and no error', () => {
-        getNotesModule.default.mockResolvedValue('');
+        getNotesModule.default.mockImplementation(() => new Promise(() => {}));
         const { result } = renderHook(() => useNotes());
         expect(result.current.notes).toBe('');
         expect(result.current.loaded).toBe(false);
@@ -48,7 +48,7 @@ describe('useNotes', () => {
         getNotesModule.default.mockResolvedValue('original');
         const { result } = renderHook(() => useNotes());
         await waitFor(() => expect(result.current.loaded).toBe(true));
-        result.current.setNotes('updated');
+        act(() => result.current.setNotes('updated'));
         await waitFor(() => expect(result.current.notes).toBe('updated'));
     });
 });
