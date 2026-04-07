@@ -10,7 +10,8 @@ import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import './stylesheets/Settings.css';
 
 /**
- * Settings page — sidebar navigation with profile, subscriptions, and export sections.
+ * Settings page with sidebar navigation for managing profile details,
+ * calendar subscriptions, and data export options.
  *
  * @returns {JSX.Element} The settings page
  */
