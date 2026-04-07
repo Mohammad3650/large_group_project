@@ -171,10 +171,10 @@ class SchedulerGeneratorTest(SimpleTestCase):
             even_spread=True,
             include_scheduled=True,
         )
-        scheduled = [(540, 600, "Lecture")] # day 0 already has something
+        scheduled = [(540, 600, "Lecture")]
         _, result = self.build_and_solve(request, scheduled)
         self.assertEqual(len(result), 1)
-        # With include_scheduled=True, solver should prefer day 1 to balance counts
+
         self.assertNotEqual(request.week_start, result[0][2])
 
     def test_zero_unscheduled_returns_empty_solution(self):
@@ -224,12 +224,115 @@ class SchedulerGeneratorTest(SimpleTestCase):
         request = self.make_request(
             days=1,
             windows=[(0, 540, True), (720, 1440, True)],
-            unscheduled=[("Revision", 60, 1, False, "None", "Library", "study", "Studying")]
+            unscheduled=[("Revision", 60, 1, False, "Late", "Library", "study", "Studying")]
         )
 
         _, result = self.build_and_solve(request)
         self.assertEqual(len(result), 1)
         start, end, *_ = result[0]
-        self.assertEqual(start, datetime.time(9))
-        self.assertEqual(end, datetime.time(10))
+        self.assertEqual(start, datetime.time(11, 0)) 
+        self.assertEqual(end, datetime.time(12, 0))
+
+    def test_event_str_and_repr(self):
+        """Test Event __str__ and __repr__ methods."""
+        from scheduler.services.schedule_generator import Event
+        event = Event(True, 540, 600, "Test")
+        str_repr = str(event)
+        repr_repr = repr(event)
+        self.assertIn("start:", str_repr)
+        self.assertIn("end:", str_repr)
+        self.assertIn("name: Test", str_repr)
+        self.assertIn("scheduled: True", str_repr)
+        self.assertEqual(str_repr, repr_repr)
+
+    def test_unscheduled_event_creation(self):
+        """Test UnscheduledEvent creation."""
+        from scheduler.services.schedule_generator import UnscheduledEvent
+        event = UnscheduledEvent(False, "Test", 60, 1, True, "Early", "Home", "work", "Description")
+        self.assertEqual(event.name, "Test")
+        self.assertEqual(event.duration, 60)
+        self.assertEqual(event.daily, True)
+        self.assertEqual(event.start_time_preference, "Early")
+
+    @patch('sys.stdout')
+    def test_infeasible_late_event(self, mock_stdout):
+        """Test infeasible late event placement."""
+        request = self.make_request(
+            days=1,
+            windows=[(0, 1320, True)],
+            unscheduled=[("BigTask", 120, 1, False, "Late", "Library", "study", "Studying")]
+        )
+        _, result = self.build_and_solve(request)
+        self.assertEqual(result, [])
+        mock_stdout.write.assert_called()
+
+    @patch('sys.stdout')
+    def test_infeasible_place_event(self, mock_stdout):
+        """Test infeasible place event."""
+        request = self.make_request(
+            days=1,
+            windows=[(0, 1320, True)],
+            unscheduled=[("BigTask", 120, 1, False, "None", "Library", "study", "Studying")]
+        )
+        _, result = self.build_and_solve(request)
+        self.assertEqual(result, [])
+        mock_stdout.write.assert_called()
+
+    @patch('sys.stdout')
+    def test_infeasible_daily_event(self, mock_stdout):
+        """Test infeasible daily event on one day."""
+        request = self.make_request(
+            days=2,
+            windows=[(0, 1320, True)],
+            unscheduled=[("BigTask", 120, 1, True, "None", "Library", "study", "Studying")]
+        )
+        _, result = self.build_and_solve(request)
+        self.assertEqual(result, [])
+        mock_stdout.write.assert_called()
+
+    def test_overlapping_scheduled_events(self):
+        """Test handling of overlapping scheduled events."""
+        request = self.make_request(
+            days=1,
+            windows=[(0, 300, True)],
+            unscheduled=[("Task", 60, 1, False, "None", "Library", "study", "Studying")]
+        )
+        scheduled = [(0, 120, "A"), (60, 180, "B")]
+        _, result = self.build_and_solve(request, scheduled)
+        self.assertEqual(len(result), 1)
+
+
+    def test_daily_late_event(self):
+        """Test daily event with late preference."""
+        request = self.make_request(
+            days=2,
+            windows=[(0, 300, True), (600, 900, True)],
+            unscheduled=[("LateDaily", 60, 1, True, "Late", "Library", "study", "Studying")]
+        )
+        _, result = self.build_and_solve(request)
+        self.assertEqual(len(result), 2)
+
+    @patch('sys.stdout')
+    def test_print_days(self, mock_stdout):
+        """Test print_days method."""
+        request = self.make_request(
+            days=2,
+            windows=[(540, 600, True)],
+            unscheduled=[("Task", 30, 1, False, "None", "Library", "study", "Studying")]
+        )
+        scheduler, _ = self.build_and_solve(request)
+        scheduler.print_days()
+        mock_stdout.write.assert_called()
+
+    def test_create_output_with_events(self):
+        """Test create_output with unscheduled events."""
+        request = self.make_request(
+            days=1,
+            windows=[(540, 600, True)],
+            unscheduled=[("Task", 30, 1, False, "None", "Library", "study", "Studying")]
+        )
+        scheduler, _ = self.build_and_solve(request)
+        output = scheduler.create_output()
+        self.assertEqual(len(output), 1)
+        self.assertIsInstance(output[0][2], datetime.date)
 
