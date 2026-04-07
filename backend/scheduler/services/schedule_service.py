@@ -2,13 +2,9 @@ from typing import Any, Dict, List, Tuple
 
 from scheduler.services.request_parser import ScheduleRequestParser
 from scheduler.services.response_builder import ScheduleResponseBuilder
-# from scheduler.services.schedule_generator import Scheduler
-
 from scheduler.models import TimeBlock
-
 from django.db.models import F
-
-from scheduler.services.new_schedule_service import Scheduler
+from scheduler.services.schedule_generator import Scheduler
 
 class ScheduleService:
     """

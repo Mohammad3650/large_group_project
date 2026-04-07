@@ -1,8 +1,7 @@
 import datetime
 from django.test import SimpleTestCase
 
-# from scheduler.services.schedule_generator import Scheduler
-from scheduler.services.new_schedule_service import Scheduler
+from scheduler.services.schedule_generator import Scheduler
 from scheduler.services.request_parser import ParsedScheduleRequest
 from unittest.mock import patch
 
