@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SettingsSidebar from './SettingsSidebar.jsx';
 import ProfileSection from './ProfileSection.jsx';
-import SubscriptionSection from '../../components/SubscriptionSection.jsx';
+import SubscriptionSection from './SubscriptionSection.jsx';
 import ExportSection from './ExportSection.jsx';
 import useSubscriptions from '../../utils/Hooks/useSubscriptions.js';
 import useSubscriptionActions from '../../utils/Hooks/useSubscriptionActions.js';
@@ -10,7 +10,8 @@ import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import './stylesheets/Settings.css';
 
 /**
- * Settings page — sidebar navigation with profile, subscriptions, and export sections.
+ * Settings page with sidebar navigation for managing profile details,
+ * calendar subscriptions, and data export options.
  *
  * @returns {JSX.Element} The settings page
  */

@@ -46,10 +46,6 @@ function TaskOptionsDropup({ id, completed, setDropdownOpen, onDelete, onUndoCom
 
     return (
         <div className="task-options-drop-up">
-            <button className="task-options-edit-btn" onClick={handleViewDetailsClick}>
-                <FaEye /> View Details
-            </button>
-            <hr className="task-options-divider" />
             {completed && (
                 <>
                     <button className="task-options-edit-btn" onClick={handleUndoCompleteClick}>
@@ -58,6 +54,10 @@ function TaskOptionsDropup({ id, completed, setDropdownOpen, onDelete, onUndoCom
                     <hr className="task-options-divider" />
                 </>
             )}
+            <button className="task-options-edit-btn" onClick={handleViewDetailsClick}>
+                <FaEye /> View Details
+            </button>
+            <hr className="task-options-divider" />
             <button className="task-options-edit-btn" onClick={handleEditClick}>
                 <FaEdit /> Edit
             </button>

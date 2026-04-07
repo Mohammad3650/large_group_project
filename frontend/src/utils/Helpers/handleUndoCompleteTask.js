@@ -1,7 +1,5 @@
 import undoCompleteTimeBlock from '../Api/undoCompleteTimeBlock.js';
-import getDateBoundaries from './getDateBoundaries.js';
-import getDate from './getDate.js';
-import sortTasksByDate from './sortTasksByDate.js';
+import restoreTaskToDateGroup from './restoreTaskToDateGroup.js';
 
 /**
  * Undoes the completion of a task by calling the API
@@ -20,20 +18,10 @@ function handleUndoCompleteTask(task, { setCompletedTasks, setOverdueTasks, setT
     undoCompleteTimeBlock(task.id)
         .then(() => {
             setCompletedTasks((prev) => prev.filter((item) => item.id !== task.id));
-            const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
-            const taskDate = getDate(task);
-            const restoredTask = { ...task, completed_at: null };
-
-            const lookup = [
-                { condition: taskDate < today, setter: setOverdueTasks },
-                { condition: taskDate < tomorrow, setter: setTodayTasks },
-                { condition: taskDate < dayAfterTomorrow, setter: setTomorrowTasks },
-                { condition: taskDate <= weekEnd, setter: setWeekTasks },
-            ];
-
-            const match = lookup.find(({ condition }) => condition);
-            const setter = match ? match.setter : setBeyondWeekTasks;
-            setter((prev) => [...prev, restoredTask].sort(sortTasksByDate));
+            restoreTaskToDateGroup(
+                { ...task, completed_at: null },
+                { setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks }
+            );
         })
         .catch(() => {});
 }

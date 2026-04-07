@@ -1,0 +1,29 @@
+.pin-button {
+    background: none;
+    border: none;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    transition: color 0.2s, background-color 0.2s;
+    box-shadow: none;
+}
+
+.pin-button:hover {
+    color: var(--yellow);
+    background-color: transparent;
+    opacity: 1;
+}
+
+.pin-button.pinned {
+    color: var(--yellow);
+    transform: rotate(45deg);
+}
+
+.pin-button.pinned:hover {
+    color: var(--text-light);
+}

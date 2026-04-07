@@ -2,6 +2,5 @@
     display: flex;
     align-items: center;
     gap: var(--space-xs);
-    margin-left: var(--space-lg);
-    width: calc(100% - var(--space-lg));
+    width: 100%;
 }

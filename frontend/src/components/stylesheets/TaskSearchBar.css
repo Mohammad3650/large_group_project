@@ -5,8 +5,6 @@
     border: none;
     border-radius: var(--radius-2xl);
     padding: 0 var(--space-md);
-    margin-top: var(--space-md);
-    margin-bottom: var(--space-xl);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
