@@ -54,6 +54,7 @@ function Navbar({ theme, toggleTheme }) {
                         <div className="navbar-user" ref={dropdownRef}>
                             <FaUserCircle
                                 className="navbar-icon user-icon"
+                                aria-label="User Icon"
                                 onClick={() => setDropdownOpen((prev) => !prev)}
                             />
 

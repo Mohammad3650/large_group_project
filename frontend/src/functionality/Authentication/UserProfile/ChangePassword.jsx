@@ -87,8 +87,8 @@ function ChangePassword() {
             title="Change Password"
             subtitle="Update your account password"
             footerText="Back to"
-            footerLinkText="Profile"
-            footerLinkTo="/profile"
+            footerLinkText="Settings"
+            footerLinkTo="/settings"
         >
             {errors.global.length > 0 && (
                 <div className="alert alert-danger text-center">

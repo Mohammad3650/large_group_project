@@ -3,6 +3,7 @@
     display: flex;
     align-items: center;
     padding: var(--space-lg) var(--space-navbar-x);
+    margin-bottom: var(--space-lg);
     border-bottom: 6px solid var(--border-light);
     background: var(--bg-main);
 }

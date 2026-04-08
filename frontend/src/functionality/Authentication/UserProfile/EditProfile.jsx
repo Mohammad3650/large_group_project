@@ -138,8 +138,8 @@ function EditProfile() {
             title="Edit Profile"
             subtitle="Update your account details"
             footerText="Back to"
-            footerLinkText="Dashboard"
-            footerLinkTo="/dashboard"
+            footerLinkText="Settings"
+            footerLinkTo="/settings"
         >
             {successMessage && (
                 <div className="alert alert-success text-center">{successMessage}</div>
