@@ -6,7 +6,6 @@ import ExportSection from './ExportSection.jsx';
 import useSubscriptions from '../../utils/Hooks/useSubscriptions.js';
 import useSubscriptionActions from '../../utils/Hooks/useSubscriptionActions.js';
 import useAutoResetError from '../../utils/Hooks/useAutoResetError.js';
-import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import './stylesheets/Settings.css';
 
 /**
@@ -21,7 +20,6 @@ function Settings() {
     const { subscriptions, setSubscriptions } = useSubscriptions(setError);
     const { onImport, onRefresh, onDelete } = useSubscriptionActions({ setSubscriptions, setError, refetchBlocks: () => {} });
 
-    useBodyClass('settings-page');
     useAutoResetError(error, setError);
 
     return (

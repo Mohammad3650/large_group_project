@@ -7,8 +7,6 @@ import NoTasksMessage from './NoTasksMessage.jsx';
 import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
-import useBodyClass from '../../utils/Hooks/useBodyClass.js';
-import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
 import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
 import useUsername from '../../utils/Hooks/useUsername.js';
 import './stylesheets/Dashboard.css';
@@ -37,9 +35,6 @@ function Dashboard() {
     } = useTasksByDateGroup(blocks);
 
     const { username } = useUsername(true);
-
-    useBodyClass('dashboard-page');
-    useScrollToTopOnResize();
 
     const { filteredTasks } = useFilterTasksForSearch(
         { pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks },
