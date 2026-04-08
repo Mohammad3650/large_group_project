@@ -39,13 +39,15 @@ def calendar_subscriptions(request):
             {"source_url": ["You have already added this calendar subscription."]}
         )
 
-    subscription = CalendarSubscription.objects.create(
-        user=request.user,
-        name=serializer.validated_data["name"],
-        source_url=source_url,
-    )
+    with transaction.atomic():
+        subscription = CalendarSubscription.objects.create(
+            user=request.user,
+            name=serializer.validated_data["name"],
+            source_url=source_url,
+        )
 
-    sync_result = sync_calendar_subscription(subscription)
+        sync_result = sync_calendar_subscription(subscription)
+
     response_serializer = CalendarSubscriptionSerializer(subscription)
 
     return Response(
@@ -101,11 +103,11 @@ def delete_calendar_subscription(request, subscription_id):
         user=request.user,
     )
 
-    imported_event_qs = subscription.imported_events.select_related("time_block")
-    time_block_ids = [event.time_block_id for event in imported_event_qs]
+    imported_events = subscription.imported_events.select_related("time_block")
+    time_block_ids = [event.time_block_id for event in imported_events]
 
     with transaction.atomic():
-        imported_event_qs.delete()
+        imported_events.delete()
         TimeBlock.objects.filter(
             id__in=time_block_ids,
             day__user=request.user,

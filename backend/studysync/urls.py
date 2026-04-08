@@ -33,6 +33,10 @@ from scheduler.views.generator_view import GenerateScheduleView
 from scheduler.views.get_schedule_view import get_schedule
 from scheduler.views.edit_schedule_view import edit_time_block
 from scheduler.views.delete_schedule_view import delete_schedule
+from scheduler.views.complete_schedule_view import complete_schedule
+from scheduler.views.undo_complete_schedule_view import undo_complete_schedule
+from scheduler.views.pin_schedule_view import pin_schedule
+from scheduler.views.unpin_schedule_view import unpin_schedule
 from scheduler.views.get_note_view import get_note
 from scheduler.views.save_note_view import save_note
 from scheduler.views.save_plan_view import SaveWeeklyPlanView
@@ -41,14 +45,12 @@ from scheduler.views.delete_user_view import delete_user
 from scheduler.views.export_schedule_view import export_schedule_csv
 from scheduler.views.export_ics_view import export_schedule_ics
 from scheduler.views.user_registration_view import UserRegistrationView
-from scheduler.views.dashboard_view import DashboardView
 from scheduler.views.user_details_view import UserDetailsView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
     path("auth/signup/", UserRegistrationView.as_view(), name="user-signup"),
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
     # JWT auth
     path("api/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
@@ -59,6 +61,11 @@ urlpatterns = [
     path("api/time-blocks/get/", get_schedule, name="api-get-timeblocks"),
     path("api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"),
     path("api/timeblocks/<int:id>/edit/", edit_time_block, name="api-edit-timeblock"),
+    path("api/time-blocks/<int:block_id>/complete/", complete_schedule, name="api-complete-timeblock"),
+    path("api/time-blocks/<int:block_id>/undo-complete/", undo_complete_schedule, name="api-undo-complete-timeblock"),
+    path("api/time-blocks/<int:block_id>/pin/", pin_schedule, name="api-pin-timeblock"),
+    path("api/time-blocks/<int:block_id>/unpin/", unpin_schedule, name="api-unpin-timeblock"),
+
 
     #Notes
     path("api/notes/get/", get_note, name="api-get-note"),
@@ -72,7 +79,7 @@ urlpatterns = [
 
     #User
     path("api/user/", UserDetailsView.as_view(), name="user-details"),
-    path("api/user/change-password/", change_password),
+    path("api/user/change-password/", change_password, name="change_password_view"),
     path("api/user/delete/", delete_user, name="delete_user_view"),
 
     #Export

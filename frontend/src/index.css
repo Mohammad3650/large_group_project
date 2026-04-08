@@ -1,3 +1,8 @@
+* {
+    scrollbar-color: var(--bg-soft-hover) var(--bg-main);
+    scrollbar-width: thin;
+}
+
 html,
 body {
     margin: 0;

@@ -21,36 +21,35 @@ class SchedulerGeneratorTest(SimpleTestCase):
 
     def build_and_solve(self, request, scheduled=None):
         scheduler = Scheduler(request, scheduled or [])
-        scheduler.create_scheduled_intervals()
-        scheduler.create_unscheduled_intervals()
-        scheduler.overlap_constraints()
-        scheduler.apply_constraints()
         result = scheduler.solve()
         return scheduler, result
+    
+    def time_to_abs(self, time):
+        return (time.hour * 60) + (time.minute * 60)
 
     def test_single_event_fits_inside_window(self):
         """Test that a single unscheduled event fits within the available time window."""
         request = self.make_request(
             days=1,
-            windows=[(540, 720, False)],
-            unscheduled=[(60, "Revision", 1, False, "None", "", "study", "")]
+            windows=[(0, 540, True), (720, 1440, True)],
+            unscheduled=[("Revision", 60, 1, False, "None", "Library", "study", "Studying")]
         )
         
         _, result = self.build_and_solve(request, scheduled=[])
         self.assertEqual(len(result), 1)
-        start, end, duration, name, *_ = result[0]
+        start, end, _, name, *_ = result[0]
         self.assertEqual(name, "Revision")
-        self.assertEqual(duration, 60)
-        self.assertGreaterEqual(start, 540)
-        self.assertLessEqual(start, 660)
-        self.assertEqual(end - start, 60)
+        self.assertEqual(self.time_to_abs(start), 540)
+        self.assertEqual(self.time_to_abs(end), 600)
+        self.assertEqual(self.time_to_abs(end) - self.time_to_abs(start), 60)
 
-    def test_infeasible_schedule_returns_empty(self):
+    @patch('sys.stdout')
+    def test_infeasible_schedule_returns_empty(self, mock_stdout):
         """Test that an infeasible schedule (event too long for window) returns an empty result."""
         request = self.make_request(
             days=1,
-            windows=[(540, 570, False)],
-            unscheduled=[(60, "Revision", 1, False, "None", "", "study", "")]
+            windows=[(0, 540, False), (570, 1440, True)],
+            unscheduled=[("Revision", 60, 1, False, "None", "Library", "study", "Studying")]
         )
         _, result = self.build_and_solve(request, scheduled=[])
 
@@ -60,58 +59,46 @@ class SchedulerGeneratorTest(SimpleTestCase):
         """Test that a daily recurring event creates one instance per day."""
         request = self.make_request(
             days=3,
-            windows=[(540, 720, True)],
-            unscheduled=[(60, "Gym", 1, True, "None", "", "exercise", "")]
+            windows=[(0, 540, True), (700, 1440, True)],
+            unscheduled=[("DailyRevision", 60, 1, True, "None", "Library", "study", "Studying")]
         )
         _, result = self.build_and_solve(request, scheduled=[])
 
         self.assertEqual(len(result), 3)
-        day_indexes = sorted(start // 1440 for start, *_ in result)
-        self.assertEqual(day_indexes, [0, 1, 2])
+        self.assertEqual(len(set( [date for _, _, date, *_ in result] )), 3)
 
     def test_two_unscheduled_events_do_not_overlap(self):
         """Test that two unscheduled events in the same window do not overlap."""
         request = self.make_request(
             days=1,
-            windows=[(540, 660, False)],  # 09:00-11:00
+            windows=[(0, 540, True), (660, 1440, True)],  # 09:00-11:00
             unscheduled=[
-                (60, "Task A", 1, False, "None", "", "study", ""),
-                (60, "Task B", 1, False, "None", "", "study", "")
+                ("Revision 1", 60, 1, False, "None", "Library", "study", "Studying"),
+                ("Revision 2", 60, 1, False, "None", "Library", "study", "Studying")
                 ],
         )
 
         _, result = self.build_and_solve(request)
         self.assertEqual(len(result), 2)
         result = sorted(result, key=lambda x: x[0])
-        first_start, first_end, *_ = result[0]
-        second_start, second_end, *_ = result[1]
+        _, first_end, *_ = result[0]
+        second_start, *_ = result[1]
         self.assertLessEqual(first_end, second_start)
-        self.assertEqual(first_end - first_start, 60)
-        self.assertEqual(second_end - second_start, 60)
+
 
     def test_event_uses_second_window_if_first_blocked(self):
         """Test that an event uses the second window if the first is blocked by a scheduled event."""
         request = self.make_request(
             days=1,
-            windows=[(540, 600, False), (660, 720, False)],
-            unscheduled=[(60, "Revision", 1, False, "None", "", "study", "")],
+            windows=[(0, 540, True), (600, 660, True), (720, 1440, True)],
+            unscheduled=[("Revision", 60, 1, False, "None", "Library", "study", "Studying")],
         )
         scheduled = [(540, 600, "Lecture")] # blocks first window fully
         _, result = self.build_and_solve(request, scheduled)
         self.assertEqual(len(result), 1)
         start, end, *_ = result[0]
-        self.assertEqual(start, 660)
-        self.assertEqual(end, 720)
-
-    def test_non_daily_window_is_not_repeated(self):
-        """Test that a non-daily window is not repeated across days."""
-        request = self.make_request(
-            days=3,
-            windows=[(540, 600, False)],  # only day 0 absolute
-            unscheduled=[(60, "Study", 1, False, "None", "", "study", "")],
-        )
-        scheduler = Scheduler(request, [])
-        self.assertEqual(scheduler.windows, [(540, 600)])
+        self.assertEqual(start, datetime.time(11, 0))
+        self.assertEqual(end, datetime.time(12, 0))
 
     def test_daily_window_is_repeated_for_each_day(self):
         """Test that a daily window is repeated for each day."""
@@ -120,15 +107,17 @@ class SchedulerGeneratorTest(SimpleTestCase):
             windows=[(540, 600, True)],
             unscheduled=[],
         )
-        scheduler = Scheduler(request, [])
-        self.assertEqual( scheduler.windows, [(540, 600), (1980, 2040), (3420, 3480), ])
+        scheduler, _ = self.build_and_solve(request)
+        days = scheduler.days
+        for day in days:
+            self.assertEqual(len(day.events), 1)
 
     def test_frequency_two_creates_two_sessions(self):
         """Test that frequency=2 creates exactly two sessions."""
         request = self.make_request(
             days=3,
-            windows=[(540, 720, True)],
-            unscheduled=[(60, "Revision", 2, False, "None", "", "study", "")],
+            windows=[(0, 540, True), (720, 1440, True)],
+            unscheduled=[("Revision", 60, 2, False, "None", "Library", "study", "Studying")],
         )
         _, result = self.build_and_solve(request)
         self.assertEqual(len(result), 2)
@@ -137,8 +126,8 @@ class SchedulerGeneratorTest(SimpleTestCase):
         """Test that daily=True overrides frequency and creates one per day."""
         request = self.make_request(
             days=4,
-            windows=[(540, 720, True)],
-            unscheduled=[(60, "Gym", 2, True, "None", "", "exercise", "")],
+            windows=[(0, 540, True), (720, 1440, True)],
+            unscheduled=[("Revision", 60, 2, True, "None", "Library", "study", "Studying")],
         )
         _, result = self.build_and_solve(request)
         self.assertEqual(len(result), 4)
@@ -147,49 +136,46 @@ class SchedulerGeneratorTest(SimpleTestCase):
         """Test that a daily recurring event appears exactly once per day."""
         request = self.make_request(
             days=4,
-            windows=[(540, 720, True)],
-            unscheduled=[(60, "Gym", 1, True, "None", "", "exercise", "")],
+            windows=[(0, 540, True), (720, 1440, True)],
+            unscheduled=[("Revision", 60, 1, True, "None", "Library", "study", "Studying")],
         )
         _, result = self.build_and_solve(request)
         self.assertEqual(len(result), 4)
-        day_counts = {}
-        for start, *_ in result:
-            day = start // 1440
-            day_counts[day] = day_counts.get(day, 0) + 1
-        self.assertEqual(day_counts, {0: 1, 1: 1, 2: 1, 3: 1})
+        date_counts = {}
+        for _, _, date, *_ in result:
+            date_counts[date] = date_counts.get(date, 0) + 1
+        self.assertTrue(all(count == 1 for count in date_counts.values()))
 
     def test_even_spread_places_two_events_on_different_days(self):
         """Test that even spread places two events on different days."""
         request = self.make_request(
             days=2,
-            windows=[(540, 720, True)],
+            windows=[(0, 540, True), (720, 1440, True)],
             unscheduled=[
-                (60, "Task A", 1, False, "None", "", "study", ""),
-                (60, "Task B", 1, False, "None", "", "study", "")],
+                ("Task A", 60, 1, False, "None", "Library", "study", "Studying"),
+                ("Task B", 60, 1, False, "None", "Library", "study", "Studying")],
             even_spread=True,
             include_scheduled=False,
         )
         _, result = self.build_and_solve(request)
         self.assertEqual(len(result), 2)
-        days = sorted(start // 1440 for start, *_ in result)
-        self.assertEqual(days, [0, 1])
+        days = set([date for _, _, date, *_ in result])
+        self.assertEqual(len(days), 2)
 
     def test_include_scheduled_in_even_spread_affects_placement(self):
         """Test that including scheduled events in even spread affects placement."""
         request = self.make_request(
             days=2,
-            windows=[(540, 720, True)],
-            unscheduled=[ (60, "Task A", 1, False, "None", "", "study", ""), ],
+            windows=[(0, 540, True), (720, 1440, True)],
+            unscheduled=[ ("Revision", 60, 1, False, "None", "Library", "study", "Studying"), ],
             even_spread=True,
             include_scheduled=True,
         )
-        scheduled = [(540, 600, "Lecture")] # day 0 already has something
+        scheduled = [(540, 600, "Lecture")]
         _, result = self.build_and_solve(request, scheduled)
         self.assertEqual(len(result), 1)
-        start, *_ = result[0]
-        day = start // 1440
-        # With include_scheduled=True, solver should prefer day 1 to balance counts
-        self.assertEqual(day, 1)
+
+        self.assertNotEqual(request.week_start, result[0][2])
 
     def test_zero_unscheduled_returns_empty_solution(self):
         """Test that zero unscheduled events return an empty solution."""
@@ -207,82 +193,146 @@ class SchedulerGeneratorTest(SimpleTestCase):
             days=1,
             windows=[(540, 900, False)],
             unscheduled=[
-                (30, "Task A", 1, False, "None", "", "study", ""),
-                (45, "Task B", 1, False, "None", "", "study", ""),
-                (60, "Task C", 1, False, "None", "", "study", "")],
+                ("Revision", 30, 1, False, "None", "Library", "study", "Studying"),
+                ("Revision", 45, 1, False, "None", "Library", "study", "Studying"),
+                ("Revision", 60, 1, False, "None", "Library", "study", "Studying")],
         )
         _, result = self.build_and_solve(request)
         self.assertEqual(len(result), 3)
-        durations = sorted(duration for _, _, duration, *_ in result)
+        durations = sorted(
+            (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute)
+            for start, end, *_ in result
+        )
         self.assertEqual(durations, [30, 45, 60])
-        for start, end, duration, *_ in result:
-            self.assertEqual(end - start, duration)
     
     def test_early_preference_pushes_event_to_window_start(self):
         """Test that 'Early' preference pushes the event to the start of the window."""
         request = self.make_request(
             days=1,
-            windows=[(540, 720, False)],
-            unscheduled=[(60, "Revision", 1, False, "Early", "", "study", "")]
-        )
-
-        _, result = self.build_and_solve(request)
-        self.assertEqual(len(result), 1)
-        start, end, duration, name, *_ = result[0]
-        self.assertEqual(start, 540)
-        self.assertEqual(end, 600)
-        self.assertEqual(duration, 60)
-        self.assertEqual(name, "Revision")
-    
-    def test_late_preference_pushes_event_to_window_end(self):
-        """Test that 'Late' preference pushes the event to the end of the window."""
-        request = self.make_request(
-            days=1,
-            windows=[(540, 720, False)],
-            unscheduled=[(60, "Revision", 1, False, "Late", "", "study", "")]
+            windows=[(0, 540, True), (720, 1440, True)],
+            unscheduled=[("Revision", 60, 1, False, "Early", "Library", "study", "Studying")]
         )
 
         _, result = self.build_and_solve(request)
         self.assertEqual(len(result), 1)
         start, end, *_ = result[0]
-        self.assertEqual(start, 660)
-        self.assertEqual(end, 720)
-
-    def test_debug_output_before_solving_prints_none_status(self):
-        """Test that debug_output prints 'Status -> None' before solving."""
-        request = self.make_request(days=1, unscheduled=[])
-        scheduler = Scheduler(request, [])
-
-        with patch("builtins.print") as mocked_print:
-            scheduler.debug_output()
-            mocked_print.assert_called_once_with("Status -> None")
-
-    def test_debug_output_after_solving_prints_session_line(self):
-        """Test that debug_output prints session details after solving."""
+        self.assertEqual(start, datetime.time(9))
+        self.assertEqual(end, datetime.time(10))
+    
+    def test_late_preference_pushes_event_to_window_end(self):
+        """Test that 'Late' preference pushes the event to the end of the window."""
         request = self.make_request(
             days=1,
-            windows=[(540, 720, False)],
-            unscheduled=[(60, "Revision", 1, False, "None", "Library", "study", "desc")]
+            windows=[(0, 540, True), (720, 1440, True)],
+            unscheduled=[("Revision", 60, 1, False, "Late", "Library", "study", "Studying")]
+        )
+
+        _, result = self.build_and_solve(request)
+        self.assertEqual(len(result), 1)
+        start, end, *_ = result[0]
+        self.assertEqual(start, datetime.time(11, 0)) 
+        self.assertEqual(end, datetime.time(12, 0))
+
+    def test_event_str_and_repr(self):
+        """Test Event __str__ and __repr__ methods."""
+        from scheduler.services.schedule_generator import Event
+        event = Event(True, 540, 600, "Test")
+        str_repr = str(event)
+        repr_repr = repr(event)
+        self.assertIn("start:", str_repr)
+        self.assertIn("end:", str_repr)
+        self.assertIn("name: Test", str_repr)
+        self.assertIn("scheduled: True", str_repr)
+        self.assertEqual(str_repr, repr_repr)
+
+    def test_unscheduled_event_creation(self):
+        """Test UnscheduledEvent creation."""
+        from scheduler.services.schedule_generator import UnscheduledEvent
+        event = UnscheduledEvent(False, "Test", 60, 1, True, "Early", "Home", "work", "Description")
+        self.assertEqual(event.name, "Test")
+        self.assertEqual(event.duration, 60)
+        self.assertEqual(event.daily, True)
+        self.assertEqual(event.start_time_preference, "Early")
+
+    @patch('sys.stdout')
+    def test_infeasible_late_event(self, mock_stdout):
+        """Test infeasible late event placement."""
+        request = self.make_request(
+            days=1,
+            windows=[(0, 1320, True)],
+            unscheduled=[("BigTask", 120, 1, False, "Late", "Library", "study", "Studying")]
+        )
+        _, result = self.build_and_solve(request)
+        self.assertEqual(result, [])
+        mock_stdout.write.assert_called()
+
+    @patch('sys.stdout')
+    def test_infeasible_place_event(self, mock_stdout):
+        """Test infeasible place event."""
+        request = self.make_request(
+            days=1,
+            windows=[(0, 1320, True)],
+            unscheduled=[("BigTask", 120, 1, False, "None", "Library", "study", "Studying")]
+        )
+        _, result = self.build_and_solve(request)
+        self.assertEqual(result, [])
+        mock_stdout.write.assert_called()
+
+    @patch('sys.stdout')
+    def test_infeasible_daily_event(self, mock_stdout):
+        """Test infeasible daily event on one day."""
+        request = self.make_request(
+            days=2,
+            windows=[(0, 1320, True)],
+            unscheduled=[("BigTask", 120, 1, True, "None", "Library", "study", "Studying")]
+        )
+        _, result = self.build_and_solve(request)
+        self.assertEqual(result, [])
+        mock_stdout.write.assert_called()
+
+    def test_overlapping_scheduled_events(self):
+        """Test handling of overlapping scheduled events."""
+        request = self.make_request(
+            days=1,
+            windows=[(0, 300, True)],
+            unscheduled=[("Task", 60, 1, False, "None", "Library", "study", "Studying")]
+        )
+        scheduled = [(0, 120, "A"), (60, 180, "B")]
+        _, result = self.build_and_solve(request, scheduled)
+        self.assertEqual(len(result), 1)
+
+
+    def test_daily_late_event(self):
+        """Test daily event with late preference."""
+        request = self.make_request(
+            days=2,
+            windows=[(0, 300, True), (600, 900, True)],
+            unscheduled=[("LateDaily", 60, 1, True, "Late", "Library", "study", "Studying")]
+        )
+        _, result = self.build_and_solve(request)
+        self.assertEqual(len(result), 2)
+
+    @patch('sys.stdout')
+    def test_print_days(self, mock_stdout):
+        """Test print_days method."""
+        request = self.make_request(
+            days=2,
+            windows=[(540, 600, True)],
+            unscheduled=[("Task", 30, 1, False, "None", "Library", "study", "Studying")]
         )
         scheduler, _ = self.build_and_solve(request)
+        scheduler.print_days()
+        mock_stdout.write.assert_called()
 
-        with patch("builtins.print") as mocked_print:
-            scheduler.debug_output()
-
-        self.assertTrue(mocked_print.called)
-        printed = mocked_print.call_args_list[0][0][0]
-        self.assertIn("Session 1", printed)
-        self.assertIn("Revision", printed)
-        self.assertIn("Library", printed)
-
-    def test_recur_once_per_day_early_return_branch(self):
-        """Test that recur_once_per_day_constraint returns early if events > days."""
-        request = self.make_request(days=2, unscheduled=[])
-        scheduler = Scheduler(request, [])
-
-        recurring_events = [1, 2, 3]  # length = 3 > days = 2
-
-        with patch.object(scheduler, "_enforce_max_one_per_day") as mocked:
-            scheduler.recur_once_per_day_constraint(recurring_events)
-            mocked.assert_not_called()
+    def test_create_output_with_events(self):
+        """Test create_output with unscheduled events."""
+        request = self.make_request(
+            days=1,
+            windows=[(540, 600, True)],
+            unscheduled=[("Task", 30, 1, False, "None", "Library", "study", "Studying")]
+        )
+        scheduler, _ = self.build_and_solve(request)
+        output = scheduler.create_output()
+        self.assertEqual(len(output), 1)
+        self.assertIsInstance(output[0][2], datetime.date)
 

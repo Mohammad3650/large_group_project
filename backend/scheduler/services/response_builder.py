@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta, time
 from typing import Any, Dict, List, Tuple
 
+from scheduler.utils.to_utc import to_utc
+
 MINUTES_PER_DAY = 24 * 60
 
 
@@ -12,31 +14,29 @@ class ScheduleResponseBuilder:
     into the same structure expected by the SaveWeeklyPlan endpoint.
     """
 
-    def build( self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled ,week_start: str, ) -> Dict[str, Any]:
+    def build(self, solutions: List[Tuple[int, int, int, str, str, str, str]], scheduled, week_start: str, timezone: str = 'UTC') -> Dict[str, Any]:
         events = []
-        for (start, end, duration, name, location, block_type, description) in solutions:
-            date_start, start_time = self._abs_min_to_date_time(week_start, start)
-            date_end, end_time = self._abs_min_to_date_time(week_start, end)
-
+        for (start_time, end_time, event_date, name, location, block_type, description) in solutions:
             if not block_type:
                 block_type = self._guess_block_type(name)
 
-            if date_start != date_end:
-                raise ValueError( f"Event '{name}' crosses midnight: start={date_end} {start_time}, end={date_end} {end_time}." )
+            date_str = event_date.isoformat()
+            utc_start, utc_date = to_utc(start_time.isoformat(timespec="seconds"), date_str, timezone)
+            utc_end, _ = to_utc(end_time.isoformat(timespec="seconds"), date_str, timezone)
 
             events.append(
                 {
-                    "date": date_start.isoformat(),
-                    "start_time": start_time.isoformat(timespec="seconds"),
-                    "end_time": end_time.isoformat(timespec="seconds"),
+                    "date": utc_date,
+                    "start_time": utc_start.isoformat(timespec="seconds"),
+                    "end_time": utc_end.isoformat(timespec="seconds"),
                     "block_type": block_type,
                     "location": location or "",
                     "name": name,
-                    "description": description
+                    "description": description,
                 }
             )
 
-        return { "week_start": str(week_start.isoformat()), "events": events, "scheduled": scheduled }
+        return {"week_start": str(week_start.isoformat()), "events": events, "scheduled": scheduled}
 
     def _abs_min_to_date_time(self, week_start, abs_min: int) -> tuple[str, str]:
         """
@@ -45,8 +45,6 @@ class ScheduleResponseBuilder:
         date: YYYY-MM-DD
         time: HH:MM:SS
         """
-
-        # Handle both string and date objects
         if isinstance(week_start, date):
             base = week_start
         else:

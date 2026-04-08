@@ -1,389 +1,440 @@
-from ortools.sat.python import cp_model
-from typing import List, Tuple
-from scheduler.services.request_parser import ParsedScheduleRequest
+import bisect
+from dataclasses import dataclass
+import datetime
+from datetime import time
 
 DAY_MINS = 1440
-PREFERENCE_WEIGHTS = {"Early": 1, "Late": -1}
+FINAL_MIN = 1439
+
+class Event:
+    def __init__(self, scheduled, start_time = None, end_time = None, name = None):
+        """
+        Initialize Event.
+        Args:
+            scheduled (bool): If scheduled.
+            start_time (int, optional): Start time in mins.
+            end_time (int, optional): End time in mins.
+            name (str, optional): Event name.
+        """
+        self.start_time = start_time
+        self.end_time = end_time
+        self.name = name
+        self.scheduled = scheduled
+    
+    def __str__(self):
+        """
+        String representation.
+        Returns: str: Event details.
+        """
+        return f"start: {self.start_time_dt}, end: {self.end_time_dt}, name: {self.name}, scheduled: {self.scheduled}"
+    
+    def __repr__(self):
+        """
+        Debug representation.
+        Returns: str - Same as __str__.
+        """
+        return self.__str__()
+    
+    def _abs_mins_to_time(self, abs):
+        return f"{abs // 60}:{abs % 60}"
+
+    def _abs_time_to_datetime(self, abs_min: int) -> tuple[str, str]:
+        """
+        Convert abs mins to time.
+        Args:abs_min (int): Abs mins since day 0.
+        Returns: time: Time object.
+        """
+        mins_in_day = abs_min % DAY_MINS
+
+        hour = mins_in_day // 60
+        minute = mins_in_day % 60
+
+        return time(hour=hour, minute=minute, second=0)
+    
+    @property
+    def start_time_dt(self):
+        """
+        Start time as time object.
+        Returns: time: Start time.
+        """
+        return self._abs_time_to_datetime(self.start_time)
+    
+    @property
+    def end_time_dt(self):
+        """
+        End time as time object.
+        Returns: time: End time.
+        """
+        return self._abs_time_to_datetime(self.end_time)
+    
+    def __lt__(self, other):
+        """
+        Compare by end time.
+        Args: other (Event): Other event.
+        Returns: bool: If self < other.
+        """
+        return self.end_time < other.end_time
+
+class UnscheduledEvent(Event):
+    def __init__(self, scheduled, name, duration, frequency, daily, start_time_preference, location, block_type, description, start_time = None, end_time = None):
+        """
+        Initialize UnscheduledEvent.
+        Args:
+            scheduled (bool): If scheduled.
+            name (str): Event name.
+            duration (int): Duration in mins.
+            frequency (int): Frequency.
+            daily (bool): If daily.
+            start_time_preference (str): Preference.
+            location (str): Location.
+            block_type (str): Block type.
+            description (str): Description.
+            start_time (int, optional): Start time.
+            end_time (int, optional): End time.
+        """
+        super().__init__(scheduled, start_time, end_time, name)
+        self.duration = duration
+        self.frequency = frequency
+        self.daily = daily
+        self.start_time_preference = start_time_preference
+        self.location = location
+        self.block_type = block_type
+        self.description = description
+
+class Day:
+    def __init__(self, relative_start):
+        """
+        Initialize Day.
+        Args: relative_start (int): Relative start in mins.
+        """
+        self.available = DAY_MINS
+        self.relative_start = relative_start
+        self.unsched_ev_count = 0
+        self.sched_ev_count = 0
+        self.events = []
+    
+    def add_event(self, event):
+        """
+        Add event to day.
+        Args: event (Event): Event to add.
+        Returns: None
+        """
+        bisect.insort(self.events, (event.start_time, event))
+        self.available -= (event.end_time - event.start_time)
+        if event.scheduled:
+            self.sched_ev_count += 1
+        else:
+            self.unsched_ev_count += 1
+
 
 class Scheduler:
-    """
-    Constrains based scheduler using OR-Tools CP-SAT.
-
-    Assigns unscheduled events to time slots while respecting fixed events,
-    allowed time windows, and user preferences. All times in minutes since day 0.
-    """    
-    
-    def __init__(self, request: ParsedScheduleRequest, scheduled: List[Tuple[int, int, str]]):
+    def __init__(self, request, scheduled):
+        """
+        Initialize Scheduler.
+        Args: request: Scheduling request.
+            scheduled: Scheduled events.
+        """
         self.request = request
-        self.days = request.days
-        self.windows = self.create_daily_window(request.windows)
         self.scheduled = scheduled
-        self.unscheduled = request.unscheduled
+        self.days = self.create_days(request.days)
 
-        self.intervals = []
-        self.new_sessions = []
-        self.objectives = []
-
-        self.model = cp_model.CpModel()
-        self.solver = None
-        self.status = None
-
-    def create_daily_window(self, windows):
+    def create_days(self, days):
         """
-        Expand windows into daily intervals if specified.
-
-        Args:
-            windows: List of tuples (start, end, daily) where daily is a bool.
-
-        Returns:
-            List of expanded window intervals as (start, end) tuples.
+        Create day objects.
+        Args: days (int): Number of days.
+        Returns: list[Day]: List of days.
         """
-        expanded = []
-        for start, end, daily in windows:
-            expanded.extend(self._expand_window(start, end, daily))
-        return expanded
- 
-    def _expand_window(self, start, end, daily):
+        created_days = []
+        for count in range(days):
+            created_days.append(Day(DAY_MINS * count))
+        return created_days
+    
+    def create_daily_windows(self, windows):
         """
-        Expand a single window across all days if daily is True.
-
-        Args:
-            start: Start time in minutes.
-            end: End time in minutes.
-            daily: Boolean indicating if the window repeats daily.
-
-        Returns:
-            List of (start, end) tuples for the window(s).
+        Create daily windows.
+        Args: windows (list): List of windows.
+        Returns: None
         """
-        if not daily:
-            return [(start, end)]
-        return [(start + i * DAY_MINS, end + i * DAY_MINS) for i in range(self.days)]
-
-    def create_scheduled_intervals(self):
-        """Create fixed intervals for pre-scheduled events"""
+        for start, end, _ in windows:
+            for day in self.days:
+                day.add_event(Event(True, start, end, "window"))
+    
+    # Add scheduled events to the respective days
+    def add_scheduled_events(self):
+        """
+        Add scheduled events.
+        Returns: None
+        """
         for start, end, name in self.scheduled:
-            interval = self.model.NewIntervalVar(start, end - start, end, name)
-            self.intervals.append(interval)
+            day_index = start // DAY_MINS
+            day = self.days[day_index]
+            day.add_event(Event(True, start - day.relative_start, end - day.relative_start, name))
 
-    def create_unscheduled_intervals(self):
-        """Create decision intervals for unscheduled events"""
-        for duration, name, frequency, daily, preference, location, block_type, description in self.unscheduled:
-            frequency = self.days if daily else frequency
-            sessions = self._create_sessions(name, duration, frequency, location, block_type, description)
-            self._apply_preference(sessions, preference)
-            if daily:
-                self.recur_once_per_day_constraint(sessions)
-    
-    def _create_sessions(self, name, duration, frequency, location, block_type, description):
+    def _get_ordered_days(self):
         """
-        Create and register all sessions for one unscheduled event type.
-
-        Args:
-            name: Name of the event.
-            duration: Duration in minutes.
-            frequency: Number of sessions to create.
-            location: Location of the event.
-            block_type: Type of the block.
-            description: Description of the event.
-
-        Returns:
-            List of session tuples.
+        Get ordered days.
+        Returns: list[Day]: Ordered days.
         """
-        sessions = []
-        for i in range(frequency):
-            start, end, _ = self._create_decision_variables(name, duration, i)
-            session = (start, end, duration, name, location, block_type, description)
-            self.new_sessions.append(session)
-            sessions.append(session)
-        return sessions
-    
-    def _apply_preference(self, sessions, preference):
-        """
-        Register start-time bias objectives for Early/Late preferences.
-
-        Args:
-            sessions: List of session tuples.
-            preference: String preference ("Early" or "Late").
-        """
-        weight = PREFERENCE_WEIGHTS.get(preference)
-        if weight is None:
-            return
-        for session in sessions:
-            self.objectives.append(self.event_start_bias_constraints(session, weight))
-
-    def _create_decision_variables(self, name, duration, i):
-        """
-        Create start/end/interval vars and enforce window membership.
-
-        Args:
-            name: Name of the event.
-            duration: Duration in minutes.
-            i: Index of the session.
-
-        Returns:
-            Tuple of (start, end, event) variables.
-        """
-        total_mins = DAY_MINS * self.days
-        start = self.model.NewIntVar(0, total_mins, f"{name}_{i}_start")
-        end = self.model.NewIntVar(0, total_mins, f"{name}_{i}_end")
-        event = self.model.NewIntervalVar(start, duration, end, f"{name}_{i}_session")
-        self.intervals.append(event)
-        self._apply_window_constraints(name, i, start, duration)
-        return start, end, event
- 
-    def _apply_window_constraints(self, name, i, start, duration):
-        """
-        Enforce that a session falls in exactly one allowed window.
-
-        Args:
-            name: Name of the event.
-            i: Index of the session.
-            start: Start time variable.
-            duration: Duration in minutes.
-        """
-        in_window = [
-            self._make_window_bool(name, i, w, ws, we, start, duration)
-            for w, (ws, we) in enumerate(self.windows)
-        ]
-        self.model.Add(sum(in_window) == 1)
- 
-    def _make_window_bool(self, name, i, w, ws, we, start, duration):
-        """
-        Create and return a bool var indicating membership in one window.
-
-        Args:
-            name: Name of the event.
-            i: Index of the session.
-            w: Window index.
-            ws: Window start time.
-            we: Window end time.
-            start: Start time variable.
-            duration: Duration in minutes.
-
-        Returns:
-            Boolean variable indicating if the session is in the window.
-        """
-        b = self.model.NewBoolVar(f"{name}_{i}_inw{w}")
-        self.model.Add(start >= ws).OnlyEnforceIf(b)
-        self.model.Add(start <= we - duration).OnlyEnforceIf(b)
-        return b
-
-    def overlap_constraints(self):
-        """ Prevent overlaps involving unscheduled events. """
-        num_scheduled = len(self.scheduled)
-        scheduled_intervals = self.intervals[:num_scheduled]
-        unscheduled_intervals = self.intervals[num_scheduled:]
-
-        if len(unscheduled_intervals) > 1:
-            self.model.AddNoOverlap(unscheduled_intervals)
-
-        for sched_iv in scheduled_intervals:
-            self._add_no_overlap_with_unscheduled(sched_iv, unscheduled_intervals)
-    
-    def _add_no_overlap_with_unscheduled(self, sched_iv, unscheduled_intervals):
-        """
-        Ensure a scheduled interval does not overlap with any unscheduled ones.
-
-        Args:
-            sched_iv: Scheduled interval variable.
-            unscheduled_intervals: List of unscheduled interval variables.
-        """
-        for unsched_iv in unscheduled_intervals:
-            self.model.AddNoOverlap([sched_iv, unsched_iv])
-
-    def evenly_spread_over_range_constraint(self, include_scheduled):
-        """
-        Evenly distribute sessions across days.
-
-        Args:
-            include_scheduled: Boolean to include scheduled events in the count.
-
-        Returns:
-            Integer variable representing (max_count - min_count) to be minimized.
-        """
-        length = len(self.new_sessions) + (len(self.intervals) if include_scheduled else 0)
-        day_idxs = self._collect_day_indices(include_scheduled)
-        counts = self._count_sessions_per_day(day_idxs, length)
-        max_count, min_count = self._get_max_min_counts(length, counts)
-        return (max_count - min_count)   
-
-    def _collect_day_indices(self, include_scheduled):
-        """
-        Collect day indices for all sessions, including scheduled ones.
-
-        Args:
-            include_scheduled: Boolean to include scheduled events.
-
-        Returns:
-            List of day index variables.
-        """
-        day_idxs = []
-        self._get_unscheduled_day_numbers(day_idxs)
-        if include_scheduled:
-            self._get_scheduled_day_numbers(day_idxs)
-        return day_idxs
-    
-    def _count_sessions_per_day(self, day_idxs, length):
-        """
-        Count sessions per day and create integer variables for the counts.
-
-        Args:
-            day_idxs: List of day index variables.
-            length: Maximum possible count.
-
-        Returns:
-            List of count variables per day.
-        """
-        counts = []
-        for day in range(self.days):
-            bools = self._count_events_per_day(day, day_idxs)
-            count_d = self.model.NewIntVar(0, length, f"count_day{day}")
-            self.model.Add(count_d == sum(bools))
-            counts.append(count_d)
-        return counts
-
-    def _make_day_idx_var(self, start, name):
-        """
-        Create a variable representing the day index for a given start time.
-
-        Args:
-            start: Start time variable.
-            name: Name of the event.
-
-        Returns:
-            Day index variable.
-        """
-        day_idx = self.model.NewIntVar(0, self.days - 1, f"{name}_day_idx")
-        self.model.AddDivisionEquality(day_idx, start, DAY_MINS)
-        return day_idx
-
-    def _get_unscheduled_day_numbers(self, index_list):
-        """
-        Append day indices for all unscheduled sessions to the list.
-
-        Args:
-            index_list: List to append day indices to.
-        """
-        for (start, _, _, name, _, _, _) in self.new_sessions:
-            index_list.append(self._make_day_idx_var(start, name))
-    
-    def _get_scheduled_day_numbers(self, index_list):
-        """
-        Append day indices for all scheduled events to the list.
-
-        Args:
-            index_list: List to append day indices to.
-        """
-        for (start, _, name) in self.scheduled:
-            index_list.append(self._make_day_idx_var(start, name))
-    
-    def _count_events_per_day(self, day, index_list):
-        """
-        Create boolean variables indicating if each event is on the given day.
-
-        Args:
-            day: Day index.
-            index_list: List of day index variables.
-
-        Returns:
-            List of boolean variables.
-        """
-        bools = []
-        for i, day_idx in enumerate(index_list):
-            bool_var = self.model.NewBoolVar(f"s{i}_is_day{day}")
-            self.model.Add(day_idx == day).OnlyEnforceIf(bool_var)
-            self.model.Add(day_idx != day).OnlyEnforceIf(bool_var.Not())
-            bools.append(bool_var)
-        return bools
-    
-    def _get_max_min_counts(self, length, counts):
-        """
-        Create variables for the maximum and minimum session counts per day.
-
-        Args:
-            length: Maximum possible count.
-            counts: List of count variables per day.
-
-        Returns:
-            Tuple of (max_count, min_count) variables.
-        """
-        max_count = self.model.NewIntVar(0, length, "max_count")
-        min_count = self.model.NewIntVar(0, length, "min_count")
-        self.model.AddMaxEquality(max_count, counts)
-        self.model.AddMinEquality(min_count, counts)
-        return max_count, min_count
-
-    def recur_once_per_day_constraint(self, recurring_events):
-        """
-        Enforces that recurring events of one type appear at most once per day.
-
-        Args:
-            recurring_events: List of recurring event sessions.
-        """
-        if len(recurring_events) > self.days:
-            return
-        day_idxs = []
-        self._get_unscheduled_day_numbers(day_idxs)
-        self._enforce_max_one_per_day(day_idxs, len(recurring_events))
-    
-    def _enforce_max_one_per_day(self, day_idxs, n):
-        """
-        Ensure at most one event per day for recurring events.
-
-        Args:
-            day_idxs: List of day index variables.
-            n: Number of events.
-        """
-        for day in range(self.days):
-            bools = self._count_events_per_day(day, day_idxs)
-            count_d = self.model.NewIntVar(0, n, f"count_day{day}")
-            self.model.Add(count_d == sum(bools))
-            self.model.Add(count_d <= 1)
-
-    def event_start_bias_constraints(self, event, weight=1):
-        """
-        Bias the scheduler toward early (weight=1) or late (weight=-1) starts.
-        """
-        start, _, _, name, *_ = event
-        day_idx = self._make_day_idx_var(start, name)
-        start_in_day = self.model.NewIntVar(0, DAY_MINS - 1, f"{name}_start_in_day")
-        self.model.Add(start_in_day == start - day_idx * DAY_MINS)
-        return weight * start_in_day
-
-    def apply_constraints(self):
-        """Apply the configuration of constraints"""
         if self.request.even_spread:
-            self.objectives.append(DAY_MINS * self.evenly_spread_over_range_constraint(self.request.include_scheduled))
-        self.model.Minimize(sum(self.objectives))
+            return sorted(
+                self.days, 
+                key=lambda day: (day.unsched_ev_count) + (day.sched_ev_count if self.request.include_scheduled else 0)
+                )
+        else:
+            return self.days
+        
+    def _create_unsched_event_object(self, event):
+        """
+        Create UnscheduledEvent.
+        Args: event (tuple): Event data.
+        Returns: UnscheduledEvent: Event object.
+        """
+        return UnscheduledEvent(False, *event)
+    
+    def _sort_unscheduled_events(self):
+        """
+        Sort unscheduled events.
+        Returns: list: Sorted events.
+        """
+        events = self.request.unscheduled
+        return sorted(
+            events,
+            key = lambda event: (not event[3], event[4] != "Late")
+        )
+    
+    def add_unscheduled_events(self):
+        """
+        Add all unscheduled events. Daily events are placed once per day.
+        Non-daily events are placed frequency times using even spread if enabled.
+        Returns: bool: False if any event cannot be placed, True otherwise.
+        """
+        for event in self._sort_unscheduled_events():
+            daily = event[3]
+            late = event[4] == "Late"
+            frequency = event[2]
 
-    def _start_solver(self):
-        """Instantiate and run the solver"""
-        self.solver = cp_model.CpSolver()
-        self.status = self.solver.Solve(self.model)
+            if daily:
+                success = self._place_daily_event(event, late)
+                if not success:
+                    return False
+            else:
+                for _ in range(frequency):
+                    success = self._place_late_event(event) if late else self._place_event(event)
+                    if not success:
+                        return False
+        return True
 
+    def _place_daily_event(self, event, late):
+        """
+        Place event once on every day. Fails immediately if any day cannot fit it.
+        Args:
+            event (tuple): Event data.
+            late (bool): Whether to use latest-slot placement.
+        Returns: bool: True if placed on all days, False otherwise.
+        """
+        for day in self.days:
+            event_obj = self._create_unsched_event_object(event)
+            if late:
+                success = self._place_event_in_latest_slot_on_day(event_obj, day)
+            else:
+                success = self._try_add_event_to_day(event_obj, day)
+            if not success:
+                print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED on day")
+                return False
+        return True
+
+    def _place_late_event(self, event):
+        """
+        Find the latest possible slot across all days and place the event there.
+        Args: event (tuple): Event data.
+        Returns: bool: True if placed, False if no slot found on any day.
+        """
+        candidates = []
+        for i, day in enumerate(self.days):
+            event_obj = self._create_unsched_event_object(event)
+            start = self._find_latest_slot_for_event(event_obj, day.events)
+            if start is not None:
+                bisect.insort(candidates, (start, i))
+
+        if not candidates:
+            print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED")
+            return False
+
+        start, day_idx = candidates[-1]
+        event_obj = self._create_unsched_event_object(event)
+        event_obj.start_time = start
+        event_obj.end_time = start + event_obj.duration
+        self.days[day_idx].add_event(event_obj)
+        return True
+
+    def _place_event(self, event):
+        """
+        Place event into the first available slot, using even spread ordering if enabled.
+        Args: event (tuple): Event data.
+        Returns: bool: True if placed, False if no slot found on any day.
+        """
+        for day in self._get_ordered_days():
+            event_obj = self._create_unsched_event_object(event)
+            if self._try_add_event_to_day(event_obj, day):
+                return True
+        print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED")
+        return False
+
+    def _place_event_in_latest_slot_on_day(self, event_obj, day):
+        """
+        Place an event into the latest available slot on a specific day.
+        Args:
+            event_obj (UnscheduledEvent): The event to place.
+            day (Day): The day to place it on.
+        Returns: bool: True if placed, False if no slot found.
+        """
+        start = self._find_latest_slot_for_event(event_obj, day.events)
+        if start is None:
+            return False
+        event_obj.start_time = start
+        event_obj.end_time = start + event_obj.duration
+        day.add_event(event_obj)
+        return True
+
+    def _try_add_event_to_day(self, unsched_event, day):
+        """
+        Try to add an unscheduled event to a specific day.
+        Args: unsched_event (UnscheduledEvent): The event to add.
+            day (Day): The day to add to.
+        Returns: bool: True if added successfully, False otherwise.
+        """
+        found, start = self._try_find_slot_for_event(unsched_event, day.events)
+        if found:
+            unsched_event.start_time = start
+            unsched_event.end_time = start + unsched_event.duration
+            day.add_event(unsched_event)
+            return True
+        else:
+            return False
+
+    def _try_find_slot_for_event(self, unsched_event, events_list):
+        """
+        Find the first available time slot for an event in the events list.
+        Args: unsched_event (UnscheduledEvent): The event to place.
+            events_list (list): List of events on the day.
+        Returns: tuple: (bool, int) - True and start time if found, False and None otherwise.
+        """
+        gap_start = 0
+        for i in range(len(events_list)):
+
+            event = events_list[i][1]
+            gap = event.start_time - gap_start
+
+            # handle overlapping events
+            if gap < 0:
+                if event.end_time > gap_start:
+                    gap_start = event.end_time
+                continue
+
+            if gap >= unsched_event.duration:
+                # Add event to day
+                return True, gap_start
+            else:
+                gap_start = event.end_time
+        if (FINAL_MIN - gap_start) > unsched_event.duration:
+
+            return True, gap_start
+        return False, None
+    
+    def _try_find_all_slots_for_event(self, unsched_event, events_list):
+        """
+        Find all available slots for an event in the events list.
+        Args: unsched_event (UnscheduledEvent): The event to place.
+            events_list (list): List of events on the day.
+        Returns: list: List of tuples (start_time, gap_size).
+        """
+        start_times = []
+        gap_start = 0
+        for i in range(len(events_list)):
+
+            event = events_list[i][1]
+            gap = event.start_time - gap_start
+
+            # handle overlapping events
+            if gap < 0:
+                if event.end_time > gap_start:
+                    gap_start = event.end_time
+                continue
+
+            if gap > unsched_event.duration:
+                # Add event to day
+                start_times.append((gap_start, gap))
+
+            gap_start = event.end_time
+
+        gap = FINAL_MIN - gap_start
+        if gap > unsched_event.duration:
+            start_times.append((gap_start, gap))
+
+        return start_times
+    
+    def _find_latest_slot_for_event(self, unsched_event, events_list):
+        """
+        Find the latest possible slot for an event.
+        Args: unsched_event (UnscheduledEvent): The event to place.
+            events_list (list): List of events on the day.
+        Returns: int or None: The latest start time, or None if no slot found.
+        """
+        slots = self._try_find_all_slots_for_event(unsched_event, events_list)
+        duration = unsched_event.duration
+        slots = [(x + (y-duration)) for x, y in slots]
+        slots.sort()
+        return slots[-1] if slots else None
+
+    def print_days(self):
+        """
+        Print the details of each day.
+        Returns: None
+        """
+        for i in range(len(self.days)):
+            day = self.days[i]
+            print(f"Day: {i} | Events: {day.events} | ")
+    
+    def create_output(self):
+        """
+        Create the output list of scheduled unscheduled events.
+        Returns: list: List of tuples (start_time, end_time, date, name, location, block_type, description).
+        """
+        # format for output: (start, end, date, name, location, block_type, description)
+        results = []
+        for index, day in enumerate(self.days):
+            results.extend(self._extract_unsched_event_details(index, day))
+        return results
+    
+    def _extract_unsched_event_details(self, index, day):
+        """
+        Extract details of unscheduled events for a day.
+        Args: index (int): Day index.
+            day (Day): The day object.
+        Returns: list: List of event details tuples.
+        """
+        events = []
+        for _, event in day.events:
+            if not event.scheduled:
+                events.append((event.start_time_dt, event.end_time_dt, self._calculate_date(index), event.name, event.location, event.block_type, event.description))
+        return events
+
+    def _calculate_date(self, index):
+        """
+        Calculate the date for a given day index.
+        Args: index (int): Day index.
+        Returns: date: The calculated date.
+        """
+        return self.request.week_start + datetime.timedelta(days=index)
+        
+    
     def solve(self):
         """
-        Solve the model and return solutions list.
-
-        Returns:
-            List of scheduled session tuples (start, end, date, name, location, block_type, description).
+        Solve the scheduling problem by adding windows, scheduled events, and unscheduled events.
+        Returns: list: The output list of scheduled events.
         """
-        self._start_solver()
-
-        if self.status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-            return []
-        else:
-            return [ 
-                (self.solver.Value(start), self.solver.Value(end), date, name, location, block_type, description) 
-                for (start, end, date, name, location, block_type, description) in self.new_sessions ]
+        self.create_daily_windows(self.request.windows)
+        self.add_scheduled_events()
+        self.add_unscheduled_events()
+        return self.create_output()
     
-    def debug_output(self):
-        """Verbose output of newly created sessions"""
-        if self.status is None:
-            print("Status -> None")
-            return
-
-        for i, (start, end, duration, name, location, block_type, description) in enumerate(self.new_sessions):
-            block_start = self.solver.Value(start)
-            block_end = self.solver.Value(end)
-            print(f"Session {i+1} ; {name} @ {location} ({block_type}): {block_start} - {block_end} ; {duration}")

@@ -227,6 +227,48 @@ describe('Tests for TimeBlockForm', () => {
         ).not.toBeInTheDocument();
     });
 
+    it('calls onCancel when the cancel button is clicked in edit mode', () => {
+        const onCancel = vi.fn();
+        const initialData = {
+            id: 1,
+            date: '2026-03-24',
+            name: 'Meeting',
+            location: 'Room 2',
+            block_type: 'work',
+            description: 'Code Review',
+            start_time: '14:00',
+            end_time: '15:00'
+        };
+
+        renderTimeBlockForm({ initialData, onCancel });
+
+        const cancelButton = screen.getByRole('button', { name: /cancel/i });
+        fireEvent.click(cancelButton);
+
+        expect(onCancel).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows the cancel button only in edit mode', () => {
+        expect(
+            screen.queryByRole('button', { name: /cancel/i })
+        ).not.toBeInTheDocument();
+
+        const initialData = {
+            id: 1,
+            date: '2026-03-24',
+            name: 'Meeting',
+            location: 'Room 2',
+            block_type: 'work',
+            description: 'Code Review',
+            start_time: '14:00',
+            end_time: '15:00'
+        };
+
+        renderTimeBlockForm({ initialData, onCancel: vi.fn() });
+
+        expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
+    });
+
     it('submits multiple blocks correctly', () => {
         const onSubmit = vi.fn();
         const timezone = getUserTimezone();

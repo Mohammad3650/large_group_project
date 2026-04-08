@@ -1,30 +1,68 @@
-.day-section {
+.task-group {
     display: flex;
-    gap: 5px;
+    gap: var(--space-xs);
     align-items: center;
     cursor: pointer;
     user-select: none;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.task-group h5 {
+    font-size: var(--font-size-body);
+    font-weight: 500;
 }
 
 .arrow {
-    font-size: 0.8rem;
+    font-size: var(--font-size-xs);
     transform: rotate(180deg);
     transition: transform 0.2s;
     color: var(--text-light);
     display: inline-block;
     vertical-align: middle;
     position: relative;
-    top: -3px;
+    top: var(--arrow-offset);
 }
 
 .arrow.closed {
     transform: rotate(90deg);
 }
 
+.pinned-title {
+    color: var(--yellow);
+}
+
 .overdue-title {
     color: var(--danger-soft);
+}
+
+.completed-title {
+    color: var(--success);
 }
 
 .number-of-tasks {
     color: var(--text-light);
 }
+
+.task-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    border-left: 3px solid transparent;
+    margin-left: var(--space-lg);
+    padding-left: var(--space-sm);
+}
+
+.task-items-container .task-item-wrapper:last-child .task-item {
+    margin-bottom: 0;
+}
+
+.task-items-container.pinned    { border-left-color: var(--yellow); }
+.task-items-container.overdue   { border-left-color: var(--danger-soft); }
+.task-items-container.today     { border-left-color: var(--blue); }
+.task-items-container.tomorrow  { border-left-color: var(--edit); }
+.task-items-container.week      { border-left-color: var(--purple); }
+.task-items-container.beyond    { border-left-color: var(--text-light); }
+.task-items-container.completed { border-left-color: var(--success); }

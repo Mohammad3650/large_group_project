@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
 import './stylesheets/TimeBlockForm.css';
+import { BLOCK_TYPES } from '../constants/blockTypes';
 
 /**
  * GeneratorForm renders schedule input fields and manages unscheduled block state.
@@ -15,7 +17,8 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
     const [windows, setWindow] = useState({
         start_min: '',
         end_min: '',
-        daily: true
+        daily: true,
+        timezone: getUserTimezone(),
     });
 
     const [blocks, setBlocks] = useState([
@@ -27,7 +30,8 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
             start_time_preference: 'None',
             location: '',
             block_type: 'study',
-            description: ''
+            description: '',
+            timezone: getUserTimezone(),
         }
     ]);
 
@@ -46,7 +50,8 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                 start_time_preference: 'None',
                 location: '',
                 block_type: 'study',
-                description: ''
+                description: '',
+                timezone: getUserTimezone(),
             }
         ]);
         clearErrors();
@@ -321,16 +326,11 @@ function GeneratorForm({ onSubmit, loading, serverErrors, clearErrors }) {
                             updateBlock(index, 'block_type', e.target.value)
                         }
                     >
-                        <option value="sleep">Sleep</option>
-                        <option value="study">Study</option>
-                        <option value="lecture">Lecture</option>
-                        <option value="lab">Lab</option>
-                        <option value="tutorial">Tutorial</option>
-                        <option value="commute">Commute</option>
-                        <option value="exercise">Exercise</option>
-                        <option value="break">Break</option>
-                        <option value="work">Work</option>
-                        <option value="extracurricular">Extracurricular</option>
+                        {BLOCK_TYPES.map((type) => (
+                        <option key={type} value={type}>
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </option>
+                        ))}
                     </select>
 
                     <textarea

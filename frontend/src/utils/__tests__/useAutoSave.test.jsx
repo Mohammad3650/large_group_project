@@ -2,13 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { useState } from 'react';
 import useAutoSave from '../Hooks/useAutoSave.js';
-import * as apiModule from '../../api.js';
 
-vi.mock('../../api.js', () => ({
-    api: {
-        put: vi.fn()
-    }
-}));
+vi.mock('../Api/saveNotes.js', () => ({ default: vi.fn() }));
+
+import * as saveNotesModule from '../Api/saveNotes.js';
 
 function TestComponent({ loaded }) {
     const [content, setContent] = useState('');
@@ -40,93 +37,74 @@ describe('useAutoSave', () => {
     });
 
     it('does not trigger a save when loaded is false', async () => {
-        apiModule.api.put.mockResolvedValue({});
+        saveNotesModule.default.mockResolvedValue({});
         render(<TestComponent loaded={false} />);
-
         await act(async () => {
             fireEvent.change(screen.getByPlaceholderText('content'), {
-                target: { value: 'hello' }
+                target: { value: 'hello' },
             });
         });
         await act(async () => { vi.advanceTimersByTime(1000); });
-
-        expect(apiModule.api.put).not.toHaveBeenCalled();
+        expect(saveNotesModule.default).not.toHaveBeenCalled();
     });
 
     it("sets saveStatus to 'saving' immediately when content changes", async () => {
-        apiModule.api.put.mockResolvedValue({});
+        saveNotesModule.default.mockResolvedValue({});
         render(<TestComponent loaded={true} />);
-
         await act(async () => {
             fireEvent.change(screen.getByPlaceholderText('content'), {
-                target: { value: 'hello' }
+                target: { value: 'hello' },
             });
         });
-
         expect(screen.getByTestId('status').textContent).toBe('saving');
     });
 
-    it("sets saveStatus to 'saved' after debounce period", async () => {
-        apiModule.api.put.mockResolvedValue({});
+    it("sets saveStatus to 'saved' after the debounce period", async () => {
+        saveNotesModule.default.mockResolvedValue({});
         render(<TestComponent loaded={true} />);
-
         await act(async () => {
             fireEvent.change(screen.getByPlaceholderText('content'), {
-                target: { value: 'hello' }
+                target: { value: 'hello' },
             });
         });
         await act(async () => { vi.advanceTimersByTime(1000); });
-
         await waitFor(() =>
             expect(screen.getByTestId('status').textContent).toBe('saved')
         );
-        expect(apiModule.api.put).toHaveBeenCalledWith('/api/notes/save/', {
-            content: 'hello'
-        });
+        expect(saveNotesModule.default).toHaveBeenCalledWith('hello');
     });
 
-    it("sets saveStatus to 'error' and logs when save fails", async () => {
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-        apiModule.api.put.mockRejectedValue(new Error('Network error'));
+    it("sets saveStatus to 'error' when the API call fails", async () => {
+        saveNotesModule.default.mockRejectedValue(new Error('Network error'));
         render(<TestComponent loaded={true} />);
-
         await act(async () => {
             fireEvent.change(screen.getByPlaceholderText('content'), {
-                target: { value: 'hello' }
+                target: { value: 'hello' },
             });
         });
         await act(async () => { vi.advanceTimersByTime(1000); });
-
         await waitFor(() =>
             expect(screen.getByTestId('status').textContent).toBe('error')
         );
-        expect(consoleSpy).toHaveBeenCalledWith(
-            'Failed to save notes',
-            expect.any(Error)
-        );
-        consoleSpy.mockRestore();
     });
 
     it('debounces — does not call the API until 1 second after the last keystroke', async () => {
-        apiModule.api.put.mockResolvedValue({});
+        saveNotesModule.default.mockResolvedValue({});
         render(<TestComponent loaded={true} />);
-
         await act(async () => {
             fireEvent.change(screen.getByPlaceholderText('content'), {
-                target: { value: 'A' }
+                target: { value: 'A' },
             });
         });
         await act(async () => { vi.advanceTimersByTime(500); });
         await act(async () => {
             fireEvent.change(screen.getByPlaceholderText('content'), {
-                target: { value: 'AB' }
+                target: { value: 'AB' },
             });
         });
         await act(async () => { vi.advanceTimersByTime(500); });
-
-        expect(apiModule.api.put).not.toHaveBeenCalled();
-
+        expect(saveNotesModule.default).not.toHaveBeenCalled();
         await act(async () => { vi.advanceTimersByTime(500); });
-        await waitFor(() => expect(apiModule.api.put).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(saveNotesModule.default).toHaveBeenCalledTimes(1));
     });
 });

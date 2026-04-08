@@ -1,52 +1,77 @@
 import { useState } from 'react';
-import './stylesheets/TaskItem.css';
-import formatDateTime from '../../utils/Formatters/formatDateTime.js';
 import playDing from '../../utils/Audio/playDing.js';
+import TaskItemContent from './TaskItemContent.jsx';
+import TaskOptionsButton from './TaskOptionsButton.jsx';
+import TaskDetailsPopup from './TaskDetailsPopup.jsx';
+import PinButton from './PinButton.jsx';
+import './stylesheets/TaskItem.css';
 
 /**
- * Displays a single task item with a checkbox, name, start time and end time.
- * Plays a ding sound and fades out on click before deleting.
+ * Displays a single task item with a pin button, checkbox, name, time and date.
+ * Plays a ding sound and fades out on completion.
+ * Provides a drop-up menu for viewing details, editing, undoing completion, and deleting.
  *
- * @param {string} name - The task name
- * @param {string} date - Date string (e.g. "2026-02-19")
- * @param {string} startTime - Start time string (e.g. "09:00:00")
- * @param {string} endTime - End time string (e.g. "10:00:00")
- * @param {Function} onDelete - Callback to the handleDelete function from the TaskGroup component
- * @param {boolean} [overdue=false] - Whether the task is overdue
- * @returns {JSX.Element} A single task
+ * @param {Object} props
+ * @param {Object} props.task - The task data object
+ * @param {Function} props.onDelete - Callback to delete the task
+ * @param {Function} [props.onComplete] - Callback to mark the task as completed
+ * @param {Function} [props.onUndoComplete] - Callback to undo completion
+ * @param {Function} [props.onPin] - Callback to pin the task
+ * @param {Function} [props.onUnpin] - Callback to unpin the task
+ * @param {boolean} [props.overdue=false] - Whether the task is overdue
+ * @param {boolean} [props.completed=false] - Whether the task is already completed
+ * @returns {JSX.Element} A single task item
  */
-function TaskItem({ name, date, startTime, endTime, onDelete, overdue = false }) {
+function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, overdue = false, completed = false }) {
+    const { id, name, date, startTime, endTime } = task;
     const [checked, setChecked] = useState(false);
     const [fading, setFading] = useState(false);
+    const [detailsOpen, setDetailsOpen] = useState(false);
 
     function handleClick() {
-        if (checked) return;
+        if (checked || completed) return;
         playDing();
         setChecked(true);
         setFading(true);
-        setTimeout(() => onDelete(), 500);
+        setTimeout(() => onComplete?.(), 500);
     }
 
     return (
-        <div
-            className={`form-check task-item ${checked ? 'checked' : ''} ${fading ? 'fading' : ''}`}
-            onClick={handleClick}
-        >
-            <input
-                className="form-check-input"
-                type="checkbox"
-                readOnly
-                checked={checked}
-            />
-            <label
-                className={`form-check-label ${overdue ? 'overdue-text' : ''}`}
-            >
-                {name}
-            </label>
-            <span className="task-datetime">
-                {formatDateTime(date, startTime, endTime)}
-            </span>
-        </div>
+        <>
+            <div className="task-item-wrapper">
+                {(onPin || onUnpin) && (
+                    <PinButton
+                        pinned={task.pinned}
+                        onPin={onPin}
+                        onUnpin={onUnpin}
+                    />
+                )}
+                <TaskItemContent
+                    name={name}
+                    date={date}
+                    startTime={startTime}
+                    endTime={endTime}
+                    checked={checked}
+                    fading={fading}
+                    overdue={overdue}
+                    completed={completed}
+                    onClick={handleClick}
+                />
+                <TaskOptionsButton
+                    id={id}
+                    completed={completed}
+                    onDelete={onDelete}
+                    onUndoComplete={onUndoComplete}
+                    onViewDetails={() => setDetailsOpen(true)}
+                />
+            </div>
+            {detailsOpen && (
+                <TaskDetailsPopup
+                    task={task}
+                    onClose={() => setDetailsOpen(false)}
+                />
+            )}
+        </>
     );
 }
 

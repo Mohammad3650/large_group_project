@@ -1,106 +1,100 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import NotesSection from '../NotesSection';
-import * as apiModule from '../../../api.js';
-
-vi.mock('../stylesheets/NotesSection.css', () => ({}));
-vi.mock('../../../api.js', () => ({
-    api: {
-        get: vi.fn(),
-        put: vi.fn()
-    }
-}));
-vi.mock('../../../utils/Hooks/useAutoSave.js', () => ({
-    default: vi.fn(() => {})
-}));
-
-import useAutoSave from '../../../utils/Hooks/useAutoSave.js';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { useEffect } from 'react';
 
-const renderAndLoad = async (content = '') => {
-    apiModule.api.get.mockResolvedValue({ data: { content } });
-    await act(async () => { render(<NotesSection />); });
-    await waitFor(() => expect(apiModule.api.get).toHaveBeenCalled());
+vi.mock('../stylesheets/NotesSection.css', () => ({}));
+vi.mock('../../../utils/Hooks/useNotes.js');
+vi.mock('../../../utils/Hooks/useAutoSave.js');
+
+import NotesSection from '../NotesSection';
+import * as useNotesModule from '../../../utils/Hooks/useNotes.js';
+import * as useAutoSaveModule from '../../../utils/Hooks/useAutoSave.js';
+
+const defaultNotes = {
+    notes: '',
+    setNotes: vi.fn(),
+    loaded: true,
+    loading: false,
+    error: '',
 };
 
 describe('Tests for NotesSection', () => {
     beforeEach(() => {
-        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
-        useAutoSave.mockImplementation(() => {});
+        useNotesModule.default.mockReturnValue(defaultNotes);
+        useAutoSaveModule.default.mockImplementation(() => {});
     });
 
-    afterEach(async () => {
-        await act(async () => { vi.runAllTimers(); });
-        vi.useRealTimers();
-    });
-
-    it('shows a loading indicator before notes are fetched', () => {
-        apiModule.api.get.mockImplementation(() => new Promise(() => {}));
+    it('renders the loading indicator whilst notes are being fetched', () => {
+        useNotesModule.default.mockReturnValue({ ...defaultNotes, loading: true });
         render(<NotesSection />);
         expect(screen.getByText('Loading notes...')).toBeInTheDocument();
     });
 
-    it('renders the notes textarea after loading', async () => {
-        await renderAndLoad();
+    it('renders the error message when fetching notes fails', () => {
+        useNotesModule.default.mockReturnValue({ ...defaultNotes, loading: false, error: 'Failed to load notes. Please try again.' });
+        render(<NotesSection />);
+        expect(screen.getByText('Failed to load notes. Please try again.')).toBeInTheDocument();
+    });
+
+    it('renders the notes textarea after loading', () => {
+        render(<NotesSection />);
         expect(screen.getByPlaceholderText('Notes')).toBeInTheDocument();
     });
 
-    it('fetches and displays the saved notes on mount', async () => {
-        await renderAndLoad('My notes');
+    it('displays the saved notes in the textarea', () => {
+        useNotesModule.default.mockReturnValue({ ...defaultNotes, notes: 'My notes' });
+        render(<NotesSection />);
         expect(screen.getByDisplayValue('My notes')).toBeInTheDocument();
     });
 
-    it('updates notes when the user types', async () => {
-        await renderAndLoad();
-        await act(async () => {
-            fireEvent.change(screen.getByPlaceholderText('Notes'), {
-                target: { value: 'New note' }
-            });
-        });
-        expect(screen.getByDisplayValue('New note')).toBeInTheDocument();
+    it('calls setNotes when the user types in the textarea', () => {
+        const setNotes = vi.fn();
+        useNotesModule.default.mockReturnValue({ ...defaultNotes, setNotes });
+        render(<NotesSection />);
+        fireEvent.change(screen.getByPlaceholderText('Notes'), { target: { value: 'New note' } });
+        expect(setNotes).toHaveBeenCalledWith('New note');
     });
 
-    it('displays a user-friendly error message when fetching notes fails', async () => {
-        apiModule.api.get.mockRejectedValue(new Error('Network error'));
-        await act(async () => { render(<NotesSection />); });
-        await waitFor(() =>
-            expect(screen.getByText('Failed to load notes. Please try again.')).toBeInTheDocument()
-        );
+    it('renders a non-breaking space as the default save status', () => {
+        render(<NotesSection />);
+        expect(document.querySelector('.save-status').textContent).toBe('\u00A0');
     });
 
-    it('calls useAutoSave with the correct arguments after loading', async () => {
-        await renderAndLoad('hello');
-        expect(useAutoSave).toHaveBeenCalled();
-    });
-
-    it("shows 'Saving...' when useAutoSave sets status to saving", async () => {
-        useAutoSave.mockImplementation((_content, _loaded, setSaveStatus) => {
+    it("shows 'Saving...' when the save status is saving", () => {
+        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
             useEffect(() => { setSaveStatus('saving'); }, []);
         });
-        await renderAndLoad();
-        await waitFor(() =>
-            expect(screen.getByText('Saving...')).toBeInTheDocument()
-        );
+        render(<NotesSection />);
+        expect(screen.getByText('Saving...')).toBeInTheDocument();
     });
 
-    it("shows 'Saved ✓' when useAutoSave sets status to saved", async () => {
-        useAutoSave.mockImplementation((_content, _loaded, setSaveStatus) => {
+    it("shows 'Saved ✓' when the save status is saved", () => {
+        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
             useEffect(() => { setSaveStatus('saved'); }, []);
         });
-        await renderAndLoad();
-        await waitFor(() =>
-            expect(screen.getByText('Saved ✓')).toBeInTheDocument()
-        );
+        render(<NotesSection />);
+        expect(screen.getByText('Saved ✓')).toBeInTheDocument();
     });
 
-    it("shows 'Error saving ✗' when useAutoSave sets status to error", async () => {
-        useAutoSave.mockImplementation((_content, _loaded, setSaveStatus) => {
+    it("shows 'Error saving ✗' when the save status is error", () => {
+        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
             useEffect(() => { setSaveStatus('error'); }, []);
         });
-        await renderAndLoad();
-        await waitFor(() =>
-            expect(screen.getByText('Error saving ✗')).toBeInTheDocument()
-        );
+        render(<NotesSection />);
+        expect(screen.getByText('Error saving ✗')).toBeInTheDocument();
+    });
+
+    it('applies the error class to the save status span when the save status is error', () => {
+        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
+            useEffect(() => { setSaveStatus('error'); }, []);
+        });
+        render(<NotesSection />);
+        expect(screen.getByText('Error saving ✗')).toHaveClass('error');
+    });
+
+    it('does not apply the error class to the save status span when the save status is not error', () => {
+        render(<NotesSection />);
+        expect(document.querySelector('.save-status')).not.toHaveClass('error');
     });
 });

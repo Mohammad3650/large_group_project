@@ -10,6 +10,7 @@ import Calendar from './functionality/Calendar/Calendar.jsx';
 import PreviewCalendar from './functionality/Calendar/PreviewCalendar.jsx';
 import ChangePassword from './functionality/Authentication/UserProfile/ChangePassword.jsx';
 import CreateSchedule from './functionality/Authentication/CreateSchedule';
+import Settings from './functionality/Settings/Settings.jsx';
 import { setAuthToken } from './api';
 import SuccessfulTimeBlock from './components/SuccessfulTimeBlock.jsx';
 import EditTimeBlock from './components/EditTimeBlock';
@@ -85,7 +86,7 @@ function App() {
                     path="/calendar"
                     element={
                         <ProtectedRoute>
-                            <Calendar />
+                            <Calendar theme={theme}/>
                         </ProtectedRoute>
                     }
                 />
@@ -94,7 +95,7 @@ function App() {
                     path="/preview-calendar"
                     element={
                         <ProtectedRoute>
-                            <PreviewCalendar />
+                            <PreviewCalendar theme={theme}/>
                         </ProtectedRoute>
                     }
                 />
@@ -113,6 +114,15 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <ChangePassword />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <Settings />
                         </ProtectedRoute>
                     }
                 />

@@ -18,7 +18,7 @@ class SaveTimeBlockSerializer(serializers.Serializer):
     block_type = serializers.ChoiceField(choices=[c[0] for c in TimeBlock.BLOCK_TYPE_CHOICES])
     location = serializers.CharField(required=False, allow_blank=True, default="")
     description = serializers.CharField(required=False, allow_blank=True, default="")
-
+    timezone = serializers.CharField(required=False, default='UTC')
 
     def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
         """

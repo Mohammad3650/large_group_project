@@ -5,18 +5,14 @@ import useUsername from '../utils/Hooks/useUsername.js';
 import useAuthStatus from '../utils/Auth/authStatus';
 import useDropdown from '../utils/Hooks/useDropdown.js';
 import ToggleDarkMode from './ToggleDarkMode.jsx';
-
-import userIcon from '../assets/Navbar/user.png';
-import taskListLight from '../assets/Navbar/task_list.png';
-import taskListDark from '../assets/Navbar/task_list_black.png';
-import calendarIconLight from '../assets/calendar_icon.png';
-import calendarIconDark from '../assets/calendar_icon_black.png';
+import { LuClipboardList, LuCalendar } from 'react-icons/lu';
+import { FaUser, FaUserCircle, FaCog } from 'react-icons/fa';
 
 /**
  * Navbar component - site-wide navigation header.
  * Displays the app title, navigation links, theme toggle, and user account controls.
  * Shows dashboard and calendar links when the user is logged in,
- * and a user dropdown (with username, profile link, and logout) on authentication.
+ * and a user dropdown (with username, settings link, and logout) on authentication.
  *
  * @param {Object} props
  * @param {string} props.theme - Current theme mode
@@ -27,9 +23,6 @@ function Navbar({ theme, toggleTheme }) {
     const isLoggedIn = useAuthStatus();
     const { username } = useUsername(isLoggedIn);
     const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
-
-    const taskList = theme === 'dark' ? taskListDark : taskListLight;
-    const calendarIcon = theme === 'dark' ? calendarIconDark : calendarIconLight;
 
     return (
         <header>
@@ -42,20 +35,12 @@ function Navbar({ theme, toggleTheme }) {
                     {isLoggedIn && (
                         <>
                             <Link to="/dashboard" className="navbar-link">
-                                <img
-                                    src={taskList}
-                                    alt="Dashboard"
-                                    className="navbar-icon"
-                                />
+                                <LuClipboardList className="navbar-icon" />
                                 <span>Dashboard</span>
                             </Link>
 
                             <Link to="/calendar" className="navbar-link">
-                                <img
-                                    src={calendarIcon}
-                                    alt="Calendar"
-                                    className="navbar-icon"
-                                />
+                                <LuCalendar className="navbar-icon" />
                                 <span>Calendar</span>
                             </Link>
                         </>
@@ -67,25 +52,25 @@ function Navbar({ theme, toggleTheme }) {
 
                     {isLoggedIn ? (
                         <div className="navbar-user" ref={dropdownRef}>
-                            <img
-                                src={userIcon}
-                                alt="User"
+                            <FaUserCircle
                                 className="navbar-icon user-icon"
                                 onClick={() => setDropdownOpen((prev) => !prev)}
                             />
 
                             {dropdownOpen && (
-                                <div className="user-dropdown">
+                                <div className="navbar-dropdown">
                                     <span className="dropdown-username">
-                                        {username}
+                                        <FaUser /> {username}
                                     </span>
+                                    <hr className="navbar-dropdown-divider" />
                                     <Link
-                                        to="/profile"
+                                        to="/settings"
                                         className="dropdown-link"
                                         onClick={() => setDropdownOpen(false)}
                                     >
-                                        Profile
+                                        <FaCog /> Settings
                                     </Link>
+                                    <hr className="navbar-dropdown-divider" />
                                     <LogoutButton />
                                 </div>
                             )}

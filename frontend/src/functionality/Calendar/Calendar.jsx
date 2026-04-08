@@ -18,9 +18,11 @@ import CalendarPlaceholder from './CalendarPlaceholder.jsx';
  * Handles navigation (edit) and deletion of events.
  * Displays a placeholder while data is loading.
  *
+ * @param {Object} props
+ * @param {string} props.theme - Current theme ('light' or 'dark')
  */
 
-function Calendar() {
+function Calendar({ theme }) {
     // Custom hook for fetching and updating time blocks
     const { blocks, setBlocks } = useTimeBlocks();
     // Fetches the current user's username
@@ -43,6 +45,7 @@ function Calendar() {
             //Data passed into calendar
             blocks={blocks}
             setBlocks={setBlocks}
+            theme={theme}
             //Dynamic title for each user
             title={`Welcome to your calendar, ${username}!`}
             headerButtons={<AddTaskButton />}

@@ -10,6 +10,21 @@ GUARANTEED_USERS = [
 
 NUM_TOTAL_USERS = NUM_RANDOM_USERS + len(GUARANTEED_USERS)
 
+COMPLETED_EVENTS = [
+    {"name": "Completed Lecture", "block_type": "lecture", "location": "Room 101", "start_time": "09:00", "end_time": "10:00", "description": "Already completed lecture"},
+    {"name": "Completed Study", "block_type": "study", "location": "Library", "start_time": "13:00", "end_time": "15:00", "description": "Already completed study session"},
+]
+
+PINNED_EVENTS = [
+    {"name": "Important Exam", "block_type": "study", "location": "Exam Hall", "start_time": "10:00", "end_time": "12:00", "description": "Final exam"},
+    {"name": "Key Lecture", "block_type": "lecture", "location": "Room 101", "start_time": "14:00", "end_time": "15:00", "description": "Important lecture"},
+]
+
+CALENDAR_SUBSCRIPTION = {
+    "name": "KCL Timetable",
+    "source_url": "https://scientia-eu-v4-api-d4-02.azurewebsites.net//api/ical/ca05f91a-6c36-45db-9b40-6d011398ed58/5783eddc-ce35-debb-5771-3eaa6bd2ccfa/timetable.ics",
+}
+
 EVENTS = [
     {"name": "Lecture", "block_type": "lecture", "location": "Room 101", "start_time": "09:00", "end_time": "10:00", "description": "Morning lecture"},
     {"name": "Lab", "block_type": "lab", "location": "Lab 2", "start_time": "10:00", "end_time": "12:00", "description": "Practical lab session"},

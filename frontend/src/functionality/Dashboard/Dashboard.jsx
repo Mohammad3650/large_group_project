@@ -1,255 +1,77 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../../api.js';
+import { useState } from 'react';
 import TaskGroup from './TaskGroup.jsx';
+import TaskSearchBar from '../../components/TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
+import NoTasksMessage from './NoTasksMessage.jsx';
+import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
-import handleExportCsv from '../../utils/Api/handleExportCsv.js';
-import SubscriptionForm from './SubscriptionForm.jsx';
-import SubscriptionList from './SubscriptionList.jsx';
-import createCalendarSubscription from '../../utils/Api/createCalendarSubscription.js';
-import deleteCalendarSubscription from '../../utils/Api/deleteCalendarSubscription.js';
-import getCalendarSubscriptions from '../../utils/Api/getCalendarSubscriptions.js';
-import handleExportIcs from '../../utils/Api/handleExportIcs.js';
-import refreshCalendarSubscription from '../../utils/Api/refreshCalendarSubscription.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
+import useBodyClass from '../../utils/Hooks/useBodyClass.js';
+import useScrollToTopOnResize from '../../utils/Hooks/useScrollToTopOnResize.js';
+import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
+import useUsername from '../../utils/Hooks/useUsername.js';
 import './stylesheets/Dashboard.css';
 
 /**
- * Dashboard component - main page displayed after successful login.
- * Displays tasks grouped by day sections (overdue, today, tomorrow, next 7 days) alongside a notes section.
+ * Dashboard component — main page displayed after successful login.
+ * Displays tasks grouped by category (pinned, overdue, today, tomorrow,
+ * next 7 days, beyond next 7 days, and completed) alongside a notes section.
+ *
  * @returns {JSX.Element} The dashboard page
  */
 function Dashboard() {
-    const nav = useNavigate();
-    const [message, setMessage] = useState('Loading...');
-    const [error, setError] = useState('');
-    const [subscriptions, setSubscriptions] = useState([]);
-    const [showSubscriptions, setShowSubscriptions] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    const { blocks, refetchBlocks, error: blocksError } = useTimeBlocks();
+    const { blocks, error: blocksError } = useTimeBlocks();
 
     const {
-        overdueTasks,
-        setOverdueTasks,
-        todayTasks,
-        setTodayTasks,
-        tomorrowTasks,
-        setTomorrowTasks,
-        weekTasks,
-        setWeekTasks,
-        beyondWeekTasks,
-        setBeyondWeekTasks,
-        totalTasks
+        pinnedTasks, setPinnedTasks,
+        overdueTasks, setOverdueTasks,
+        todayTasks, setTodayTasks,
+        tomorrowTasks, setTomorrowTasks,
+        weekTasks, setWeekTasks,
+        beyondWeekTasks, setBeyondWeekTasks,
+        completedTasks, setCompletedTasks,
+        totalTasks,
     } = useTasksByDateGroup(blocks);
 
-    useEffect(() => {
-        async function fetchDashboard() {
-            try {
-                const response = await api.get('/dashboard/');
-                setMessage(response.data.message);
-            } catch (err) {
-                if (err?.response?.status === 401) {
-                    nav('/login');
-                } else {
-                    setError('Failed to load dashboard');
-                }
-            }
-        }
+    const { username } = useUsername(true);
 
-        fetchDashboard();
-    }, [nav]);
+    useBodyClass('dashboard-page');
+    useScrollToTopOnResize();
 
-    useEffect(() => {
-        async function fetchSubscriptions() {
-            try {
-                const data = await getCalendarSubscriptions();
-                setSubscriptions(data);
-            } catch {
-                setError('Failed to load calendar subscriptions');
-            }
-        }
+    const { filteredTasks } = useFilterTasksForSearch(
+        { pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks },
+        searchTerm
+    );
 
-        fetchSubscriptions();
-    }, []);
+    if (blocksError) return <p>{blocksError}</p>;
 
-    useEffect(() => {
-        document.body.classList.add('dashboard-page');
-        window.scrollTo(0, 0);
-
-        const handleResize = () => window.scrollTo(0, 0);
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            document.body.classList.remove('dashboard-page');
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
-    async function handleImportSubscription(payload) {
-        try {
-            setError('');
-            const responseData = await createCalendarSubscription(payload);
-            setSubscriptions((currentSubscriptions) => [
-                responseData.subscription,
-                ...currentSubscriptions
-            ]);
-            await refetchBlocks();
-        } catch (requestError) {
-            const detail =
-                requestError?.response?.data?.source_url?.[0] ||
-                requestError?.response?.data?.name?.[0] ||
-                requestError?.response?.data?.message ||
-                'Failed to import timetable';
-            setError(detail);
-        }
-    }
-
-    async function handleRefreshSubscription(subscriptionId) {
-        try {
-            setError('');
-            const responseData =
-                await refreshCalendarSubscription(subscriptionId);
-
-            setSubscriptions((currentSubscriptions) =>
-                currentSubscriptions.map((subscription) =>
-                    subscription.id === subscriptionId
-                        ? responseData.subscription
-                        : subscription
-                )
-            );
-
-            await refetchBlocks();
-        } catch {
-            setError('Failed to refresh timetable subscription');
-        }
-    }
-
-    async function handleDeleteSubscription(subscriptionId) {
-        try {
-            setError('');
-            await deleteCalendarSubscription(subscriptionId);
-
-            setSubscriptions((currentSubscriptions) =>
-                currentSubscriptions.filter(
-                    (subscription) => subscription.id !== subscriptionId
-                )
-            );
-
-            await refetchBlocks();
-        } catch {
-            setError('Failed to delete timetable subscription');
-        }
-    }
-
-    useEffect(() => {
-        if (!error) return;
-
-        const timer = setTimeout(() => {
-            setError('');
-        }, 5000);
-
-        return () => clearTimeout(timer);
-    }, [error]);
-
-    if (blocksError) {
-        return <p>{blocksError}</p>;
-    }
+    const setters = { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks };
+    const taskGroups = buildTaskGroups(filteredTasks, setters);
 
     return (
-        <>
-            <div className="dashboard-content">
-                <div className="task-section">
-                    <h1>{message}</h1>
+        <div className="dashboard-content">
+            <div className="task-section">
+                <h1>Welcome to your Dashboard, {username}!</h1>
 
-                    <div className="dashboard-header-actions">
-                        <div className="dashboard-add-task">
-                            <AddTaskButton />
-                        </div>
+                <AddTaskButton />
 
-                        <div className="export-buttons">
-                            <button
-                                type="button"
-                                className="export-csv-button"
-                                onClick={() => handleExportCsv(setError)}
-                            >
-                                Export CSV
-                            </button>
+                <TaskSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-                            <button
-                                type="button"
-                                className="export-csv-button"
-                                onClick={() => handleExportIcs(setError)}
-                            >
-                                Export ICS
-                            </button>
-                        </div>
-                    </div>
+                <NoTasksMessage
+                    totalTasks={totalTasks}
+                    filteredTasks={filteredTasks}
+                    searchTerm={searchTerm}
+                />
 
-                    <div
-                        className="day-section"
-                        onClick={() => setShowSubscriptions((prev) => !prev)}
-                    >
-                        <span
-                            className={`arrow ${showSubscriptions ? 'open' : 'closed'}`}
-                        >
-                            ^
-                        </span>
-                        <h5>Timetable subscriptions</h5>
-                    </div>
-
-                    {showSubscriptions && (
-                        <div className="subscription-section">
-                            {error && (
-                                <p className="subscription-error">{error}</p>
-                            )}
-
-                            <SubscriptionForm
-                                onImport={handleImportSubscription}
-                            />
-                            <SubscriptionList
-                                subscriptions={subscriptions}
-                                onRefresh={handleRefreshSubscription}
-                                onDelete={handleDeleteSubscription}
-                            />
-                        </div>
-                    )}
-                    {totalTasks === 0 && (
-                        <p className="no-tasks-message">
-                            🎉 Congrats, you have no tasks!
-                        </p>
-                    )}
-                    <TaskGroup
-                        title="Overdue"
-                        tasks={overdueTasks}
-                        setTasks={setOverdueTasks}
-                        overdue={true}
-                    />
-                    <TaskGroup
-                        title="Today"
-                        tasks={todayTasks}
-                        setTasks={setTodayTasks}
-                    />
-                    <TaskGroup
-                        title="Tomorrow"
-                        tasks={tomorrowTasks}
-                        setTasks={setTomorrowTasks}
-                    />
-                    <TaskGroup
-                        title="Next 7 Days"
-                        tasks={weekTasks}
-                        setTasks={setWeekTasks}
-                    />
-                    <TaskGroup
-                        title="After Next 7 Days"
-                        tasks={beyondWeekTasks}
-                        setTasks={setBeyondWeekTasks}
-                    />
-                </div>
-                <NotesSection />
+                {taskGroups.map(({ title, ...props }) => (
+                    <TaskGroup key={title} title={title} {...props} />
+                ))}
             </div>
-        </>
+            <NotesSection />
+        </div>
     );
 }
 

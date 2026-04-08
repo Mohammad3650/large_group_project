@@ -12,7 +12,10 @@ import Capitalise from '../Formatters/capitalise.js';
  *   end_time: string,
  *   location: string,
  *   block_type: string|null,
- *   description: string|null
+ *   description: string|null,
+ *   completed_at: string|null,
+ *   pinned: boolean,
+ *   pinned_at: string|null
  * }>} blocks - Raw time block data from the API
  * @returns {Array<{
  *   id: number|string,
@@ -26,6 +29,9 @@ import Capitalise from '../Formatters/capitalise.js';
  *   location: string,
  *   blockType: string,
  *   description: string,
+ *   completed_at: string|null,
+ *   pinned: boolean,
+ *   pinned_at: string|null,
  *   _options: {additionalClasses: string[]}
  * }>} The mapped time blocks
  */
@@ -53,6 +59,9 @@ function mapTimeBlocks(blocks) {
             location: block.location,
             blockType: block.block_type ? Capitalise(block.block_type) : 'N/A',
             description: block.description || 'N/A',
+            completed_at: block.completed_at ?? null,
+            pinned: block.pinned ?? false,
+            pinned_at: block.pinned_at ?? null,
             // _options is required by the schedule-x calendar library to apply custom CSS classes to events
             _options: { additionalClasses: [`sx-type-${block.block_type}`] }
         };

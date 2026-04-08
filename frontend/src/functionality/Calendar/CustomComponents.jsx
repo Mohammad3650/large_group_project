@@ -6,11 +6,6 @@ export const customComponents = (eventButtons, handleDelete, icons) => ({
             calendarEvent={calendarEvent}
             eventButtons={eventButtons}
             handleDelete={handleDelete}
-            calendarIcon={icons.calendarIcon}
-            timeIcon={icons.timeIcon}
-            locationIcon={icons.locationIcon}
-            blockTypeIcon={icons.blockTypeIcon}
-            descriptionIcon={icons.descriptionIcon}
         />
     )
 });

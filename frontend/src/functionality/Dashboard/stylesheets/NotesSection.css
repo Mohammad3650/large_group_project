@@ -1,24 +1,23 @@
 .notes-section {
-    width: 40%;
-    box-sizing: border-box;
-    margin-bottom: 32px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     background: var(--bg-soft);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    padding: 12px;
+    border-left: 2px solid var(--border-light);
+    overflow: hidden;
 }
 
 .notes-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    margin-bottom: 8px;
-    font-weight: bold;
+    padding: var(--space-sm) var(--space-xl);
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border-light);
 }
 
 .save-status {
-    font-size: 0.8rem;
+    font-size: var(--font-size-xs);
     color: var(--text-light);
     font-weight: normal;
 }
@@ -28,16 +27,19 @@
 }
 
 .notes-section textarea {
+    flex: 1;
     width: 100%;
-    height: calc(100% - 24px);
-    border-radius: var(--radius-md);
     box-sizing: border-box;
     resize: none;
-    padding: var(--space-sm);
-    background-color: var(--bg-main);
+    padding: var(--space-sm) var(--space-navbar-x) var(--space-md) var(--space-xl);
+    background: transparent;
     color: var(--text-main);
-    border: 1px solid var(--border-input);
+    border: none;
+    border-radius: 0;
     outline: none;
+    font-size: var(--font-size-body);
+    font-family: inherit;
+    overflow-y: auto;
 }
 
 .notes-section textarea::placeholder {
@@ -46,17 +48,24 @@
 }
 
 .notes-section textarea:focus {
-    border-color: var(--blue);
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.2);
+    box-shadow: none;
 }
 
 @media (max-width: 768px) {
     .notes-section {
         width: 100%;
-        min-width: 100%;
-        height: 40vh;
-        border-left: none;
         flex-shrink: 0;
-        margin-top: 16px;
+        margin-top: var(--space-xl);
+        border-left: none;
+        border-top: 2px solid var(--border-light);
+    }
+
+    .notes-header {
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    .notes-section textarea {
+        min-height: 300px;
+        padding: 0 var(--space-md) var(--space-md) var(--space-md);
     }
 }

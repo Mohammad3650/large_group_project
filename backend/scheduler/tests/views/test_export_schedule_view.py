@@ -1,6 +1,7 @@
 from datetime import date, time
 
 from django.test import TestCase
+from django.urls import reverse
 from rest_framework.test import APIClient
 
 from scheduler.models.DayPlan import DayPlan
@@ -10,6 +11,7 @@ from scheduler.models.User import User
 
 class ExportScheduleViewTest(TestCase):
     def setUp(self):
+        """Create reusable users, day plans, time blocks, and export URLs."""
         self.client = APIClient()
         self.user = User.objects.create_user(
             username="exportuser",
@@ -49,14 +51,16 @@ class ExportScheduleViewTest(TestCase):
             timezone="Europe/London",
         )
 
-        self.csv_url = "/api/time-blocks/export/csv/"
-        self.ics_url = "/api/time-blocks/export/ics/"
+        self.csv_url = reverse("api-export-timeblocks-csv")
+        self.ics_url = reverse("api-export-timeblocks-ics")
 
     def test_export_csv_requires_authentication(self):
+        """It should require authentication for CSV export."""
         response = self.client.get(self.csv_url)
         self.assertEqual(response.status_code, 401)
 
     def test_export_csv_returns_csv_file_for_authenticated_user(self):
+        """It should return a CSV file for the authenticated user."""
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(self.csv_url)
@@ -66,6 +70,7 @@ class ExportScheduleViewTest(TestCase):
         self.assertIn("studysync_schedule.csv", response["Content-Disposition"])
 
     def test_export_csv_contains_headers_and_only_authenticated_users_events(self):
+        """It should export headers and only the authenticated user's events."""
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(self.csv_url)
@@ -76,10 +81,12 @@ class ExportScheduleViewTest(TestCase):
         self.assertNotIn("Other User Event", content)
 
     def test_export_ics_requires_authentication(self):
+        """It should require authentication for ICS export."""
         response = self.client.get(self.ics_url)
         self.assertEqual(response.status_code, 401)
 
     def test_export_ics_returns_calendar_file(self):
+        """It should return an ICS calendar file for the authenticated user."""
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(self.ics_url)
@@ -89,23 +96,31 @@ class ExportScheduleViewTest(TestCase):
         self.assertIn("studysync_schedule.ics", response["Content-Disposition"])
 
     def test_export_ics_contains_calendar_content_and_only_users_events(self):
+        """It should include valid ICS content and exclude other users' events."""
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(self.ics_url)
         content = response.content.decode()
 
-        self.assertIn("BEGIN:VCALENDAR", content)
-        self.assertIn("VERSION:2.0", content)
-        self.assertIn("PRODID:-//StudySync//Schedule Export//EN", content)
-        self.assertIn("BEGIN:VEVENT", content)
-        self.assertIn("SUMMARY:SEG Lecture", content)
-        self.assertIn("DTSTART:20260410T090000", content)
-        self.assertIn("DTEND:20260410T100000", content)
-        self.assertIn("LOCATION:Bush House", content)
-        self.assertIn("DESCRIPTION:Bring laptop", content)
+        expected_content = [
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//StudySync//Schedule Export//EN",
+            "BEGIN:VEVENT",
+            "SUMMARY:SEG Lecture",
+            "DTSTART:20260410T090000",
+            "DTEND:20260410T100000",
+            "LOCATION:Bush House",
+            "DESCRIPTION:Bring laptop",
+        ]
+
+        for value in expected_content:
+            self.assertIn(value, content)
+
         self.assertNotIn("Other User Event", content)
 
     def test_export_ics_skips_timeblocks_without_start_or_end_time(self):
+        """It should skip time blocks that do not have both start and end times."""
         TimeBlock.objects.create(
             day=self.day_plan,
             name="Untimed Event",
@@ -125,6 +140,7 @@ class ExportScheduleViewTest(TestCase):
         self.assertNotIn("SUMMARY:Untimed Event", content)
 
     def test_export_ics_escapes_special_characters(self):
+        """It should escape reserved ICS characters in exported text fields."""
         TimeBlock.objects.create(
             day=self.day_plan,
             name="Lecture, Seminar; Review",

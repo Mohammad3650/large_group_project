@@ -1,0 +1,28 @@
+.settings-profile-links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.settings-profile-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: var(--font-size-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    background: var(--bg-soft);
+    box-shadow: var(--shadow-sm);
+    transition: background 0.2s;
+}
+
+.settings-profile-link:hover {
+    background: var(--bg-soft-hover);
+}
+
+.settings-link-icon {
+    opacity: 0.6;
+    flex-shrink: 0;
+}

@@ -27,7 +27,6 @@ class SaveWeeklyPlanView(APIView):
 
         user = request.user
         events = serializer.validated_data["events"]
-        timezone = request.data.get("timezone", "UTC")
         created = []
 
         for event in events:
