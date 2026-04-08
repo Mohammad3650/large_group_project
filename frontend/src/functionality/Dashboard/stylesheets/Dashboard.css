@@ -39,15 +39,6 @@ body.dashboard-page .navbar-container {
     margin-bottom: var(--space-sm);
 }
 
-.no-tasks-message {
-    color: var(--text-muted);
-    font-size: 2rem;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 @media (max-width: 768px) {
     body.dashboard-page {
         overflow: auto;
