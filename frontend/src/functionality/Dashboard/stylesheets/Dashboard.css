@@ -1,5 +1,4 @@
 body.dashboard-page {
-    display: block;
     overflow: hidden;
     background: var(--bg-main);
     color: var(--text-main);

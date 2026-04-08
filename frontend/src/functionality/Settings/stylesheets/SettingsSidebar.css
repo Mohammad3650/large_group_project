@@ -21,7 +21,7 @@
     font-weight: 600;
     cursor: pointer;
     text-align: left;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.2s, color 0.2s;
 }
 
 .settings-nav-item:hover {
@@ -50,16 +50,10 @@
 @media (max-width: 768px) {
     .settings-sidebar {
         width: 100%;
-        flex-direction: row;
-        flex-wrap: wrap;
         padding-top: var(--space-md);
     }
 
     .settings-nav-item {
-        width: auto;
-    }
-
-    .settings-nav-divider {
-        display: none;
+        width: 100%;
     }
 }
