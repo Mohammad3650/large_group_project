@@ -42,6 +42,7 @@ body.dashboard-page .navbar-container {
 @media (max-width: 768px) {
     body.dashboard-page {
         overflow: auto;
+        position: static;
     }
 
     body.dashboard-page .navbar-container {
