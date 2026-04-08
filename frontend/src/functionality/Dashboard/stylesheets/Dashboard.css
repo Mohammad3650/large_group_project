@@ -1,5 +1,4 @@
 body.dashboard-page {
-    display: block;
     overflow: hidden;
     background: var(--bg-main);
     color: var(--text-main);
@@ -14,7 +13,7 @@ body.dashboard-page .navbar-container {
 .dashboard-content {
     display: flex;
     width: 100%;
-    height: calc(100vh - 75px);
+    height: calc(100vh - var(--navbar-height));
     box-sizing: border-box;
     justify-content: space-between;
     align-items: stretch;
@@ -34,23 +33,15 @@ body.dashboard-page .navbar-container {
 
 .task-section h1 {
     color: var(--text-main);
-    font-size: 1.4rem;
+    font-size: var(--font-size-heading);
     font-weight: 500;
     margin-bottom: var(--space-sm);
-}
-
-.no-tasks-message {
-    color: var(--text-muted);
-    font-size: 2rem;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 @media (max-width: 768px) {
     body.dashboard-page {
         overflow: auto;
+        position: static;
     }
 
     body.dashboard-page .navbar-container {
@@ -60,6 +51,7 @@ body.dashboard-page .navbar-container {
     .dashboard-content {
         flex-direction: column;
         height: auto;
+        min-height: calc(100vh - var(--navbar-height));
         overflow-y: auto;
     }
 

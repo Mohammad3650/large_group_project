@@ -4,8 +4,14 @@
     --font-size-xs: 0.8rem;
     --font-size-sm: 0.9375rem;
     --font-size-md: 0.85rem;
+    --font-size-icon: 0.875rem;
+    --font-size-body: 1rem;
+    --font-size-base: 1.1rem;
+    --font-size-message: 1.2rem;
+    --font-size-heading: 1.4rem;
     --font-size-lg: 1.5rem;
     --font-size-xl: 1.875rem;
+    --font-size-2xl: 2rem;
 
     /* text colours */
     --text-main: #222;
@@ -39,7 +45,6 @@
     --edit: #f59e0b;
     --edit-soft: #fbbf24;
 
-    --orange: #f59e0b;
     --purple: #7c3aed;
     --yellow: #eab308;
 
@@ -71,6 +76,7 @@
     --arrow-offset: -3px;
     --checkbox-size: 1.2rem;
     --navbar-height: 75px;
+    --overlay-bg: rgba(0, 0, 0, 0.4);
 }
 
 body.dark-theme {
@@ -102,7 +108,6 @@ body.dark-theme {
     --edit: #fbbf24;
     --edit-soft: #fcd34d;
 
-    --orange: #fbbf24;
     --purple: #a78bfa;
     --yellow: #fde047;
 

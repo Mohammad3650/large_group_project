@@ -37,7 +37,7 @@
     border: none;
     border-radius: 0;
     outline: none;
-    font-size: 1rem;
+    font-size: var(--font-size-body);
     font-family: inherit;
     overflow-y: auto;
 }
@@ -55,7 +55,7 @@
     .notes-section {
         width: 100%;
         flex-shrink: 0;
-        margin-top: var(--space-lg);
+        margin-top: var(--space-xl);
         border-left: none;
         border-top: 2px solid var(--border-light);
     }

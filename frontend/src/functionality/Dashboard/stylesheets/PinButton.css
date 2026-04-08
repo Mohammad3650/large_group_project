@@ -5,18 +5,16 @@
     border-radius: var(--radius-sm);
     cursor: pointer;
     color: var(--text-light);
-    font-size: 0.85rem;
+    font-size: var(--font-size-md);
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    transition: color 0.2s, background-color 0.2s;
+    transition: color 0.2s;
     box-shadow: none;
 }
 
 .pin-button:hover {
     color: var(--yellow);
-    background-color: transparent;
-    opacity: 1;
 }
 
 .pin-button.pinned {

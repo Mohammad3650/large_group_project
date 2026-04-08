@@ -1,8 +1,16 @@
 .no-tasks-message {
     color: var(--text-muted);
-    font-size: 2rem;
+    font-size: var(--font-size-2xl);
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .no-tasks-message {
+        font-size: var(--font-size-message);
+        flex: none;
+        margin-top: var(--space-md);
+    }
 }

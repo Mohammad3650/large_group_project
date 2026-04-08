@@ -1,25 +1,3 @@
-.task-options {
-    position: relative;
-    flex-shrink: 0;
-    height: fit-content;
-    align-self: center;
-}
-
-.task-options-btn {
-    background: var(--bg-main);
-    cursor: pointer;
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-md);
-    line-height: 1;
-    transition: background-color 0.2s;
-}
-
-.task-options-btn:hover {
-    background-color: var(--bg-soft-hover);
-}
-
 .task-options-drop-up {
     position: absolute;
     bottom: calc(100% + var(--space-xs));
