@@ -68,6 +68,14 @@ class SeedCommandTest(TestCase):
         self.assertEqual(CalendarSubscription.objects.count(), NUM_TOTAL_USERS)
 
     @patch("scheduler.management.commands.seed.sync_calendar_subscription")
+    def test_seed_logs_warning_when_sync_fails(self, mock_sync):
+        """Tests that a warning is logged when calendar subscription sync fails."""
+        mock_sync.side_effect = Exception("Sync failed")
+        out = StringIO()
+        call_command("seed", stdout=out)
+        self.assertIn("WARNING", out.getvalue())
+
+    @patch("scheduler.management.commands.seed.sync_calendar_subscription")
     def test_seed_does_not_run_if_already_seeded(self, mock_sync):
         """Tests that the seed command exits early if the database is already seeded."""
         call_command("seed", stdout=StringIO())
