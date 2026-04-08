@@ -62,7 +62,7 @@
 .task-items-container.pinned    { border-left-color: var(--yellow); }
 .task-items-container.overdue   { border-left-color: var(--danger-soft); }
 .task-items-container.today     { border-left-color: var(--blue); }
-.task-items-container.tomorrow  { border-left-color: var(--orange); }
+.task-items-container.tomorrow  { border-left-color: var(--edit); }
 .task-items-container.week      { border-left-color: var(--purple); }
 .task-items-container.beyond    { border-left-color: var(--text-light); }
 .task-items-container.completed { border-left-color: var(--success); }
