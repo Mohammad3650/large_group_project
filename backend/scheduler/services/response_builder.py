@@ -1,12 +1,8 @@
 from __future__ import annotations
-
 from datetime import date, datetime, timedelta, time
 from typing import Any, Dict, List, Tuple
-
 from scheduler.utils.to_utc import to_utc
-
-MINUTES_PER_DAY = 24 * 60
-MINUTES_IN_HOUR = 60
+from .constants import DAY_MINS, MINS_IN_HOUR
 
 
 class ScheduleResponseBuilder:
@@ -51,11 +47,11 @@ class ScheduleResponseBuilder:
         else:
             base = datetime.strptime(week_start, "%Y-%m-%d").date()
 
-        day_index = abs_min // MINUTES_PER_DAY
-        mins_in_day = abs_min % MINUTES_PER_DAY
+        day_index = abs_min // DAY_MINS
+        mins_in_day = abs_min % DAY_MINS
 
-        hour = mins_in_day // MINUTES_IN_HOUR
-        minute = mins_in_day % MINUTES_IN_HOUR
+        hour = mins_in_day // MINS_IN_HOUR
+        minute = mins_in_day % MINS_IN_HOUR
 
         date_obj = base + timedelta(days=day_index)
         return date_obj, time(hour=hour, minute=minute, second=0)

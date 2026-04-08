@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple
 import datetime
+from .constants import DAY_MINS, MINS_IN_HOUR
 
 
 @dataclass(frozen=True)
@@ -31,7 +32,7 @@ class ScheduleRequestParser:
         """
         if time is None:
             return None
-        return time.hour * 60 + time.minute
+        return time.hour * MINS_IN_HOUR + time.minute
 
     def create_windows(self, windows):
         """
@@ -46,7 +47,7 @@ class ScheduleRequestParser:
             daily = window["daily"]
             if start < end:
                 new_windows.append({"start_min": 0, "end_min": start, "daily": daily})
-                new_windows.append({"start_min": end, "end_min": 1440, "daily": daily})
+                new_windows.append({"start_min": end, "end_min": DAY_MINS, "daily": daily})
             else:
                 new_windows.append({"start_min": end, "end_min": start, "daily": daily})
         return new_windows
@@ -55,11 +56,11 @@ class ScheduleRequestParser:
         """ Convert unscheduled event dicts into normalized tuples."""
         unscheduled = [
             (
-                u["name"], u["duration"], u.get("frequency", 1),
-                u["daily"], u.get("start_time_preference", "None"), u.get("location", ""),
-                u.get("block_type", "study"), u.get("description", ""),
+                value["name"], value["duration"], value.get("frequency", 1),
+                value["daily"], value.get("start_time_preference", "None"), value.get("location", ""),
+                value.get("block_type", "study"), value.get("description", ""),
             )
-            for u in validated.get("unscheduled", [])
+            for value in validated.get("unscheduled", [])
         ]
         return unscheduled
     

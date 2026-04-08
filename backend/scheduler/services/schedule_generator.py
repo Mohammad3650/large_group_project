@@ -2,12 +2,11 @@ import bisect
 from dataclasses import dataclass
 import datetime
 from datetime import time
+from .constants import DAY_MINS, MINS_IN_HOUR
 
-DAY_MINS = 1440
 FINAL_MIN = 1439
 LATE_PREFERENCE = "Late"
 WINDOW_EVENT_NAME = "window"
-MINS_IN_HOUR = 60
 
 class Event:
     def __init__(self, scheduled, start_time = None, end_time = None, name = None):
@@ -159,8 +158,11 @@ class Scheduler:
         Returns: None
         """
         for start, end, _ in windows:
-            for day in self.days:
-                day.add_event(Event(True, start, end, WINDOW_EVENT_NAME))
+            self._add_window_to_each_day(start, end)
+
+    def _add_window_to_each_day(self, start, end):
+        for day in self.days:
+            day.add_event(Event(True, start, end, WINDOW_EVENT_NAME))
     
     # Add scheduled events to the respective days
     def add_scheduled_events(self):
@@ -224,15 +226,19 @@ class Scheduler:
             late = event[4] == LATE_PREFERENCE
             frequency = event[2]
 
-            if daily:
-                success = self._place_daily_event(event, late)
-            else:
-                success = self._place_event_n_times(event, frequency, late)
+            success = self._dispatch_event_placement(event, daily, late, frequency)
 
             if not success:
                 return False
 
         return True
+
+    def _dispatch_event_placement(self, event, daily, late, frequency):
+        if daily:
+            success = self._place_daily_event(event, late)
+        else:
+            success = self._place_event_n_times(event, frequency, late)
+        return success
     
     def _place_event_on_day(self, event, day, late):
         """Attempt to place an event on a single day, using latest or earliest slot."""
@@ -255,14 +261,18 @@ class Scheduler:
                 return False
         return True
     
+    def _add_candidate(self, candidates, start, index):
+        """Add the (start, index) pair to the candidates list using insertion sort"""
+        if start is not None:
+                bisect.insort(candidates, (start, index))
+    
     def _collect_late_candidates(self, event):
         """Collect (start_time, day_index) pairs for latest-slot placement across all days."""
         candidates = []
-        for i, day in enumerate(self.days):
+        for index, day in enumerate(self.days):
             event_obj = self._create_unsched_event_object(event)
             start = self._find_latest_slot_for_event(event_obj, day.events)
-            if start is not None:
-                bisect.insort(candidates, (start, i))
+            self._add_candidate(candidates, start, index)
         return candidates
 
     def _place_event_at(self, event, start, day_idx):
@@ -433,9 +443,12 @@ class Scheduler:
         """
         events = []
         for _, event in day.events:
-            if not event.scheduled:
-                events.append((event.start_time_dt, event.end_time_dt, self._calculate_date(index), event.name, event.location, event.block_type, event.description))
+            self._add_unscheduled_events_to_event_list(index, events, event)
         return events
+
+    def _add_unscheduled_events_to_event_list(self, index, events, event):
+        if not event.scheduled:
+            events.append((event.start_time_dt, event.end_time_dt, self._calculate_date(index), event.name, event.location, event.block_type, event.description))
 
     def _calculate_date(self, index):
         """
