@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple
 import datetime
+from .constants import DAY_MINS, MINS_IN_HOUR
 
 
 @dataclass(frozen=True)
@@ -31,7 +32,7 @@ class ScheduleRequestParser:
         """
         if time is None:
             return None
-        return time.hour * 60 + time.minute
+        return time.hour * MINS_IN_HOUR + time.minute
 
     def create_windows(self, windows):
         """
@@ -46,10 +47,32 @@ class ScheduleRequestParser:
             daily = window["daily"]
             if start < end:
                 new_windows.append({"start_min": 0, "end_min": start, "daily": daily})
-                new_windows.append({"start_min": end, "end_min": 1440, "daily": daily})
+                new_windows.append({"start_min": end, "end_min": DAY_MINS, "daily": daily})
             else:
                 new_windows.append({"start_min": end, "end_min": start, "daily": daily})
         return new_windows
+    
+    def _parse_unscheduled_events(self, validated):
+        """ Convert unscheduled event dicts into normalized tuples."""
+        unscheduled = [
+            (
+                value["name"], value["duration"], value.get("frequency", 1),
+                value["daily"], value.get("start_time_preference", "None"), value.get("location", ""),
+                value.get("block_type", "study"), value.get("description", ""),
+            )
+            for value in validated.get("unscheduled", [])
+        ]
+        return unscheduled
+    
+    def _parse_top_level(self, validated):
+        """ Extract core scheduling parameters."""
+        return [
+            validated["week_start"],
+            validated["week_end"],
+            validated["days"],
+            validated.get("even_spread", True),
+            validated.get("include_scheduled", True)
+            ]
 
     def parse(self, validated: Dict[str, Any]) -> ParsedScheduleRequest:
         """
@@ -57,23 +80,10 @@ class ScheduleRequestParser:
         @param validated: Validated request dict
         @return: ParsedScheduleRequest instance
         """
-        week_start = validated["week_start"]
-        week_end = validated["week_end"]
-        days = validated["days"]
-
-        even_spread = validated.get("even_spread", True)
-        include_scheduled = validated.get("include_scheduled", True)
+        top_level = self._parse_top_level(validated)
         raw_windows = validated["windows"]
         timezone = raw_windows[0].get("timezone", "UTC") if raw_windows else "UTC"
         windows = [(w["start_min"], w["end_min"], w.get("daily", False)) for w in self.create_windows(raw_windows)]
 
-        unscheduled = [
-            (
-                u["name"], u["duration"], u.get("frequency", 1),
-                u["daily"], u.get("start_time_preference", "None"), u.get("location", ""),
-                u.get("block_type", "study"), u.get("description", ""),
-            )
-            for u in validated.get("unscheduled", [])
-        ]
-
-        return ParsedScheduleRequest(week_start, week_end, days, even_spread, include_scheduled, windows, unscheduled, timezone)
+        unscheduled = self._parse_unscheduled_events(validated)
+        return ParsedScheduleRequest(*top_level, windows, unscheduled, timezone)

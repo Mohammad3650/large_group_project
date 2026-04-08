@@ -36,7 +36,6 @@
             django-forms-bootstrap==3.1.0
             coverage==7.13.4
             icalendar==5.0.11
-            ortools==9.15.6755
             Faker
 
             # Django – core backend framework
@@ -53,7 +52,7 @@
 
             # pytz – timezone handling (important for schedules)
 
-            # ortools - schedule generation via cpsat
+
             '';
 
         runtimeInputs = with pkgs; [

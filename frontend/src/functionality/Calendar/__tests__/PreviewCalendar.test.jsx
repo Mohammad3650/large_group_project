@@ -47,8 +47,9 @@ describe('Tests for PreviewCalendar', () => {
                 id: 1,
                 name: 'Study Session',
                 date: '2026-03-16',
-                start_time: '09:00',
-                end_time: '10:00'
+                start_time: '09:00:00',
+                end_time: '10:00:00',
+                timezone: 'Europe/London'
             }
         ],
         scheduled: [
@@ -56,8 +57,9 @@ describe('Tests for PreviewCalendar', () => {
                 id: 2,
                 name: 'Lecture',
                 date: '2026-03-16',
-                start_time: '10:00',
-                end_time: '11:00'
+                start_time: '10:00:00',
+                end_time: '11:00:00',
+                timezone: 'Europe/London'
             }
         ]
     };
@@ -122,7 +124,6 @@ describe('Tests for PreviewCalendar', () => {
             expect(mockSavePlan).toHaveBeenCalledWith({
                 week_start: mockSchedule.week_start,
                 events: mockSchedule.events,
-                timezone: expect.any(String)
             });
         });
 
