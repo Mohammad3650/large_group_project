@@ -9,13 +9,12 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    transition: color 0.2s, background-color 0.2s;
+    transition: color 0.2s;
     box-shadow: none;
 }
 
 .pin-button:hover {
     color: var(--yellow);
-    background: none;
 }
 
 .pin-button.pinned {
