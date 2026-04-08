@@ -55,7 +55,7 @@
     .notes-section {
         width: 100%;
         flex-shrink: 0;
-        margin-top: var(--space-lg);
+        margin-top: var(--space-xl);
         border-left: none;
         border-top: 2px solid var(--border-light);
     }

@@ -6,3 +6,11 @@
     align-items: center;
     justify-content: center;
 }
+
+@media (max-width: 768px) {
+    .no-tasks-message {
+        font-size: 1.2rem;
+        flex: none;
+        margin-top: var(--space-md);
+    }
+}

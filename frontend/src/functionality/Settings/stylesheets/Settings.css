@@ -5,7 +5,7 @@ body.settings-page {
 
 .settings-layout {
     display: flex;
-    height: calc(100vh - 75px - var(--space-lg));
+    height: calc(100vh - var(--navbar-height) - var(--space-lg));
     padding: 0 var(--space-navbar-x) var(--space-2xl);
     box-sizing: border-box;
     gap: var(--space-xl);
