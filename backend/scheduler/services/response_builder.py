@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Tuple
 from scheduler.utils.to_utc import to_utc
 
 MINUTES_PER_DAY = 24 * 60
+MINUTES_IN_HOUR = 60
 
 
 class ScheduleResponseBuilder:
@@ -53,8 +54,8 @@ class ScheduleResponseBuilder:
         day_index = abs_min // MINUTES_PER_DAY
         mins_in_day = abs_min % MINUTES_PER_DAY
 
-        hour = mins_in_day // 60
-        minute = mins_in_day % 60
+        hour = mins_in_day // MINUTES_IN_HOUR
+        minute = mins_in_day % MINUTES_IN_HOUR
 
         date_obj = base + timedelta(days=day_index)
         return date_obj, time(hour=hour, minute=minute, second=0)

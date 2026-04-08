@@ -5,6 +5,9 @@ from datetime import time
 
 DAY_MINS = 1440
 FINAL_MIN = 1439
+LATE_PREFERENCE = "Late"
+WINDOW_EVENT_NAME = "window"
+MINS_IN_HOUR = 60
 
 class Event:
     def __init__(self, scheduled, start_time = None, end_time = None, name = None):
@@ -36,7 +39,7 @@ class Event:
         return self.__str__()
     
     def _abs_mins_to_time(self, abs):
-        return f"{abs // 60}:{abs % 60}"
+        return f"{abs // MINS_IN_HOUR}:{abs % MINS_IN_HOUR}"
 
     def _abs_time_to_datetime(self, abs_min: int) -> tuple[str, str]:
         """
@@ -46,8 +49,8 @@ class Event:
         """
         mins_in_day = abs_min % DAY_MINS
 
-        hour = mins_in_day // 60
-        minute = mins_in_day % 60
+        hour = mins_in_day // MINS_IN_HOUR
+        minute = mins_in_day % MINS_IN_HOUR
 
         return time(hour=hour, minute=minute, second=0)
     
@@ -157,7 +160,7 @@ class Scheduler:
         """
         for start, end, _ in windows:
             for day in self.days:
-                day.add_event(Event(True, start, end, "window"))
+                day.add_event(Event(True, start, end, WINDOW_EVENT_NAME))
     
     # Add scheduled events to the respective days
     def add_scheduled_events(self):
@@ -199,7 +202,7 @@ class Scheduler:
         events = self.request.unscheduled
         return sorted(
             events,
-            key = lambda event: (not event[3], event[4] != "Late")
+            key = lambda event: (not event[3], event[4] != LATE_PREFERENCE)
         )
     
     def _place_event_n_times(self, event, frequency, late):
@@ -218,7 +221,7 @@ class Scheduler:
         """
         for event in self._sort_unscheduled_events():
             daily = event[3]
-            late = event[4] == "Late"
+            late = event[4] == LATE_PREFERENCE
             frequency = event[2]
 
             if daily:
@@ -329,6 +332,7 @@ class Scheduler:
             return True
         else:
             return False
+    
 
     def _try_find_slot_for_event(self, unsched_event, events_list):
         """

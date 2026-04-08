@@ -44,14 +44,15 @@ class ScheduleService:
         @return: List of tuples (start_min, end_min, name)
         """
         DAY_MINS = 1440
+        MINUTES_IN_HOUR = 60
 
         events = []
 
         for tb in time_blocks:
 
             day_offset = (tb.day.date - week_start).days
-            start_minutes = tb.start_time.hour * 60 + tb.start_time.minute
-            end_minutes = tb.end_time.hour * 60 + tb.end_time.minute
+            start_minutes = tb.start_time.hour * MINUTES_IN_HOUR + tb.start_time.minute
+            end_minutes = tb.end_time.hour * MINUTES_IN_HOUR + tb.end_time.minute
 
             start_min = day_offset * DAY_MINS + start_minutes
             end_min = day_offset * DAY_MINS + end_minutes
@@ -77,8 +78,7 @@ class ScheduleService:
         scheduled = self.extract_scheduled_mins(time_blocks, parsed.week_start)
 
         engine = Scheduler( request=parsed, scheduled=scheduled )
-        
-        #: List[Tuple[int, int, int, str, str, str, str]]
+
         solutions = engine.solve()
         week_start = parsed.week_start
         return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start, timezone=parsed.timezone)
