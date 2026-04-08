@@ -1,10 +1,6 @@
 import { useEffect } from 'react';
-<<<<<<<< HEAD:frontend/src/utils/useAuthRedirect.js
-import { isTokenValid } from './authToken';
-========
+
 import { isTokenValid } from '../Auth/authToken';
-import { useNavigate } from 'react-router-dom';
->>>>>>>> origin:frontend/src/utils/Hooks/useRedirectIfAuthenticated.js
 
 /**
  * Custom hook that redirects the user if they are already authenticated.
