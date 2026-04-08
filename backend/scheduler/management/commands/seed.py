@@ -164,18 +164,20 @@ def create_pinned_events_for_user(user):
 
 def create_calendar_subscription_for_user(user):
     """
-    Creates a calendar subscription for a user and syncs it immediately
-    so events appear without needing a manual refresh.
+    Creates a calendar subscription record for a user.
 
     Args:
         user (User): The user to create the subscription for.
+
+    Returns:
+        CalendarSubscription: The created or existing subscription instance.
     """
     subscription, _ = CalendarSubscription.objects.get_or_create(
         user=user,
         source_url=CALENDAR_SUBSCRIPTION["source_url"],
         defaults={"name": CALENDAR_SUBSCRIPTION["name"]},
     )
-    sync_calendar_subscription(subscription)
+    return subscription
 
 
 def create_note_for_user(user):
@@ -216,6 +218,18 @@ class Command(BaseSeeder):
             all_users.append(create_user(i))
         return all_users
 
+    def _sync_subscription(self, subscription):
+        """
+        Attempts to sync a calendar subscription and logs a warning if it fails.
+
+        Args:
+            subscription (CalendarSubscription): The subscription to sync.
+        """
+        try:
+            sync_calendar_subscription(subscription)
+        except Exception as exception:
+            self.log(f"WARNING: Calendar subscription sync failed: {exception}")
+
     def _seed_users(self, all_users):
         """
         Creates events, completed tasks, pinned tasks, a calendar subscription,
@@ -228,7 +242,8 @@ class Command(BaseSeeder):
             create_events_for_user(user, NUM_EVENTS_PER_USER)
             create_completed_events_for_user(user)
             create_pinned_events_for_user(user)
-            create_calendar_subscription_for_user(user)
+            subscription = create_calendar_subscription_for_user(user)
+            self._sync_subscription(subscription)
             create_note_for_user(user)
             self.log(f"  Created user: {user.username}, Email: {user.email}, Password: {DEFAULT_PASSWORD}")
 
