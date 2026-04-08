@@ -1,3 +1,4 @@
+import getNoSearchResults from '../../utils/Helpers/getNoSearchResults.js';
 import './stylesheets/NoTasksMessage.css';
 
 /**
@@ -13,13 +14,7 @@ import './stylesheets/NoTasksMessage.css';
  */
 function NoTasksMessage({ totalTasks, filteredTasks, searchTerm }) {
     if (totalTasks === 0) return <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>;
-
-    const foundNoResults =
-        Object.values(filteredTasks).every((tasks) => tasks.length === 0) &&
-        searchTerm.trim() !== '';
-
-    if (foundNoResults) return <p className="no-tasks-message">No tasks found matching "{searchTerm.trim()}"</p>;
-
+    if (getNoSearchResults(filteredTasks, searchTerm)) return <p className="no-tasks-message">No tasks found matching "{searchTerm.trim()}"</p>;
     return null;
 }
 
