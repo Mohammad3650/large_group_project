@@ -2,12 +2,9 @@ from typing import Any, Dict, List, Tuple
 
 from scheduler.services.request_parser import ScheduleRequestParser
 from scheduler.services.response_builder import ScheduleResponseBuilder
-from scheduler.services.schedule_generator import Scheduler
-
 from scheduler.models import TimeBlock
-
 from django.db.models import F
-
+from scheduler.services.schedule_generator import Scheduler
 
 class ScheduleService:
     """
@@ -80,12 +77,8 @@ class ScheduleService:
         scheduled = self.extract_scheduled_mins(time_blocks, parsed.week_start)
 
         engine = Scheduler( request=parsed, scheduled=scheduled )
-
-        engine.create_scheduled_intervals()
-        engine.create_unscheduled_intervals()
-        engine.overlap_constraints()
-        engine.apply_constraints()
-
-        solutions: List[Tuple[int, int, int, str, str, str, str]] = engine.solve()
+        
+        #: List[Tuple[int, int, int, str, str, str, str]]
+        solutions = engine.solve()
         week_start = parsed.week_start
-        return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start)
+        return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start, timezone=parsed.timezone)
