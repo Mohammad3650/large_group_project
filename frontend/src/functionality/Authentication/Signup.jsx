@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signupUser } from '../../utils/authService';
-import { validateSignupForm } from '../../utils/signupValidation';
+import { signupUser } from '../../utils/Auth/authService';
+import { validateSignupForm } from '../../utils/Validation/signupValidation';
 import useAuthRedirect from '../../utils/Hooks/useAuthRedirect';
 import useAuthForm from '../../utils/Hooks/useAuthForm';
 import AuthCard from '../../components/AuthCard';
