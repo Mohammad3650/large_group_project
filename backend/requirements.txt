@@ -16,7 +16,6 @@ django-crispy-forms==2.3
 django-forms-bootstrap==3.1.0
 coverage==7.13.4
 icalendar==5.0.11
-
 Faker
 
 # Django – core backend framework
@@ -29,7 +28,8 @@ Faker
 
 # python-dotenv – keep secrets out of git
 
-# psycopg2-binary
+# psycopg2-binary – safe if you later move to Postgres
 
 # pytz – timezone handling (important for schedules)
+
 
