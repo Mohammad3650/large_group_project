@@ -30,7 +30,7 @@
 }
 
 .settings-nav-item.active {
-    background: var(--bg-soft);
+    background: var(--bg-soft-hover);
     color: var(--text-main);
 }
 
