@@ -1,12 +1,18 @@
 :root {
     /* fonts */
+    /* fonts */
     --font-main: system-ui, sans-serif;
     --font-size-xs: 0.8rem;
     --font-size-sm: 0.9375rem;
     --font-size-md: 0.85rem;
     --font-size-base: 1.1rem;
+    --font-size-icon: 0.875rem;
+    --font-size-body: 1rem;
+    --font-size-heading: 1.4rem;
+    --font-size-message: 1.2rem;
     --font-size-lg: 1.5rem;
     --font-size-xl: 1.875rem;
+    --font-size-2xl: 2rem;
 
     /* text colours */
     --text-main: #222;

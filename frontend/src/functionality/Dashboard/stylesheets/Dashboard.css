@@ -33,7 +33,7 @@ body.dashboard-page .navbar-container {
 
 .task-section h1 {
     color: var(--text-main);
-    font-size: 1.4rem;
+    font-size: var(--font-size-heading);
     font-weight: 500;
     margin-bottom: var(--space-sm);
 }
