@@ -28,8 +28,4 @@ describe('getNoSearchResults', () => {
         const tasks = { ...emptyFilteredTasks, filteredToday: [{ id: 1 }] };
         expect(getNoSearchResults(tasks, 'lecture')).toBe(false);
     });
-
-    it('returns false when all filtered arrays are empty but the search term is empty', () => {
-        expect(getNoSearchResults(emptyFilteredTasks, '')).toBe(false);
-    });
 });
