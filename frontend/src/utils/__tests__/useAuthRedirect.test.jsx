@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
-import useRedirectIfAuthenticated from '../Hooks/useRedirectIfAuthenticated.js';
+import useAuthRedirect from '../Hooks/useAuthRedirect.js';
 import { isTokenValid } from '../Auth/authToken.js';
 
 const mockNavigate = vi.fn();
@@ -9,20 +9,20 @@ vi.mock('../Auth/authToken.js', () => ({
     isTokenValid: vi.fn()
 }));
 
-vi.mock("react-router-dom", async () => {
+vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
     return {
         ...actual,
-        useNavigate: () => mockNavigate,
+        useNavigate: () => mockNavigate
     };
 });
 
 function TestComponent({ path }) {
-    useRedirectIfAuthenticated(path);
+    useAuthRedirect(mockNavigate, path);
     return <div>Test Component</div>;
 }
 
-describe('Tests for useRedirectIfAuthenticated', () => {
+describe('Tests for useAuthRedirect', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockNavigate.mockClear();

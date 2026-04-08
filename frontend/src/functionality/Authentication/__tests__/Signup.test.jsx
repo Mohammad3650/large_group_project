@@ -3,11 +3,10 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/vitest';
 import userEvent from '@testing-library/user-event';
+
 import Signup from '../Signup';
+import { signupUser } from '../../../utils/Auth/authService';
 import { isTokenValid } from '../../../utils/Auth/authToken';
-import { publicApi } from '../../../api';
-import { saveTokens } from '../../../utils/Auth/authStorage';
-import { formatApiError } from '../../../utils/Errors/errors';
 
 const mockNavigate = vi.fn();
 
@@ -19,22 +18,12 @@ vi.mock('react-router-dom', async () => {
     };
 });
 
+vi.mock('../../../utils/Auth/authService', () => ({
+    signupUser: vi.fn()
+}));
+
 vi.mock('../../../utils/Auth/authToken', () => ({
     isTokenValid: vi.fn()
-}));
-
-vi.mock('../../../api', () => ({
-    publicApi: {
-        post: vi.fn()
-    }
-}));
-
-vi.mock('../../../utils/Auth/authStorage', () => ({
-    saveTokens: vi.fn()
-}));
-
-vi.mock('../../../utils/Errors/errors', () => ({
-    formatApiError: vi.fn()
 }));
 
 function renderSignup() {
@@ -45,7 +34,7 @@ function renderSignup() {
     );
 }
 
-async function fillSignupForm(user, overrides = {}) {
+async function fillSignupForm(overrides = {}) {
     const values = {
         email: 'test@example.com',
         username: 'testuser',
@@ -84,23 +73,14 @@ describe('Tests for Signup', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         isTokenValid.mockResolvedValue(false);
-
-        formatApiError.mockReturnValue({
-            fieldErrors: {},
-            global: ['Something went wrong.']
-        });
     });
 
     it('renders the signup form', () => {
         renderSignup();
 
         expect(screen.getByText('Create your account')).toBeInTheDocument();
-        expect(
-            screen.getByPlaceholderText('you@example.com')
-        ).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /sign up/i })
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument();
     });
 
     it('redirects to the dashboard when the user already has a valid token', async () => {
@@ -113,31 +93,29 @@ describe('Tests for Signup', () => {
         });
     });
 
-    it('submits valid signup data, stores tokens, and redirects on success', async () => {
+    it('submits valid signup data and redirects on success', async () => {
         const user = userEvent.setup();
 
-        publicApi.post.mockResolvedValue({
-            data: {
-                access: 'mock-access',
-                refresh: 'mock-refresh'
-            }
+        signupUser.mockResolvedValue({
+            access: 'mock-access',
+            refresh: 'mock-refresh'
         });
 
         renderSignup();
-        await fillSignupForm(user);
+        await fillSignupForm();
 
         await user.click(screen.getByRole('button', { name: /sign up/i }));
 
-        expect(publicApi.post).toHaveBeenCalledWith('/auth/signup/', {
+        expect(signupUser).toHaveBeenCalledWith({
             email: 'test@example.com',
             username: 'testuser',
-            first_name: 'Test',
-            last_name: 'User',
-            phone_number: '07123456789',
-            password: 'Password123!'
+            firstName: 'Test',
+            lastName: 'User',
+            phoneNumber: '07123456789',
+            password: 'Password123!',
+            confirmPassword: 'Password123!'
         });
 
-        expect(saveTokens).toHaveBeenCalledWith('mock-access', 'mock-refresh');
         expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
 
@@ -147,81 +125,68 @@ describe('Tests for Signup', () => {
         renderSignup();
         await user.click(screen.getByRole('button', { name: /sign up/i }));
 
-        expect(
-            await screen.findByText('Email is required.')
-        ).toBeInTheDocument();
+        expect(await screen.findByText('Email is required.')).toBeInTheDocument();
         expect(screen.getByText('Username is required.')).toBeInTheDocument();
         expect(screen.getByText('First name is required.')).toBeInTheDocument();
         expect(screen.getByText('Last name is required.')).toBeInTheDocument();
-        expect(
-            screen.getByText('Phone number is required.')
-        ).toBeInTheDocument();
+        expect(screen.getByText('Phone number is required.')).toBeInTheDocument();
         expect(screen.getByText('Password is required.')).toBeInTheDocument();
-        expect(
-            screen.getByText('Please confirm your password.')
-        ).toBeInTheDocument();
+        expect(screen.getByText('Please confirm your password.')).toBeInTheDocument();
 
-        expect(publicApi.post).not.toHaveBeenCalled();
+        expect(signupUser).not.toHaveBeenCalled();
     });
 
     it('shows an error when passwords do not match', async () => {
         const user = userEvent.setup();
 
         renderSignup();
-        await fillSignupForm(user, {
+        await fillSignupForm({
             confirmPassword: 'Different123!'
         });
 
         await user.click(screen.getByRole('button', { name: /sign up/i }));
 
-        expect(
-            await screen.findByText('Passwords do not match.')
-        ).toBeInTheDocument();
+        expect(await screen.findByText('Passwords do not match.')).toBeInTheDocument();
 
-        expect(publicApi.post).not.toHaveBeenCalled();
+        expect(signupUser).not.toHaveBeenCalled();
     });
 
     it('shows API global errors when signup fails', async () => {
         const user = userEvent.setup();
-
-        publicApi.post.mockRejectedValue(new Error('API error'));
-        formatApiError.mockReturnValue({
-            fieldErrors: {},
-            global: ['Signup failed']
-        });
+        signupUser.mockRejectedValue(new Error('API error'));
 
         renderSignup();
-        await fillSignupForm(user);
+        await fillSignupForm();
 
         await user.click(screen.getByRole('button', { name: /sign up/i }));
 
-        expect(formatApiError).toHaveBeenCalled();
-        expect(await screen.findByText('Signup failed')).toBeInTheDocument();
+        expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
     });
 
     it('renders backend field errors under the matching input', async () => {
         const user = userEvent.setup();
 
-        publicApi.post.mockRejectedValue(new Error('API error'));
-        formatApiError.mockReturnValue({
-            fieldErrors: {
-                email: ['Email is already in use.']
+        const error = {
+            response: {
+                data: {
+                    email: ['Email is already in use.']
+                }
             },
-            global: []
-        });
+            isAxiosError: true
+        };
+
+        signupUser.mockRejectedValue(error);
 
         renderSignup();
-        await fillSignupForm(user);
+        await fillSignupForm();
 
         await user.click(screen.getByRole('button', { name: /sign up/i }));
 
-        expect(
-            await screen.findByText('Email is already in use.')
-        ).toBeInTheDocument();
+        expect(await screen.findByText('Email is already in use.')).toBeInTheDocument();
     });
 
     it('does not submit again while a signup request is in progress', async () => {
-        publicApi.post.mockImplementation(() => new Promise(() => {}));
+        signupUser.mockImplementation(() => new Promise(() => {}));
 
         renderSignup();
         await fillSignupForm();
@@ -231,6 +196,6 @@ describe('Tests for Signup', () => {
         fireEvent.submit(form);
         fireEvent.submit(form);
 
-        expect(publicApi.post).toHaveBeenCalledTimes(1);
+        expect(signupUser).toHaveBeenCalledTimes(1);
     });
 });

@@ -87,8 +87,8 @@ function ChangePassword() {
             title="Change Password"
             subtitle="Update your account password"
             footerText="Back to"
-            footerLinkText="Profile"
-            footerLinkTo="/profile"
+            footerLinkText="Settings"
+            footerLinkTo="/settings"
         >
             {errors.global.length > 0 && (
                 <div className="alert alert-danger text-center">
@@ -98,9 +98,7 @@ function ChangePassword() {
                 </div>
             )}
 
-            {message && (
-                <div className="alert alert-success text-center">{message}</div>
-            )}
+            {message && <div className="alert alert-success text-center">{message}</div>}
 
             <form onSubmit={handleSubmit} noValidate>
                 <div className="row g-3">
@@ -126,11 +124,7 @@ function ChangePassword() {
                 </div>
 
                 <div className="d-grid mt-4">
-                    <button
-                        type="submit"
-                        className="btn btn-dark btn-lg rounded-3"
-                        disabled={loading}
-                    >
+                    <button type="submit" className="btn btn-dark rounded-3" disabled={loading}>
                         {loading ? 'Updating...' : 'Update Password'}
                     </button>
                 </div>

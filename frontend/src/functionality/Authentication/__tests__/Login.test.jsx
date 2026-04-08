@@ -5,22 +5,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import Login from '../Login';
-import { publicApi } from '../../../api';
+import { loginUser } from '../../../utils/Auth/authService';
 import { isTokenValid } from '../../../utils/Auth/authToken';
-import { saveTokens } from '../../../utils/Auth/authStorage';
+
+vi.mock('../../../utils/Auth/authService', () => ({
+    loginUser: vi.fn()
+}));
 
 vi.mock('../../../utils/Auth/authToken', () => ({
     isTokenValid: vi.fn()
-}));
-
-vi.mock('../../../utils/Auth/authStorage', () => ({
-    saveTokens: vi.fn()
-}));
-
-vi.mock('../../../api', () => ({
-    publicApi: {
-        post: vi.fn()
-    }
 }));
 
 function renderLoginWithRoutes() {
@@ -41,14 +34,8 @@ async function fillLoginForm(user, overrides = {}) {
         ...overrides
     };
 
-    await user.type(
-        screen.getByPlaceholderText('you@example.com'),
-        values.email
-    );
-    await user.type(
-        screen.getByPlaceholderText('Enter your password...'),
-        values.password
-    );
+    await user.type(screen.getByPlaceholderText('you@example.com'), values.email);
+    await user.type(screen.getByPlaceholderText('Enter your password...'), values.password);
 }
 
 describe('Tests for Login', () => {
@@ -60,15 +47,9 @@ describe('Tests for Login', () => {
     it('renders the login form fields and submit button', () => {
         renderLoginWithRoutes();
 
-        expect(
-            screen.getByPlaceholderText('you@example.com')
-        ).toBeInTheDocument();
-        expect(
-            screen.getByPlaceholderText('Enter your password...')
-        ).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /log in/i })
-        ).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Enter your password...')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
     });
 
     it('redirects authenticated users to the dashboard', async () => {
@@ -81,11 +62,11 @@ describe('Tests for Login', () => {
         });
     });
 
-    it('submits login credentials, stores tokens, and redirects on success', async () => {
+    it('submits login credentials and redirects on success', async () => {
         const user = userEvent.setup();
-
-        publicApi.post.mockResolvedValue({
-            data: { access: 'A', refresh: 'R' }
+        loginUser.mockResolvedValue({
+            access: 'A',
+            refresh: 'R'
         });
 
         renderLoginWithRoutes();
@@ -94,13 +75,9 @@ describe('Tests for Login', () => {
         await user.click(screen.getByRole('button', { name: /log in/i }));
 
         await waitFor(() => {
-            expect(publicApi.post).toHaveBeenCalledWith('/api/token/', {
-                email: 'test@gmail.com',
-                password: 'password123'
-            });
+            expect(loginUser).toHaveBeenCalledWith('test@gmail.com', 'password123');
         });
 
-        expect(saveTokens).toHaveBeenCalledWith('A', 'R');
         expect(await screen.findByText('Dashboard Page')).toBeInTheDocument();
     });
 
@@ -111,32 +88,26 @@ describe('Tests for Login', () => {
 
         await user.click(screen.getByRole('button', { name: /log in/i }));
 
-        expect(
-            await screen.findByText('Email is required.')
-        ).toBeInTheDocument();
+        expect(await screen.findByText('Email is required.')).toBeInTheDocument();
         expect(screen.getByText('Password is required.')).toBeInTheDocument();
-        expect(publicApi.post).not.toHaveBeenCalled();
+        expect(loginUser).not.toHaveBeenCalled();
     });
 
     it('shows a global error message when login fails', async () => {
         const user = userEvent.setup();
-
-        publicApi.post.mockRejectedValue(new Error('login failed'));
+        loginUser.mockRejectedValue(new Error('login failed'));
 
         renderLoginWithRoutes();
         await fillLoginForm(user);
 
         await user.click(screen.getByRole('button', { name: /log in/i }));
 
-        expect(
-            await screen.findByText(/something went wrong/i)
-        ).toBeInTheDocument();
+        expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
     });
 
     it('does not submit the form again while the request is loading', async () => {
         const user = userEvent.setup();
-
-        publicApi.post.mockImplementation(() => new Promise(() => {}));
+        loginUser.mockImplementation(() => new Promise(() => {}));
 
         renderLoginWithRoutes();
         await fillLoginForm(user);
@@ -146,6 +117,6 @@ describe('Tests for Login', () => {
         fireEvent.submit(form);
         fireEvent.submit(form);
 
-        expect(publicApi.post).toHaveBeenCalledTimes(1);
+        expect(loginUser).toHaveBeenCalledTimes(1);
     });
 });

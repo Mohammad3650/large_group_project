@@ -1,4 +1,4 @@
-import { render, screen, fireEvent} from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
@@ -40,22 +40,12 @@ describe('ChangePassword', () => {
     it('renders the form fields and buttons', () => {
         renderComponent();
 
-        expect(
-            screen.getByRole('heading', { name: /change password/i })
-        ).toBeInTheDocument();
-        expect(
-            screen.getByText(/update your account password/i)
-        ).toBeInTheDocument();
-        expect(
-            screen.getByLabelText(/current password/i)
-        ).toBeInTheDocument();
-        expect(
-            screen.getByLabelText(/new password/i)
-        ).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /update password/i })
-        ).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: /profile/i })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /change password/i })).toBeInTheDocument();
+        expect(screen.getByText(/update your account password/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/current password/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/new password/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /update password/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /settings/i })).toBeInTheDocument();
     });
 
     it('shows validation errors when both fields are empty', async () => {
@@ -63,16 +53,10 @@ describe('ChangePassword', () => {
 
         renderComponent();
 
-        await user.click(
-            screen.getByRole('button', { name: /update password/i })
-        );
+        await user.click(screen.getByRole('button', { name: /update password/i }));
 
-        expect(
-            screen.getByText(/current password is required/i)
-        ).toBeInTheDocument();
-        expect(
-            screen.getByText(/new password is required/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/current password is required/i)).toBeInTheDocument();
+        expect(screen.getByText(/new password is required/i)).toBeInTheDocument();
         expect(api.post).not.toHaveBeenCalled();
     });
 
@@ -81,21 +65,12 @@ describe('ChangePassword', () => {
 
         renderComponent();
 
-        await user.type(
-            screen.getByLabelText(/new password/i),
-            'newpassword123'
-        );
+        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
 
-        await user.click(
-            screen.getByRole('button', { name: /update password/i })
-        );
+        await user.click(screen.getByRole('button', { name: /update password/i }));
 
-        expect(
-            screen.getByText(/current password is required/i)
-        ).toBeInTheDocument();
-        expect(
-            screen.queryByText(/new password is required/i)
-        ).not.toBeInTheDocument();
+        expect(screen.getByText(/current password is required/i)).toBeInTheDocument();
+        expect(screen.queryByText(/new password is required/i)).not.toBeInTheDocument();
         expect(api.post).not.toHaveBeenCalled();
     });
 
@@ -104,21 +79,12 @@ describe('ChangePassword', () => {
 
         renderComponent();
 
-        await user.type(
-            screen.getByLabelText(/current password/i),
-            'oldpassword123'
-        );
+        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
 
-        await user.click(
-            screen.getByRole('button', { name: /update password/i })
-        );
+        await user.click(screen.getByRole('button', { name: /update password/i }));
 
-        expect(
-            screen.getByText(/new password is required/i)
-        ).toBeInTheDocument();
-        expect(
-            screen.queryByText(/current password is required/i)
-        ).not.toBeInTheDocument();
+        expect(screen.getByText(/new password is required/i)).toBeInTheDocument();
+        expect(screen.queryByText(/current password is required/i)).not.toBeInTheDocument();
         expect(api.post).not.toHaveBeenCalled();
     });
 
@@ -132,18 +98,10 @@ describe('ChangePassword', () => {
 
         renderComponent();
 
-        await user.type(
-            screen.getByLabelText(/current password/i),
-            'oldpassword123'
-        );
-        await user.type(
-            screen.getByLabelText(/new password/i),
-            'newpassword123'
-        );
+        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
+        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
 
-        await user.click(
-            screen.getByRole('button', { name: /update password/i })
-        );
+        await user.click(screen.getByRole('button', { name: /update password/i }));
 
         expect(api.post).toHaveBeenCalledTimes(1);
         expect(api.post).toHaveBeenCalledWith('/api/user/change-password/', {
@@ -151,9 +109,7 @@ describe('ChangePassword', () => {
             new_password: 'newpassword123'
         });
 
-        expect(
-            await screen.findByText(/password updated successfully/i)
-        ).toBeInTheDocument();
+        expect(await screen.findByText(/password updated successfully/i)).toBeInTheDocument();
     });
 
     it('shows loading state while the request is in progress', async () => {
@@ -169,22 +125,12 @@ describe('ChangePassword', () => {
 
         renderComponent();
 
-        await user.type(
-            screen.getByLabelText(/current password/i),
-            'oldpassword123'
-        );
-        await user.type(
-            screen.getByLabelText(/new password/i),
-            'newpassword123'
-        );
+        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
+        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
 
-        await user.click(
-            screen.getByRole('button', { name: /update password/i })
-        );
+        await user.click(screen.getByRole('button', { name: /update password/i }));
 
-        expect(
-            screen.getByRole('button', { name: /updating/i })
-        ).toBeDisabled();
+        expect(screen.getByRole('button', { name: /updating/i })).toBeDisabled();
 
         resolveRequest({
             data: {
@@ -201,22 +147,12 @@ describe('ChangePassword', () => {
 
         renderComponent();
 
-        await user.type(
-            screen.getByLabelText(/current password/i),
-            'oldpassword123'
-        );
-        await user.type(
-            screen.getByLabelText(/new password/i),
-            'newpassword123'
-        );
+        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
+        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
 
-        await user.click(
-            screen.getByRole('button', { name: /update password/i })
-        );
+        await user.click(screen.getByRole('button', { name: /update password/i }));
 
-        expect(
-            await screen.findByText(/password change failed/i)
-        ).toBeInTheDocument();
+        expect(await screen.findByText(/password change failed/i)).toBeInTheDocument();
     });
 
     it('schedules navigation to profile after a successful password change', async () => {
@@ -231,22 +167,12 @@ describe('ChangePassword', () => {
 
         renderComponent();
 
-        await user.type(
-            screen.getByLabelText(/current password/i),
-            'oldpassword123'
-        );
-        await user.type(
-            screen.getByLabelText(/new password/i),
-            'newpassword123'
-        );
+        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
+        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
 
-        await user.click(
-            screen.getByRole('button', { name: /update password/i })
-        );
+        await user.click(screen.getByRole('button', { name: /update password/i }));
 
-        expect(
-            await screen.findByText(/password updated successfully/i)
-        ).toBeInTheDocument();
+        expect(await screen.findByText(/password updated successfully/i)).toBeInTheDocument();
 
         expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1200);
 
