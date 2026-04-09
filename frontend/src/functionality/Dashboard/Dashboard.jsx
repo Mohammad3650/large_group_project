@@ -5,6 +5,7 @@ import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
 import NoTasksMessage from './NoTasksMessage.jsx';
 import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
+import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
 import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
@@ -20,6 +21,8 @@ import './stylesheets/Dashboard.css';
  */
 function Dashboard() {
     const [searchTerm, setSearchTerm] = useState('');
+
+    useBodyClass('dashboard-page');
 
     const { blocks, error: blocksError } = useTimeBlocks();
 
