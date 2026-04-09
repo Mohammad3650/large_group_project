@@ -1,11 +1,11 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../../utils/Auth/authService';
 import useAuthRedirect from '../../utils/Hooks/useAuthRedirect';
-import useAuthForm from '../../utils/Hooks/useAuthForm';
 import AuthCard from '../../components/AuthCard';
 import AuthField from '../../components/AuthField';
 import './stylesheets/AuthPages.css';
+import useLoginForm from '../../utils/Hooks/useLoginForm';
+import AuthErrorAlert from '../../components/AuthErrorAlert';
+import AuthSubmitButton from '../../components/AuthSubmitButton';
 
 /**
  * Login page component.
@@ -21,38 +21,18 @@ import './stylesheets/AuthPages.css';
 function Login() {
     const nav = useNavigate();
 
-    // Stores form input values
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
     useAuthRedirect(nav);
 
-    /**
-     * Performs client-side validation for the login form.
-     *
-     * @returns {Object<string, string>} Object containing any field errors
-     */
-    function validateLoginForm() {
-        const fieldErrors = {};
+    const {
+        email,
+        setEmail,
+        password,
+        setPassword,
+        errors,
+        loading,
+        handleSubmit
+    } = useLoginForm(nav);
 
-        if (!email.trim()) fieldErrors.email = 'Email is required.';
-        if (!password) fieldErrors.password = 'Password is required.';
-
-        return fieldErrors;
-    }
-
-    /**
-     * Submits login data using the auth service,
-     * then redirects to the dashboard.
-     *
-     * @returns {Promise<void>}
-     */
-    async function submitLogin() {
-        await loginUser(email, password);
-        nav('/dashboard');
-    }
-
-    const { errors, loading, handleSubmit } = useAuthForm(validateLoginForm, submitLogin);
 
     return (
         <div className="login-page">
@@ -64,13 +44,8 @@ function Login() {
                     footerLinkText="Sign up"
                     footerLinkTo="/signup"
                 >
-                    {errors.global.length > 0 && (
-                        <div className="alert alert-danger text-center" role="alert">
-                            {errors.global.map((message) => (
-                                <div key={message}>{message}</div>
-                            ))}
-                        </div>
-                    )}
+
+                    <AuthErrorAlert messages={errors.global} />
 
                     <form onSubmit={handleSubmit} noValidate>
                         <div className="row g-3">
@@ -96,20 +71,11 @@ function Login() {
                         </div>
 
                         <div className="d-grid mt-4">
-                            <button
-                                className="btn btn-dark btn-lg rounded-3"
-                                disabled={loading}
-                                type="submit"
-                            >
-                                {loading ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-sm me-2" />
-                                        Logging in...
-                                    </>
-                                ) : (
-                                    'Log in'
-                                )}
-                            </button>
+                            <AuthSubmitButton
+                                loading={loading}
+                                text="Log in"
+                                loadingText="Logging in..."
+                            />
                         </div>
                     </form>
                 </AuthCard>

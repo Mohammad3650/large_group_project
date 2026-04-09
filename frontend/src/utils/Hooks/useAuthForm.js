@@ -24,7 +24,7 @@ const initialErrors = {
  *   setErrors: Function
  * }}
  */
-function useAuthForm(validate, onSubmit) {
+function useAuthForm(validateForm, submitForm) {
     const [errors, setErrors] = useState(initialErrors);
     const [loading, setLoading] = useState(false);
 
@@ -32,8 +32,10 @@ function useAuthForm(validate, onSubmit) {
         event.preventDefault();
         if (loading) return;
 
-        const fieldErrors = validate();
-        if (Object.keys(fieldErrors).length) {
+        const fieldErrors = validateForm();
+        const hasFieldErrors = Object.keys(fieldErrors).length > 0;
+
+        if (hasFieldErrors) {
             setErrors({ fieldErrors, global: [] });
             return;
         }
@@ -42,9 +44,9 @@ function useAuthForm(validate, onSubmit) {
         setLoading(true);
 
         try {
-            await onSubmit();
-        } catch (err) {
-            setErrors(formatApiError(err));
+            await submitForm();
+        } catch (error) {
+            setErrors(formatApiError(error));
         } finally {
             setLoading(false);
         }
@@ -54,7 +56,7 @@ function useAuthForm(validate, onSubmit) {
         errors,
         loading,
         handleSubmit,
-        setErrors
+        setErrors // do we need this in the components or just for testing?
     };
 }
 

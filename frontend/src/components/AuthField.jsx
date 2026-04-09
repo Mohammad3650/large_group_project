@@ -32,9 +32,12 @@ function AuthField({
     // Adds Bootstrap invalid styling when an error is present
     const inputClass = `form-control auth-input ${error ? 'is-invalid' : ''}`;
 
+    function handleChange(e) {
+        onChange(e.target.value);
+    }
+
     return (
         <div className="col-12">
-            {/* Label is linked to the input using htmlFor/id */}
             <label htmlFor={name} className="form-label fw-semibold auth-label">
                 {label}
             </label>
@@ -46,7 +49,7 @@ function AuthField({
                 placeholder={placeholder}
                 className={inputClass}
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={handleChange}
             />
 
             {/* Inline validation message shown only when an error exists */}

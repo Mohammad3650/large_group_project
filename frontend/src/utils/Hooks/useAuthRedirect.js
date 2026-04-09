@@ -8,19 +8,19 @@ import { isTokenValid } from '../Auth/authToken';
  * - Checks if a valid authentication token exists
  * - If valid, redirects the user to a specified path (default: /dashboard)
  *
- * @param {Function} nav - The navigation function
+ * @param {Function} navigate - The navigation function
  * @param {string} [path='/dashboard'] - Route to redirect authenticated users to
  */
 
-function useAuthRedirect(nav, path = '/dashboard') {
+function useAuthRedirect(navigate, path = '/dashboard') {
     useEffect(() => {
         async function redirectUser() {
             const isAuthenticated = await isTokenValid();
-            if (isAuthenticated) nav(path);
+            if (isAuthenticated) navigate(path);
         }
 
         redirectUser();
-    }, [nav, path]);
+    }, [navigate, path]);
 }
 
 export default useAuthRedirect;
