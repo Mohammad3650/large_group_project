@@ -6,7 +6,7 @@ import './stylesheets/WelcomeMessage.css';
  * @param {Object} props
  * @param {string} props.page - The name of the page (e.g. "dashboard", "calendar").
  * @param {string} props.username - The current user's username.
- * @returns {React.JSX.Element}
+ * @returns {React.JSX.Element} The welcome heading
  */
 function WelcomeMessage({ page, username }) {
     return <h1 className="welcome-message">Welcome to your {page}, {username}!</h1>;
