@@ -5,9 +5,9 @@ from django.test import TestCase
 from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
 from scheduler.models.User import User
-from scheduler.services.export_schedule_helpers import (
-    build_csv_row,
+from scheduler.services.export_ics_helpers import (
     build_ics_calendar_lines,
+    build_ics_content,
     build_ics_event_lines,
     escape_ics_text,
     format_ics_datetime,
@@ -15,12 +15,12 @@ from scheduler.services.export_schedule_helpers import (
 )
 
 
-class ExportScheduleHelpersTest(TestCase):
+class ExportIcsHelpersTest(TestCase):
     def setUp(self):
-        """Create reusable export helper fixtures."""
+        """Create reusable ICS export fixtures."""
         self.user = User.objects.create_user(
-            username="exporthelperuser",
-            email="exporthelperuser@example.com",
+            username="exporticsuser",
+            email="exporticsuser@example.com",
             password="password123",
         )
         self.day_plan = DayPlan.objects.create(
@@ -36,23 +36,6 @@ class ExportScheduleHelpersTest(TestCase):
             location="Bush House",
             description="Bring laptop",
             timezone="Europe/London",
-        )
-
-    def test_build_csv_row_returns_expected_values(self):
-        """It should return the expected CSV row values for a time block."""
-        row = build_csv_row(self.time_block)
-
-        self.assertEqual(
-            row,
-            [
-                self.day_plan.date,
-                "SEG Lecture",
-                "lecture",
-                "09:00:00",
-                "10:00:00",
-                "Bush House",
-                "Bring laptop",
-            ],
         )
 
     def test_format_ics_datetime_returns_ics_datetime_string(self):
@@ -126,3 +109,11 @@ class ExportScheduleHelpersTest(TestCase):
         self.assertEqual(calendar_lines[-1], "END:VCALENDAR")
         self.assertIn("BEGIN:VEVENT", calendar_lines)
         self.assertIn("SUMMARY:SEG Lecture", calendar_lines)
+
+    def test_build_ics_content_joins_calendar_lines_with_crlf(self):
+        """It should join ICS calendar lines using CRLF separators."""
+        content = build_ics_content([self.time_block])
+
+        self.assertIn("BEGIN:VCALENDAR\r\nVERSION:2.0", content)
+        self.assertIn("SUMMARY:SEG Lecture", content)
+        self.assertIn("END:VCALENDAR", content)
