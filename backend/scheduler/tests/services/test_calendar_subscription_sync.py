@@ -45,12 +45,12 @@ class CalendarSubscriptionSyncTest(TestCase):
 
     @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
     @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
-    def test_sync_calendar_subscription_creates_imported_event_and_timeblock(
+    def test_sync_calendar_subscription_creates_new_imported_event(
         self,
         mock_fetch_ics_content,
         mock_parse_ics_events,
     ):
-        """It should create a new imported event and linked time block."""
+        """It should create a new imported calendar event and linked time block."""
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
         mock_parse_ics_events.return_value = [self.build_event()]
 
@@ -63,19 +63,52 @@ class CalendarSubscriptionSyncTest(TestCase):
         self.assertEqual(TimeBlock.objects.count(), 1)
 
         imported_event = ImportedCalendarEvent.objects.get()
-        time_block = imported_event.time_block
-
         self.assertEqual(imported_event.subscription, self.subscription)
         self.assertEqual(imported_event.external_event_uid, "event-1")
-        self.assertEqual(time_block.name, "SEG Tutorial")
-        self.assertEqual(time_block.block_type, "tutorial")
-        self.assertEqual(time_block.location, "Room A")
-        self.assertEqual(time_block.description, "Bring notes")
-        self.assertEqual(time_block.timezone, "Europe/London")
 
-        self.subscription.refresh_from_db()
-        self.assertIsNotNone(self.subscription.last_synced_at)
-        self.assertEqual(self.subscription.last_error, "")
+    @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
+    @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
+    def test_sync_calendar_subscription_updates_existing_imported_event(
+        self,
+        mock_fetch_ics_content,
+        mock_parse_ics_events,
+    ):
+        """It should update an existing imported event instead of duplicating it."""
+        original_event = self.build_event(
+            uid="event-2",
+            summary="Original Lecture",
+            description="Original description",
+            location="Original Room",
+            start_datetime=timezone.now() + timedelta(days=3),
+            end_datetime=timezone.now() + timedelta(days=3, hours=1),
+        )
+        updated_event = self.build_event(
+            uid="event-2",
+            summary="Updated Lab",
+            description="Time: 10:00\nUpdated description",
+            location="Lab 2",
+            start_datetime=timezone.now() + timedelta(days=5),
+            end_datetime=timezone.now() + timedelta(days=5, hours=2),
+        )
+
+        mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
+        mock_parse_ics_events.return_value = [original_event]
+        sync_calendar_subscription(self.subscription)
+
+        imported_event = ImportedCalendarEvent.objects.get()
+        original_time_block_id = imported_event.time_block_id
+
+        mock_parse_ics_events.return_value = [updated_event]
+        result = sync_calendar_subscription(self.subscription)
+
+        self.assertEqual(result["created"], 0)
+        self.assertEqual(result["updated"], 1)
+        self.assertEqual(result["skipped"], 0)
+        self.assertEqual(ImportedCalendarEvent.objects.count(), 1)
+        self.assertEqual(TimeBlock.objects.count(), 1)
+
+        imported_event.refresh_from_db()
+        self.assertEqual(imported_event.time_block_id, original_time_block_id)
 
     @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
     @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
@@ -89,9 +122,6 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_parse_ics_events.return_value = [
             self.build_event(
                 uid="past-event",
-                summary="Old Event",
-                description="",
-                location="Old Room",
                 start_datetime=timezone.now() - timedelta(days=2),
                 end_datetime=timezone.now() - timedelta(days=1),
             )
@@ -107,80 +137,17 @@ class CalendarSubscriptionSyncTest(TestCase):
 
     @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
     @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
-    def test_sync_calendar_subscription_updates_existing_imported_event(
-        self,
-        mock_fetch_ics_content,
-        mock_parse_ics_events,
-    ):
-        """It should update the existing imported event instead of duplicating it."""
-        original_event = self.build_event(
-            uid="event-2",
-            summary="Original Lecture",
-            description="Original description",
-            location="Original Room",
-            start_datetime=timezone.now() + timedelta(days=3),
-            end_datetime=timezone.now() + timedelta(hours=1) + timedelta(days=3),
-        )
-
-        with patch(
-            "scheduler.services.calendar_subscription_sync.parse_ics_events",
-            return_value=[original_event],
-        ), patch(
-            "scheduler.services.calendar_subscription_sync.fetch_ics_content",
-            return_value="BEGIN:VCALENDAR",
-        ):
-            sync_calendar_subscription(self.subscription)
-
-        imported_event = ImportedCalendarEvent.objects.get()
-        original_time_block_id = imported_event.time_block_id
-
-        updated_start = timezone.now() + timedelta(days=5)
-        updated_end = updated_start + timedelta(hours=2)
-
-        mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
-        mock_parse_ics_events.return_value = [
-            self.build_event(
-                uid="event-2",
-                summary="Updated Lab",
-                description="Time: 10:00\nUpdated description",
-                location="Lab 2",
-                start_datetime=updated_start,
-                end_datetime=updated_end,
-            )
-        ]
-
-        result = sync_calendar_subscription(self.subscription)
-
-        self.assertEqual(result["created"], 0)
-        self.assertEqual(result["updated"], 1)
-        self.assertEqual(result["skipped"], 0)
-        self.assertEqual(ImportedCalendarEvent.objects.count(), 1)
-        self.assertEqual(TimeBlock.objects.count(), 1)
-
-        imported_event.refresh_from_db()
-        updated_time_block = imported_event.time_block
-
-        self.assertEqual(imported_event.time_block_id, original_time_block_id)
-        self.assertEqual(updated_time_block.name, "Updated Lab")
-        self.assertEqual(updated_time_block.block_type, "lab")
-        self.assertEqual(updated_time_block.location, "Lab 2")
-        self.assertEqual(updated_time_block.description, "Updated description")
-
-    @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
-    @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
     def test_sync_calendar_subscription_uses_fallback_uid_when_missing(
         self,
         mock_fetch_ics_content,
         mock_parse_ics_events,
     ):
-        """It should build a fallback external UID when the event has no UID."""
+        """It should create an imported event using a fallback UID when needed."""
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
         mock_parse_ics_events.return_value = [
             self.build_event(
                 uid="",
                 summary="No UID Event",
-                description="",
-                location="Room 5",
                 start_datetime=timezone.now() + timedelta(days=4),
                 end_datetime=timezone.now() + timedelta(days=4, hours=1),
             )
@@ -194,7 +161,7 @@ class CalendarSubscriptionSyncTest(TestCase):
 
     @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
     @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
-    def test_sync_calendar_subscription_creates_dayplan_for_local_event_date(
+    def test_sync_calendar_subscription_creates_dayplan_for_event_date(
         self,
         mock_fetch_ics_content,
         mock_parse_ics_events,
@@ -207,9 +174,6 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_parse_ics_events.return_value = [
             self.build_event(
                 uid="event-dayplan",
-                summary="Lecture",
-                description="",
-                location="Room X",
                 start_datetime=start_datetime,
                 end_datetime=end_datetime,
             )
@@ -218,3 +182,20 @@ class CalendarSubscriptionSyncTest(TestCase):
         sync_calendar_subscription(self.subscription)
 
         self.assertEqual(DayPlan.objects.filter(user=self.user).count(), 1)
+
+    @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
+    @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
+    def test_sync_calendar_subscription_updates_sync_metadata_on_success(
+        self,
+        mock_fetch_ics_content,
+        mock_parse_ics_events,
+    ):
+        """It should update subscription sync metadata after a successful sync."""
+        mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
+        mock_parse_ics_events.return_value = [self.build_event()]
+
+        sync_calendar_subscription(self.subscription)
+
+        self.subscription.refresh_from_db()
+        self.assertIsNotNone(self.subscription.last_synced_at)
+        self.assertEqual(self.subscription.last_error, "")

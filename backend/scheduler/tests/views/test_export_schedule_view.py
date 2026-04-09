@@ -30,29 +30,49 @@ class ExportScheduleViewTest(TestCase):
             date=date(2026, 4, 11),
         )
 
-        self.user_block = TimeBlock.objects.create(
-            day=self.day_plan,
+        self.user_block = self.create_time_block(
+            self.day_plan,
             name="SEG Lecture",
             block_type="lecture",
             start_time=time(9, 0),
             end_time=time(10, 0),
             location="Bush House",
             description="Bring laptop",
-            timezone="Europe/London",
         )
-        self.second_user_block = TimeBlock.objects.create(
-            day=self.other_day_plan,
+        self.other_user_block = self.create_time_block(
+            self.other_day_plan,
             name="Other User Event",
             block_type="study",
             start_time=time(12, 0),
             end_time=time(13, 0),
             location="Library",
             description="Should not be exported",
-            timezone="Europe/London",
         )
 
         self.csv_url = reverse("api-export-timeblocks-csv")
         self.ics_url = reverse("api-export-timeblocks-ics")
+
+    def create_time_block(
+        self,
+        day_plan,
+        name,
+        block_type,
+        start_time,
+        end_time,
+        location,
+        description,
+    ):
+        """Create a reusable time block fixture."""
+        return TimeBlock.objects.create(
+            day=day_plan,
+            name=name,
+            block_type=block_type,
+            start_time=start_time,
+            end_time=end_time,
+            location=location,
+            description=description,
+            timezone="Europe/London",
+        )
 
     def test_export_csv_requires_authentication(self):
         """It should require authentication for CSV export."""
@@ -76,8 +96,14 @@ class ExportScheduleViewTest(TestCase):
         response = self.client.get(self.csv_url)
         content = response.content.decode()
 
-        self.assertIn("date,name,block_type,start_time,end_time,location,description", content)
-        self.assertIn("2026-04-10,SEG Lecture,lecture,09:00:00,10:00:00,Bush House,Bring laptop", content)
+        self.assertIn(
+            "date,name,block_type,start_time,end_time,location,description",
+            content,
+        )
+        self.assertIn(
+            "2026-04-10,SEG Lecture,lecture,09:00:00,10:00:00,Bush House,Bring laptop",
+            content,
+        )
         self.assertNotIn("Other User Event", content)
 
     def test_export_ics_requires_authentication(self):
@@ -121,15 +147,14 @@ class ExportScheduleViewTest(TestCase):
 
     def test_export_ics_skips_timeblocks_without_start_or_end_time(self):
         """It should skip time blocks that do not have both start and end times."""
-        TimeBlock.objects.create(
-            day=self.day_plan,
+        self.create_time_block(
+            self.day_plan,
             name="Untimed Event",
             block_type="study",
             start_time=None,
             end_time=time(11, 0),
             location="Online",
             description="No start time",
-            timezone="Europe/London",
         )
 
         self.client.force_authenticate(user=self.user)
@@ -141,15 +166,14 @@ class ExportScheduleViewTest(TestCase):
 
     def test_export_ics_escapes_special_characters(self):
         """It should escape reserved ICS characters in exported text fields."""
-        TimeBlock.objects.create(
-            day=self.day_plan,
+        self.create_time_block(
+            self.day_plan,
             name="Lecture, Seminar; Review",
             block_type="lecture",
             start_time=time(14, 0),
             end_time=time(15, 0),
             location="Room A, Floor 2; South Wing",
             description="Line 1\nLine 2",
-            timezone="Europe/London",
         )
 
         self.client.force_authenticate(user=self.user)

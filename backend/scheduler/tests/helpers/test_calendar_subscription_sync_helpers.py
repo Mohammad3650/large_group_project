@@ -3,11 +3,13 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from scheduler.services.calendar_subscription_sync import (
+from scheduler.services.calendar_subscription_sync_helpers import (
     build_external_event_uid,
     build_timeblock_data,
     classify_block_type,
     clean_event_description,
+    get_event_date,
+    record_sync_outcome,
     should_import_event,
 )
 
@@ -96,6 +98,11 @@ class CalendarSubscriptionSyncHelpersTest(TestCase):
         self.assertEqual(data["description"], "Real note")
         self.assertEqual(data["timezone"], "Europe/London")
 
+    def test_get_event_date_returns_local_start_date(self):
+        """It should return the local event date from the start datetime."""
+        event = self.build_event()
+        self.assertEqual(get_event_date(event), self.start_datetime.date())
+
     def test_should_import_event_returns_false_for_past_event(self):
         """It should skip events that have already finished."""
         event = self.build_event(
@@ -111,3 +118,22 @@ class CalendarSubscriptionSyncHelpersTest(TestCase):
         )
 
         self.assertTrue(should_import_event(event))
+
+    def test_record_sync_outcome_increments_matching_counter(self):
+        """It should increment the matching sync result counter."""
+        sync_result = {
+            "created": 0,
+            "updated": 0,
+            "skipped": 0,
+        }
+
+        record_sync_outcome(sync_result, "updated")
+
+        self.assertEqual(
+            sync_result,
+            {
+                "created": 0,
+                "updated": 1,
+                "skipped": 0,
+            },
+        )

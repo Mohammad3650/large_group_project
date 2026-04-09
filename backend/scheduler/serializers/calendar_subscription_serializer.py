@@ -1,7 +1,10 @@
 from rest_framework import serializers
 
 from scheduler.models import CalendarSubscription
-from scheduler.services.ics_fetcher import normalise_subscription_url
+from scheduler.serializers.calendar_subscription_serializer_helpers import (
+    validate_subscription_name,
+    validate_subscription_source_url,
+)
 
 
 class CalendarSubscriptionSerializer(serializers.ModelSerializer):
@@ -40,12 +43,7 @@ class CalendarSubscriptionSerializer(serializers.ModelSerializer):
         Returns:
             str: Cleaned subscription name.
         """
-        cleaned_name = value.strip()
-
-        if not cleaned_name:
-            raise serializers.ValidationError("A subscription name must be provided.")
-
-        return cleaned_name
+        return validate_subscription_name(value)
 
     def validate_source_url(self, value):
         """
@@ -57,4 +55,4 @@ class CalendarSubscriptionSerializer(serializers.ModelSerializer):
         Returns:
             str: Normalised subscription URL.
         """
-        return normalise_subscription_url(value)
+        return validate_subscription_source_url(value)
