@@ -21,7 +21,7 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    transition: color 0.2s;
+    transition: color var(--transition-speed);
 }
 
 .task-details-close:hover {

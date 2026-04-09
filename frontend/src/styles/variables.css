@@ -80,6 +80,9 @@
     --z-index-dropup: 100;
     --z-index-popup: 500;
 
+    /* transitions */
+    --transition-speed: 0.2s;
+
     /* misc */
     --arrow-offset: -3px;
     --checkbox-size: 1.2rem;

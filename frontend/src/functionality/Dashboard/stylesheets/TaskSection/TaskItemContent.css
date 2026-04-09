@@ -10,8 +10,8 @@
     margin-bottom: var(--space-md);
     cursor: pointer;
     transition:
-            background-color 0.2s,
-            box-shadow 0.2s,
+            background-color var(--transition-speed),
+            box-shadow var(--transition-speed),
             opacity 1s;
     box-sizing: border-box;
 }
@@ -45,7 +45,7 @@
     border: 2px solid var(--border-light);
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
 }
 
 .task-item .form-check-input:hover {

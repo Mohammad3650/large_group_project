@@ -5,7 +5,7 @@
     border: none;
     border-radius: var(--radius-2xl);
     padding: 0 var(--space-md);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
 .task-search-wrapper:focus-within {

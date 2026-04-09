@@ -14,7 +14,7 @@
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--radius-md);
     line-height: 1;
-    transition: background-color 0.2s;
+    transition: background-color var(--transition-speed);
 }
 
 .task-options-btn:hover {

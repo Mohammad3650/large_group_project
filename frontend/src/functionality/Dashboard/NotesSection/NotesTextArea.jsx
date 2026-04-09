@@ -6,7 +6,7 @@ import '../stylesheets/NotesSection/NotesTextArea.css';
  * @param {Object} props
  * @param {string} props.notes - The current notes value
  * @param {Function} props.setNotes - Setter to update notes
- * @returns {React.JSX.Element} The notes text area
+ * @returns {React.JSX.Element} The notes textarea
  */
 function NotesTextArea({ notes, setNotes }) {
     return (
