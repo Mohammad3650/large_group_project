@@ -1,6 +1,6 @@
 import TaskItem from './TaskItem.jsx';
 import handleDeleteDashboardTask from '../../../utils/Helpers/handleDeleteDashboardTask.js';
-import useTaskItemList from '../../../utils/Hooks/useTaskItemList.js';
+import getTaskFlags from '../../../utils/Helpers/getTaskFlags.js';
 
 /**
  * Renders the list of TaskItem components for a task group.
@@ -17,10 +17,10 @@ import useTaskItemList from '../../../utils/Hooks/useTaskItemList.js';
  * @returns {Array<JSX.Element>} Array of TaskItem elements
  */
 function TaskItemList({ tasks, title, overdue, completed, setTasks, onComplete, onUndoComplete, onPin, onUnpin }) {
-    const { getTaskFlags } = useTaskItemList(overdue, completed);
+    const getFlags = getTaskFlags(overdue, completed);
 
     return tasks.map((task) => {
-        const { taskCompleted, taskOverdue } = getTaskFlags(task);
+        const { taskCompleted, taskOverdue } = getFlags(task);
 
         return (
             <TaskItem

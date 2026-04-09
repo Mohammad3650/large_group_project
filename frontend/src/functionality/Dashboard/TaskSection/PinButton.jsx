@@ -1,5 +1,4 @@
 import { LuPin } from 'react-icons/lu';
-import usePinButton from '../../../utils/Hooks/usePinButton.js';
 import '../stylesheets/TaskSection/PinButton.css';
 
 /**
@@ -13,16 +12,21 @@ import '../stylesheets/TaskSection/PinButton.css';
  * @returns {React.JSX.Element} The pin toggle button
  */
 function PinButton({ pinned, onPin, onUnpin }) {
-    const { handleClick } = usePinButton(pinned, onPin, onUnpin);
+    function handleClick(event) {
+        event.stopPropagation();
+        if (pinned) {
+            onUnpin?.();
+        } else {
+            onPin?.();
+        }
+    }
 
     return (
-        <button
-            className={`pin-button ${pinned ? 'pinned' : ''}`}
-            onClick={handleClick}
-        >
+        <button className={`pin-button ${pinned ? 'pinned' : ''}`} onClick={handleClick}>
             <LuPin />
         </button>
     );
 }
+
 
 export default PinButton;
