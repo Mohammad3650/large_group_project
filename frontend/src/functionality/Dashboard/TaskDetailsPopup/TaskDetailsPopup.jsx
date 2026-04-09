@@ -9,6 +9,7 @@ import '../stylesheets/TaskDetailsPopup/TaskDetailsPopup.css';
  * @param {Object} props
  * @param {Object} props.task - The task to display
  * @param {Function} props.onClose - Callback to close the popup
+ * @returns {JSX.Element} The task details modal
  */
 function TaskDetailsPopup({ task, onClose }) {
     return (
