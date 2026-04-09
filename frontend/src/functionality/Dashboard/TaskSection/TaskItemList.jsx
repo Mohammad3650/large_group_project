@@ -1,12 +1,9 @@
 import TaskItem from './TaskItem.jsx';
 import handleDeleteDashboardTask from '../../../utils/Helpers/handleDeleteDashboardTask.js';
-import getDate from '../../../utils/Helpers/getDate.js';
-import getDateBoundaries from '../../../utils/Helpers/getDateBoundaries.js';
+import useTaskItemList from '../../../utils/Hooks/useTaskItemList.js';
 
 /**
  * Renders the list of TaskItem components for a task group.
- * Derives per-task overdue and completed states by combining the group-level
- * flags with each task's own data.
  *
  * @param {Array} tasks - Array of task objects to render
  * @param {string} title - The group title, used as part of each task's key
@@ -20,11 +17,10 @@ import getDateBoundaries from '../../../utils/Helpers/getDateBoundaries.js';
  * @returns {Array<JSX.Element>} Array of TaskItem elements
  */
 function TaskItemList({ tasks, title, overdue, completed, setTasks, onComplete, onUndoComplete, onPin, onUnpin }) {
-    const { today } = getDateBoundaries();
+    const { getTaskFlags } = useTaskItemList(overdue, completed);
 
     return tasks.map((task) => {
-        const taskCompleted = completed || !!task.completed_at;
-        const taskOverdue = overdue || (!task.completed_at && getDate(task) < today);
+        const { taskCompleted, taskOverdue } = getTaskFlags(task);
 
         return (
             <TaskItem

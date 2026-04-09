@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import playDing from '../../../utils/Audio/playDing.js';
+import useTaskItem from '../../../utils/Hooks/useTaskItem.js';
 import TaskItemContent from './TaskItemContent.jsx';
 import TaskOptionsButton from '../TaskOptionsDropup/TaskOptionsButton.jsx';
 import TaskDetailsPopup from '../TaskDetailsPopup.jsx';
@@ -23,18 +22,8 @@ import '../stylesheets/TaskSection/TaskItem.css';
  * @returns {JSX.Element} A single task item
  */
 function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, overdue = false, completed = false }) {
-    const { id, name, date, startTime, endTime } = task;
-    const [checked, setChecked] = useState(false);
-    const [fading, setFading] = useState(false);
-    const [detailsOpen, setDetailsOpen] = useState(false);
-
-    function handleClick() {
-        if (checked || completed) return;
-        playDing();
-        setChecked(true);
-        setFading(true);
-        setTimeout(() => onComplete?.(), 500);
-    }
+    const { id, name, date, startTime, endTime, checked, fading, detailsOpen, setDetailsOpen, handleClick } =
+        useTaskItem(task, onComplete, completed);
 
     return (
         <>
