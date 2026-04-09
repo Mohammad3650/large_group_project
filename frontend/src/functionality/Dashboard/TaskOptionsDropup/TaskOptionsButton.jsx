@@ -1,4 +1,4 @@
-import useDropdown from '../../../utils/Hooks/useDropdown.js';
+import useTaskOptionsButton from '../../../utils/Hooks/useTaskOptionsButton.js';
 import TaskOptionsDropup from './TaskOptionsDropup.jsx';
 import '../stylesheets/TaskOptionsDropup/TaskOptionsButton.css';
 
@@ -11,15 +11,10 @@ import '../stylesheets/TaskOptionsDropup/TaskOptionsButton.css';
  * @param {Function} props.onDelete - Callback to delete the task
  * @param {Function} [props.onUndoComplete] - Callback to undo completion
  * @param {Function} props.onViewDetails - Callback to open the task details popup
- * @returns {JSX.Element} The options button and its drop-up menu
+ * @returns {React.JSX.Element} The options button and its drop-up menu
  */
 function TaskOptionsButton({ id, completed, onDelete, onUndoComplete, onViewDetails }) {
-    const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
-
-    function handleOptionsClick(e) {
-        e.stopPropagation();
-        setDropdownOpen((prev) => !prev);
-    }
+    const { dropdownOpen, setDropdownOpen, dropdownRef, handleOptionsClick } = useTaskOptionsButton();
 
     return (
         <div className="task-options" ref={dropdownRef}>

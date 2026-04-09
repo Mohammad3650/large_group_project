@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEdit, FaUndo, FaTrash } from 'react-icons/fa';
+import useTaskOptionsDropup from '../../../utils/Hooks/useTaskOptionsDropup.js';
 import '../stylesheets/TaskOptionsDropup/TaskOptionsDropup.css';
 
 /**
@@ -15,34 +15,8 @@ import '../stylesheets/TaskOptionsDropup/TaskOptionsDropup.css';
  * @returns {JSX.Element} The drop-up menu
  */
 function TaskOptionsDropup({ id, completed, setDropdownOpen, onDelete, onUndoComplete, onViewDetails }) {
-    const nav = useNavigate();
-
-    function handleViewDetailsClick(e) {
-        e.stopPropagation();
-        setDropdownOpen(false);
-        onViewDetails();
-    }
-
-    function handleEditClick(e) {
-        e.stopPropagation();
-        setDropdownOpen(false);
-        nav(`/timeblocks/${id}/edit`);
-    }
-
-    function handleUndoCompleteClick(e) {
-        e.stopPropagation();
-        setDropdownOpen(false);
-        onUndoComplete();
-    }
-
-    function handleDeleteClick(e) {
-        e.stopPropagation();
-        const confirmed = confirm('Are you sure you want to delete this task?');
-        if (confirmed) {
-            setDropdownOpen(false);
-            onDelete();
-        }
-    }
+    const { handleViewDetailsClick, handleEditClick, handleUndoCompleteClick, handleDeleteClick } =
+        useTaskOptionsDropup({ id, setDropdownOpen, onDelete, onUndoComplete, onViewDetails });
 
     return (
         <div className="task-options-drop-up">
