@@ -19,7 +19,7 @@ import '../stylesheets/TaskSection/TaskItem.css';
  * @param {Function} [props.onUnpin] - Callback to unpin the task
  * @param {boolean} [props.overdue=false] - Whether the task is overdue
  * @param {boolean} [props.completed=false] - Whether the task is already completed
- * @returns {JSX.Element} A single task item
+ * @returns {React.JSX.Element} A single task item
  */
 function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, overdue = false, completed = false }) {
     const { id, name, date, startTime, endTime, checked, fading, detailsOpen, setDetailsOpen, handleClick } =

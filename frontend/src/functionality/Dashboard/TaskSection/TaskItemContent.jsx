@@ -1,5 +1,5 @@
 import formatDateTime from '../../../utils/Formatters/formatDateTime.js';
-import '../stylesheets/TaskSection/TaskItemContent.css'
+import '../stylesheets/TaskSection/TaskItemContent.css';
 
 /**
  * Displays the content of a task item including the checkbox, name, and datetime.
@@ -14,7 +14,7 @@ import '../stylesheets/TaskSection/TaskItemContent.css'
  * @param {boolean} [props.overdue=false] - Whether the task is overdue
  * @param {boolean} [props.completed=false] - Whether the task is completed
  * @param {Function} props.onClick - Callback when the task is clicked
- * @returns {JSX.Element} The task item content
+ * @returns {React.JSX.Element} The task item content
  */
 function TaskItemContent({ name, date, startTime, endTime, checked, fading, overdue = false, completed = false, onClick }) {
     return (

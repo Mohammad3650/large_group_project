@@ -14,7 +14,7 @@ import getTaskFlags from '../../../utils/Helpers/getTaskFlags.js';
  * @param {Function} [onUndoComplete] - Callback invoked when a task completion is undone
  * @param {Function} [onPin] - Callback invoked when a task is pinned
  * @param {Function} [onUnpin] - Callback invoked when a task is unpinned
- * @returns {Array<JSX.Element>} Array of TaskItem elements
+ * @returns {Array<React.JSX.Element>} Array of TaskItem elements
  */
 function TaskItemList({ tasks, title, overdue, completed, setTasks, onComplete, onUndoComplete, onPin, onUnpin }) {
     const getFlags = getTaskFlags(overdue, completed);

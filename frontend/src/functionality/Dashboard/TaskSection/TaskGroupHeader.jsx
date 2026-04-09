@@ -10,7 +10,7 @@ import '../stylesheets/TaskSection/TaskGroupHeader.css';
  * @param {string} props.title - The group heading
  * @param {string} props.variant - CSS variant for title colour
  * @param {number} props.taskCount - Number of tasks in the group
- * @returns {JSX.Element} The clickable task group header
+ * @returns {React.JSX.Element} The clickable task group header
  */
 function TaskGroupHeader({ isOpen, onToggle, title, variant, taskCount }) {
     return (

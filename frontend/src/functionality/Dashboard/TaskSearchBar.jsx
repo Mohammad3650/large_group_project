@@ -7,7 +7,7 @@ import './stylesheets/TaskSearchBar.css';
  * @param {Object} props
  * @param {string} props.searchTerm - The current search term
  * @param {Function} props.setSearchTerm - Setter to update the search term
- * @returns {JSX.Element} A search bar with a non-interactive search icon
+ * @returns {React.JSX.Element} A search bar with a non-interactive search icon
  */
 function TaskSearchBar({ searchTerm, setSearchTerm }) {
     return (

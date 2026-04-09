@@ -7,7 +7,7 @@ import '../stylesheets/TaskDetailsPopup/TaskDetailsHeader.css';
  * @param {Object} props
  * @param {string} props.name - The task name
  * @param {Function} props.onClose - Callback to close the popup
- * @returns {JSX.Element} The popup header with title and close button
+ * @returns {React.JSX.Element} The popup header with title and close button
  */
 function TaskDetailsHeader({ name, onClose }) {
     return (

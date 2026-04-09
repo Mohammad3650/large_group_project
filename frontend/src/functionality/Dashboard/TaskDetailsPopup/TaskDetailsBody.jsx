@@ -7,7 +7,7 @@ import '../stylesheets/TaskDetailsPopup/TaskDetailsBody.css';
  *
  * @param {Object} props
  * @param {Object} props.task - The task to display
- * @returns {JSX.Element} The popup body with task detail rows
+ * @returns {React.JSX.Element} The popup body with task detail rows
  */
 function TaskDetailsBody({ task }) {
     return (

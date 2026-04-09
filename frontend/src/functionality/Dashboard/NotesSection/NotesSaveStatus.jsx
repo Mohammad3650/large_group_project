@@ -5,7 +5,7 @@ import '../stylesheets/NotesSection/NotesSaveStatus.css';
  *
  * @param {Object} props
  * @param {string} props.saveStatus - Current save status ('saving', 'saved', 'error', or '')
- * @returns {React.JSX.Element} - The notes save status text
+ * @returns {React.JSX.Element} The notes save status text
  */
 function NotesSaveStatus({ saveStatus }) {
     const statusText = {

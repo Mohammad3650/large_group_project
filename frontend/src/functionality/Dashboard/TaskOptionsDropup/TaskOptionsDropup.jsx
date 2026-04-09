@@ -12,7 +12,7 @@ import '../stylesheets/TaskOptionsDropup/TaskOptionsDropup.css';
  * @param {Function} props.onDelete - Callback to delete the task
  * @param {Function} props.onUndoComplete - Callback to undo completion
  * @param {Function} props.onViewDetails - Callback to open the details popup
- * @returns {JSX.Element} The drop-up menu
+ * @returns {React.JSX.Element} The drop-up menu
  */
 function TaskOptionsDropup({ id, completed, setDropdownOpen, onDelete, onUndoComplete, onViewDetails }) {
     const { handleViewDetailsClick, handleEditClick, handleUndoCompleteClick, handleDeleteClick } =
