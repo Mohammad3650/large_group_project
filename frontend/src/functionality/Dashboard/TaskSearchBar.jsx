@@ -18,7 +18,7 @@ function TaskSearchBar({ searchTerm, setSearchTerm }) {
                 className="task-search-input"
                 placeholder="Search tasks..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(event) => setSearchTerm(event.target.value)}
             />
         </div>
     );
