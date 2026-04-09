@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import TaskItemContent from '../TaskItemContent.jsx';
+import TaskItemContent from '../TaskSection/TaskItemContent.jsx';
 
 vi.mock('../stylesheets/TaskItemContent.css', () => ({}));
 vi.mock('../../../utils/Formatters/formatDateTime.js', () => ({

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import NoTasksMessage from '../NoTasksMessage.jsx';
+import NoTasksMessage from '../TaskSection/NoTasksMessage.jsx';
 
 vi.mock('../stylesheets/NoTasksMessage.css', () => ({}));
 vi.mock('../../../utils/Helpers/getNoSearchResults.js', () => ({ default: vi.fn() }));

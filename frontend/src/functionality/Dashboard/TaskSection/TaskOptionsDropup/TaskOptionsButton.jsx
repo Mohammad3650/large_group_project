@@ -1,6 +1,6 @@
-import useDropdown from '../../utils/Hooks/useDropdown.js';
+import useDropdown from '../../../../utils/Hooks/useDropdown.js';
 import TaskOptionsDropup from './TaskOptionsDropup.jsx';
-import './stylesheets/TaskOptionsButton.css';
+import '../../stylesheets/TaskOptionsButton.css';
 
 /**
  * A button that toggles a drop-up menu of task options.

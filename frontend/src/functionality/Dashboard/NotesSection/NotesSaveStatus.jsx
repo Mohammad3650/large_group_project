@@ -1,4 +1,4 @@
-import './stylesheets/NotesSaveStatus.css';
+import '../stylesheets/NotesSaveStatus.css';
 
 /**
  * Displays the current save status of the notes.

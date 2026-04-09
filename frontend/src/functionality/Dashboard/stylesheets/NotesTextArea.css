@@ -22,3 +22,10 @@
 .notes-textarea:focus {
     box-shadow: none;
 }
+
+@media (max-width: 768px) {
+    .notes-textarea {
+        min-height: 300px;
+        padding: 0 var(--space-md) var(--space-md) var(--space-md);
+    }
+}

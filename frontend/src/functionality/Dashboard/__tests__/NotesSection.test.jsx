@@ -6,7 +6,7 @@ vi.mock('../stylesheets/NotesSection.css', () => ({}));
 vi.mock('../../../utils/Hooks/useNotes.js');
 vi.mock('../../../utils/Hooks/useAutoSave.js');
 
-import NotesSection from '../NotesSection';
+import NotesSection from '../NotesSection/NotesSection.jsx';
 import * as useNotesModule from '../../../utils/Hooks/useNotes.js';
 import * as useAutoSaveModule from '../../../utils/Hooks/useAutoSave.js';
 

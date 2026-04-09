@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import TaskGroup from '../TaskGroup';
+import TaskGroup from '../TaskSection/TaskGroup.jsx';
 
 vi.mock('../stylesheets/TaskGroup.css', () => ({}));
 vi.mock('../../../utils/Helpers/getTitleClass.js', () => ({ default: vi.fn() }));

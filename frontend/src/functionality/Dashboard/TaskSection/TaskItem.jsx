@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import playDing from '../../utils/Audio/playDing.js';
+import playDing from '../../../utils/Audio/playDing.js';
 import TaskItemContent from './TaskItemContent.jsx';
-import TaskOptionsButton from './TaskOptionsButton.jsx';
-import TaskDetailsPopup from './TaskDetailsPopup.jsx';
+import TaskOptionsButton from './TaskOptionsDropup/TaskOptionsButton.jsx';
+import TaskDetailsPopup from '../TaskDetailsPopup.jsx';
 import PinButton from './PinButton.jsx';
-import './stylesheets/TaskItem.css';
+import '../stylesheets/TaskItem.css';
 
 /**
  * Displays a single task item with a pin button, checkbox, name, time and date.

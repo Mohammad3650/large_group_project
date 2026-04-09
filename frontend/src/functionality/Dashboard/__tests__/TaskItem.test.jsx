@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import TaskItem from '../TaskItem.jsx';
+import TaskItem from '../TaskSection/TaskItem.jsx';
 
 vi.mock('../stylesheets/TaskItem.css', () => ({}));
 vi.mock('../../../utils/Audio/playDing.js', () => ({ default: vi.fn() }));

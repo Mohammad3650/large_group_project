@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import TaskOptionsDropup from '../TaskOptionsDropup.jsx';
+import TaskOptionsDropup from '../TaskSection/TaskOptionsDropup/TaskOptionsDropup.jsx';
 
 vi.mock('../stylesheets/TaskOptionsDropup.css', () => ({}));
 vi.mock('react-icons/fa', () => ({

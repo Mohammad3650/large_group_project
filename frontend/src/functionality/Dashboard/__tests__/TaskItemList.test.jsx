@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import TaskItemList from '../TaskItemList';
+import TaskItemList from '../TaskSection/TaskItemList.jsx';
 
 vi.mock('../../../utils/Helpers/handleDeleteDashboardTask.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Helpers/getDate.js', () => ({ default: vi.fn() }));

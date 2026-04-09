@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import PinButton from '../PinButton';
+import PinButton from '../TaskSection/PinButton.jsx';
 
 vi.mock('../stylesheets/PinButton.css', () => ({}));
 vi.mock('react-icons/lu', () => ({

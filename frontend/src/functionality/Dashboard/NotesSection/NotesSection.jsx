@@ -1,9 +1,9 @@
-import useNotesSection from '../../utils/Hooks/useNotesSection.js';
+import useNotesSection from '../../../utils/Hooks/useNotesSection.js';
 import NotesSaveStatus from './NotesSaveStatus.jsx';
-import NotesTextarea from './NotesTextarea.jsx';
+import NotesTextArea from './NotesTextArea.jsx';
 import NotesLoading from './NotesLoading.jsx';
-import ErrorMessage from '../../components/ErrorMessage.jsx';
-import './stylesheets/NotesSection.css';
+import ErrorMessage from '../../../components/ErrorMessage.jsx';
+import '../stylesheets/NotesSection.css';
 
 /**
  * Renders the notes section with a textarea and save status indicator.
@@ -22,7 +22,7 @@ function NotesSection() {
             <div className="notes-header">
                 <NotesSaveStatus saveStatus={saveStatus} />
             </div>
-            <NotesTextarea notes={notes} setNotes={setNotes} />
+            <NotesTextArea notes={notes} setNotes={setNotes} />
         </div>
     );
 }

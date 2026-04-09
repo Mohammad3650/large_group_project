@@ -1,7 +1,7 @@
 import TaskItem from './TaskItem.jsx';
-import handleDeleteDashboardTask from '../../utils/Helpers/handleDeleteDashboardTask.js';
-import getDate from '../../utils/Helpers/getDate.js';
-import getDateBoundaries from '../../utils/Helpers/getDateBoundaries.js';
+import handleDeleteDashboardTask from '../../../utils/Helpers/handleDeleteDashboardTask.js';
+import getDate from '../../../utils/Helpers/getDate.js';
+import getDateBoundaries from '../../../utils/Helpers/getDateBoundaries.js';
 
 /**
  * Renders the list of TaskItem components for a task group.

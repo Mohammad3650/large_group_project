@@ -1,5 +1,5 @@
-import formatDateTime from '../../utils/Formatters/formatDateTime.js';
-import "./stylesheets/TaskItemContent.css"
+import formatDateTime from '../../../utils/Formatters/formatDateTime.js';
+import "../stylesheets/TaskItemContent.css"
 
 /**
  * Displays the content of a task item including the checkbox, name, and datetime.
