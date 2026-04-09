@@ -2,12 +2,17 @@ from django.db import transaction
 from django.utils import timezone
 
 from scheduler.models import ImportedCalendarEvent
-from scheduler.services.calendar_subscription_sync_helpers import (
+from scheduler.services.calendar_subscription_event_time_helpers import (
+    get_event_date,
+    should_import_event,
+)
+from scheduler.services.calendar_subscription_sync_result_helpers import (
+    build_sync_result,
+    record_sync_outcome,
+)
+from scheduler.services.calendar_subscription_timeblock_helpers import (
     build_external_event_uid,
     build_timeblock_data,
-    get_event_date,
-    record_sync_outcome,
-    should_import_event,
 )
 from scheduler.services.ics_fetcher import fetch_ics_content
 from scheduler.services.ics_parser import parse_ics_events
@@ -85,7 +90,7 @@ def update_imported_event(imported_event, dayplan, timeblock_data):
     )
 
 
-def sync_single_event(subscription, event) -> str:
+def sync_single_event(subscription, event):
     """
     Sync a single parsed ICS event into StudySync.
 
@@ -103,6 +108,7 @@ def sync_single_event(subscription, event) -> str:
     event_date = get_event_date(event)
     dayplan = get_or_create_dayplan(subscription.user, event_date)
     timeblock_data = build_timeblock_data(event)
+
     imported_event = get_existing_imported_event(subscription, external_event_uid)
 
     if imported_event is None:
@@ -116,20 +122,6 @@ def sync_single_event(subscription, event) -> str:
 
     update_imported_event(imported_event, dayplan, timeblock_data)
     return "updated"
-
-
-def build_sync_result():
-    """
-    Build an empty sync result dictionary.
-
-    Returns:
-        dict: Fresh sync counters for created, updated, and skipped events.
-    """
-    return {
-        "created": 0,
-        "updated": 0,
-        "skipped": 0,
-    }
 
 
 def fetch_subscription_events(subscription):

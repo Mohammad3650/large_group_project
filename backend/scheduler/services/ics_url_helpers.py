@@ -1,5 +1,4 @@
 from urllib.parse import urlparse
-from urllib.request import Request, urlopen
 
 from rest_framework import serializers
 
@@ -9,9 +8,6 @@ MISSING_URL_ERROR = {"source_url": ["A calendar URL must be provided."]}
 INVALID_URL_ERROR = {"source_url": ["A valid calendar URL must be provided."]}
 UNSUPPORTED_SCHEME_ERROR = {
     "source_url": ["Only http, https, or webcal calendar URLs are supported."]
-}
-FETCH_FAILED_ERROR = {
-    "source_url": ["Unable to fetch the calendar feed from the provided URL."]
 }
 
 
@@ -118,50 +114,3 @@ def normalise_source_url_value(source_url):
     validate_url_has_host(parsed_url)
 
     return cleaned_url
-
-
-def build_calendar_request(source_url):
-    """
-    Build a request for fetching external calendar content.
-
-    Args:
-        source_url (str): Normalised calendar URL.
-
-    Returns:
-        Request: Configured request object.
-    """
-    return Request(
-        source_url,
-        headers={
-            "User-Agent": "StudySync Calendar Import/1.0",
-            "Accept": "text/calendar, text/plain, */*",
-        },
-    )
-
-
-def open_calendar_request(request):
-    """
-    Open an external calendar request.
-
-    Args:
-        request (Request): Configured request object.
-
-    Returns:
-        HTTPResponse: Response object from urlopen.
-    """
-    return urlopen(request, timeout=10)
-
-
-def decode_response_content(response):
-    """
-    Decode response body content into text.
-
-    Args:
-        response: HTTP response object.
-
-    Returns:
-        str: Decoded response content.
-    """
-    raw_content = response.read()
-    charset = response.headers.get_content_charset() or "utf-8"
-    return raw_content.decode(charset, errors="replace")

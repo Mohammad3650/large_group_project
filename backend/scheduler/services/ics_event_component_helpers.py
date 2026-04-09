@@ -1,31 +1,4 @@
-from datetime import date, datetime
-from zoneinfo import ZoneInfo
-
-LOCAL_TIMEZONE = ZoneInfo("Europe/London")
 DEFAULT_IMPORTED_EVENT_SUMMARY = "Imported Event"
-
-
-def normalise_ics_datetime(value):
-    """
-    Convert an ICS date or datetime value into a Europe/London datetime.
-
-    Args:
-        value (date | datetime): The raw ICS date/datetime value.
-
-    Returns:
-        datetime | None: A timezone-aware local datetime, or None if the value
-        is not suitable for timed events.
-    """
-    if isinstance(value, datetime):
-        if value.tzinfo is None:
-            return value.replace(tzinfo=LOCAL_TIMEZONE)
-
-        return value.astimezone(LOCAL_TIMEZONE)
-
-    if isinstance(value, date):
-        return None
-
-    return None
 
 
 def safe_text(value):
@@ -68,6 +41,8 @@ def get_component_datetime(component, field_name):
     Returns:
         datetime | None: Normalised datetime if available and valid.
     """
+    from scheduler.services.ics_datetime_helpers import normalise_ics_datetime
+
     field_value = component.get(field_name)
 
     if field_value is None:
@@ -93,6 +68,19 @@ def has_valid_event_range(start_datetime, end_datetime):
     return end_datetime > start_datetime
 
 
+def get_event_summary(component):
+    """
+    Get a cleaned event summary with a default fallback.
+
+    Args:
+        component: ICS calendar component.
+
+    Returns:
+        str: Event summary.
+    """
+    return safe_text(component.get("summary")) or DEFAULT_IMPORTED_EVENT_SUMMARY
+
+
 def build_parsed_event(component, start_datetime, end_datetime):
     """
     Build a parsed event dictionary from an ICS component.
@@ -105,11 +93,9 @@ def build_parsed_event(component, start_datetime, end_datetime):
     Returns:
         dict: Parsed event dictionary.
     """
-    summary = safe_text(component.get("summary")) or DEFAULT_IMPORTED_EVENT_SUMMARY
-
     return {
         "uid": safe_text(component.get("uid")),
-        "summary": summary,
+        "summary": get_event_summary(component),
         "description": safe_text(component.get("description")),
         "location": safe_text(component.get("location")),
         "start_datetime": start_datetime,

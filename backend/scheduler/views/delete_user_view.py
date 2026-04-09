@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from scheduler.services.user_account_view_helpers import delete_authenticated_user
+from scheduler.services.user_deletion_helpers import delete_authenticated_user
 
 
 @api_view(["DELETE"])

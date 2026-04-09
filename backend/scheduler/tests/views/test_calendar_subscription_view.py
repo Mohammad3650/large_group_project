@@ -129,7 +129,7 @@ class CalendarSubscriptionViewTest(APITestCase):
         self.assertNotIn("Other User Calendar", returned_names)
 
     @patch(
-        "scheduler.services.calendar_subscription_view_helpers.sync_calendar_subscription"
+        "scheduler.services.calendar_subscription_mutation_helpers.sync_calendar_subscription"
     )
     def test_create_subscription_success(self, mock_sync_calendar_subscription):
         """It should create and immediately sync a valid subscription."""
@@ -167,7 +167,7 @@ class CalendarSubscriptionViewTest(APITestCase):
         mock_sync_calendar_subscription.assert_called_once_with(subscription)
 
     @patch(
-        "scheduler.services.calendar_subscription_view_helpers.sync_calendar_subscription"
+        "scheduler.services.calendar_subscription_mutation_helpers.sync_calendar_subscription"
     )
     def test_create_subscription_rejects_duplicate_url_for_same_user(
         self,
@@ -199,7 +199,7 @@ class CalendarSubscriptionViewTest(APITestCase):
         mock_sync_calendar_subscription.assert_not_called()
 
     @patch(
-        "scheduler.services.calendar_subscription_view_helpers.sync_calendar_subscription"
+        "scheduler.services.calendar_subscription_mutation_helpers.sync_calendar_subscription"
     )
     def test_create_subscription_allows_same_url_for_different_user(
         self,
