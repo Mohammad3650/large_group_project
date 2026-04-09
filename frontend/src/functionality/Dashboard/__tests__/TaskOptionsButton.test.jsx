@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import TaskOptionsButton from '../TaskSection/TaskOptionsDropup/TaskOptionsButton.jsx';
+import TaskOptionsButton from '../TaskOptionsDropup/TaskOptionsButton.jsx';
 
 vi.mock('../../../utils/Hooks/useDropdown.js', () => ({ default: vi.fn() }));
 vi.mock('../TaskOptionsDropup.jsx', () => ({

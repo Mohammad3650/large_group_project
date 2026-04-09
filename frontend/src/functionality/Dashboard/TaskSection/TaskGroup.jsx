@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import useTaskGroup from '../../../utils/Hooks/useTaskGroup.js';
+import TaskGroupHeader from './TaskGroupHeader.jsx';
 import TaskItemList from './TaskItemList.jsx';
-import getTitleClass from '../../../utils/Helpers/getTitleClass.js';
 import '../stylesheets/TaskSection/TaskGroup.css';
 
 /**
@@ -18,23 +18,22 @@ import '../stylesheets/TaskSection/TaskGroup.css';
  * @param {Function} [onUndoComplete] - Callback invoked when a task completion is undone
  * @param {Function} [onPin] - Callback invoked when a task is pinned
  * @param {Function} [onUnpin] - Callback invoked when a task is unpinned
- * @returns {JSX.Element|null} The task group section, or null if the tasks array is empty
+ * @returns {React.JSX.Element|null} The task group section, or null if the tasks array is empty
  */
 function TaskGroup({ title, tasks = [], setTasks, variant = '', onComplete, onUndoComplete, onPin, onUnpin }) {
-    const [isOpen, setIsOpen] = useState(true);
-
-    const overdue = variant === 'overdue';
-    const completed = variant === 'completed';
+    const { isOpen, setIsOpen, overdue, completed } = useTaskGroup(variant);
 
     if (tasks.length === 0) return null;
 
     return (
         <>
-            <div className="task-group" data-testid="task-group-header" onClick={() => setIsOpen(!isOpen)}>
-                <span className={`arrow ${isOpen ? 'open' : 'closed'}`}>^</span>
-                <h5 className={getTitleClass(variant)}>{title}</h5>
-                <h5 className="number-of-tasks">({tasks.length})</h5>
-            </div>
+            <TaskGroupHeader
+                isOpen={isOpen}
+                onToggle={() => setIsOpen(!isOpen)}
+                title={title}
+                variant={variant}
+                taskCount={tasks.length}
+            />
             {isOpen && (
                 <div className={`task-items-container ${variant}`}>
                     <TaskItemList

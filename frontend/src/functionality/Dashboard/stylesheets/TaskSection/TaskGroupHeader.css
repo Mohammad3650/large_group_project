@@ -1,0 +1,47 @@
+.task-group {
+    display: flex;
+    gap: var(--space-xs);
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.task-group h5 {
+    font-size: var(--font-size-body);
+    font-weight: 500;
+}
+
+.arrow {
+    font-size: var(--font-size-xs);
+    transform: rotate(180deg);
+    transition: transform 0.2s;
+    color: var(--text-light);
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: var(--arrow-offset);
+}
+
+.arrow.closed {
+    transform: rotate(90deg);
+}
+
+.pinned-title {
+    color: var(--yellow);
+}
+
+.overdue-title {
+    color: var(--danger-soft);
+}
+
+.completed-title {
+    color: var(--success);
+}
+
+.number-of-tasks {
+    color: var(--text-light);
+}

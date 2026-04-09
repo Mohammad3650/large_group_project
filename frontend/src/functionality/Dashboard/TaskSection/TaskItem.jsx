@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import playDing from '../../../utils/Audio/playDing.js';
 import TaskItemContent from './TaskItemContent.jsx';
-import TaskOptionsButton from './TaskOptionsDropup/TaskOptionsButton.jsx';
+import TaskOptionsButton from '../TaskOptionsDropup/TaskOptionsButton.jsx';
 import TaskDetailsPopup from '../TaskDetailsPopup.jsx';
 import PinButton from './PinButton.jsx';
 import '../stylesheets/TaskSection/TaskItem.css';

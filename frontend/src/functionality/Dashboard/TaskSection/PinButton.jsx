@@ -12,8 +12,8 @@ import '../stylesheets/TaskSection/PinButton.css';
  * @returns {React.JSX.Element} The pin toggle button
  */
 function PinButton({ pinned, onPin, onUnpin }) {
-    function handleClick(e) {
-        e.stopPropagation();
+    function handleClick(event) {
+        event.stopPropagation();
         if (pinned) {
             onUnpin?.();
         } else {
