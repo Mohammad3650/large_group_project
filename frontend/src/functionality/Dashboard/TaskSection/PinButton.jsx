@@ -28,5 +28,4 @@ function PinButton({ pinned, onPin, onUnpin }) {
     );
 }
 
-
 export default PinButton;

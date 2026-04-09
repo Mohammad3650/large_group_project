@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import useTaskItem from '../../../utils/Hooks/useTaskItem.js';
 import TaskItemContent from './TaskItemContent.jsx';
 import TaskOptionsButton from '../TaskOptionsDropup/TaskOptionsButton.jsx';
@@ -22,8 +23,9 @@ import '../stylesheets/TaskSection/TaskItem.css';
  * @returns {React.JSX.Element} A single task item
  */
 function TaskItem({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, overdue = false, completed = false }) {
-    const { id, name, date, startTime, endTime, checked, fading, detailsOpen, setDetailsOpen, handleClick } =
+    const { id, name, date, startTime, endTime, checked, fading, handleClick } =
         useTaskItem(task, onComplete, completed);
+    const [detailsOpen, setDetailsOpen] = useState(false);
 
     return (
         <>
