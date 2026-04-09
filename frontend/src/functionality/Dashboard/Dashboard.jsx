@@ -25,7 +25,7 @@ function Dashboard() {
     return (
         <div className="dashboard-content">
             <div className="task-section">
-                <WelcomeMessage page="Dashboard" username={username} />
+                <WelcomeMessage page="dashboard" username={username} />
 
                 <AddTaskButton />
 
