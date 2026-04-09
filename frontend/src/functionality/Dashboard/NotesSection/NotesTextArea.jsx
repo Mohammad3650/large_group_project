@@ -8,7 +8,7 @@ import '../stylesheets/NotesSection/NotesTextArea.css';
  * @param {Function} props.setNotes - Setter to update notes
  * @return {React.JSX.Element} - The notes area
  */
-function NotesTextarea({ notes, setNotes }) {
+function NotesTextArea({ notes, setNotes }) {
     return (
         <textarea
             className="notes-textarea"
@@ -19,4 +19,4 @@ function NotesTextarea({ notes, setNotes }) {
     );
 }
 
-export default NotesTextarea;
+export default NotesTextArea;

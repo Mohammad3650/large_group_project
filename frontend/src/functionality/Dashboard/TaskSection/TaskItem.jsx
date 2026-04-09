@@ -1,7 +1,7 @@
 import useTaskItem from '../../../utils/Hooks/useTaskItem.js';
 import TaskItemContent from './TaskItemContent.jsx';
 import TaskOptionsButton from '../TaskOptionsDropup/TaskOptionsButton.jsx';
-import TaskDetailsPopup from '../TaskDetailsPopup.jsx';
+import TaskDetailsPopup from '../TaskDetailsPopup/TaskDetailsPopup.jsx';
 import PinButton from './PinButton.jsx';
 import '../stylesheets/TaskSection/TaskItem.css';
 
