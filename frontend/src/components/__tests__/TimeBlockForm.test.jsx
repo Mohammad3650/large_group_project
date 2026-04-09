@@ -67,7 +67,7 @@ describe('Tests for TimeBlockForm', () => {
         ).toBeInTheDocument();
 
         expect(
-            screen.getByRole('button', { name: /create schedule/i })
+            screen.getByRole('button', { name: /create time block/i })
         ).toBeInTheDocument();
     });
 
@@ -145,7 +145,7 @@ describe('Tests for TimeBlockForm', () => {
         fireEvent.change(timeInputs[1], { target: { value: '11:00' } });
 
         fireEvent.click(
-            screen.getByRole('button', { name: /create schedule/i })
+            screen.getByRole('button', { name: /create time block/i })
         );
 
         expect(onSubmit).toHaveBeenCalledWith([
@@ -167,7 +167,7 @@ describe('Tests for TimeBlockForm', () => {
         renderTimeBlockForm();
 
         expect(
-            screen.getByRole('button', { name: /create schedule/i })
+            screen.getByRole('button', { name: /create time block/i })
         ).toBeInTheDocument();
     });
 
@@ -313,7 +313,7 @@ describe('Tests for TimeBlockForm', () => {
         fireEvent.change(timeInputs[3], { target: { value: '19:00' } });
 
         fireEvent.click(
-            screen.getByRole('button', { name: /create schedule/i })
+            screen.getByRole('button', { name: /create time block/i })
         );
 
         expect(onSubmit).toHaveBeenCalledWith([
