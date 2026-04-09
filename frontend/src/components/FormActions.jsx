@@ -1,33 +1,51 @@
 /**
- * FormActions renders add event and create schedule buttons.
- * @param {Object} props
- * @param {function} props.addBlock
- * @param {function} props.handleSubmit
- * @param {boolean} props.loading
- * @returns {JSX.Element}
+ * Handles all action buttons for the TimeBlockForm.
+ * - Shows "Add Another Event" only when creating new blocks
+ * - Shows "Cancel" only when editing an existing block
+ * - Submit button adapts based on create/edit mode and loading state
+ *
+ * Props:
+ * @param {Object|null} initialData - Existing block data (if editing), null if creating
+ * @param {Function|null} onCancel - Callback to cancel editing
+ * @param {boolean} loading - Indicates if a submit request is in progress
+ * @param {Function} addBlock - Adds a new empty time block
  */
-function FormActions({ addBlock, handleSubmit, loading }) {
+
+function FormActions({ initialData, onCancel, loading, addBlock }) {
     return (
         <div className="time-block-form-btn">
-            <button
-                className="btn btn-secondary btn"
-                type="button"
-                onClick={addBlock}
-            >
-                Add Another Event
-            </button>
+            {!initialData && (
+                <button
+                    className="btn btn-secondary"
+                    type="button"
+                    onClick={addBlock}
+                >
+                    Add Another Event
+                </button>
+            )}
+
+            {initialData && onCancel && (
+                <button
+                    className="btn cancel-btn"
+                    type="button"
+                    onClick={onCancel}
+                    disabled={loading}
+                >
+                    Cancel
+                </button>
+            )}
 
             <button
-                className="btn btn-primary"
+                className={`btn ${initialData ? 'edit-btn' : 'btn-primary'}`}
                 type="submit"
                 disabled={loading}
             >
                 {loading ? (
-                    <>
-                        <span className="spinner" /> Generating...
-                    </>
+                    <><span className="spinner" /> Saving...</>
+                ) : initialData ? (
+                    'Edit Time Block'
                 ) : (
-                    'Create Schedule'
+                    'Create Time Block'
                 )}
             </button>
         </div>
