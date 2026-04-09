@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEdit, FaUndo, FaTrash } from 'react-icons/fa';
-import '../../stylesheets/TaskOptionsDropup.css';
+import '../../stylesheets/TaskSection/TaskOptionsDropup/TaskOptionsDropup.css';
 
 /**
  * Drop-up menu for a task item with options to view details, edit, delete, and undo completion.

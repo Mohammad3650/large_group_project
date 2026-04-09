@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import TaskItemList from './TaskItemList.jsx';
 import getTitleClass from '../../../utils/Helpers/getTitleClass.js';
-import '../stylesheets/TaskGroup.css';
+import '../stylesheets/TaskSection/TaskGroup.css';
 
 /**
  * Displays a collapsible section of tasks grouped by date or category.

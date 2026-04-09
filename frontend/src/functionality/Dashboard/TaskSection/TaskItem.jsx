@@ -4,7 +4,7 @@ import TaskItemContent from './TaskItemContent.jsx';
 import TaskOptionsButton from './TaskOptionsDropup/TaskOptionsButton.jsx';
 import TaskDetailsPopup from '../TaskDetailsPopup.jsx';
 import PinButton from './PinButton.jsx';
-import '../stylesheets/TaskItem.css';
+import '../stylesheets/TaskSection/TaskItem.css';
 
 /**
  * Displays a single task item with a pin button, checkbox, name, time and date.

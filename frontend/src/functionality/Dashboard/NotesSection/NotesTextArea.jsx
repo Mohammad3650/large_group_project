@@ -1,4 +1,4 @@
-import './stylesheets/NotesTextArea.css';
+import '../stylesheets/NotesSection/NotesTextArea.css';
 
 /**
  * Renders the notes textarea input.

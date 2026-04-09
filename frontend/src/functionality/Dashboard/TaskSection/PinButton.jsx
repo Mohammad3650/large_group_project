@@ -1,5 +1,5 @@
 import { LuPin } from 'react-icons/lu';
-import '../stylesheets/PinButton.css';
+import '../stylesheets/TaskSection/PinButton.css';
 
 /**
  * A toggle button that pins or unpins a task.

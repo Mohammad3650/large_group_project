@@ -1,5 +1,5 @@
 import getNoSearchResults from '../../../utils/Helpers/getNoSearchResults.js';
-import '../stylesheets/NoTasksMessage.css';
+import '../stylesheets/TaskSection/NoTasksMessage.css';
 
 /**
  * Displays a contextual message when no tasks are visible.

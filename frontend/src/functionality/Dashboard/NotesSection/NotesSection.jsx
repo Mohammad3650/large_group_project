@@ -3,7 +3,7 @@ import NotesSaveStatus from './NotesSaveStatus.jsx';
 import NotesTextArea from './NotesTextArea.jsx';
 import NotesLoading from './NotesLoading.jsx';
 import ErrorMessage from '../../../components/ErrorMessage.jsx';
-import '../stylesheets/NotesSection.css';
+import '../stylesheets/NotesSection/NotesSection.css';
 
 /**
  * Renders the notes section with a textarea and save status indicator.
