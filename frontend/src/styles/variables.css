@@ -76,6 +76,10 @@
     --popup-min-width: 320px;
     --popup-max-width: 480px;
 
+    /* z-index */
+    --z-index-dropup: 100;
+    --z-index-popup: 500;
+
     /* misc */
     --arrow-offset: -3px;
     --checkbox-size: 1.2rem;
