@@ -26,5 +26,3 @@ Faker==40.11.1
 # psycopg2-binary – safe if you later move to Postgres
 
 # pytz – timezone handling (important for schedules)
-
-

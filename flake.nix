@@ -14,7 +14,6 @@
         python = pkgs.python3;
         node = pkgs.nodejs_20;
 
-        # Path containing libstdc++.so.6 — needed on Linux for numpy/ortools C extensions
         libPath = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
 
         backendRequirements = pkgs.writeText "requirements.txt" ''
@@ -23,20 +22,15 @@
             django-cors-headers==4.9.0
             djangorestframework==3.16.1
             djangorestframework_simplejwt==5.5.1
-            pip==26.0
             psycopg2-binary==2.9.11
             PyJWT==2.11.0
             python-dotenv==1.2.1
             pytz==2025.2
             sqlparse==0.5.5
             tzdata==2025.3
-            crispy-bootstrap5==2024.10
-            django-bootstrap-form==3.4
-            django-crispy-forms==2.3
-            django-forms-bootstrap==3.1.0
             coverage==7.13.4
             icalendar==5.0.11
-            Faker
+            Faker==40.11.1
 
             # Django – core backend framework
 
@@ -51,8 +45,6 @@
             # psycopg2-binary – safe if you later move to Postgres
 
             # pytz – timezone handling (important for schedules)
-
-
             '';
 
         runtimeInputs = with pkgs; [
