@@ -1,14 +1,11 @@
-import { useState } from 'react';
 import TaskGroup from './TaskGroup.jsx';
-import TaskSearchBar from '../../components/TaskSearchBar.jsx';
+import TaskSearchBar from './TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
 import NoTasksMessage from './NoTasksMessage.jsx';
-import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
-import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
-import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
-import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
-import useUsername from '../../utils/Hooks/useUsername.js';
+import DashboardError from './DashboardError.jsx';
+import useDashboard from '../../utils/Hooks/useDashboard.js';
+import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import './stylesheets/Dashboard.css';
 
 /**
@@ -19,32 +16,11 @@ import './stylesheets/Dashboard.css';
  * @returns {JSX.Element} The dashboard page
  */
 function Dashboard() {
-    const [searchTerm, setSearchTerm] = useState('');
+    useBodyClass('dashboard-page');
 
-    const { blocks, error: blocksError } = useTimeBlocks();
+    const { blocksError, username, searchTerm, setSearchTerm, taskGroups, totalTasks, filteredTasks } = useDashboard();
 
-    const {
-        pinnedTasks, setPinnedTasks,
-        overdueTasks, setOverdueTasks,
-        todayTasks, setTodayTasks,
-        tomorrowTasks, setTomorrowTasks,
-        weekTasks, setWeekTasks,
-        beyondWeekTasks, setBeyondWeekTasks,
-        completedTasks, setCompletedTasks,
-        totalTasks,
-    } = useTasksByDateGroup(blocks);
-
-    const { username } = useUsername(true);
-
-    const { filteredTasks } = useFilterTasksForSearch(
-        { pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks },
-        searchTerm
-    );
-
-    if (blocksError) return <p>{blocksError}</p>;
-
-    const setters = { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks };
-    const taskGroups = buildTaskGroups(filteredTasks, setters);
+    if (blocksError) return <DashboardError error={blocksError} />;
 
     return (
         <div className="dashboard-content">
