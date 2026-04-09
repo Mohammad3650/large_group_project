@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../api';
-import TimeBlockForm from '../../components/TimeBlockForm';
+import TimeBlockForm from '../../components/timeBlockForm.jsx';
 import GeneratorForm from '../../components/GeneratorForm.jsx';
 import generateSchedule from '../../utils/Api/generateSchedule.js';
 
