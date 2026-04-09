@@ -14,8 +14,8 @@
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     padding: var(--space-xl);
-    min-width: 320px;
-    max-width: 480px;
+    min-width: var(--popup-min-width);
+    max-width: var(--popup-max-width);
     width: 90%;
     display: flex;
     flex-direction: column;
