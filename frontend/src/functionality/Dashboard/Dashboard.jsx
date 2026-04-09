@@ -1,4 +1,5 @@
 import TaskGroup from './TaskGroup.jsx';
+import WelcomeMessage from '../../components/WelcomeMessage.jsx';
 import TaskSearchBar from './TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
@@ -13,7 +14,7 @@ import './stylesheets/Dashboard.css';
  * Displays tasks grouped by category (pinned, overdue, today, tomorrow,
  * next 7 days, beyond next 7 days, and completed) alongside a notes section.
  *
- * @returns {JSX.Element} The dashboard page
+ * @returns {React.JSX.Element} The dashboard page
  */
 function Dashboard() {
     useBodyClass('dashboard-page');
@@ -25,7 +26,7 @@ function Dashboard() {
     return (
         <div className="dashboard-content">
             <div className="task-section">
-                <h1>Welcome to your Dashboard, {username}!</h1>
+                <WelcomeMessage page="Dashboard" username={username} />
 
                 <AddTaskButton />
 

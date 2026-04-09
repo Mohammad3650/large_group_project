@@ -31,13 +31,6 @@ body.dashboard-page .navbar-container {
     color: var(--text-main);
 }
 
-.task-section h1 {
-    color: var(--text-main);
-    font-size: var(--font-size-heading);
-    font-weight: 500;
-    margin-bottom: var(--space-sm);
-}
-
 @media (max-width: 768px) {
     body.dashboard-page {
         overflow: auto;
