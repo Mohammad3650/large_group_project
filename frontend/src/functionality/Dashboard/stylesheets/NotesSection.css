@@ -16,41 +16,6 @@
     border-bottom: 1px solid var(--border-light);
 }
 
-.save-status {
-    font-size: var(--font-size-xs);
-    color: var(--text-light);
-    font-weight: normal;
-}
-
-.save-status.error {
-    color: var(--danger-soft);
-}
-
-.notes-section textarea {
-    flex: 1;
-    width: 100%;
-    box-sizing: border-box;
-    resize: none;
-    padding: var(--space-sm) var(--space-navbar-x) var(--space-md) var(--space-xl);
-    background: transparent;
-    color: var(--text-main);
-    border: none;
-    border-radius: 0;
-    outline: none;
-    font-size: var(--font-size-body);
-    font-family: inherit;
-    overflow-y: auto;
-}
-
-.notes-section textarea::placeholder {
-    color: var(--text-muted);
-    opacity: 1;
-}
-
-.notes-section textarea:focus {
-    box-shadow: none;
-}
-
 @media (max-width: 768px) {
     .notes-section {
         width: 100%;
@@ -62,10 +27,5 @@
 
     .notes-header {
         padding: var(--space-sm) var(--space-md);
-    }
-
-    .notes-section textarea {
-        min-height: 300px;
-        padding: 0 var(--space-md) var(--space-md) var(--space-md);
     }
 }

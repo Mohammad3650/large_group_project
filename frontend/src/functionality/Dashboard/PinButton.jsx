@@ -9,7 +9,7 @@ import './stylesheets/PinButton.css';
  * @param {boolean} props.pinned - Whether the task is currently pinned
  * @param {Function} [props.onPin] - Callback to pin the task
  * @param {Function} [props.onUnpin] - Callback to unpin the task
- * @returns {JSX.Element} The pin toggle button
+ * @returns {React.JSX.Element} The pin toggle button
  */
 function PinButton({ pinned, onPin, onUnpin }) {
     function handleClick(e) {

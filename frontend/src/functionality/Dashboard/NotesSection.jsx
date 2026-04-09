@@ -1,43 +1,28 @@
-import { useState } from 'react';
-import useNotes from '../../utils/Hooks/useNotes.js';
-import useAutoSave from '../../utils/Hooks/useAutoSave.js';
+import useNotesSection from '../../utils/Hooks/useNotesSection.js';
+import NotesSaveStatus from './NotesSaveStatus.jsx';
+import NotesTextarea from './NotesTextarea.jsx';
+import NotesLoading from './NotesLoading.jsx';
+import ErrorMessage from '../../components/ErrorMessage.jsx';
 import './stylesheets/NotesSection.css';
 
 /**
- * Fetches and auto-saves the user's notes with a 1 second debounce.
- * Displays a save status indicator and handles loading and error states.
+ * Renders the notes section with a textarea and save status indicator.
+ * Handles loading and error states via sub-components.
  *
- * @returns {JSX.Element} The notes section with a textarea and save status
+ * @returns {React.JSX.Element} The notes section layout
  */
 function NotesSection() {
-    const { notes, setNotes, loaded, loading, error } = useNotes();
-    const [saveStatus, setSaveStatus] = useState('');
+    const { notes, setNotes, loading, error, saveStatus } = useNotesSection();
 
-    useAutoSave(notes, loaded, setSaveStatus);
-
-    const statusText = {
-        saving: 'Saving...',
-        error: 'Error saving ✗',
-        saved: 'Saved ✓',
-    }[saveStatus] || '\u00A0';
-
-    if (loading) return <p className="notes-loading">Loading notes...</p>;
-    if (error) return <p className="notes-error">{error}</p>;
+    if (loading) return <NotesLoading />;
+    if (error) return <ErrorMessage error={error} />;
 
     return (
         <div className="notes-section">
             <div className="notes-header">
-                <span className={`save-status ${saveStatus === 'error' ? 'error' : ''}`}>
-                    {statusText}
-                </span>
+                <NotesSaveStatus saveStatus={saveStatus} />
             </div>
-
-            <textarea
-                className="notes-textarea"
-                placeholder="Notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-            />
+            <NotesTextarea notes={notes} setNotes={setNotes} />
         </div>
     );
 }

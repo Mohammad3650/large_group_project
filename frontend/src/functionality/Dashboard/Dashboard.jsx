@@ -4,7 +4,7 @@ import TaskSearchBar from './TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
 import NoTasksMessage from './NoTasksMessage.jsx';
-import DashboardError from './DashboardError.jsx';
+import ErrorMessage from '../../components/ErrorMessage.jsx';
 import useDashboard from '../../utils/Hooks/useDashboard.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import './stylesheets/Dashboard.css';
@@ -21,8 +21,7 @@ function Dashboard() {
 
     const { blocksError, username, searchTerm, setSearchTerm, taskGroups, totalTasks, filteredTasks } = useDashboard();
 
-    if (blocksError) return <DashboardError error={blocksError} />;
-
+    if (blocksError) return <ErrorMessage error={blocksError} />;
     return (
         <div className="dashboard-content">
             <div className="task-section">

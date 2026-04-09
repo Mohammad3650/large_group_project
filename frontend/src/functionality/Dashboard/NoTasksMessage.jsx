@@ -10,7 +10,7 @@ import './stylesheets/NoTasksMessage.css';
  * @param {number} props.totalTasks - Total number of tasks across all groups
  * @param {Object} props.filteredTasks - Object containing all filtered task arrays
  * @param {string} props.searchTerm - The current search query
- * @returns {JSX.Element|null} The message, or null if no message is needed
+ * @returns {React.JSX.Element|null} The message, or null if no message is needed
  */
 function NoTasksMessage({ totalTasks, filteredTasks, searchTerm }) {
     if (totalTasks === 0) return <p className="no-tasks-message">🎉 Congrats, you have no tasks!</p>;
