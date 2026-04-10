@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import isClickOutside from '../../functionality/Dashboard/utils/Helpers/isClickOutside.js';
+import isClickOutside from '../Helpers/isClickOutside.js';
 
 /**
  * Custom hook to manage dropdown open/close state with click-outside detection.
