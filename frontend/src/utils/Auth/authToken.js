@@ -1,5 +1,5 @@
-import { publicApi } from '../../api';
-import { getAccessToken, logout } from './authStorage';
+import { publicApi } from '../../api.js';
+import { getAccessToken, logout } from './authStorage.js';
 
 const VERIFY_ENDPOINT = '/api/token/verify/';
 
@@ -11,6 +11,24 @@ const VERIFY_ENDPOINT = '/api/token/verify/';
  */
 async function verifyToken(token) {
     await publicApi.post(VERIFY_ENDPOINT, { token });
+}
+
+function hasStoredAccessToken(token) {
+    return Boolean(token);
+}
+
+function isUnauthorisedStatus(status) {
+    return status === 401 || status === 403;
+}
+
+function handleTokenVerificationFailure(error) {
+    const status = error?.response?.status;
+
+    if (isUnauthorisedStatus(status)) {
+        logout();
+    }
+
+    return false;
 }
 
 /**
@@ -33,24 +51,15 @@ async function verifyToken(token) {
 
 export async function isTokenValid() {
     const token = getAccessToken();
-    // If there's no token, it's not valid
-    if (!token) return false;
+
+    if (!hasStoredAccessToken(token)) {
+        return false;
+    }
 
     try {
         await verifyToken(token);
         return true;
     } catch (error) {
-        const status = error?.response?.status;
-
-        // Token is invalid or expired → log out user
-        if (status === 401 || status === 403) {
-            logout();
-        }
-
-        // For network/server errors:
-        // - do NOT log out automatically
-        // - but still return false so UI behaves safely
-
-        return false;
+        return handleTokenVerificationFailure(error);
     }
 }

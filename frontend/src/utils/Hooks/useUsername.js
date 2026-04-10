@@ -9,27 +9,44 @@ import getUsername from '../Api/getUsername.js';
  * @returns {{ username: string, error: string }} The username of the currently logged-in user
  * and an error message if the fetch failed
  */
+
+function hasValidUsername(username) {
+    return Boolean(username);
+}
+
+function shouldIgnoreUsernameError(error) {
+    return error.name === 'CanceledError';
+}
+
+async function loadUsername(setUsername, setError) {
+    try {
+        const username = await getUsername();
+
+        if (!hasValidUsername(username)) {
+            setError('Invalid response from server');
+            return;
+        }
+
+        setUsername(username);
+    } catch (error) {
+        if (shouldIgnoreUsernameError(error)) {
+            return;
+        }
+
+        setError('Failed to load user');
+    }
+}
+
 function useUsername(isLoggedIn) {
     const [username, setUsername] = useState('');
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (!isLoggedIn) return;
-
-        async function fetchUsername() {
-            try {
-                const username = await getUsername();
-                if (!username) {
-                    setError('Invalid response from server');
-                    return;
-                }
-                setUsername(username);
-            } catch (err) {
-                if (err.name === 'CanceledError') return;
-                setError('Failed to load user');
-            }
+        if (!isLoggedIn) {
+            return;
         }
-        fetchUsername();
+
+        loadUsername(setUsername, setError);
     }, [isLoggedIn]);
 
     return { username, error };

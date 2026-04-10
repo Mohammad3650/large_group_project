@@ -1,4 +1,5 @@
-import { setAuthToken } from '../../api';
+import { setAuthToken } from '../../api.js';
+import { dispatchAuthChange } from './authEvents.js';
 
 const ACCESS_KEY = 'access';
 const REFRESH_KEY = 'refresh';
@@ -23,6 +24,20 @@ export function getRefreshToken() {
     return localStorage.getItem(REFRESH_KEY);
 }
 
+function storeTokens(access, refresh) {
+    localStorage.setItem(ACCESS_KEY, access);
+    localStorage.setItem(REFRESH_KEY, refresh);
+}
+
+function removeStoredTokens() {
+    localStorage.removeItem(ACCESS_KEY);
+    localStorage.removeItem(REFRESH_KEY);
+}
+
+function syncStoredAccessToken(token) {
+    setAuthToken(token);
+}
+
 /**
  * Logs the user out by:
  * - removing stored tokens from localStorage
@@ -30,12 +45,9 @@ export function getRefreshToken() {
  */
 
 export function logout() {
-    localStorage.removeItem(ACCESS_KEY);
-    localStorage.removeItem(REFRESH_KEY);
-
-    // Remove auth header from future API requests
-    setAuthToken(null);
-    window.dispatchEvent(new Event('auth-change'));
+    removeStoredTokens();
+    syncStoredAccessToken(null);
+    dispatchAuthChange();
 }
 
 /**
@@ -50,10 +62,7 @@ export function logout() {
  */
 
 export function saveTokens(access, refresh) {
-    localStorage.setItem(ACCESS_KEY, access);
-    localStorage.setItem(REFRESH_KEY, refresh);
-
-    // Set auth header for subsequent API calls
-    setAuthToken(access);
-    window.dispatchEvent(new Event('auth-change'));
+    storeTokens(access, refresh);
+    syncStoredAccessToken(access);
+    dispatchAuthChange();
 }

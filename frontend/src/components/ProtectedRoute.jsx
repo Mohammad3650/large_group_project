@@ -15,27 +15,36 @@ import { isTokenValid } from '../utils/Auth/authToken.js';
  * @returns {JSX.Element|null} The protected content, a redirect or null when loading.
  */
 
+function ProtectedRouteLoader() {
+    return (
+        <div className="d-flex justify-content-center align-items-center min-vh-100">
+            <div className="text-center">
+                <div className="spinner-border text-dark mb-3" role="status" />
+                <p className="text-muted mb-0">Checking authentication...</p>
+            </div>
+        </div>
+    );
+}
+
 function ProtectedRoute({ children }) {
     const [allowed, setAllowed] = useState(null);
 
     useEffect(() => {
-        (async () => {
-            const ok = await isTokenValid();
-            setAllowed(ok);
-        })();
+        async function checkAccess() {
+            const isAllowed = await isTokenValid();
+            setAllowed(isAllowed);
+        }
+
+        checkAccess();
     }, []);
 
     if (allowed === null) {
-        return (
-            <div className="d-flex justify-content-center align-items-center min-vh-100">
-                <div className="text-center">
-                    <div className="spinner-border text-dark mb-3" role="status" />
-                    <p className="text-muted mb-0">Checking authentication...</p>
-                </div>
-            </div>
-        );
-    };
-    if (!allowed) return <Navigate to="/login" replace />;
+        return <ProtectedRouteLoader />;
+    }
+
+    if (!allowed) {
+        return <Navigate to="/login" replace />;
+    }
 
     return children;
 }
