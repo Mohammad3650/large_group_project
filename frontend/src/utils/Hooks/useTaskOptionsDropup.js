@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
  * @returns {Object} handleViewDetailsClick, handleEditClick, handleUndoCompleteClick, handleDeleteClick
  */
 function useTaskOptionsDropup({ id, setDropdownOpen, onDelete, onUndoComplete, onViewDetails }) {
-    const nav = useNavigate();
+    const navigate = useNavigate();
 
     function handleViewDetailsClick(event) {
         event.stopPropagation();
@@ -23,7 +23,7 @@ function useTaskOptionsDropup({ id, setDropdownOpen, onDelete, onUndoComplete, o
     function handleEditClick(event) {
         event.stopPropagation();
         setDropdownOpen(false);
-        nav(`/timeblocks/${id}/edit`);
+        navigate(`/timeblocks/${id}/edit`);
     }
 
     function handleUndoCompleteClick(event) {
