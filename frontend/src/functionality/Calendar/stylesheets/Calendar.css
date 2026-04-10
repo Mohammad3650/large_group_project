@@ -2,8 +2,8 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    padding: 0 32px var(--space-3xl) 32px;
-    min-height: calc(100dvh - 75px - 16px);
+    padding: 0 var(--space-navbar-x) var(--space-3xl) var(--space-navbar-x);
+    min-height: calc(100dvh - var(--navbar-height) - var(--space-lg));
     background: var(--bg-main);
     color: var(--text-main);
 }
@@ -37,18 +37,18 @@
 .buttons {
     align-items: center;
     justify-content: center;
-    padding-top: 20px;
+    padding-top: var(--space-xl);
 }
 
 .button {
     width: 100%;
-    padding: 12px;
-    margin-top: 20px;
+    padding: var(--space-button-y);
+    margin-top: var(--space-xl);
     background-color: var(--bg-main);
     color: var(--text-main);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
-    font-size: 1rem;
+    font-size: var(--font-size-body);
     cursor: pointer;
 }
 
@@ -63,7 +63,7 @@
 }
 
 .calendar-event-modal {
-    padding: 40px;
+    padding: var(--space-modal);
     color: var(--text-main);
     background: var(--bg-soft);
     border-radius: var(--radius-lg);
@@ -78,19 +78,19 @@
 }
 
 .sx__event-modal-default > div {
-    padding: 10px;
+    padding: var(--space-md);
     overflow: auto;
 }
 
 .sx__event-modal__title {
-    font-size: 30px !important;
-    padding-bottom: 10px;
+    font-size: var(--font-size-modal-title) !important;
+    padding-bottom: var(--space-md);
     overflow-wrap: break-word;
     color: var(--text-main) !important;
 }
 
 .sx__event-modal__description {
-    font-size: 20px;
+    font-size: var(--font-size-calendar-lg);
     overflow-wrap: break-word;
     white-space: pre-line;
     font-weight: normal;
@@ -98,16 +98,16 @@
 }
 
 .sx__event-modal__time {
-    font-size: 20px;
+    font-size: var(--font-size-calendar-lg);
     color: var(--text-main) !important;
 }
 
 .event-detail {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--space-md);
     margin-bottom: 12px;
-    font-size: 18px;
+    font-size: var(--font-size-calendar-md);
     font-weight: normal;
     color: var(--text-main) !important;
 }
@@ -118,19 +118,19 @@
 }
 
 .event-detail-icon {
-    font-size: 18px;
+    font-size: var(--font-size-calendar-md);
     flex-shrink: 0;
     color: var(--text-muted);
 }
 
 
 .title-date {
-    font-size: 20px;
+    font-size: var(--font-size-calendar-lg);
     color: var(--text-main);
 }
 
 .time {
-    font-size: 14px;
+    font-size: var(--font-size-time);
     color: var(--text-muted);
 }
 
@@ -176,25 +176,25 @@
 }
 
 .sx__time-grid-event-title {
-    font-size: 22px;
+    font-size: var(--font-size-calendar-xl);
     padding-bottom: 7px;
     font-weight: bold;
-    color: #ffffff;
+    color: var(--text-white);
 }
 
 .sx__time-grid-event-time {
     font-size: 16px;
-    padding-bottom: 20px;
-    color: rgba(255, 255, 255, 0.85);
+    padding-bottom: var(--space-xl);
+    color: var(--event-text-soft);
 }
 
 .sx__time-grid-event-location {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 14px;
+    color: var(--event-text-soft);
+    font-size: var(--font-size-time);
 }
 
 .sx__time-grid-event:hover {
-    box-shadow: 0 9px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-event-hover);
 }
 
 .sx__date-picker__day {
@@ -360,11 +360,11 @@ body.dark-theme .sx__event-modal-default > div {
 }
 
 .empty-state {
-    margin: 40px auto 0;
-    padding: 32px;
+    margin: var(--space-modal) auto 0;
+    padding: var(--space-navbar-x);
     max-width: 600px;
     text-align: center;
-    font-size: 1.1rem;
+    font-size: var(--font-size-base);
     color: var(--text-main);
     background: var(--bg-soft);
     border: 1px solid var(--border-light);
@@ -379,14 +379,14 @@ body.dark-theme .sx__event-modal-default > div {
     }
 
     .calendar-content h1 {
-        font-size: 20px;
+        font-size: var(--font-size-calendar-lg);
         line-height: 1.2;
         margin-bottom: 12px;
     }
 
     .actual-calendar {
         height: 72vh;
-        padding: 8px;
+        padding: var(--space-sm);
         border-radius: var(--radius-md);
         overflow: visible;
     }
@@ -396,7 +396,7 @@ body.dark-theme .sx__event-modal-default > div {
         flex-wrap: wrap !important;
         align-items: center !important;
         justify-content: flex-start !important;
-        gap: 10px !important;
+        gap: var(--space-md) !important;
         padding: 12px !important;
     }
 
@@ -405,7 +405,7 @@ body.dark-theme .sx__event-modal-default > div {
     }
 
     .sx__time-grid-event-title {
-        font-size: 13px;
+        font-size: var(--font-size-calendar-sm);
         padding-bottom: 4px;
     }
 
@@ -424,7 +424,7 @@ body.dark-theme .sx__event-modal-default > div {
     }
 
     .sx__date-picker__month-year {
-        font-size: 18px !important;
+        font-size: var(--font-size-calendar-md) !important;
         text-align: center !important;
     }
 
@@ -435,7 +435,7 @@ body.dark-theme .sx__event-modal-default > div {
     }
 
     .sx__date-picker__week-day {
-        font-size: 14px !important;
+        font-size: var(--font-size-time) !important;
         text-align: center !important;
     }
 }
@@ -492,7 +492,7 @@ body.dark-theme .button:hover {
     }
 
     .sx__month-grid-day-number {
-        font-size: 13px !important;
+        font-size: var(--font-size-calendar-sm) !important;
     }
 
     .sx__month-grid-event {
@@ -518,7 +518,7 @@ body.dark-theme .button:hover {
     .sx__view-selection-selected-item,
     .sx__date-input {
         min-height: 36px !important;
-        font-size: 13px !important;
+        font-size: var(--font-size-calendar-sm) !important;
         padding: 6px 10px !important;
     }
 

@@ -25,9 +25,7 @@ import CalendarPlaceholder from './CalendarPlaceholder.jsx';
 function Calendar({ theme }) {
     // Custom hook for fetching and updating time blocks
     const { blocks, setBlocks } = useTimeBlocks();
-    // Fetches the current user's username
     const { username } = useUsername(true);
-    //Navigation for routing
     const nav = useNavigate();
 
     if (blocks === null) return <CalendarPlaceholder />;
