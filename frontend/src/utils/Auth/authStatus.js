@@ -1,25 +1,27 @@
 import { useEffect, useState } from 'react';
 import { getAccessToken } from './authStorage';
 
+function getLoggedInStatus() {
+    return Boolean(getAccessToken());
+}
+
 /**
- * Custom hook to determine whether a user is authenticated.
+ * Custom hook to determine whether an access token is currently stored
  *
  * Responsibilities:
- * - checks token validity on mount
- * - stores login state
+ * - intilialises login state from auth storage
+ * - updates login state when auth-related storage changes
  * - provides reusable auth status across components
  *
  * @returns {boolean} isLoggedIn - whether the user is authenticated
  */
 
 function useAuthStatus() {
-    const [isLoggedIn, setIsLoggedIn] = useState(() =>
-        Boolean(getAccessToken())
-    );
+    const [isLoggedIn, setIsLoggedIn] = useState(getLoggedInStatus());
 
     useEffect(() => {
         function syncAuthStatus() {
-            setIsLoggedIn(Boolean(getAccessToken()));
+            setIsLoggedIn(getLoggedInStatus());
         }
 
         window.addEventListener('auth-change', syncAuthStatus);

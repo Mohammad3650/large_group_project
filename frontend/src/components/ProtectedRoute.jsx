@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { isTokenValid } from '../utils/Auth/authToken.js';
+import { isTokenValid } from '../utils/Auth/authToken';
 
 /**
  * A route guard component that restricts access to pages to authenticated users only.
@@ -8,7 +8,7 @@ import { isTokenValid } from '../utils/Auth/authToken.js';
  * It checks whether the user's auth token is valid:
  * - If valid -> renders the protected content
  * - If invalid -> redirects to the login page
- * - While checking -> renders nothing
+ * - While checking -> renders a loading spinner
  *
  * @param {Object} props
  * @param {React.ReactNode} props.children - The protected content to render if authenticated
@@ -16,16 +16,18 @@ import { isTokenValid } from '../utils/Auth/authToken.js';
  */
 
 function ProtectedRoute({ children }) {
-    const [allowed, setAllowed] = useState(null);
+    const [isAllowed, setIsAllowed] = useState(null);
 
     useEffect(() => {
-        (async () => {
+        async function checkAccess() {
             const ok = await isTokenValid();
-            setAllowed(ok);
-        })();
+            setIsAllowed(ok);
+        }
+
+        checkAccess();
     }, []);
 
-    if (allowed === null) {
+    if (isAllowed === null) {
         return (
             <div className="d-flex justify-content-center align-items-center min-vh-100">
                 <div className="text-center">
@@ -34,8 +36,9 @@ function ProtectedRoute({ children }) {
                 </div>
             </div>
         );
-    };
-    if (!allowed) return <Navigate to="/login" replace />;
+    }
+
+    if (!isAllowed) return <Navigate to="/login" replace />;
 
     return children;
 }

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const fallbackMessage = 'Request failed.';
+const FALLBACK_MESSAGE = 'Request failed.';
 /**
  * Returns the standard frontend error shape with a single global message.
  *
  * @param {string} message - Global error message to display
- * @returns {{ fieldErrors, global: string[] }}
+ * @returns {{ fieldErrors: Record<string, string[]>, global: string[] }}
  */
 
 function buildGlobalError(message) {
@@ -20,22 +20,23 @@ function buildGlobalError(message) {
  * field-level and global errors.
  *
  * @param {Record<string, unknown>} data - Error response object
- * @returns {{ fieldErrors, global: string[] }}
+ * @returns {{ fieldErrors: Record<string, string[]>, global: string[] }}
  */
 
 function handleObjectErrors(data) {
     const out = { fieldErrors: {}, global: [] };
 
     for (const [key, value] of Object.entries(data)) {
+        const messages = Array.isArray(value) ? value : [String(value)];
         if (key === 'non_field_errors') {
-            out.global.push(...(Array.isArray(value) ? value : [String(value)]));
+            out.global.push(...messages);
         } else {
-            out.fieldErrors[key] = Array.isArray(value) ? value : [String(value)];
+            out.fieldErrors[key] = messages;
         }
     }
 
     if (!out.global.length && !Object.keys(out.fieldErrors).length) {
-        return buildGlobalError(fallbackMessage);
+        return buildGlobalError(FALLBACK_MESSAGE);
     }
 
     return out;
@@ -45,11 +46,11 @@ function handleObjectErrors(data) {
  * Handles string or unexpected primitive response values.
  *
  * @param {unknown} data - Primitive response data
- * @returns {{ fieldErrors, global: string[] }}
+ * @returns {{ fieldErrors: Record<string, string[]>, global: string[] }}
  */
 
 function handlePrimitiveError(data) {
-    return buildGlobalError(typeof data === 'string' ? data : fallbackMessage);
+    return buildGlobalError(typeof data === 'string' ? data : FALLBACK_MESSAGE);
 }
 
 /**
@@ -68,19 +69,16 @@ function handlePrimitiveError(data) {
  * -- plain string responses
  *
  * @param {unknown} err - Error thrown during an API request
- * @returns {{ fieldErrors, global: string[] }}
+ * @returns {{ fieldErrors: Record<string, string[]>, global: string[] }}
  */
 
 export function formatApiError(err) {
-    // If the error is not from Axios, return a generic fallback message
     if (!axios.isAxiosError(err)) {
         return buildGlobalError('Something went wrong.');
     }
 
-    // Extract response data from the Axios error if available
     const data = err.response?.data;
 
-    // If the request failed without any response data, show a server fallback message
     if (!data) {
         return buildGlobalError('No response from server.');
     }
@@ -90,11 +88,9 @@ export function formatApiError(err) {
         return buildGlobalError(data.detail);
     }
 
-    // Handle structured validation errors returned as an object
     if (typeof data === 'object' && data !== null) {
         return handleObjectErrors(data);
     }
 
-    // Handle string or unexpected primitive response types
     return handlePrimitiveError(data);
 }

@@ -3,12 +3,18 @@ import { loginUser } from '../Auth/authService';
 import useAuthForm from './useAuthForm';
 
 /**
- * Hook that manages login form behaviour
- *  - state (email, password)
- *  - validation
- *  - submission
- * @param {function} nav 
- * @returns {Object} { email, setEmail, password, setPassword, errors, loading, handleSubmit }
+ * Hook that manages login form state, validation and submission.
+ * 
+ * @param {function} nav - Navigation function from react-router 
+ * @returns {Object} {{ 
+ *      email: string, 
+ *      setEmail: function, 
+ *      password: string, 
+ *      setPassword: function, 
+ *      errors: {fieldErrors: Object, global: string[]}, 
+ *      loading: boolean, 
+ *      handleSubmit: function 
+ * }}
  */
 
 function useLoginForm(nav) {
@@ -37,7 +43,7 @@ function useLoginForm(nav) {
         password,
         setPassword,
         ...form
-    }
+    };
 }
 
 export default useLoginForm;

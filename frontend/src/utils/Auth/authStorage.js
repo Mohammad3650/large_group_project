@@ -1,7 +1,5 @@
 import { setAuthToken } from '../../api';
-
-const ACCESS_KEY = 'access';
-const REFRESH_KEY = 'refresh';
+import { ACCESS_KEY, REFRESH_KEY } from '../../constants/authKeys';
 
 /**
  * Retrieves the stored access token from localStorage.
@@ -24,18 +22,20 @@ export function getRefreshToken() {
 }
 
 /**
- * Logs the user out by:
- * - removing stored tokens from localStorage
- * - clearing the default Authorization header used in API requests
+ * Removes sotred authentication tokens and clears auth header.
  */
-
-export function logout() {
+export function clearTokens() {
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(REFRESH_KEY);
-
-    // Remove auth header from future API requests
     setAuthToken(null);
     window.dispatchEvent(new Event('auth-change'));
+}
+
+/**
+ * Logs the user out.
+ */
+export function logout() {
+    clearTokens();
 }
 
 /**
@@ -52,8 +52,6 @@ export function logout() {
 export function saveTokens(access, refresh) {
     localStorage.setItem(ACCESS_KEY, access);
     localStorage.setItem(REFRESH_KEY, refresh);
-
-    // Set auth header for subsequent API calls
     setAuthToken(access);
     window.dispatchEvent(new Event('auth-change'));
 }

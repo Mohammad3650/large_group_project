@@ -15,6 +15,7 @@ import { setAuthToken } from './api';
 import SuccessfulTimeBlock from './components/SuccessfulTimeBlock.jsx';
 import EditTimeBlock from './components/EditTimeBlock';
 import Navbar from './components/Navbar';
+import { ACCESS_KEY } from './constants/authKeys.js';
 import './styles/variables.css';
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
     });
 
     useEffect(() => {
-        const token = localStorage.getItem('access');
+        const token = localStorage.getItem(ACCESS_KEY);
         if (token) setAuthToken(token);
     }, []);
 
@@ -86,7 +87,7 @@ function App() {
                     path="/calendar"
                     element={
                         <ProtectedRoute>
-                            <Calendar theme={theme}/>
+                            <Calendar theme={theme} />
                         </ProtectedRoute>
                     }
                 />
@@ -95,7 +96,7 @@ function App() {
                     path="/preview-calendar"
                     element={
                         <ProtectedRoute>
-                            <PreviewCalendar theme={theme}/>
+                            <PreviewCalendar theme={theme} />
                         </ProtectedRoute>
                     }
                 />

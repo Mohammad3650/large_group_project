@@ -31,7 +31,7 @@ function mapSignupPayload(formData) {
 }
 
 /**
- * Logs in a user and pe
+ * Logs in a user and stores tokens.
  *
  * @returns {Promise<{ access: string, refresh: string, user?: Object }>}
  */

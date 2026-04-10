@@ -4,9 +4,9 @@ import { signupUser } from '../Auth/authService';
 import useAuthForm from './useAuthForm';
 
 /**
- * Initial form state for signup
+ * Initial field values for the signup form
  */
-const initialForm = {
+const INITIAL_FORM = {
     email: '',
     username: '',
     firstName: '',
@@ -17,18 +17,29 @@ const initialForm = {
 };
 
 /**
- * Hook that manages signup form behaviour
- * - form state
- * - field updates
- * - validation
- * - submission
+ * Hook that manages signup form state, validation and submission.
  * 
  * @param {function} nav - React router navigate function
- * @return {Object} Signup form state and handlers
+ * @return {{
+ *   form: {
+ *      email: string, 
+ *      username: string, 
+ *      firstName: string, 
+ *      lastName: string, 
+ *      phoneNumber: string, 
+ *      password: string, 
+ *      confirmPassword: string
+ *   },
+ *   updateField: function,
+ *   getFieldProps: function,
+ *   errors: Object,
+ *   loading: boolean,
+ *   handleSubmit: function
+ * }}
  */
 
 function useSignupForm(nav) {
-    const [form, setForm] = useState(initialForm);
+    const [form, setForm] = useState(INITIAL_FORM);
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
