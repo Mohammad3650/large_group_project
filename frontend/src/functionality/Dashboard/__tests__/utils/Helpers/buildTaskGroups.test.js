@@ -6,11 +6,11 @@ import * as handleUndoCompletePinnedTaskModule from '../../../utils/Helpers/hand
 import * as handlePinTaskModule from '../../../utils/Helpers/handlePinTask.js';
 import * as handleUnpinTaskModule from '../../../utils/Helpers/handleUnpinTask.js';
 
-vi.mock('../Helpers/handleCompleteTask.js', () => ({ default: vi.fn() }));
-vi.mock('../Helpers/handleUndoCompleteTask.js', () => ({ default: vi.fn() }));
-vi.mock('../Helpers/handleUndoCompletePinnedTask.js', () => ({ default: vi.fn() }));
-vi.mock('../Helpers/handlePinTask.js', () => ({ default: vi.fn() }));
-vi.mock('../Helpers/handleUnpinTask.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/handleCompleteTask.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/handleUndoCompleteTask.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/handleUndoCompletePinnedTask.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/handlePinTask.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/handleUnpinTask.js', () => ({ default: vi.fn() }));
 
 const makeTask = (id) => ({ id, name: `Task ${id}` });
 
@@ -40,30 +40,17 @@ describe('buildTaskGroups', () => {
     });
 
     it('returns an array of 7 task groups', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        expect(groups).toHaveLength(7);
+        expect(buildTaskGroups(filteredTasks, setters)).toHaveLength(7);
     });
 
-    it('returns groups in the correct order', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const titles = groups.map((g) => g.title);
-        expect(titles).toEqual([
-            'Pinned',
-            'Overdue',
-            'Today',
-            'Tomorrow',
-            'Next 7 Days',
-            'After Next 7 Days',
-            'Completed',
-        ]);
+    it('returns groups in the correct order with correct titles', () => {
+        const titles = buildTaskGroups(filteredTasks, setters).map(g => g.title);
+        expect(titles).toEqual(['Pinned', 'Overdue', 'Today', 'Tomorrow', 'Next 7 Days', 'After Next 7 Days', 'Completed']);
     });
 
     it('assigns the correct variant to each group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const variants = groups.map((g) => g.variant);
-        expect(variants).toEqual([
-            'pinned', 'overdue', 'today', 'tomorrow', 'week', 'beyond', 'completed',
-        ]);
+        const variants = buildTaskGroups(filteredTasks, setters).map(g => g.variant);
+        expect(variants).toEqual(['pinned', 'overdue', 'today', 'tomorrow', 'week', 'beyond', 'completed']);
     });
 
     it('assigns the correct filtered tasks to each group', () => {
@@ -88,56 +75,28 @@ describe('buildTaskGroups', () => {
         expect(groups[6].setTasks).toBe(setters.setCompletedTasks);
     });
 
-    it('calls handleCompleteTask with the correct setters when onComplete is called on the pinned group', () => {
+    it.each([
+        [0, 'setPinnedTasks'],
+        [1, 'setOverdueTasks'],
+        [2, 'setTodayTasks'],
+        [3, 'setTomorrowTasks'],
+        [4, 'setWeekTasks'],
+        [5, 'setBeyondWeekTasks'],
+    ])('group %i calls handleCompleteTask with its setter and setCompletedTasks on onComplete', (idx, setterName) => {
         const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(1);
-        groups[0].onComplete(task);
-        expect(handleCompleteTaskModule.default).toHaveBeenCalledWith(task, setters.setPinnedTasks, setters.setCompletedTasks);
+        const task = makeTask(idx + 1);
+        groups[idx].onComplete(task);
+        expect(handleCompleteTaskModule.default).toHaveBeenCalledWith(task, setters[setterName], setters.setCompletedTasks);
     });
 
-    it('calls handleCompleteTask with the correct setters when onComplete is called on the overdue group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(2);
-        groups[1].onComplete(task);
-        expect(handleCompleteTaskModule.default).toHaveBeenCalledWith(task, setters.setOverdueTasks, setters.setCompletedTasks);
-    });
-
-    it('calls handleCompleteTask with the correct setters when onComplete is called on the today group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(3);
-        groups[2].onComplete(task);
-        expect(handleCompleteTaskModule.default).toHaveBeenCalledWith(task, setters.setTodayTasks, setters.setCompletedTasks);
-    });
-
-    it('calls handleCompleteTask with the correct setters when onComplete is called on the tomorrow group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(4);
-        groups[3].onComplete(task);
-        expect(handleCompleteTaskModule.default).toHaveBeenCalledWith(task, setters.setTomorrowTasks, setters.setCompletedTasks);
-    });
-
-    it('calls handleCompleteTask with the correct setters when onComplete is called on the week group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(5);
-        groups[4].onComplete(task);
-        expect(handleCompleteTaskModule.default).toHaveBeenCalledWith(task, setters.setWeekTasks, setters.setCompletedTasks);
-    });
-
-    it('calls handleCompleteTask with the correct setters when onComplete is called on the beyond group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(6);
-        groups[5].onComplete(task);
-        expect(handleCompleteTaskModule.default).toHaveBeenCalledWith(task, setters.setBeyondWeekTasks, setters.setCompletedTasks);
-    });
-
-    it('calls handleUndoCompletePinnedTask with the correct setters when onUndoComplete is called on the pinned group', () => {
+    it('calls handleUndoCompletePinnedTask with correct args when onUndoComplete called on pinned group', () => {
         const groups = buildTaskGroups(filteredTasks, setters);
         const task = makeTask(1);
         groups[0].onUndoComplete(task);
         expect(handleUndoCompletePinnedTaskModule.default).toHaveBeenCalledWith(task, { setPinnedTasks: setters.setPinnedTasks });
     });
 
-    it('calls handleUndoCompleteTask with the correct setters when onUndoComplete is called on the completed group', () => {
+    it('calls handleUndoCompleteTask with correct args when onUndoComplete called on completed group', () => {
         const groups = buildTaskGroups(filteredTasks, setters);
         const task = makeTask(7);
         groups[6].onUndoComplete(task);
@@ -151,49 +110,21 @@ describe('buildTaskGroups', () => {
         });
     });
 
-    it('calls handlePinTask with the correct setters when onPin is called on the overdue group', () => {
+    it.each([
+        [1, 'setOverdueTasks'],
+        [2, 'setTodayTasks'],
+        [3, 'setTomorrowTasks'],
+        [4, 'setWeekTasks'],
+        [5, 'setBeyondWeekTasks'],
+        [6, 'setCompletedTasks'],
+    ])('group %i calls handlePinTask with its setter and setPinnedTasks on onPin', (idx, setterName) => {
         const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(2);
-        groups[1].onPin(task);
-        expect(handlePinTaskModule.default).toHaveBeenCalledWith(task, setters.setOverdueTasks, setters.setPinnedTasks);
+        const task = makeTask(idx + 1);
+        groups[idx].onPin(task);
+        expect(handlePinTaskModule.default).toHaveBeenCalledWith(task, setters[setterName], setters.setPinnedTasks);
     });
 
-    it('calls handlePinTask with the correct setters when onPin is called on the today group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(3);
-        groups[2].onPin(task);
-        expect(handlePinTaskModule.default).toHaveBeenCalledWith(task, setters.setTodayTasks, setters.setPinnedTasks);
-    });
-
-    it('calls handlePinTask with the correct setters when onPin is called on the tomorrow group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(4);
-        groups[3].onPin(task);
-        expect(handlePinTaskModule.default).toHaveBeenCalledWith(task, setters.setTomorrowTasks, setters.setPinnedTasks);
-    });
-
-    it('calls handlePinTask with the correct setters when onPin is called on the week group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(5);
-        groups[4].onPin(task);
-        expect(handlePinTaskModule.default).toHaveBeenCalledWith(task, setters.setWeekTasks, setters.setPinnedTasks);
-    });
-
-    it('calls handlePinTask with the correct setters when onPin is called on the beyond group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(6);
-        groups[5].onPin(task);
-        expect(handlePinTaskModule.default).toHaveBeenCalledWith(task, setters.setBeyondWeekTasks, setters.setPinnedTasks);
-    });
-
-    it('calls handlePinTask with the correct setters when onPin is called on the completed group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        const task = makeTask(7);
-        groups[6].onPin(task);
-        expect(handlePinTaskModule.default).toHaveBeenCalledWith(task, setters.setCompletedTasks, setters.setPinnedTasks);
-    });
-
-    it('calls handleUnpinTask with the correct setters when onUnpin is called on the pinned group', () => {
+    it('calls handleUnpinTask with all setters when onUnpin called on pinned group', () => {
         const groups = buildTaskGroups(filteredTasks, setters);
         const task = makeTask(1);
         groups[0].onUnpin(task);
@@ -208,24 +139,22 @@ describe('buildTaskGroups', () => {
         });
     });
 
-    it('does not expose an onPin callback on the pinned group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        expect(groups[0].onPin).toBeUndefined();
+    it('does not expose onPin on the pinned group', () => {
+        expect(buildTaskGroups(filteredTasks, setters)[0].onPin).toBeUndefined();
     });
 
-    it('does not expose an onComplete callback on the completed group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        expect(groups[6].onComplete).toBeUndefined();
+    it('does not expose onComplete on the completed group', () => {
+        expect(buildTaskGroups(filteredTasks, setters)[6].onComplete).toBeUndefined();
     });
 
-    it('does not expose an onUndoComplete callback on the overdue group', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        expect(groups[1].onUndoComplete).toBeUndefined();
+    it('does not expose onUndoComplete on non-pinned, non-completed groups', () => {
+        buildTaskGroups(filteredTasks, setters).slice(1, 6).forEach(group => {
+            expect(group.onUndoComplete).toBeUndefined();
+        });
     });
 
-    it('does not expose an onUnpin callback on non-pinned groups', () => {
-        const groups = buildTaskGroups(filteredTasks, setters);
-        groups.slice(1).forEach((group) => {
+    it('does not expose onUnpin on non-pinned groups', () => {
+        buildTaskGroups(filteredTasks, setters).slice(1).forEach(group => {
             expect(group.onUnpin).toBeUndefined();
         });
     });

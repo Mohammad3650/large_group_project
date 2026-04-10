@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import TaskItem from '../../TaskSection/TaskItem.jsx';
 
-vi.mock('../stylesheets/TaskItem.css', () => ({}));
-vi.mock('../../../utils/Audio/playDing.js', () => ({ default: vi.fn() }));
-vi.mock('../TaskItemContent.jsx', () => ({
+vi.mock('../../stylesheets/TaskSection/TaskItem.css', () => ({}));
+vi.mock('../../utils/Audio/playDing.js', () => ({ default: vi.fn() }));
+vi.mock('../../TaskSection/TaskItemContent.jsx', () => ({
     default: ({ name, checked, fading, overdue, completed, onClick }) => (
         <div className={`task-content${fading ? ' fading' : ''}`} onClick={onClick}>
             <input type="checkbox" readOnly checked={checked} />
@@ -14,7 +14,7 @@ vi.mock('../TaskItemContent.jsx', () => ({
         </div>
     ),
 }));
-vi.mock('../TaskOptionsButton.jsx', () => ({
+vi.mock('../../TaskOptionsDropup/TaskOptionsButton.jsx', () => ({
     default: ({ onViewDetails, onDelete, onUndoComplete }) => (
         <div data-testid="task-options-button">
             <button onClick={onDelete}>Delete</button>
@@ -23,14 +23,14 @@ vi.mock('../TaskOptionsButton.jsx', () => ({
         </div>
     ),
 }));
-vi.mock('../TaskDetailsPopup.jsx', () => ({
+vi.mock('../../TaskDetailsPopup/TaskDetailsPopup.jsx', () => ({
     default: ({ onClose }) => (
         <div data-testid="task-details-popup">
             <button onClick={onClose}>Close Details</button>
         </div>
     ),
 }));
-vi.mock('../PinButton.jsx', () => ({
+vi.mock('../../TaskSection/PinButton.jsx', () => ({
     default: ({ onPin, onUnpin }) => (
         <div data-testid="pin-button">
             {onPin && <button onClick={onPin}>Pin</button>}

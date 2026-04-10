@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import handleDeleteDashboardTask from '../../../utils/Helpers/handleDeleteDashboardTask.js';
 
-vi.mock('../Api/deleteTimeBlock.js', () => ({ default: vi.fn() }));
+vi.mock('../../../../../utils/Api/deleteTimeBlock.js', () => ({ default: vi.fn() }));
 
 import * as deleteTimeBlockModule from '../../../../../utils/Api/deleteTimeBlock.js';
 
-describe('Tests for handleDeleteDashboardTask', () => {
+describe('handleDeleteDashboardTask', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -21,11 +21,10 @@ describe('Tests for handleDeleteDashboardTask', () => {
     it('removes the deleted task from the list on success', async () => {
         deleteTimeBlockModule.default.mockResolvedValue({});
         const setTasks = vi.fn();
-        const tasks = [{ id: 1 }, { id: 2 }];
         handleDeleteDashboardTask(1, setTasks);
         await vi.waitFor(() => expect(setTasks).toHaveBeenCalled());
         const filterFn = setTasks.mock.calls[0][0];
-        expect(filterFn(tasks)).toEqual([{ id: 2 }]);
+        expect(filterFn([{ id: 1 }, { id: 2 }])).toEqual([{ id: 2 }]);
     });
 
     it('does not call setTasks when the API call fails', async () => {

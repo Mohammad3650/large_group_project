@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import useFilterTasksForSearch from '../../../utils/Hooks/useFilterTasksForSearch.js';
 
-vi.mock('../Helpers/filterTasksForSearch.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/filterTasksForSearch.js', () => ({ default: vi.fn() }));
 
 import * as filterTasksForSearchModule from '../../../utils/Helpers/filterTasksForSearch.js';
 
@@ -22,22 +22,20 @@ describe('useFilterTasksForSearch', () => {
         vi.clearAllMocks();
     });
 
-    it('returns a filteredTasks object with all seven groups', () => {
+    it('returns a filteredTasks object with all seven keys', () => {
         filterTasksForSearchModule.default.mockImplementation((tasks) => tasks);
         const { result } = renderHook(() => useFilterTasksForSearch(emptyGroups, ''));
-        const keys = Object.keys(result.current.filteredTasks);
-        expect(keys).toEqual(['filteredPinned', 'filteredOverdue', 'filteredToday', 'filteredTomorrow', 'filteredWeek', 'filteredBeyondWeek', 'filteredCompleted']);
+        expect(Object.keys(result.current.filteredTasks)).toEqual([
+            'filteredPinned', 'filteredOverdue', 'filteredToday', 'filteredTomorrow',
+            'filteredWeek', 'filteredBeyondWeek', 'filteredCompleted',
+        ]);
     });
 
-    it('calls filterTasksForSearch for each task group with the search term', () => {
+    it('calls filterTasksForSearch for each of the 7 task groups with the search term', () => {
         filterTasksForSearchModule.default.mockImplementation((tasks) => tasks);
         const groups = {
-            pinnedTasks: [{ id: 1 }],
-            overdueTasks: [{ id: 2 }],
-            todayTasks: [{ id: 3 }],
-            tomorrowTasks: [{ id: 4 }],
-            weekTasks: [{ id: 5 }],
-            beyondWeekTasks: [{ id: 6 }],
+            pinnedTasks: [{ id: 1 }], overdueTasks: [{ id: 2 }], todayTasks: [{ id: 3 }],
+            tomorrowTasks: [{ id: 4 }], weekTasks: [{ id: 5 }], beyondWeekTasks: [{ id: 6 }],
             completedTasks: [{ id: 7 }],
         };
         renderHook(() => useFilterTasksForSearch(groups, 'test'));
@@ -46,12 +44,10 @@ describe('useFilterTasksForSearch', () => {
         expect(filterTasksForSearchModule.default).toHaveBeenCalledWith([{ id: 7 }], 'test');
     });
 
-    it('returns filtered results from filterTasksForSearch for each group', () => {
-        const pinned = [{ id: 1 }];
+    it('returns filtered results from filterTasksForSearch', () => {
         const filtered = [{ id: 1 }];
         filterTasksForSearchModule.default.mockReturnValue(filtered);
-        const groups = { ...emptyGroups, pinnedTasks: pinned };
-        const { result } = renderHook(() => useFilterTasksForSearch(groups, 'query'));
+        const { result } = renderHook(() => useFilterTasksForSearch({ ...emptyGroups, pinnedTasks: [{ id: 1 }] }, 'query'));
         expect(result.current.filteredTasks.filteredPinned).toBe(filtered);
     });
 

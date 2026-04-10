@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import handleUnpinTask from '../../../utils/Helpers/handleUnpinTask.js';
 
-vi.mock('../Api/unpinTimeBlock.js', () => ({ default: vi.fn() }));
-vi.mock('../Helpers/restoreTaskToDateGroup.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Api/unpinTimeBlock.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/restoreTaskToDateGroup.js', () => ({ default: vi.fn() }));
 
 import * as unpinTimeBlockModule from '../../../utils/Api/unpinTimeBlock.js';
 import * as restoreTaskToDateGroupModule from '../../../utils/Helpers/restoreTaskToDateGroup.js';
@@ -24,7 +24,7 @@ describe('handleUnpinTask', () => {
 
     it('calls unpinTimeBlock with the task id', async () => {
         unpinTimeBlockModule.default.mockResolvedValue({});
-        const task = { id: 1, name: 'Test Task', pinned: true, pinned_at: '2026-04-07T09:00:00.000Z', completed_at: null };
+        const task = { id: 1, pinned: true, pinned_at: '2026-04-07T09:00:00.000Z', completed_at: null };
         handleUnpinTask(task, makeSetters());
         await vi.waitFor(() =>
             expect(unpinTimeBlockModule.default).toHaveBeenCalledWith(task.id)
@@ -41,7 +41,7 @@ describe('handleUnpinTask', () => {
         expect(filterFn([{ id: 1 }, { id: 2 }])).toEqual([{ id: 2 }]);
     });
 
-    it('adds the task to completedTasks with pinned: false and pinned_at: null when task is completed', async () => {
+    it('adds the task to completedTasks with pinned cleared when task is completed', async () => {
         unpinTimeBlockModule.default.mockResolvedValue({});
         const task = { id: 1, pinned: true, pinned_at: '2026-04-07T09:00:00.000Z', completed_at: '2026-04-07T10:00:00.000Z' };
         const setters = makeSetters();
@@ -66,7 +66,7 @@ describe('handleUnpinTask', () => {
         expect(result[1]).toMatchObject({ id: 1 });
     });
 
-    it('calls restoreTaskToDateGroup with pinned: false and pinned_at: null when task is not completed', async () => {
+    it('calls restoreTaskToDateGroup with pinned cleared when task is not completed', async () => {
         unpinTimeBlockModule.default.mockResolvedValue({});
         const task = { id: 1, pinned: true, pinned_at: '2026-04-07T09:00:00.000Z', completed_at: null };
         const setters = makeSetters();

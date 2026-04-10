@@ -1,99 +1,91 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { useEffect } from 'react';
 
-vi.mock('../stylesheets/NotesSection.css', () => ({}));
-vi.mock('../../../utils/Hooks/useNotes.js');
-vi.mock('../../../utils/Hooks/useAutoSave.js');
+vi.mock('../../utils/Hooks/useNotesSection.js', () => ({ default: vi.fn() }));
+vi.mock('../../stylesheets/NotesSection/NotesSection.css', () => ({}));
+vi.mock('../../../../components/ErrorMessage.jsx', () => ({
+    default: ({ error }) => <p data-testid="error-message">{error}</p>,
+}));
 
 import NotesSection from '../../NotesSection/NotesSection.jsx';
-import * as useNotesModule from '../../utils/Hooks/useNotes.js';
-import * as useAutoSaveModule from '../../utils/Hooks/useAutoSave.js';
+import * as useNotesSectionModule from '../../utils/Hooks/useNotesSection.js';
 
-const defaultNotes = {
+const defaultState = {
     notes: '',
     setNotes: vi.fn(),
-    loaded: true,
     loading: false,
     error: '',
+    saveStatus: '',
 };
 
-describe('Tests for NotesSection', () => {
+describe('NotesSection component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        useNotesModule.default.mockReturnValue(defaultNotes);
-        useAutoSaveModule.default.mockImplementation(() => {});
+        useNotesSectionModule.default.mockReturnValue(defaultState);
     });
 
-    it('renders the loading indicator whilst notes are being fetched', () => {
-        useNotesModule.default.mockReturnValue({ ...defaultNotes, loading: true });
+    it('renders the loading indicator while notes are loading', () => {
+        useNotesSectionModule.default.mockReturnValue({ ...defaultState, loading: true });
         render(<NotesSection />);
         expect(screen.getByText('Loading notes...')).toBeInTheDocument();
     });
 
-    it('renders the error message when fetching notes fails', () => {
-        useNotesModule.default.mockReturnValue({ ...defaultNotes, loading: false, error: 'Failed to load notes. Please try again.' });
+    it('renders the error message when loading fails', () => {
+        useNotesSectionModule.default.mockReturnValue({
+            ...defaultState,
+            error: 'Failed to load notes. Please try again.',
+        });
         render(<NotesSection />);
+        expect(screen.getByTestId('error-message')).toBeInTheDocument();
         expect(screen.getByText('Failed to load notes. Please try again.')).toBeInTheDocument();
     });
 
-    it('renders the notes textarea after loading', () => {
+    it('renders the notes textarea when loaded successfully', () => {
         render(<NotesSection />);
         expect(screen.getByPlaceholderText('Notes')).toBeInTheDocument();
     });
 
-    it('displays the saved notes in the textarea', () => {
-        useNotesModule.default.mockReturnValue({ ...defaultNotes, notes: 'My notes' });
+    it('displays the notes content in the textarea', () => {
+        useNotesSectionModule.default.mockReturnValue({ ...defaultState, notes: 'My notes' });
         render(<NotesSection />);
         expect(screen.getByDisplayValue('My notes')).toBeInTheDocument();
     });
 
     it('calls setNotes when the user types in the textarea', () => {
         const setNotes = vi.fn();
-        useNotesModule.default.mockReturnValue({ ...defaultNotes, setNotes });
+        useNotesSectionModule.default.mockReturnValue({ ...defaultState, setNotes });
         render(<NotesSection />);
-        fireEvent.change(screen.getByPlaceholderText('Notes'), { target: { value: 'New note' } });
-        expect(setNotes).toHaveBeenCalledWith('New note');
+        fireEvent.change(screen.getByPlaceholderText('Notes'), { target: { value: 'new note' } });
+        expect(setNotes).toHaveBeenCalledWith('new note');
     });
 
-    it('renders a non-breaking space as the default save status', () => {
+    it('renders the save status indicator', () => {
+        render(<NotesSection />);
+        expect(document.querySelector('.save-status')).toBeInTheDocument();
+    });
+
+    it.each([
+        ['saving', 'Saving...'],
+        ['saved', 'Saved ✓'],
+        ['error', 'Error saving ✗'],
+    ])('renders the correct text for saveStatus "%s"', (status, text) => {
+        useNotesSectionModule.default.mockReturnValue({ ...defaultState, saveStatus: status });
+        render(<NotesSection />);
+        expect(screen.getByText(text)).toBeInTheDocument();
+    });
+
+    it('renders a non-breaking space when saveStatus is empty', () => {
         render(<NotesSection />);
         expect(document.querySelector('.save-status').textContent).toBe('\u00A0');
     });
 
-    it("shows 'Saving...' when the save status is saving", () => {
-        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
-            useEffect(() => { setSaveStatus('saving'); }, []);
-        });
+    it('applies the error class when saveStatus is "error"', () => {
+        useNotesSectionModule.default.mockReturnValue({ ...defaultState, saveStatus: 'error' });
         render(<NotesSection />);
-        expect(screen.getByText('Saving...')).toBeInTheDocument();
+        expect(document.querySelector('.save-status')).toHaveClass('error');
     });
 
-    it("shows 'Saved ✓' when the save status is saved", () => {
-        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
-            useEffect(() => { setSaveStatus('saved'); }, []);
-        });
-        render(<NotesSection />);
-        expect(screen.getByText('Saved ✓')).toBeInTheDocument();
-    });
-
-    it("shows 'Error saving ✗' when the save status is error", () => {
-        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
-            useEffect(() => { setSaveStatus('error'); }, []);
-        });
-        render(<NotesSection />);
-        expect(screen.getByText('Error saving ✗')).toBeInTheDocument();
-    });
-
-    it('applies the error class to the save status span when the save status is error', () => {
-        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
-            useEffect(() => { setSaveStatus('error'); }, []);
-        });
-        render(<NotesSection />);
-        expect(screen.getByText('Error saving ✗')).toHaveClass('error');
-    });
-
-    it('does not apply the error class to the save status span when the save status is not error', () => {
+    it('does not apply the error class when saveStatus is not "error"', () => {
         render(<NotesSection />);
         expect(document.querySelector('.save-status')).not.toHaveClass('error');
     });

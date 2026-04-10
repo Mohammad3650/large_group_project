@@ -2,13 +2,8 @@ import { describe, it, expect } from 'vitest';
 import getNoSearchResults from '../../../utils/Helpers/getNoSearchResults.js';
 
 const emptyFilteredTasks = {
-    filteredPinned: [],
-    filteredOverdue: [],
-    filteredToday: [],
-    filteredTomorrow: [],
-    filteredWeek: [],
-    filteredBeyondWeek: [],
-    filteredCompleted: [],
+    filteredPinned: [], filteredOverdue: [], filteredToday: [],
+    filteredTomorrow: [], filteredWeek: [], filteredBeyondWeek: [], filteredCompleted: [],
 };
 
 describe('getNoSearchResults', () => {
@@ -25,7 +20,6 @@ describe('getNoSearchResults', () => {
     });
 
     it('returns false when at least one filtered array contains tasks', () => {
-        const tasks = { ...emptyFilteredTasks, filteredToday: [{ id: 1 }] };
-        expect(getNoSearchResults(tasks, 'lecture')).toBe(false);
+        expect(getNoSearchResults({ ...emptyFilteredTasks, filteredToday: [{ id: 1 }] }, 'lecture')).toBe(false);
     });
 });

@@ -2,10 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import undoCompleteTimeBlock from '../../../utils/Api/undoCompleteTimeBlock.js';
 import * as apiModule from '../../../../../api.js';
 
-vi.mock('../../api.js', () => ({
-    api: {
-        patch: vi.fn(),
-    },
+vi.mock('../../../../../api.js', () => ({
+    api: { patch: vi.fn() },
 }));
 
 describe('undoCompleteTimeBlock', () => {

@@ -1,14 +1,13 @@
 import { describe, it, expect } from "vitest";
 import filterTasksForSearch from "../../../utils/Helpers/filterTasksForSearch.js";
 
+const tasks = [
+    { name: "Lecture" },
+    { name: "Lab Session" },
+    { name: "Study Group" },
+];
+
 describe("filterTasksForSearch", () => {
-
-    const tasks = [
-        { name: "Lecture" },
-        { name: "Lab Session" },
-        { name: "Study Group" },
-    ];
-
     it("returns all tasks when search term is empty", () => {
         expect(filterTasksForSearch(tasks, "")).toEqual(tasks);
     });
@@ -36,5 +35,4 @@ describe("filterTasksForSearch", () => {
     it("returns an empty array when the task list is empty", () => {
         expect(filterTasksForSearch([], "lecture")).toEqual([]);
     });
-
 });

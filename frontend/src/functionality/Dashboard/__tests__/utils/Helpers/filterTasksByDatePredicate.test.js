@@ -19,39 +19,23 @@ const blocksWithDates = [
 
 describe('filterTasksByDatePredicate', () => {
     it('returns only blocks whose date satisfies the predicate', () => {
-        const result = filterTasksByDatePredicate(
-            blocksWithDates,
-            (date) => date >= today
-        );
-        expect(result).toEqual([blockB, blockC]);
+        expect(filterTasksByDatePredicate(blocksWithDates, (date) => date >= today)).toEqual([blockB, blockC]);
     });
 
     it('returns an empty array when no dates satisfy the predicate', () => {
-        const result = filterTasksByDatePredicate(
-            blocksWithDates,
-            () => false
-        );
-        expect(result).toEqual([]);
+        expect(filterTasksByDatePredicate(blocksWithDates, () => false)).toEqual([]);
     });
 
     it('returns all blocks when all dates satisfy the predicate', () => {
-        const result = filterTasksByDatePredicate(
-            blocksWithDates,
-            () => true
-        );
-        expect(result).toEqual([blockA, blockB, blockC]);
+        expect(filterTasksByDatePredicate(blocksWithDates, () => true)).toEqual([blockA, blockB, blockC]);
     });
 
     it('returns an empty array when given an empty array', () => {
-        const result = filterTasksByDatePredicate([], () => true);
-        expect(result).toEqual([]);
+        expect(filterTasksByDatePredicate([], () => true)).toEqual([]);
     });
 
     it('returns only the block objects, not the date wrapper', () => {
-        const result = filterTasksByDatePredicate(
-            [makeEntry(blockA, today)],
-            () => true
-        );
+        const result = filterTasksByDatePredicate([makeEntry(blockA, today)], () => true);
         expect(result[0]).toEqual(blockA);
         expect(result[0]).not.toHaveProperty('date');
     });

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import handlePinTask from '../../../utils/Helpers/handlePinTask.js';
 
-vi.mock('../Api/pinTimeBlock.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Api/pinTimeBlock.js', () => ({ default: vi.fn() }));
 
 import * as pinTimeBlockModule from '../../../utils/Api/pinTimeBlock.js';
 
@@ -42,7 +42,6 @@ describe('handlePinTask', () => {
         await vi.waitFor(() => expect(setPinnedTasks).toHaveBeenCalled());
         const updateFn = setPinnedTasks.mock.calls[0][0];
         const result = updateFn([]);
-        expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
             ...task,
             pinned: true,

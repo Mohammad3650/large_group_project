@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TaskItemContent from '../../TaskSection/TaskItemContent.jsx';
 
-vi.mock('../stylesheets/TaskItemContent.css', () => ({}));
-vi.mock('../../../utils/Formatters/formatDateTime.js', () => ({
-    default: vi.fn(() => '09:00 - 10:00 18 Mar')
+vi.mock('../../stylesheets/TaskSection/TaskItemContent.css', () => ({}));
+vi.mock('../../utils/Formatters/formatDateTime.js', () => ({
+    default: vi.fn(() => '09:00 - 10:00 18 Mar'),
 }));
 
 import formatDateTime from '../../utils/Formatters/formatDateTime.js';
@@ -37,6 +37,11 @@ describe('TaskItemContent component', () => {
     it('renders the formatted date and time', () => {
         renderContent();
         expect(screen.getByText('09:00 - 10:00 18 Mar')).toBeInTheDocument();
+    });
+
+    it('calls formatDateTime with the correct arguments', () => {
+        renderContent();
+        expect(formatDateTime).toHaveBeenCalledWith('2026-03-18', '09:00', '10:00');
     });
 
     it('renders the checkbox as unchecked by default', () => {
@@ -94,10 +99,5 @@ describe('TaskItemContent component', () => {
         renderContent({ onClick });
         fireEvent.click(screen.getByRole('checkbox').closest('div'));
         expect(onClick).toHaveBeenCalledTimes(1);
-    });
-
-    it('calls formatDateTime with the correct arguments', () => {
-        renderContent();
-        expect(formatDateTime).toHaveBeenCalledWith('2026-03-18', '09:00', '10:00');
     });
 });

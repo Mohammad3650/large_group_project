@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import handleUndoCompleteTask from '../../../utils/Helpers/handleUndoCompleteTask.js';
 
-vi.mock('../Api/undoCompleteTimeBlock.js', () => ({ default: vi.fn() }));
-vi.mock('../Helpers/restoreTaskToDateGroup.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Api/undoCompleteTimeBlock.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Helpers/restoreTaskToDateGroup.js', () => ({ default: vi.fn() }));
 
 import * as undoCompleteTimeBlockModule from '../../../utils/Api/undoCompleteTimeBlock.js';
 import * as restoreTaskToDateGroupModule from '../../../utils/Helpers/restoreTaskToDateGroup.js';

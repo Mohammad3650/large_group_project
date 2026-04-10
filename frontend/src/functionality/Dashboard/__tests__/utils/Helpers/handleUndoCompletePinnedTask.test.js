@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import handleUndoCompletePinnedTask from '../../../utils/Helpers/handleUndoCompletePinnedTask.js';
 
-vi.mock('../Api/undoCompleteTimeBlock.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Api/undoCompleteTimeBlock.js', () => ({ default: vi.fn() }));
 
 import * as undoCompleteTimeBlockModule from '../../../utils/Api/undoCompleteTimeBlock.js';
 

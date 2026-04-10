@@ -2,22 +2,17 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import NoTasksMessage from '../../TaskSection/NoTasksMessage.jsx';
 
-vi.mock('../stylesheets/NoTasksMessage.css', () => ({}));
-vi.mock('../../../utils/Helpers/getNoSearchResults.js', () => ({ default: vi.fn() }));
+vi.mock('../../stylesheets/TaskSection/NoTasksMessage.css', () => ({}));
+vi.mock('../../utils/Helpers/getNoSearchResults.js', () => ({ default: vi.fn() }));
 
 import * as getNoSearchResultsModule from '../../utils/Helpers/getNoSearchResults.js';
 
 const emptyFilteredTasks = {
-    filteredPinned: [],
-    filteredOverdue: [],
-    filteredToday: [],
-    filteredTomorrow: [],
-    filteredWeek: [],
-    filteredBeyondWeek: [],
-    filteredCompleted: [],
+    filteredPinned: [], filteredOverdue: [], filteredToday: [],
+    filteredTomorrow: [], filteredWeek: [], filteredBeyondWeek: [], filteredCompleted: [],
 };
 
-describe('NoTasksMessage', () => {
+describe('NoTasksMessage component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         getNoSearchResultsModule.default.mockReturnValue(false);

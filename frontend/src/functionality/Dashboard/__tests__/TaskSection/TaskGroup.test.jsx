@@ -2,11 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TaskGroup from '../../TaskSection/TaskGroup.jsx';
 
-vi.mock('../stylesheets/TaskGroup.css', () => ({}));
-vi.mock('../../../utils/Helpers/getTitleClass.js', () => ({ default: vi.fn() }));
-vi.mock('../TaskItemList.jsx', () => ({
+vi.mock('../../stylesheets/TaskSection/TaskGroup.css', () => ({}));
+vi.mock('../../utils/Helpers/getTitleClass.js', () => ({ default: vi.fn() }));
+vi.mock('../../stylesheets/TaskSection/TaskGroupHeader.css', () => ({}));
+vi.mock('../../TaskSection/TaskItemList.jsx', () => ({
     default: ({ tasks }) =>
-        tasks.map((t) => <div key={t.id} data-testid={`task-item-${t.id}`}>{t.name}</div>),
+        tasks.map((task) => <div key={task.id} data-testid={`task-item-${task.id}`}>{task.name}</div>),
 }));
 
 import * as getTitleClassModule from '../../utils/Helpers/getTitleClass.js';
@@ -27,7 +28,7 @@ const renderTaskGroup = (props = {}) =>
         />
     );
 
-describe('Tests for TaskGroup', () => {
+describe('TaskGroup component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         getTitleClassModule.default.mockReturnValue('');

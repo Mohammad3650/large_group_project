@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import TaskOptionsDropup from '../../TaskOptionsDropup/TaskOptionsDropup.jsx';
 
-vi.mock('../stylesheets/TaskOptionsDropup.css', () => ({}));
+vi.mock('../../stylesheets/TaskOptionsDropup/TaskOptionsDropup.css', () => ({}));
 vi.mock('react-icons/fa', () => ({
     FaEye: () => <svg data-testid="icon-eye" />,
     FaEdit: () => <svg data-testid="icon-edit" />,
@@ -163,7 +163,7 @@ describe('TaskOptionsDropup component', () => {
         expect(parentHandler).not.toHaveBeenCalled();
     });
 
-    it('renders all icons', () => {
+    it('renders all icons when completed is true', () => {
         renderDropup({ completed: true });
         expect(screen.getByTestId('icon-eye')).toBeInTheDocument();
         expect(screen.getByTestId('icon-edit')).toBeInTheDocument();

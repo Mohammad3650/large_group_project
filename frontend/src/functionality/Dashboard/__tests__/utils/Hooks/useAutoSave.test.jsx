@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { useState } from 'react';
 import useAutoSave from '../../../utils/Hooks/useAutoSave.js';
 
-vi.mock('../Api/saveNotes.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Api/saveNotes.js', () => ({ default: vi.fn() }));
 
 import * as saveNotesModule from '../../../utils/Api/saveNotes.js';
 
@@ -48,7 +48,7 @@ describe('useAutoSave', () => {
         expect(saveNotesModule.default).not.toHaveBeenCalled();
     });
 
-    it("sets saveStatus to 'saving' immediately when content changes", async () => {
+    it("sets saveStatus to 'saving' immediately when content changes and loaded is true", async () => {
         saveNotesModule.default.mockResolvedValue({});
         render(<TestComponent loaded={true} />);
         await act(async () => {

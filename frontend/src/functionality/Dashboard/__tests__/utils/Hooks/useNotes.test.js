@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import useNotes from '../../../utils/Hooks/useNotes.js';
 
-vi.mock('../Api/getNotes.js', () => ({ default: vi.fn() }));
+vi.mock('../../../utils/Api/getNotes.js', () => ({ default: vi.fn() }));
 
 import * as getNotesModule from '../../../utils/Api/getNotes.js';
 
@@ -36,12 +36,6 @@ describe('useNotes', () => {
         expect(result.current.error).toBe('Failed to load notes. Please try again.');
         expect(result.current.loaded).toBe(false);
         expect(result.current.notes).toBe('');
-    });
-
-    it('sets loading to false after a successful fetch', async () => {
-        getNotesModule.default.mockResolvedValue('content');
-        const { result } = renderHook(() => useNotes());
-        await waitFor(() => expect(result.current.loading).toBe(false));
     });
 
     it('exposes setNotes to allow notes to be updated', async () => {

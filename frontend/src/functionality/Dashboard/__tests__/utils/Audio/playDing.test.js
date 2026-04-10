@@ -1,10 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import playDing from "../../../utils/Audio/playDing.js";
 
-vi.mock("../../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
+vi.mock("../../../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
 
 const mockPlay = vi.fn().mockResolvedValue(undefined);
-
 const instances = [];
 
 class MockAudio {
@@ -18,7 +17,7 @@ class MockAudio {
 
 vi.stubGlobal("Audio", MockAudio);
 
-describe("Tests for playDing", () => {
+describe("playDing", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockPlay.mockResolvedValue(undefined);

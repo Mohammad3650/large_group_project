@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TaskItemList from '../../TaskSection/TaskItemList.jsx';
 
-vi.mock('../../../utils/Helpers/handleDeleteDashboardTask.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Helpers/getDate.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Helpers/getDateBoundaries.js', () => ({ default: vi.fn() }));
-vi.mock('../TaskItem.jsx', () => ({
+vi.mock('../../utils/Helpers/handleDeleteDashboardTask.js', () => ({ default: vi.fn() }));
+vi.mock('../../utils/Helpers/getDate.js', () => ({ default: vi.fn() }));
+vi.mock('../../utils/Helpers/getDateBoundaries.js', () => ({ default: vi.fn() }));
+vi.mock('../../TaskSection/TaskItem.jsx', () => ({
     default: ({ task, onDelete, onComplete, onUndoComplete, onPin, onUnpin, overdue, completed }) => (
         <div
             data-testid={`task-item-${task.id}`}
@@ -30,13 +30,8 @@ const TODAY = new Date('2026-04-06T00:00:00');
 const YESTERDAY = new Date('2026-04-05T00:00:00');
 
 const mockTask = (overrides = {}) => ({
-    id: 1,
-    name: 'Lecture',
-    date: '2026-04-06',
-    startTime: '09:00',
-    endTime: '10:00',
-    completed_at: null,
-    ...overrides,
+    id: 1, name: 'Lecture', date: '2026-04-06',
+    startTime: '09:00', endTime: '10:00', completed_at: null, ...overrides,
 });
 
 const mockTasks = [
@@ -56,7 +51,7 @@ const renderTaskItemList = (props = {}) =>
         />
     );
 
-describe('Tests for TaskItemList', () => {
+describe('TaskItemList component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         getDateBoundariesModule.default.mockReturnValue({ today: TODAY });

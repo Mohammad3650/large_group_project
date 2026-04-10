@@ -1,75 +1,53 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Dashboard from '../Dashboard';
+import Dashboard from '../Dashboard.jsx';
 
-vi.mock('../../../utils/Hooks/useUsername.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Hooks/useTimeBlocks.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Hooks/useTasksByDateGroup.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Hooks/useFilterTasksForSearch.js', () => ({ default: vi.fn() }));
+vi.mock('../utils/Hooks/useDashboard.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Hooks/useBodyClass.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Hooks/useScrollToTopOnResize.js', () => ({ default: vi.fn() }));
-vi.mock('../../../utils/Helpers/buildTaskGroups.js', () => ({ default: vi.fn() }));
 vi.mock('../stylesheets/Dashboard.css', () => ({}));
-vi.mock('../NotesSection.jsx', () => ({
-    default: () => <div data-testid="notes-section" />,
+vi.mock('../TaskSection/TaskGroup.jsx', () => ({
+    default: ({ title, tasks = [] }) =>
+        tasks.length === 0 ? null : (
+            <div data-testid={`task-group-${title}`}>
+                {tasks.map((task) => <div key={task.id}>{task.name}</div>)}
+            </div>
+        ),
 }));
-vi.mock('../NoTasksMessage.jsx', () => ({
-    default: ({ totalTasks, filteredTasks, searchTerm }) => {
-        if (totalTasks === 0) return <p>🎉 Congrats, you have no tasks!</p>;
-        const noResults = Object.values(filteredTasks).every((t) => t.length === 0) && searchTerm.trim() !== '';
-        if (noResults) return <p>No tasks found matching "{searchTerm.trim()}"</p>;
-        return null;
-    },
+vi.mock('../../../components/WelcomeMessage.jsx', () => ({
+    default: ({ username }) => <h1>Welcome, {username}!</h1>,
 }));
-vi.mock('../../../components/AddTaskButton.jsx', () => ({
-    default: () => <button data-testid="add-task-button">+ Add Task</button>,
-}));
-vi.mock('../../../components/TaskSearchBar.jsx', () => ({
+vi.mock('../TaskSearchBar.jsx', () => ({
     default: ({ searchTerm, setSearchTerm }) => (
         <input
             data-testid="search-bar"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(event) => setSearchTerm(event.target.value)}
         />
     ),
 }));
-vi.mock('../TaskGroup.jsx', () => ({
-    default: ({ title, tasks = [] }) =>
-        tasks.length === 0 ? null : (
-            <div data-testid={`task-group-${title}`}>
-                <span>{title}</span>
-                {tasks.map((t) => (
-                    <div key={t.id}>{t.name}</div>
-                ))}
-            </div>
-        ),
+vi.mock('../../../components/AddTaskButton.jsx', () => ({
+    default: () => <button data-testid="add-task-button">+ Add Task</button>,
+}));
+vi.mock('../NotesSection/NotesSection.jsx', () => ({
+    default: () => <div data-testid="notes-section" />,
+}));
+vi.mock('../TaskSection/NoTasksMessage.jsx', () => ({
+    default: ({ totalTasks, filteredTasks, searchTerm }) => {
+        if (totalTasks === 0) return <p>🎉 Congrats, you have no tasks!</p>;
+        const noResults =
+            Object.values(filteredTasks).every((t) => t.length === 0) &&
+            searchTerm.trim() !== '';
+        if (noResults) return <p>No tasks found matching "{searchTerm.trim()}"</p>;
+        return null;
+    },
+}));
+vi.mock('../../../components/ErrorMessage.jsx', () => ({
+    default: ({ error }) => <p data-testid="error-message">{error}</p>,
 }));
 
-import * as useUsernameModule from '../../../utils/Hooks/useUsername.js';
-import * as useTimeBlocksModule from '../../../utils/Hooks/useTimeBlocks.js';
-import * as useTasksByDateGroupModule from '../utils/Hooks/useTasksByDateGroup.js';
-import * as useFilterTasksForSearchModule from '../utils/Hooks/useFilterTasksForSearch.js';
-import * as buildTaskGroupsModule from '../utils/Helpers/buildTaskGroups.js';
+import * as useDashboardModule from '../utils/Hooks/useDashboard.js';
 
 const mockTask = (id, name) => ({ id, name });
-
-const defaultTaskGroupState = {
-    pinnedTasks: [],
-    setPinnedTasks: vi.fn(),
-    overdueTasks: [mockTask(1, 'Overdue Task')],
-    setOverdueTasks: vi.fn(),
-    todayTasks: [mockTask(2, 'Today Task')],
-    setTodayTasks: vi.fn(),
-    tomorrowTasks: [],
-    setTomorrowTasks: vi.fn(),
-    weekTasks: [],
-    setWeekTasks: vi.fn(),
-    beyondWeekTasks: [],
-    setBeyondWeekTasks: vi.fn(),
-    completedTasks: [],
-    setCompletedTasks: vi.fn(),
-    totalTasks: 2,
-};
 
 const defaultFilteredTasks = {
     filteredPinned: [],
@@ -81,26 +59,30 @@ const defaultFilteredTasks = {
     filteredCompleted: [],
 };
 
-const defaultTaskGroups = [
-    { title: 'Overdue', variant: 'overdue', tasks: [mockTask(1, 'Overdue Task')], setTasks: vi.fn() },
-    { title: 'Today', variant: 'today', tasks: [mockTask(2, 'Today Task')], setTasks: vi.fn() },
-];
+const defaultDashboardState = {
+    blocksError: null,
+    username: 'testuser',
+    searchTerm: '',
+    setSearchTerm: vi.fn(),
+    taskGroups: [
+        { title: 'Overdue', variant: 'overdue', tasks: [mockTask(1, 'Overdue Task')], setTasks: vi.fn() },
+        { title: 'Today', variant: 'today', tasks: [mockTask(2, 'Today Task')], setTasks: vi.fn() },
+    ],
+    totalTasks: 2,
+    filteredTasks: defaultFilteredTasks,
+};
 
 const renderDashboard = () => render(<Dashboard />);
 
 describe('Dashboard component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        useUsernameModule.default.mockReturnValue({ username: 'testuser', error: '' });
-        useTimeBlocksModule.default.mockReturnValue({ blocks: [], error: null });
-        useTasksByDateGroupModule.default.mockReturnValue(defaultTaskGroupState);
-        useFilterTasksForSearchModule.default.mockReturnValue({ filteredTasks: defaultFilteredTasks });
-        buildTaskGroupsModule.default.mockReturnValue(defaultTaskGroups);
+        useDashboardModule.default.mockReturnValue(defaultDashboardState);
     });
 
-    it('renders the welcome heading with the username', () => {
+    it('renders the username in the welcome message', () => {
         renderDashboard();
-        expect(screen.getByText('Welcome to your Dashboard, testuser!')).toBeInTheDocument();
+        expect(screen.getByText('Welcome, testuser!')).toBeInTheDocument();
     });
 
     it('renders the notes section', () => {
@@ -113,36 +95,50 @@ describe('Dashboard component', () => {
         expect(screen.getByTestId('add-task-button')).toBeInTheDocument();
     });
 
-    it('renders the task search bar', () => {
+    it('renders the search bar', () => {
         renderDashboard();
         expect(screen.getByTestId('search-bar')).toBeInTheDocument();
     });
 
-    it('shows the no-tasks message when there are no tasks', () => {
-        useTasksByDateGroupModule.default.mockReturnValue({ ...defaultTaskGroupState, totalTasks: 0 });
+    it('calls setSearchTerm when the search bar value changes', () => {
+        const setSearchTerm = vi.fn();
+        useDashboardModule.default.mockReturnValue({ ...defaultDashboardState, setSearchTerm });
+        renderDashboard();
+        fireEvent.change(screen.getByTestId('search-bar'), { target: { value: 'lecture' } });
+        expect(setSearchTerm).toHaveBeenCalledWith('lecture');
+    });
+
+    it('renders task groups returned by useDashboard', () => {
+        renderDashboard();
+        expect(screen.getByTestId('task-group-Overdue')).toBeInTheDocument();
+        expect(screen.getByTestId('task-group-Today')).toBeInTheDocument();
+    });
+
+    it('does not render a task group when its tasks array is empty', () => {
+        useDashboardModule.default.mockReturnValue({
+            ...defaultDashboardState,
+            taskGroups: [{ title: 'Pinned', variant: 'pinned', tasks: [], setTasks: vi.fn() }],
+        });
+        renderDashboard();
+        expect(screen.queryByTestId('task-group-Pinned')).not.toBeInTheDocument();
+    });
+
+    it('shows the no-tasks message when totalTasks is 0', () => {
+        useDashboardModule.default.mockReturnValue({ ...defaultDashboardState, totalTasks: 0, taskGroups: [] });
         renderDashboard();
         expect(screen.getByText('🎉 Congrats, you have no tasks!')).toBeInTheDocument();
     });
 
-    it('does not show the no-tasks message when there are tasks', () => {
-        renderDashboard();
-        expect(screen.queryByText('🎉 Congrats, you have no tasks!')).not.toBeInTheDocument();
-    });
-
-    it('shows the no-search-results message when no tasks match the search term', () => {
-        useFilterTasksForSearchModule.default.mockReturnValue({
+    it('shows the no-search-results message when search yields no matches', () => {
+        useDashboardModule.default.mockReturnValue({
+            ...defaultDashboardState,
+            searchTerm: 'xyz',
             filteredTasks: {
-                filteredPinned: [],
-                filteredOverdue: [],
-                filteredToday: [],
-                filteredTomorrow: [],
-                filteredWeek: [],
-                filteredBeyondWeek: [],
-                filteredCompleted: [],
+                filteredPinned: [], filteredOverdue: [], filteredToday: [],
+                filteredTomorrow: [], filteredWeek: [], filteredBeyondWeek: [], filteredCompleted: [],
             },
         });
         renderDashboard();
-        fireEvent.change(screen.getByTestId('search-bar'), { target: { value: 'xyz' } });
         expect(screen.getByText('No tasks found matching "xyz"')).toBeInTheDocument();
     });
 
@@ -151,30 +147,15 @@ describe('Dashboard component', () => {
         expect(screen.queryByText(/No tasks found matching/)).not.toBeInTheDocument();
     });
 
-    it('renders task groups returned by buildTaskGroups', () => {
+    it('renders an error message when blocksError is set', () => {
+        useDashboardModule.default.mockReturnValue({ ...defaultDashboardState, blocksError: 'Failed to load' });
         renderDashboard();
-        expect(screen.getByTestId('task-group-Overdue')).toBeInTheDocument();
-        expect(screen.getByText('Overdue Task')).toBeInTheDocument();
-        expect(screen.getByTestId('task-group-Today')).toBeInTheDocument();
-        expect(screen.getByText('Today Task')).toBeInTheDocument();
+        expect(screen.getByTestId('error-message')).toBeInTheDocument();
+        expect(screen.getByText('Failed to load')).toBeInTheDocument();
     });
 
-    it('does not render a task group when its tasks array is empty', () => {
-        buildTaskGroupsModule.default.mockReturnValue([
-            { title: 'Pinned', variant: 'pinned', tasks: [], setTasks: vi.fn() },
-        ]);
-        renderDashboard();
-        expect(screen.queryByTestId('task-group-Pinned')).not.toBeInTheDocument();
-    });
-
-    it('renders an error message when fetching time blocks fails', () => {
-        useTimeBlocksModule.default.mockReturnValue({ blocks: null, error: 'Failed to load time blocks' });
-        renderDashboard();
-        expect(screen.getByText('Failed to load time blocks')).toBeInTheDocument();
-    });
-
-    it('does not render the main dashboard content when there is a blocks error', () => {
-        useTimeBlocksModule.default.mockReturnValue({ blocks: null, error: 'Failed to load time blocks' });
+    it('does not render dashboard content when there is a blocksError', () => {
+        useDashboardModule.default.mockReturnValue({ ...defaultDashboardState, blocksError: 'error' });
         renderDashboard();
         expect(screen.queryByTestId('search-bar')).not.toBeInTheDocument();
         expect(screen.queryByTestId('notes-section')).not.toBeInTheDocument();

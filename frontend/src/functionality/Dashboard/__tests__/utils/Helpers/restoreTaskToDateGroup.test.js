@@ -3,11 +3,8 @@ import restoreTaskToDateGroup from '../../../utils/Helpers/restoreTaskToDateGrou
 
 describe('restoreTaskToDateGroup', () => {
     const makeSetters = () => ({
-        setOverdueTasks: vi.fn(),
-        setTodayTasks: vi.fn(),
-        setTomorrowTasks: vi.fn(),
-        setWeekTasks: vi.fn(),
-        setBeyondWeekTasks: vi.fn(),
+        setOverdueTasks: vi.fn(), setTodayTasks: vi.fn(), setTomorrowTasks: vi.fn(),
+        setWeekTasks: vi.fn(), setBeyondWeekTasks: vi.fn(),
     });
 
     beforeEach(() => {
@@ -19,48 +16,19 @@ describe('restoreTaskToDateGroup', () => {
         vi.useRealTimers();
     });
 
-    it('calls setOverdueTasks for a task dated before today', () => {
-        const task = { date: '2026-04-06', startTime: '10:00:00' };
+    it.each([
+        ['2026-04-06', 'setOverdueTasks'],
+        ['2026-04-07', 'setTodayTasks'],
+        ['2026-04-08', 'setTomorrowTasks'],
+        ['2026-04-10', 'setWeekTasks'],
+        ['2026-04-15', 'setBeyondWeekTasks'],
+    ])('calls %s for a task dated %s', (date, setter) => {
         const setters = makeSetters();
-        restoreTaskToDateGroup(task, setters);
-        expect(setters.setOverdueTasks).toHaveBeenCalled();
-        expect(setters.setTodayTasks).not.toHaveBeenCalled();
-        expect(setters.setTomorrowTasks).not.toHaveBeenCalled();
-        expect(setters.setWeekTasks).not.toHaveBeenCalled();
-        expect(setters.setBeyondWeekTasks).not.toHaveBeenCalled();
-    });
-
-    it('calls setTodayTasks for a task dated today', () => {
-        const task = { date: '2026-04-07', startTime: '10:00:00' };
-        const setters = makeSetters();
-        restoreTaskToDateGroup(task, setters);
-        expect(setters.setTodayTasks).toHaveBeenCalled();
-        expect(setters.setOverdueTasks).not.toHaveBeenCalled();
-    });
-
-    it('calls setTomorrowTasks for a task dated tomorrow', () => {
-        const task = { date: '2026-04-08', startTime: '10:00:00' };
-        const setters = makeSetters();
-        restoreTaskToDateGroup(task, setters);
-        expect(setters.setTomorrowTasks).toHaveBeenCalled();
-        expect(setters.setTodayTasks).not.toHaveBeenCalled();
-    });
-
-    it('calls setWeekTasks for a task within the week range', () => {
-        const task = { date: '2026-04-10', startTime: '10:00:00' };
-        const setters = makeSetters();
-        restoreTaskToDateGroup(task, setters);
-        expect(setters.setWeekTasks).toHaveBeenCalled();
-        expect(setters.setTomorrowTasks).not.toHaveBeenCalled();
-        expect(setters.setBeyondWeekTasks).not.toHaveBeenCalled();
-    });
-
-    it('calls setBeyondWeekTasks for a task beyond the week boundary', () => {
-        const task = { date: '2026-04-15', startTime: '10:00:00' };
-        const setters = makeSetters();
-        restoreTaskToDateGroup(task, setters);
-        expect(setters.setBeyondWeekTasks).toHaveBeenCalled();
-        expect(setters.setWeekTasks).not.toHaveBeenCalled();
+        restoreTaskToDateGroup({ date, startTime: '10:00:00' }, setters);
+        expect(setters[setter]).toHaveBeenCalled();
+        Object.entries(setters)
+            .filter(([k]) => k !== setter)
+            .forEach(([, fn]) => expect(fn).not.toHaveBeenCalled());
     });
 
     it('appends the task to the existing list', () => {
@@ -68,8 +36,7 @@ describe('restoreTaskToDateGroup', () => {
         const setters = makeSetters();
         restoreTaskToDateGroup(task, setters);
         const updateFn = setters.setTodayTasks.mock.calls[0][0];
-        const result = updateFn([]);
-        expect(result).toContain(task);
+        expect(updateFn([])).toContain(task);
     });
 
     it('sorts the updated list by date ascending', () => {

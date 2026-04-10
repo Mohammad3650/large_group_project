@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import PinButton from '../../TaskSection/PinButton.jsx';
 
-vi.mock('../stylesheets/PinButton.css', () => ({}));
+vi.mock('../../stylesheets/TaskSection/PinButton.css', () => ({}));
 vi.mock('react-icons/lu', () => ({
-    LuPin: () => <svg data-testid="pin-icon" />
+    LuPin: () => <svg data-testid="pin-icon" />,
 }));
 
 describe('PinButton component', () => {

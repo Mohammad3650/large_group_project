@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TaskDetailsPopup from '../../TaskDetailsPopup/TaskDetailsPopup.jsx';
 
-vi.mock('../stylesheets/TaskDetailsPopup.css', () => ({}));
-vi.mock('../../../utils/Formatters/formatDateTime.js', () => ({
-    default: vi.fn(() => '09:00 - 10:00 18 Mar')
+vi.mock('../../stylesheets/TaskDetailsPopup/TaskDetailsPopup.css', () => ({}));
+vi.mock('../../utils/Formatters/formatDateTime.js', () => ({
+    default: vi.fn(() => '09:00 - 10:00 Thu 18 Mar'),
 }));
 vi.mock('react-icons/fa', () => ({
     FaClock: () => <svg data-testid="icon-clock" />,
@@ -40,7 +40,7 @@ describe('TaskDetailsPopup component', () => {
 
     it('renders the formatted date and time', () => {
         renderPopup();
-        expect(screen.getByText('09:00 - 10:00 18 Mar')).toBeInTheDocument();
+        expect(screen.getByText('09:00 - 10:00 Thu 18 Mar')).toBeInTheDocument();
     });
 
     it('renders the task location', () => {
