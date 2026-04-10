@@ -14,7 +14,7 @@ import '../stylesheets/TaskDetailsPopup/TaskDetailsPopup.css';
 function TaskDetailsPopup({ task, onClose }) {
     return (
         <div className="task-details-overlay" onClick={onClose}>
-            <div className="task-details-popup" onClick={(e) => e.stopPropagation()}>
+            <div className="task-details-popup" onClick={(event) => event.stopPropagation()}>
                 <TaskDetailsHeader name={task.name} onClose={onClose} />
                 <TaskDetailsBody task={task} />
             </div>

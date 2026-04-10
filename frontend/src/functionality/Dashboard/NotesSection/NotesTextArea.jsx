@@ -14,7 +14,7 @@ function NotesTextArea({ notes, setNotes }) {
             className="notes-textarea"
             placeholder="Notes"
             value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            onChange={(event) => setNotes(event.target.value)}
         />
     );
 }

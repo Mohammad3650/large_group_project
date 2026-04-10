@@ -18,7 +18,7 @@
 .arrow {
     font-size: var(--font-size-xs);
     transform: rotate(180deg);
-    transition: transform 0.2s;
+    transition: transform var(--transition-speed);
     color: var(--text-light);
     display: inline-block;
     vertical-align: middle;
