@@ -47,9 +47,9 @@ vi.mock('../TaskGroup.jsx', () => ({
 
 import * as useUsernameModule from '../../../utils/Hooks/useUsername.js';
 import * as useTimeBlocksModule from '../../../utils/Hooks/useTimeBlocks.js';
-import * as useTasksByDateGroupModule from '../../../utils/Hooks/useTasksByDateGroup.js';
-import * as useFilterTasksForSearchModule from '../../../utils/Hooks/useFilterTasksForSearch.js';
-import * as buildTaskGroupsModule from '../../../utils/Helpers/buildTaskGroups.js';
+import * as useTasksByDateGroupModule from '../utils/Hooks/useTasksByDateGroup.js';
+import * as useFilterTasksForSearchModule from '../utils/Hooks/useFilterTasksForSearch.js';
+import * as buildTaskGroupsModule from '../utils/Helpers/buildTaskGroups.js';
 
 const mockTask = (id, name) => ({ id, name });
 

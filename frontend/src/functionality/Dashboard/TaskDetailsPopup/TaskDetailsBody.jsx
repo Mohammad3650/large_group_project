@@ -1,5 +1,5 @@
 import { FaClock, FaMapMarkerAlt, FaTag, FaAlignLeft } from 'react-icons/fa';
-import formatDateTime from '../../../utils/Formatters/formatDateTime.js';
+import formatDateTime from '../utils/Formatters/formatDateTime.js';
 import '../stylesheets/TaskDetailsPopup/TaskDetailsBody.css';
 
 /**

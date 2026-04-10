@@ -1,4 +1,4 @@
-import useTaskGroup from '../../../utils/Hooks/useTaskGroup.js';
+import useTaskGroup from '../utils/Hooks/useTaskGroup.js';
 import TaskGroupHeader from './TaskGroupHeader.jsx';
 import TaskItemList from './TaskItemList.jsx';
 import '../stylesheets/TaskSection/TaskGroup.css';

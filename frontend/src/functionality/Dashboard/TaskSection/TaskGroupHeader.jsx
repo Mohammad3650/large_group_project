@@ -1,4 +1,4 @@
-import getTitleClass from '../../../utils/Helpers/getTitleClass.js';
+import getTitleClass from '../utils/Helpers/getTitleClass.js';
 import '../stylesheets/TaskSection/TaskGroupHeader.css';
 
 /**

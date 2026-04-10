@@ -5,7 +5,7 @@ import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection/NotesSection.jsx';
 import NoTasksMessage from './TaskSection/NoTasksMessage.jsx';
 import ErrorMessage from '../../components/ErrorMessage.jsx';
-import useDashboard from '../../utils/Hooks/useDashboard.js';
+import useDashboard from './utils/Hooks/useDashboard.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import './stylesheets/Dashboard.css';
 

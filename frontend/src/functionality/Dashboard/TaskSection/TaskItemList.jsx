@@ -1,6 +1,6 @@
 import TaskItem from './TaskItem.jsx';
-import handleDeleteDashboardTask from '../../../utils/Helpers/handleDeleteDashboardTask.js';
-import getTaskFlags from '../../../utils/Helpers/getTaskFlags.js';
+import handleDeleteDashboardTask from '../utils/Helpers/handleDeleteDashboardTask.js';
+import getTaskFlags from '../utils/Helpers/getTaskFlags.js';
 
 /**
  * Renders the list of TaskItem components for a task group.

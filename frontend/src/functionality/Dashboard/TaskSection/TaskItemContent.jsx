@@ -1,4 +1,4 @@
-import formatDateTime from '../../../utils/Formatters/formatDateTime.js';
+import formatDateTime from '../utils/Formatters/formatDateTime.js';
 import '../stylesheets/TaskSection/TaskItemContent.css';
 
 /**

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useTaskItem from '../../../utils/Hooks/useTaskItem.js';
+import useTaskItem from '../utils/Hooks/useTaskItem.js';
 import TaskItemContent from './TaskItemContent.jsx';
 import TaskOptionsButton from '../TaskOptionsDropup/TaskOptionsButton.jsx';
 import TaskDetailsPopup from '../TaskDetailsPopup/TaskDetailsPopup.jsx';

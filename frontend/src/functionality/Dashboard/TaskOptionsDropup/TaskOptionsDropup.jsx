@@ -1,5 +1,5 @@
 import { FaEye, FaEdit, FaUndo, FaTrash } from 'react-icons/fa';
-import useTaskOptionsDropup from '../../../utils/Hooks/useTaskOptionsDropup.js';
+import useTaskOptionsDropup from '../utils/Hooks/useTaskOptionsDropup.js';
 import '../stylesheets/TaskOptionsDropup/TaskOptionsDropup.css';
 
 /**

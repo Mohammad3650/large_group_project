@@ -1,4 +1,4 @@
-import useNotesSection from '../../../utils/Hooks/useNotesSection.js';
+import useNotesSection from '../utils/Hooks/useNotesSection.js';
 import NotesSaveStatus from './NotesSaveStatus.jsx';
 import NotesTextArea from './NotesTextArea.jsx';
 import NotesLoading from './NotesLoading.jsx';
