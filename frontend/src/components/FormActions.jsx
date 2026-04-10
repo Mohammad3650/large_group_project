@@ -9,6 +9,8 @@
  * @param {Function|null} onCancel - Callback to cancel editing
  * @param {boolean} loading - Indicates if a submit request is in progress
  * @param {Function} addBlock - Adds a new empty time block
+ * 
+ * @returns {JSX.Element}
  */
 
 function FormActions({ initialData, onCancel, loading, addBlock }) {

@@ -2,7 +2,7 @@
 .go-calendar-btn,
 .go-timeblock-btn,
 .edit-timeblock-btn {
-    padding: 12px 18px;
+    padding: var(--space-lg) var(--space-xl);
     border-radius: var(--radius-lg);
     font-size: var(--font-size-sm);
     font-weight: 600;
@@ -31,14 +31,13 @@
     color: var(--text-main);
 }
 
-
 .success-page {
     min-height: 90vh;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 16px;
+    padding: var(--space-3xl) var(--space-lg);
     background:
         linear-gradient(
             180deg,
@@ -48,24 +47,20 @@
     color: var(--text-main);
 }
 
-
-
 .success-card {
     background: var(--bg-soft);
-    padding: 48px 32px;
-    border-radius: 24px;
+    padding: 48px var(--space-navbar-x);
+    border-radius: var(--radius-xl);
     text-align: center;
     max-width: 720px;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
+    gap: var(--space-xl);
     border: 1px solid var(--border-light);
     box-shadow: var(--shadow-xl);
 }
-
-
 
 .success-text {
     font-weight: 700;
@@ -78,13 +73,12 @@
 
 .success-subtext {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: var(--font-size-base);
     font-weight: 500;
     color: var(--text-muted);
     max-width: 500px;
     line-height: 1.5;
 }
-
 
 .tick-image {
     width: 180px;
@@ -92,8 +86,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 8px 0;
-    padding: 12px;
+    margin: var(--space-sm) 0;
+    padding: var(--space-lg);
     border-radius: 50%;
     background: var(--bg-main);
     box-shadow: var(--shadow-sm);
@@ -112,14 +106,14 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 14px;
-    margin-top: 8px;
+    margin-top: var(--space-sm);
     width: 100%;
 }
 
 @media (max-width: 768px) {
     .success-card {
-        padding: 36px 20px;
-        gap: 16px;
+        padding: 36px var(--space-xl);
+        gap: var(--space-lg);
     }
 
     .tick-image {
@@ -146,11 +140,11 @@
 
 @media (max-width: 480px) {
     .success-page {
-        padding: 24px 12px;
+        padding: 24px var(--space-lg);
     }
 
     .success-card {
-        padding: 28px 16px;
+        padding: 28px var(--space-lg);
         border-radius: var(--radius-xl);
     }
 
@@ -164,6 +158,6 @@
     }
 
     .success-subtext {
-        font-size: 1rem;
+        font-size: var(--font-size-body);
     }
 }
