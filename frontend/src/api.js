@@ -12,27 +12,32 @@
 import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
-
 const ACCESS_TOKEN_KEY = 'access';
 
-export const api = axios.create({
-    baseURL: API_BASE
-});
+function buildApiClient() {
+    return axios.create({
+        baseURL: API_BASE
+    });
+}
 
-export const publicApi = axios.create({
-    baseURL: API_BASE
-});
+export const api = buildApiClient();
+export const publicApi = buildApiClient();
 
 export function setAuthToken(token) {
     if (token) {
-        api.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-    } 
-    else {
-        delete api.defaults.headers.common['Authorization'];
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        return;
+    }
+
+    delete api.defaults.headers.common.Authorization;
+}
+
+function applyStoredAuthToken() {
+    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+
+    if (token) {
+        setAuthToken(token);
     }
 }
 
-const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-if (token) {
-    setAuthToken(token);
-}
+applyStoredAuthToken();

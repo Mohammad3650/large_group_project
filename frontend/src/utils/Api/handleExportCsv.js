@@ -1,10 +1,8 @@
-import { api } from '../../api.js';
-import downloadFile from '../Helpers/downloadFile.js';
-
-
+import exportFile from '../Helpers/exportFile.js';
 
 const EXPORT_CSV_ENDPOINT = '/api/time-blocks/export/csv/';
 const EXPORT_CSV_FILENAME = 'studysync_schedule.csv';
+const EXPORT_CSV_ERROR = 'Failed to export CSV';
 
 /**
  * Export the user's schedule as a CSV file.
@@ -14,13 +12,9 @@ const EXPORT_CSV_FILENAME = 'studysync_schedule.csv';
  */
 async function handleExportCsv(setError) {
     try {
-        const response = await api.get(EXPORT_CSV_ENDPOINT, {
-            responseType: 'blob'
-        });
-
-        downloadFile(response.data, EXPORT_CSV_FILENAME);
-    } catch (err) {
-        setError('Failed to export CSV');
+        await exportFile(EXPORT_CSV_ENDPOINT, EXPORT_CSV_FILENAME);
+    } catch {
+        setError(EXPORT_CSV_ERROR);
     }
 }
 

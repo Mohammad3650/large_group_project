@@ -3,6 +3,12 @@
  * @param {Object} timeBlock - Task object with date and startTime fields
  * @returns {Date} Combined date and time as a Date object
  */
-const getDate = (timeBlock) => new Date(`${timeBlock.date}T${timeBlock.startTime}`);
+function buildDateTimeString(date, time) {
+    return `${date}T${time}`;
+}
+
+function getDate(timeBlock) {
+    return new Date(buildDateTimeString(timeBlock.date, timeBlock.startTime));
+}
 
 export default getDate;

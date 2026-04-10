@@ -6,23 +6,34 @@
  * @param {string} endTime - End time string (e.g. "10:00:00")
  * @returns {string} Formatted string (e.g. "09:00 - 10:00 Thu 19 Feb")
  */
-function formatDateTime(date, startTime, endTime) {
-    const dateObj = new Date(`${date}T${startTime}`);
-    const endObj = new Date(`${date}T${endTime}`);
-    const day = dateObj.toLocaleDateString('en-GB', {
+function buildDateTime(date, time) {
+    return new Date(`${date}T${time}`);
+}
+
+function formatDayLabel(date) {
+    return date.toLocaleDateString('en-GB', {
         weekday: 'short',
         day: 'numeric',
         month: 'short'
     });
-    const start = dateObj.toLocaleTimeString('en-GB', {
+}
+
+function formatTimeLabel(date) {
+    return date.toLocaleTimeString('en-GB', {
         hour: '2-digit',
         minute: '2-digit'
     });
-    const end = endObj.toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-    return `${start} - ${end} ${day}`;
+}
+
+function formatDateTime(date, startTime, endTime) {
+    const startDateTime = buildDateTime(date, startTime);
+    const endDateTime = buildDateTime(date, endTime);
+
+    const dayLabel = formatDayLabel(startDateTime);
+    const startLabel = formatTimeLabel(startDateTime);
+    const endLabel = formatTimeLabel(endDateTime);
+
+    return `${startLabel} - ${endLabel} ${dayLabel}`;
 }
 
 export default formatDateTime;

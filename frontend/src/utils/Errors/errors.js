@@ -1,6 +1,9 @@
 import axios from 'axios';
 
 const fallbackMessage = 'Request failed.';
+const unknownErrorMessage = 'Something went wrong.';
+const noResponseMessage = 'No response from server.';
+
 /**
  * Returns the standard frontend error shape with a single global message.
  *
@@ -15,6 +18,46 @@ function buildGlobalError(message) {
     };
 }
 
+// Handle structured validation errors returned as an object
+function isObject(value) {
+    return typeof value === 'object' && value !== null;
+}
+
+// DRF common: { detail: "..." }
+function hasDetailMessage(data) {
+    return isObject(data) && typeof data.detail === 'string';
+}
+
+function getResponseData(err) {
+    return err.response?.data;
+}
+
+function toMessageList(value) {
+    return Array.isArray(value) ? value : [String(value)];
+}
+
+function isGlobalErrorKey(key) {
+    return key === 'non_field_errors';
+}
+
+function addObjectError(out, key, value) {
+    const messages = toMessageList(value);
+
+    if (isGlobalErrorKey(key)) {
+        out.global.push(...messages);
+        return;
+    }
+
+    out.fieldErrors[key] = messages;
+}
+
+function isEmptyErrorShape(errorShape) {
+    return (
+        errorShape.global.length === 0 &&
+        Object.keys(errorShape.fieldErrors).length === 0
+    );
+}
+
 /**
  * Handles DRF-style object errors and maps them into
  * field-level and global errors.
@@ -24,17 +67,16 @@ function buildGlobalError(message) {
  */
 
 function handleObjectErrors(data) {
-    const out = { fieldErrors: {}, global: [] };
+    const out = {
+        fieldErrors: {},
+        global: []
+    };
 
-    for (const [key, value] of Object.entries(data)) {
-        if (key === 'non_field_errors') {
-            out.global.push(...(Array.isArray(value) ? value : [String(value)]));
-        } else {
-            out.fieldErrors[key] = Array.isArray(value) ? value : [String(value)];
-        }
-    }
+    Object.entries(data).forEach(([key, value]) => {
+        addObjectError(out, key, value);
+    });
 
-    if (!out.global.length && !Object.keys(out.fieldErrors).length) {
+    if (isEmptyErrorShape(out)) {
         return buildGlobalError(fallbackMessage);
     }
 
@@ -71,30 +113,26 @@ function handlePrimitiveError(data) {
  * @returns {{ fieldErrors, global: string[] }}
  */
 
-export function formatApiError(err) {
-    // If the error is not from Axios, return a generic fallback message
-    if (!axios.isAxiosError(err)) {
-        return buildGlobalError('Something went wrong.');
-    }
-
-    // Extract response data from the Axios error if available
-    const data = err.response?.data;
-
-    // If the request failed without any response data, show a server fallback message
+function formatResponseDataError(data) {
     if (!data) {
         return buildGlobalError('No response from server.');
     }
 
-    // DRF common: { detail: "..." }
-    if (typeof data === 'object' && typeof data.detail === 'string') {
+    if (hasDetailMessage(data)) {
         return buildGlobalError(data.detail);
     }
 
-    // Handle structured validation errors returned as an object
-    if (typeof data === 'object' && data !== null) {
+    if (isObject(data)) {
         return handleObjectErrors(data);
     }
 
-    // Handle string or unexpected primitive response types
     return handlePrimitiveError(data);
+}
+
+export function formatApiError(err) {
+    if (!axios.isAxiosError(err)) {
+        return buildGlobalError('Something went wrong.');
+    }
+
+    return formatResponseDataError(getResponseData(err));
 }
