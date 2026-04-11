@@ -15,13 +15,13 @@ describe('NotesSaveStatus component', () => {
     });
 
     it('renders a non-breaking space when saveStatus is empty', () => {
-        render(<NotesSaveStatus saveStatus="" />);
-        expect(screen.getByText('\u00A0')).toBeInTheDocument();
+        const { container } = render(<NotesSaveStatus saveStatus="" />);
+        expect(container.firstChild.textContent).toBe('\u00A0');
     });
 
     it('renders a non-breaking space when saveStatus is an unrecognised value', () => {
-        render(<NotesSaveStatus saveStatus="unknown" />);
-        expect(screen.getByText('\u00A0')).toBeInTheDocument();
+        const { container } = render(<NotesSaveStatus saveStatus="unknown" />);
+        expect(container.firstChild.textContent).toBe('\u00A0');
     });
 
     it('applies the error class when saveStatus is "error"', () => {

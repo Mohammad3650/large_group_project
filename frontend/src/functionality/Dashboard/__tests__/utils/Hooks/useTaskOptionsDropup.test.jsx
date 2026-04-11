@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import useTaskOptionsDropup from '../../../utils/Hooks/useTaskOptionsDropup.js';
 
@@ -38,10 +38,12 @@ describe('useTaskOptionsDropup', () => {
         expect(onViewDetails).toHaveBeenCalledTimes(1);
     });
 
-    it('stops propagation and closes menu on handleEditClick', () => {
+    it('stops propagation and closes menu on handleEditClick', async () => {
         const { result } = renderHook(() => useTaskOptionsDropup(props), { wrapper });
         const event = makeEvent();
-        result.current.handleEditClick(event);
+        await act(async () => {
+            result.current.handleEditClick(event);
+        });
         expect(event.stopPropagation).toHaveBeenCalledTimes(1);
         expect(setDropdownOpen).toHaveBeenCalledWith(false);
     });

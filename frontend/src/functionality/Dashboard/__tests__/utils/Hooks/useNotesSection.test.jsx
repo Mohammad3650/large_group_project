@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import useNotesSection from '../../../utils/Hooks/useNotesSection.js';
 
 vi.mock('../../../utils/Hooks/useNotes.js', () => ({ default: vi.fn() }));
@@ -52,7 +52,7 @@ describe('useNotesSection', () => {
         expect(result.current.saveStatus).toBe('');
     });
 
-    it('calls useAutoSave with notes, loaded, and a setSaveStatus function', () => {
+    it('calls useAutoSave with the notes content, loaded flag, and a setSaveStatus function', () => {
         renderHook(() => useNotesSection());
         expect(useAutoSaveModule.default).toHaveBeenCalledWith(
             defaultNotes.notes,
@@ -62,10 +62,12 @@ describe('useNotesSection', () => {
     });
 
     it('updates saveStatus when useAutoSave calls its setSaveStatus argument', () => {
-        useAutoSaveModule.default.mockImplementation((_notes, _loaded, setSaveStatus) => {
-            setSaveStatus('saving');
+        let capturedSetSaveStatus;
+        useAutoSaveModule.default.mockImplementation((_notes, _isLoaded, setSaveStatus) => {
+            capturedSetSaveStatus = setSaveStatus;
         });
         const { result } = renderHook(() => useNotesSection());
+        act(() => capturedSetSaveStatus('saving'));
         expect(result.current.saveStatus).toBe('saving');
     });
 });

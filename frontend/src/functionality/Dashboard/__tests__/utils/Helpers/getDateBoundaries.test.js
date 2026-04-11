@@ -29,7 +29,7 @@ describe('getDateBoundaries', () => {
 
     it('returns all four boundaries as Date objects', () => {
         const { today, tomorrow, dayAfterTomorrow, weekEnd } = getDateBoundaries();
-        [today, tomorrow, dayAfterTomorrow, weekEnd].forEach(d => expect(d).toBeInstanceOf(Date));
+        [today, tomorrow, dayAfterTomorrow, weekEnd].forEach(date => expect(date).toBeInstanceOf(Date));
     });
 
     it('does not mutate dates when computing boundaries', () => {

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import playDing from "../../../utils/Audio/playDing.js";
 
-vi.mock("../../../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
+vi.mock("../../../../../assets/Dashboard/ding.mp3", () => ({ default: "ding.mp3" }));
 
 const mockPlay = vi.fn().mockResolvedValue(undefined);
 const instances = [];

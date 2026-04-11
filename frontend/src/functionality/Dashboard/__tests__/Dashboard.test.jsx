@@ -35,7 +35,7 @@ vi.mock('../TaskSection/NoTasksMessage.jsx', () => ({
     default: ({ totalTasks, filteredTasks, searchTerm }) => {
         if (totalTasks === 0) return <p>🎉 Congrats, you have no tasks!</p>;
         const noResults =
-            Object.values(filteredTasks).every((t) => t.length === 0) &&
+            Object.values(filteredTasks).every((taskGroup) => taskGroup.length === 0) &&
             searchTerm.trim() !== '';
         if (noResults) return <p>No tasks found matching "{searchTerm.trim()}"</p>;
         return null;
