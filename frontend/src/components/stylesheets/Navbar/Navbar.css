@@ -12,6 +12,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-lg);
+    height: 100%;
 }
 
 .navbar-right {
