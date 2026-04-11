@@ -12,7 +12,8 @@
             opacity var(--transition-speed);
 }
 
-.user-icon:hover {
+.user-icon:hover,
+.user-icon.active {
     opacity: 1;
     color: var(--text-main);
 }

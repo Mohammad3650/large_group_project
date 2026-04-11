@@ -21,7 +21,7 @@ function NavbarUserDropdown({ username, isLoggedIn }) {
     return (
         <div className="navbar-user" ref={dropdownRef}>
             <FaUserCircle
-                className="navbar-icon user-icon"
+                className={`navbar-icon user-icon ${dropdownOpen ? 'active' : ''}`}
                 aria-label="User Icon"
                 onClick={() => setDropdownOpen((prev) => !prev)}
             />
