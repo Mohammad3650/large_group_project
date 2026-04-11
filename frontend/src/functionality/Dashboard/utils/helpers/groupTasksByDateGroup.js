@@ -1,9 +1,9 @@
-import getDate from './getDate.js';
-import getDateBoundaries from './getDateBoundaries.js';
-import sortTasksByCompletedAt from './sortTasksByCompletedAt.js';
-import sortTasksByPinnedAt from './sortTasksByPinnedAt.js';
-import filterTasksByDatePredicate from './filterTasksByDatePredicate.js';
-import sortTasksByDate from './sortTasksByDate.js';
+import getDate from '../../../../utils/Helpers/getDate.js';
+import getDateBoundaries from '../../../../utils/Helpers/getDateBoundaries.js';
+import sortTasksByCompletedAt from '../../../../utils/Helpers/sortTasksByCompletedAt.js';
+import sortTasksByPinnedAt from '../../../../utils/Helpers/sortTasksByPinnedAt.js';
+import filterTasksByDatePredicate from '../../../../utils/Helpers/filterTasksByDatePredicate.js';
+import sortTasksByDate from '../../../../utils/Helpers/sortTasksByDate.js';
 
 /**
  * Groups an array of time blocks into date-based categories.

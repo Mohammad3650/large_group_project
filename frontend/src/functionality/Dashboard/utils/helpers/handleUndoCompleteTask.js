@@ -1,5 +1,5 @@
-import undoCompleteTimeBlock from '../Api/undoCompleteTimeBlock.js';
-import restoreTaskToDateGroup from './restoreTaskToDateGroup.js';
+import undoCompleteTimeBlock from '../../../../utils/Api/undoCompleteTimeBlock.js';
+import restoreTaskToDateGroup from '../../../../utils/Helpers/restoreTaskToDateGroup.js';
 
 /**
  * Undoes the completion of a task by calling the API

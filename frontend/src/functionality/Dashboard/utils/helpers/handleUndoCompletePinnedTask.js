@@ -1,4 +1,4 @@
-import undoCompleteTimeBlock from '../Api/undoCompleteTimeBlock.js';
+import undoCompleteTimeBlock from '../../../../utils/Api/undoCompleteTimeBlock.js';
 
 /**
  * Undoes the completion of a pinned task by calling the API and clearing

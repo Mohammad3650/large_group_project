@@ -1,5 +1,5 @@
-import completeTimeBlock from '../Api/completeTimeBlock.js';
-import sortTasksByCompletedAt from './sortTasksByCompletedAt.js';
+import completeTimeBlock from '../../../../utils/Api/completeTimeBlock.js';
+import sortTasksByCompletedAt from '../../../../utils/Helpers/sortTasksByCompletedAt.js';
 
 /**
  * Marks a task as complete by calling the API and updates

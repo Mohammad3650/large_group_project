@@ -1,6 +1,6 @@
-import unpinTimeBlock from '../Api/unpinTimeBlock.js';
-import restoreTaskToDateGroup from './restoreTaskToDateGroup.js';
-import sortTasksByCompletedAt from './sortTasksByCompletedAt.js';
+import unpinTimeBlock from '../../../../utils/Api/unpinTimeBlock.js';
+import restoreTaskToDateGroup from '../../../../utils/Helpers/restoreTaskToDateGroup.js';
+import sortTasksByCompletedAt from '../../../../utils/Helpers/sortTasksByCompletedAt.js';
 
 /**
  * Unpins a task by calling the API and restores it to the

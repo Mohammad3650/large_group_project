@@ -1,5 +1,4 @@
-import pinTimeBlock from '../Api/pinTimeBlock.js';
-
+import pinTimeBlock from '../../../../utils/Api/pinTimeBlock.js';
 /**
  * Pins a task by calling the API and moves it from its source
  * task group into the pinned tasks list.

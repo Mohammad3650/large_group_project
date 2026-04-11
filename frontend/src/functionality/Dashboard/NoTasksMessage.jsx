@@ -1,4 +1,4 @@
-import getNoSearchResults from '../../utils/Helpers/getNoSearchResults.js';
+import getNoSearchResults from './utils/helpers/getNoSearchResults.js';
 import './stylesheets/NoTasksMessage.css';
 
 /**

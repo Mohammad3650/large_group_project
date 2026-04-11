@@ -4,11 +4,11 @@ import TaskSearchBar from '../../components/TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import NotesSection from './NotesSection.jsx';
 import NoTasksMessage from './NoTasksMessage.jsx';
-import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
+import buildTaskGroups from './utils/helpers/buildTaskGroups.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
-import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
-import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
-import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
+import useTimeBlocks from './utils/hooks/useTimeBlocks.js';
+import useTasksByDateGroup from './utils/hooks/useTasksByDateGroup.js';
+import useFilterTasksForSearch from './utils/hooks/useFilterTasksForSearch.js';
 import useUsername from '../../utils/Hooks/useUsername.js';
 import './stylesheets/Dashboard.css';
 

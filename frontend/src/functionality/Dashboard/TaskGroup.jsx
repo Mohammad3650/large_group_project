@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import TaskItemList from './TaskItemList.jsx';
-import getTitleClass from '../../utils/Helpers/getTitleClass.js';
+import getTitleClass from './utils/helpers/getTitleClass.js';
 import './stylesheets/TaskGroup.css';
 
 /**

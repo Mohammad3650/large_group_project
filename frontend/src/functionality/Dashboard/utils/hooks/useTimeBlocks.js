@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import getTimeBlocks from '../Api/getTimeBlocks.js';
-import mapTimeBlocks from '../Helpers/mapTimeBlocks.js';
+import getTimeBlocks from '../api/getTimeBlocks.js';
+import mapTimeBlocks from '../../../../utils/Helpers/mapTimeBlocks.js';
 
 /**
  * Fetches and manages the current user's time blocks.

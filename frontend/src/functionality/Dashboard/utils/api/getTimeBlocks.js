@@ -1,4 +1,4 @@
-import { api } from '../../api.js';
+import { api } from '../../../../api.js';
 
 /**
  * Fetches the current user's time blocks from the API.

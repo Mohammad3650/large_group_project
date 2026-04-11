@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import groupTasksByDateGroup from '../Helpers/groupTasksByDateGroup.js';
-import sumTotalTasks from '../Helpers/sumTotalTasks.js';
+import groupTasksByDateGroup from '../helpers/groupTasksByDateGroup.js';
+import sumTotalTasks from '../helpers/sumTotalTasks.js';
 
 /**
  * Groups an array of time blocks into date-based categories for display on the dashboard.
