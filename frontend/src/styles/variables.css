@@ -76,6 +76,9 @@
     --popup-min-width: 320px;
     --popup-max-width: 480px;
 
+    /* dropdown */
+    --dropdown-min-width: 180px;
+
     /* z-index */
     --z-index-dropup: 100;
     --z-index-popup: 500;
