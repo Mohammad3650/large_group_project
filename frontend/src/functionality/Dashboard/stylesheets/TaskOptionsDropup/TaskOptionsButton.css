@@ -1,8 +1,9 @@
 .task-options {
     position: relative;
     flex-shrink: 0;
-    height: fit-content;
-    align-self: center;
+    display: flex;
+    align-items: center;
+    align-self: stretch;
 }
 
 .task-options-btn {
@@ -10,11 +11,14 @@
     border: none;
     cursor: pointer;
     color: var(--text-muted);
-    font-size: var(--font-size-base);
-    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-heading);
+    padding: var(--space-xs) var(--space-sm) !important;
     border-radius: var(--radius-md);
     line-height: 1;
     transition: background-color var(--transition-speed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .task-options-btn:hover {
