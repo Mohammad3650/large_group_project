@@ -32,7 +32,7 @@ function Navbar({ theme, toggleTheme }) {
                 <div className="navbar-right">
                     <ToggleDarkMode theme={theme} toggleTheme={toggleTheme} />
                     {isLoggedIn
-                        ? <NavbarUserDropdown username={username} />
+                        ? <NavbarUserDropdown username={username} isLoggedIn={isLoggedIn} />
                         : <span className="navbar-tagline">Built for Students</span>
                     }
                 </div>
