@@ -23,7 +23,7 @@ function useTaskOptionsDropup({ id, setDropdownOpen, onDelete, onUndoComplete, o
     function handleEditClick(event) {
         event.stopPropagation();
         setDropdownOpen(false);
-        navigate(`/timeblocks/${id}/edit`);
+        navigate(`/time-blocks/${id}/edit`);
     }
 
     function handleUndoCompleteClick(event) {
