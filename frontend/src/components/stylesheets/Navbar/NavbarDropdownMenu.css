@@ -15,11 +15,14 @@
     gap: var(--space-xs);
 }
 
-.dropdown-username {
+.navbar-dropdown-user {
     font-size: var(--font-size-sm);
     color: var(--text-dark);
     font-weight: normal;
     padding: var(--space-sm) var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
 }
 
 .navbar-dropdown-divider {

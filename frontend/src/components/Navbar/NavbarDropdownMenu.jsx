@@ -15,7 +15,7 @@ import '../stylesheets/Navbar/NavbarDropdownMenu.css';
 function NavbarDropdownMenu({ username, onClose }) {
     return (
         <div className="navbar-dropdown">
-            <span className="dropdown-username">
+            <span className="navbar-dropdown-user">
                 <FaUser /> {username}
             </span>
             <hr className="navbar-dropdown-divider" />
