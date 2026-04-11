@@ -44,12 +44,12 @@ describe('buildTaskGroups', () => {
     });
 
     it('returns groups in the correct order with correct titles', () => {
-        const titles = buildTaskGroups(filteredTasks, setters).map(g => g.title);
+        const titles = buildTaskGroups(filteredTasks, setters).map(group => group.title);
         expect(titles).toEqual(['Pinned', 'Overdue', 'Today', 'Tomorrow', 'Next 7 Days', 'After Next 7 Days', 'Completed']);
     });
 
     it('assigns the correct variant to each group', () => {
-        const variants = buildTaskGroups(filteredTasks, setters).map(g => g.variant);
+        const variants = buildTaskGroups(filteredTasks, setters).map(group => group.variant);
         expect(variants).toEqual(['pinned', 'overdue', 'today', 'tomorrow', 'week', 'beyond', 'completed']);
     });
 

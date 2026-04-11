@@ -27,7 +27,7 @@ describe('restoreTaskToDateGroup', () => {
         restoreTaskToDateGroup({ date, startTime: '10:00:00' }, setters);
         expect(setters[setter]).toHaveBeenCalled();
         Object.entries(setters)
-            .filter(([k]) => k !== setter)
+            .filter(([key]) => key !== setter)
             .forEach(([, fn]) => expect(fn).not.toHaveBeenCalled());
     });
 
