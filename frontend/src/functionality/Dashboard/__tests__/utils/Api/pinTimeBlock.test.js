@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import pinTimeBlock from '../../../utils/Api/pinTimeBlock.js';
 import * as apiModule from '../../../../../api.js';
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../../../api.js', () => ({
     api: {
         patch: vi.fn(),
     },
