@@ -3,10 +3,10 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/vitest';
 
-import Navbar from '../Navbar';
-import useAuthStatus from '../../utils/Auth/authStatus';
-import useUsername from '../../utils/Hooks/useUsername.js';
-import useDropdown from '../../utils/Hooks/useDropdown.js';
+import Navbar from '../../Navbar/Navbar.jsx';
+import useAuthStatus from '../../../utils/Auth/authStatus.js';
+import useUsername from '../../../utils/Hooks/useUsername.js';
+import useDropdown from '../../../utils/Hooks/useDropdown.js';
 
 vi.mock('../../utils/Auth/authStatus', () => ({
     default: vi.fn()

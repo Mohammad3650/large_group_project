@@ -84,6 +84,7 @@
     --transition-speed: 0.2s;
 
     /* misc */
+    --icon-size-user: 38px;
     --arrow-offset: -3px;
     --checkbox-size: 1.2rem;
     --navbar-height: 75px;
