@@ -35,7 +35,7 @@ export default function useEditTimeBlock(id) {
     useEffect(() => {
         async function load() {
             try {
-                const res = await api.get(`/api/timeblocks/${id}/edit`);
+                const res = await api.get(`/api/time-blocks/${id}/edit`);
                 setInitialData(mapTimeBlockToFormData(res.data));
             } catch {
                 setServerErrors([{ detail: FETCH_ERROR }]);
@@ -50,7 +50,7 @@ export default function useEditTimeBlock(id) {
     async function update(block) {
         try {
             const payload = buildUpdatePayload(block);
-            await api.patch(`/api/timeblocks/${id}/edit/`, payload);
+            await api.patch(`/api/time-blocks/${id}/edit/`, payload);
             return true;
         } catch (error) {
             setServerErrors([
