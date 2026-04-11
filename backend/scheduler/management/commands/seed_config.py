@@ -22,7 +22,7 @@ PINNED_EVENTS = [
 
 CALENDAR_SUBSCRIPTION = {
     "name": "KCL Timetable",
-    "source_url": "https://scientia-eu-v4-api-d4-02.azurewebsites.net//api/ical/ca05f91a-6c36-45db-9b40-6d011398ed58/5783eddc-ce35-debb-5771-3eaa6bd2ccfa/timetable.ics",
+    "source_url": "https://raw.githubusercontent.com/Iyaad-06/Subscription-Link/main/demo-calendar.ics",
 }
 
 EVENTS = [

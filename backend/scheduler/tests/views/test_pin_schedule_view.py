@@ -42,7 +42,7 @@ class PinScheduleViewTest(APITestCase):
             end_time="10:00",
         )
 
-        self.url = reverse("api-pin-timeblock", args=[self.block.id])
+        self.url = reverse("api-pin-time-block", args=[self.block.id])
 
     def test_pin_time_block_requires_authentication(self):
         """Tests that unauthenticated users cannot pin a time block."""
@@ -66,6 +66,6 @@ class PinScheduleViewTest(APITestCase):
 
     def test_pin_nonexistent_block_returns_404(self):
         """Tests that pinning a non-existent time block returns 404."""
-        url = reverse("api-pin-timeblock", args=[99999])
+        url = reverse("api-pin-time-block", args=[99999])
         response = self.client.patch(url)
         self.assertEqual(response.status_code, 404)

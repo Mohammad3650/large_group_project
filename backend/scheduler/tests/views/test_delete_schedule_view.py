@@ -44,7 +44,7 @@ class DeleteScheduleViewTest(APITestCase):
             end_time="10:00",
         )
 
-        self.url = reverse("api-delete-timeblock", args=[self.block.id])
+        self.url = reverse("api-delete-time-block", args=[self.block.id])
 
     def test_delete_time_block_requires_authentication(self):
         """

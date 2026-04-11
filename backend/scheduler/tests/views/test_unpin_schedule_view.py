@@ -46,7 +46,7 @@ class UnpinScheduleViewTest(APITestCase):
             pinned_at=timezone.now(),
         )
 
-        self.url = reverse("api-unpin-timeblock", args=[self.block.id])
+        self.url = reverse("api-unpin-time-block", args=[self.block.id])
 
     def test_unpin_time_block_requires_authentication(self):
         """Tests that unauthenticated users cannot unpin a time block."""
@@ -70,6 +70,6 @@ class UnpinScheduleViewTest(APITestCase):
 
     def test_unpin_nonexistent_block_returns_404(self):
         """Tests that unpinning a non-existent time block returns 404."""
-        url = reverse("api-unpin-timeblock", args=[99999])
+        url = reverse("api-unpin-time-block", args=[99999])
         response = self.client.patch(url)
         self.assertEqual(response.status_code, 404)

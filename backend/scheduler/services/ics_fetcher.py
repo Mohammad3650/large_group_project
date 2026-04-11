@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
-from scheduler.services.ics_fetcher_helpers import (
+from scheduler.services.ics_request_helpers import (
     FETCH_FAILED_ERROR,
     build_calendar_request,
     decode_response_content,
-    normalise_source_url_value,
     open_calendar_request,
 )
+from scheduler.services.ics_url_helpers import normalise_source_url_value
 
 
 def normalise_subscription_url(source_url):

@@ -1,44 +1,20 @@
-from datetime import date, datetime
+from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from django.test import TestCase
 from icalendar import Event
 
-from scheduler.services.ics_parser_helpers import (
+from scheduler.services.ics_event_component_helpers import (
     build_parsed_event,
     get_component_datetime,
+    get_event_summary,
     has_valid_event_range,
     is_event_component,
-    normalise_ics_datetime,
     safe_text,
 )
 
 
-class IcsParserHelpersTest(TestCase):
-    def test_normalise_ics_datetime_converts_naive_datetime_to_europe_london(self):
-        """It should attach the Europe/London timezone to naive datetimes."""
-        value = datetime(2026, 4, 10, 9, 0, 0)
-
-        result = normalise_ics_datetime(value)
-
-        self.assertEqual(result.tzinfo, ZoneInfo("Europe/London"))
-        self.assertEqual(result.hour, 9)
-
-    def test_normalise_ics_datetime_converts_aware_datetime_to_europe_london(self):
-        """It should convert aware datetimes into Europe/London time."""
-        paris = ZoneInfo("Europe/Paris")
-        value = datetime(2026, 4, 10, 10, 0, 0, tzinfo=paris)
-
-        result = normalise_ics_datetime(value)
-
-        self.assertEqual(result.tzinfo, ZoneInfo("Europe/London"))
-        self.assertEqual(result.hour, 9)
-
-    def test_normalise_ics_datetime_returns_none_for_date_only(self):
-        """It should ignore date-only values."""
-        result = normalise_ics_datetime(date(2026, 4, 10))
-        self.assertIsNone(result)
-
+class IcsEventComponentHelpersTest(TestCase):
     def test_safe_text_returns_empty_string_for_none(self):
         """It should return an empty string for None text."""
         self.assertEqual(safe_text(None), "")
@@ -74,6 +50,11 @@ class IcsParserHelpersTest(TestCase):
             tzinfo=ZoneInfo("Europe/London"),
         )
         self.assertFalse(has_valid_event_range(start_datetime, start_datetime))
+
+    def test_get_event_summary_uses_default_when_missing(self):
+        """It should use the default summary when the summary field is empty."""
+        event = Event()
+        self.assertEqual(get_event_summary(event), "Imported Event")
 
     def test_build_parsed_event_uses_default_summary_when_missing(self):
         """It should use the default summary when the summary field is empty."""

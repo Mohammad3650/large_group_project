@@ -67,7 +67,7 @@ function App() {
                 />
 
                 <Route
-                    path="/successful-timeblock"
+                    path="/successful-time-block"
                     element={
                         <ProtectedRoute>
                             <SuccessfulTimeBlock />
@@ -76,7 +76,7 @@ function App() {
                 />
 
                 <Route
-                    path="/timeblocks/:id/edit"
+                    path="/time-blocks/:id/edit"
                     element={
                         <ProtectedRoute>
                             <EditTimeBlock />

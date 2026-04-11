@@ -14,7 +14,7 @@ function useEditTimeBlockNavigation(id) {
     const navigate = useNavigate();
 
     function goSuccess() {
-        navigate('/successful-timeblock', {
+        navigate('/successful-time-block', {
             state: { id, action: 'edited' }
         });
     }

@@ -55,46 +55,56 @@ urlpatterns = [
     path("api/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
-
-    #Time blocks
-    path("api/time-blocks/", create_schedule, name="api-create-timeblock"),
-    path("api/time-blocks/get/", get_schedule, name="api-get-timeblocks"),
-    path("api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-timeblock"),
-    path("api/timeblocks/<int:id>/edit/", edit_time_block, name="api-edit-timeblock"),
-    path("api/time-blocks/<int:block_id>/complete/", complete_schedule, name="api-complete-timeblock"),
-    path("api/time-blocks/<int:block_id>/undo-complete/", undo_complete_schedule, name="api-undo-complete-timeblock"),
-    path("api/time-blocks/<int:block_id>/pin/", pin_schedule, name="api-pin-timeblock"),
-    path("api/time-blocks/<int:block_id>/unpin/", unpin_schedule, name="api-unpin-timeblock"),
-
-
-    #Notes
+    # Time blocks
+    path("api/time-blocks/", create_schedule, name="api-create-time-block"),
+    path("api/time-blocks/get/", get_schedule, name="api-get-time-blocks"),
+    path(
+        "api/time-blocks/<int:block_id>/", delete_schedule, name="api-delete-time-block"
+    ),
+    path("api/time-blocks/<int:id>/edit/", edit_time_block, name="api-edit-time-block"),
+    path(
+        "api/time-blocks/<int:block_id>/complete/",
+        complete_schedule,
+        name="api-complete-time-block",
+    ),
+    path(
+        "api/time-blocks/<int:block_id>/undo-complete/",
+        undo_complete_schedule,
+        name="api-undo-complete-time-block",
+    ),
+    path(
+        "api/time-blocks/<int:block_id>/pin/", pin_schedule, name="api-pin-time-block"
+    ),
+    path(
+        "api/time-blocks/<int:block_id>/unpin/",
+        unpin_schedule,
+        name="api-unpin-time-block",
+    ),
+    # Notes
     path("api/notes/get/", get_note, name="api-get-note"),
     path("api/notes/save/", save_note, name="api-save-note"),
-
-    #Schedule generation
-    path("schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"),
-
-    #Plans
+    # Schedule generation
+    path(
+        "schedule/generates/", GenerateScheduleView.as_view(), name="schedule-generate"
+    ),
+    # Plans
     path("api/plans/save/", SaveWeeklyPlanView.as_view(), name="plans-save"),
-
-    #User
+    # User
     path("api/user/", UserDetailsView.as_view(), name="user-details"),
     path("api/user/change-password/", change_password, name="change_password_view"),
     path("api/user/delete/", delete_user, name="delete_user_view"),
-
-    #Export
+    # Export
     path(
         "api/time-blocks/export/csv/",
         export_schedule_csv,
-        name="api-export-timeblocks-csv",
+        name="api-export-time-blocks-csv",
     ),
     path(
         "api/time-blocks/export/ics/",
         export_schedule_ics,
-        name="api-export-timeblocks-ics",
+        name="api-export-time-blocks-ics",
     ),
-
-    #Calendar subscriptions
+    # Calendar subscriptions
     path(
         "api/calendar-subscriptions/",
         calendar_subscriptions,

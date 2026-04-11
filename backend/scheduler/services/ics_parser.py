@@ -1,6 +1,7 @@
 from icalendar import Calendar
 
-from scheduler.services.ics_parser_helpers import (
+from scheduler.services.ics_datetime_helpers import normalise_ics_datetime
+from scheduler.services.ics_event_component_helpers import (
     build_parsed_event,
     get_component_datetime,
     has_valid_event_range,

@@ -1,8 +1,8 @@
-from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from scheduler.services.user_account_view_helpers import change_user_password
+from scheduler.services.password_change_helpers import change_user_password
 
 
 @api_view(["POST"])

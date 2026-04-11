@@ -81,10 +81,10 @@ describe('Tests for SuccessfulTimeBlock', () => {
 
     it('new time block button takes the user to the create time block page', () => {
         render(
-            <MemoryRouter initialEntries={['/successful-timeblock']}>
+            <MemoryRouter initialEntries={['/successful-time-block']}>
                 <Routes>
                     <Route
-                        path="/successful-timeblock"
+                        path="/successful-time-block"
                         element={<SuccessfulTimeBlock />}
                     />
                     <Route

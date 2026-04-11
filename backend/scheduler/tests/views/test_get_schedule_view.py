@@ -52,7 +52,7 @@ class GetScheduleViewTest(APITestCase):
             block_type="exercise",
         )
 
-        self.url = reverse("api-get-timeblocks")
+        self.url = reverse("api-get-time-blocks")
 
     def test_get_schedule_requires_authentication(self):
         """Ensure unauthenticated users cannot access schedules."""
@@ -95,7 +95,7 @@ class GetScheduleViewTest(APITestCase):
         """Authenticated user should be able to see their own previously saved timeblocks."""
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
