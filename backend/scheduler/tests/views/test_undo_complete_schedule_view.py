@@ -44,7 +44,7 @@ class UndoCompleteScheduleViewTest(APITestCase):
             completed_at=timezone.now(),
         )
 
-        self.url = reverse("api-undo-complete-timeblock", args=[self.block.id])
+        self.url = reverse("api-undo-complete-time-block", args=[self.block.id])
 
     def test_undo_complete_requires_authentication(self):
         """Tests that unauthenticated users cannot undo the completion of a time block."""
@@ -67,6 +67,6 @@ class UndoCompleteScheduleViewTest(APITestCase):
 
     def test_undo_complete_nonexistent_block_returns_404(self):
         """Tests that undoing completion on a non-existent time block returns 404."""
-        url = reverse("api-undo-complete-timeblock", args=[99999])
+        url = reverse("api-undo-complete-time-block", args=[99999])
         response = self.client.patch(url)
         self.assertEqual(response.status_code, 404)

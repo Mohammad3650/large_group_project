@@ -77,7 +77,7 @@ class EditScheduleViewTest(APITestCase):
         """Authenticated user should be able to edit their own timeblocks."""
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         data_with_updated_name = self.base_data.copy()
         data_with_updated_name.update({"name": "Updated Session"})
 
@@ -96,7 +96,7 @@ class EditScheduleViewTest(APITestCase):
         # Confirm block no longer exists
         self.assertFalse(TimeBlock.objects.filter(id=block_id).exists())
 
-        url = reverse("api-edit-timeblock", args=[block_id])
+        url = reverse("api-edit-time-block", args=[block_id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 404)
@@ -106,7 +106,7 @@ class EditScheduleViewTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         # Invalidate the start and end time order
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         invalid_data = self.base_data.copy()
         invalid_data.update({"start_time": "10:00", "end_time": "09:00"})
 
@@ -118,7 +118,7 @@ class EditScheduleViewTest(APITestCase):
         """Users cannot edit TimeBlocks belonging to other users."""
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.other_block.id])
+        url = reverse("api-edit-time-block", args=[self.other_block.id])
         data = self.base_data.copy()
         data.update({"name": "Hacked Session"})
 
@@ -130,7 +130,7 @@ class EditScheduleViewTest(APITestCase):
         """Users cannot view TimeBlocks belonging to other users."""
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.other_block.id])
+        url = reverse("api-edit-time-block", args=[self.other_block.id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 404)
@@ -141,7 +141,7 @@ class EditScheduleViewTest(APITestCase):
 
         new_date = "2026-02-19"  # different from original
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         data_with_new_date = self.base_data.copy()
         data_with_new_date.update({"date": new_date})
 
@@ -158,7 +158,7 @@ class EditScheduleViewTest(APITestCase):
     def test_patch_only_start_time(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         data_with_new_start_time = self.base_data.copy()
         data_with_new_start_time.update({"start_time": "08:00"})
@@ -173,7 +173,7 @@ class EditScheduleViewTest(APITestCase):
     def test_patch_only_end_time(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         data_with_new_end_time = self.base_data.copy()
         data_with_new_end_time.update({"end_time": "11:00"})
@@ -192,7 +192,7 @@ class EditScheduleViewTest(APITestCase):
         """
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         data = self.base_data.copy()
 
@@ -208,7 +208,7 @@ class EditScheduleViewTest(APITestCase):
     def test_get_time_block_success(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -221,7 +221,7 @@ class EditScheduleViewTest(APITestCase):
         """
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         data_without_date = self.base_data.copy()
         data_without_date.pop("date")
@@ -233,7 +233,7 @@ class EditScheduleViewTest(APITestCase):
     def test_get_time_block_returns_correct_date(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -246,7 +246,7 @@ class EditScheduleViewTest(APITestCase):
         """
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         invalid_data = self.base_data.copy()
         invalid_data["name"] = ""  # assuming name is required
@@ -337,7 +337,7 @@ class EditScheduleViewTest(APITestCase):
         """
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         data_updated = self.base_data.copy()
         data_updated.update(
             {

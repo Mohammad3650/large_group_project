@@ -1,7 +1,7 @@
 .go-dashboard-btn,
 .go-calendar-btn,
-.go-timeblock-btn,
-.edit-timeblock-btn {
+.go-time-block-btn,
+.edit-time-block-btn {
     padding: var(--space-lg) var(--space-xl);
     border-radius: var(--radius-lg);
     font-size: var(--font-size-sm);
@@ -21,12 +21,12 @@
     color: var(--text-white);
 }
 
-.go-timeblock-btn {
+.go-time-block-btn {
     background-color: var(--blue);
     color: var(--text-white);
 }
 
-.edit-timeblock-btn {
+.edit-time-block-btn {
     background-color: var(--edit);
     color: var(--text-main);
 }
@@ -132,8 +132,8 @@
 
     .go-dashboard-btn,
     .go-calendar-btn,
-    .go-timeblock-btn,
-    .edit-timeblock-btn {
+    .go-time-block-btn,
+    .edit-time-block-btn {
         width: 100%;
     }
 }

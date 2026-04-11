@@ -7,7 +7,7 @@ import './stylesheets/ExportSection.css';
  *
  * @param {Object} props
  * @param {Function} props.setError - Setter for the error message state
- * @returns {JSX.Element} The export settings section
+ * @returns {React.JSX.Element} The export settings section
  */
 function ExportSection({ setError }) {
     return (

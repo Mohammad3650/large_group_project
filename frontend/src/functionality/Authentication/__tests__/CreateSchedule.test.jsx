@@ -149,7 +149,7 @@ describe('Tests for CreateSchedule', () => {
             end_time: '10:00'
         });
 
-        expect(mockNavigate).toHaveBeenCalledWith('/successful-timeblock', {
+        expect(mockNavigate).toHaveBeenCalledWith('/successful-time-block', {
             state: { id: 123 }
         });
     });

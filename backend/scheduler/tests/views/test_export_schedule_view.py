@@ -49,8 +49,8 @@ class ExportScheduleViewTest(TestCase):
             description="Should not be exported",
         )
 
-        self.csv_url = reverse("api-export-timeblocks-csv")
-        self.ics_url = reverse("api-export-timeblocks-ics")
+        self.csv_url = reverse("api-export-time-blocks-csv")
+        self.ics_url = reverse("api-export-time-blocks-ics")
 
     def create_time_block(
         self,

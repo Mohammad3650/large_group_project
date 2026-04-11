@@ -1,8 +1,8 @@
 import { FaUser, FaCalendarAlt, FaFileExport } from 'react-icons/fa';
+import SettingsNavItem from './SettingsNavItem.jsx';
 import LogoutButton from '../../components/LogoutButton.jsx';
 import './stylesheets/SettingsSidebar.css';
 
-// Navigation items for the settings sidebar
 const NAV_ITEMS = [
     { key: 'profile',       label: 'Profile',      icon: FaUser },
     { key: 'subscriptions', label: 'Subscriptions', icon: FaCalendarAlt },
@@ -15,24 +15,22 @@ const NAV_ITEMS = [
  * @param {Object} props
  * @param {string} props.activeSection - Currently active section key
  * @param {Function} props.setActiveSection - Setter for the active section
- * @returns {JSX.Element} The settings sidebar
+ * @returns {React.JSX.Element} The settings sidebar
  */
 function SettingsSidebar({ activeSection, setActiveSection }) {
     return (
         <nav className="settings-sidebar">
-            {NAV_ITEMS.map(({ key, label, icon: Icon }) => (
-                <button
+            {NAV_ITEMS.map(({ key, label, icon }) => (
+                <SettingsNavItem
                     key={key}
-                    className={`settings-nav-item ${activeSection === key ? 'active' : ''}`}
+                    navKey={key}
+                    label={label}
+                    icon={icon}
+                    isActive={activeSection === key}
                     onClick={() => setActiveSection(key)}
-                >
-                    <Icon className="settings-nav-icon" />
-                    {label}
-                </button>
+                />
             ))}
-
             <hr className="settings-nav-divider" />
-
             <LogoutButton />
         </nav>
     );

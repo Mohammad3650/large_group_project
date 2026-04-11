@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import SettingsSidebar from './SettingsSidebar.jsx';
-import ProfileSection from './ProfileSection.jsx';
-import SubscriptionSection from './SubscriptionSection.jsx';
-import ExportSection from './ExportSection.jsx';
+import SettingsContent from './SettingsContent.jsx';
 import useSubscriptions from '../../utils/Hooks/useSubscriptions.js';
 import useSubscriptionActions from '../../utils/Hooks/useSubscriptionActions.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
@@ -12,8 +10,9 @@ import './stylesheets/Settings.css';
 /**
  * Settings page with sidebar navigation for managing profile details,
  * calendar subscriptions, and data export options.
+ * Automatically resets error messages after a short delay.
  *
- * @returns {JSX.Element} The settings page
+ * @returns {React.JSX.Element} The settings page
  */
 function Settings() {
     const [activeSection, setActiveSection] = useState('profile');
@@ -27,21 +26,16 @@ function Settings() {
     return (
         <div className="settings-layout">
             <SettingsSidebar activeSection={activeSection} setActiveSection={setActiveSection} />
-
             <div className="settings-main">
-                {activeSection === 'profile' && <ProfileSection />}
-
-                {activeSection === 'subscriptions' && (
-                    <SubscriptionSection
-                        subscriptions={subscriptions}
-                        error={error}
-                        onImport={onImport}
-                        onRefresh={onRefresh}
-                        onDelete={onDelete}
-                    />
-                )}
-
-                {activeSection === 'export' && <ExportSection setError={setError} />}
+                <SettingsContent
+                    activeSection={activeSection}
+                    subscriptions={subscriptions}
+                    error={error}
+                    setError={setError}
+                    onImport={onImport}
+                    onRefresh={onRefresh}
+                    onDelete={onDelete}
+                />
             </div>
         </div>
     );

@@ -54,7 +54,7 @@ function CreateSchedule() {
         setLoading(false);
 
         if (allSuccess)
-            navigate('/successful-timeblock', {
+            navigate('/successful-time-block', {
                 state: { id: createdBlockId }
             });
     }
