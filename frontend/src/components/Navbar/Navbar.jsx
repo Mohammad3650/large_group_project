@@ -1,6 +1,6 @@
 import NavbarBrand from './NavbarBrand.jsx';
 import NavbarLinks from './NavbarLinks.jsx';
-import NavbarUserDropdown from './NavbarUserDropdown.jsx';
+import NavbarUserButton from './NavbarUserButton.jsx';
 import ToggleDarkMode from '../ToggleDarkMode.jsx';
 import useAuthStatus from '../../utils/Auth/authStatus.js';
 import useUsername from '../../utils/Hooks/useUsername.js';
@@ -32,7 +32,7 @@ function Navbar({ theme, toggleTheme }) {
                 <div className="navbar-right">
                     <ToggleDarkMode theme={theme} toggleTheme={toggleTheme} />
                     {isLoggedIn
-                        ? <NavbarUserDropdown username={username} isLoggedIn={isLoggedIn} />
+                        ? <NavbarUserButton username={username} isLoggedIn={isLoggedIn} />
                         : <span className="navbar-tagline">Built for Students</span>
                     }
                 </div>

@@ -1,36 +1,29 @@
-import { FaUserCircle } from 'react-icons/fa';
-import NavbarDropdownMenu from './NavbarDropdownMenu.jsx';
-import useDropdown from '../../utils/Hooks/useDropdown.js';
-import useCloseOnAuthChange from '../utils/Hooks/useCloseOnAuthChange.js';
+import { Link } from 'react-router-dom';
+import { FaUser, FaCog } from 'react-icons/fa';
+import LogoutButton from '../LogoutButton.jsx';
 import '../stylesheets/Navbar/NavbarUserDropdown.css';
 
 /**
- * Renders the user icon and toggles the navbar dropdown menu on click.
- * Closes the dropdown automatically when the user's authentication status changes.
+ * Renders the dropdown menu content for the navbar user section.
+ * Displays the username, a settings link, and a logout button.
  *
  * @param {Object} props
  * @param {string} props.username - The username of the currently authenticated user
- * @param {boolean} props.isLoggedIn - Whether the user is currently authenticated
- * @returns {React.JSX.Element} The user icon and dropdown menu
+ * @param {Function} props.onClose - Callback to close the dropdown menu
+ * @returns {React.JSX.Element} The dropdown menu
  */
-function NavbarUserDropdown({ username, isLoggedIn }) {
-    const { dropdownOpen, setDropdownOpen, dropdownRef } = useDropdown();
-
-    useCloseOnAuthChange(isLoggedIn, setDropdownOpen);
-
+function NavbarUserDropdown({ username, onClose }) {
     return (
-        <div className="navbar-user" ref={dropdownRef}>
-            <FaUserCircle
-                className={`navbar-icon user-icon ${dropdownOpen ? 'active' : ''}`}
-                aria-label="User Icon"
-                onClick={() => setDropdownOpen((prev) => !prev)}
-            />
-            {dropdownOpen && (
-                <NavbarDropdownMenu
-                    username={username}
-                    onClose={() => setDropdownOpen(false)}
-                />
-            )}
+        <div className="navbar-dropdown">
+            <span className="navbar-dropdown-user">
+                <FaUser /> {username}
+            </span>
+            <hr className="navbar-dropdown-divider" />
+            <Link to="/settings" className="dropdown-link" onClick={onClose}>
+                <FaCog /> Settings
+            </Link>
+            <hr className="navbar-dropdown-divider" />
+            <LogoutButton />
         </div>
     );
 }
