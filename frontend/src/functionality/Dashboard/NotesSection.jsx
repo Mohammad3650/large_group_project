@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useNotes from '../../utils/Hooks/useNotes.js';
 import useAutoSave from '../../utils/Hooks/useAutoSave.js';
+import getNotesSaveStatusText from './utils/helpers/getNotesSaveStatusText.js';
 import './stylesheets/NotesSection.css';
 
 /**
@@ -15,11 +16,7 @@ function NotesSection() {
 
     useAutoSave(notes, loaded, setSaveStatus);
 
-    const statusText = {
-        saving: 'Saving...',
-        error: 'Error saving ✗',
-        saved: 'Saved ✓',
-    }[saveStatus] || '\u00A0';
+    const statusText = getNotesSaveStatusText(saveStatus);
 
     if (loading) return <p className="notes-loading">Loading notes...</p>;
     if (error) return <p className="notes-error">{error}</p>;

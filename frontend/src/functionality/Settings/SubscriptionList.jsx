@@ -1,3 +1,4 @@
+import formatSubscriptionLastSyncedAt from './utils/helpers/formatSubscriptionLastSyncedAt.js';
 import './stylesheets/SubscriptionList.css';
 
 /**
@@ -27,17 +28,14 @@ function SubscriptionActionButton({ className, onClick, children }) {
  * @returns {JSX.Element} The subscription list
  */
 function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
-    /**
-     * Confirm before deleting a saved calendar subscription.
-     *
-     * @param {number} subscriptionId - Subscription identifier
-     */
     function handleDeleteClick(subscriptionId) {
         const confirmed = window.confirm(
             'Are you sure you want to delete this calendar subscription?'
         );
 
-        if (!confirmed) return;
+        if (!confirmed) {
+            return;
+        }
 
         onDelete(subscriptionId);
     }
@@ -62,12 +60,10 @@ function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
                             {subscription.source_url}
                         </p>
                         <p className="subscription-meta">
-                            Last synced:
-                            {subscription.last_synced_at
-                                ? new Date(
-                                      subscription.last_synced_at
-                                  ).toLocaleString()
-                                : 'Never'}
+                            Last synced:{' '}
+                            {formatSubscriptionLastSyncedAt(
+                                subscription.last_synced_at
+                            )}
                         </p>
                         {subscription.last_error && (
                             <p className="subscription-error-text">

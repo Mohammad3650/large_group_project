@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaCloudDownloadAlt } from 'react-icons/fa';
+import getSubscriptionFeedbackMessage from './utils/helpers/getSubscriptionFeedbackMessage.js';
 import './stylesheets/SubscriptionForm.css';
-
 
 /**
  * Reusable input field for the subscription form.
@@ -38,51 +38,54 @@ function SubscriptionInput({ type, placeholder, value, onChange }) {
 function SubscriptionForm({
     onImport,
     feedbackMessage = '',
-    feedbackType = '',
+    feedbackType = ''
 }) {
     const [name, setName] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
     const [loading, setLoading] = useState(false);
-    const [localFeedbackMessage, setLocalFeedbackMessage] = useState('');
-    const [localFeedbackType, setLocalFeedbackType] = useState('');
+    const [localFeedback, setLocalFeedback] = useState({
+        message: '',
+        type: ''
+    });
 
     const hasParentFeedback = Boolean(feedbackMessage);
 
-    /**
-     * Reset form fields after a successful import.
-     */
     function resetForm() {
         setName('');
         setSourceUrl('');
     }
 
-    /**
-     * Clear local feedback messages.
-     */
     function clearLocalFeedback() {
-        setLocalFeedbackMessage('');
-        setLocalFeedbackType('');
+        setLocalFeedback({
+            message: '',
+            type: ''
+        });
     }
 
-    /**
-     * Build the payload sent to the import handler.
-     *
-     * @returns {{name: string, sourceUrl: string}} Subscription payload
-     */
     function buildPayload() {
         return { name, sourceUrl };
     }
 
-    /**
-     * Handle timetable subscription form submission.
-     *
-     * @param {Event} event - Form submit event
-     * @returns {Promise<void>}
-     */
+    function setSuccessFeedback() {
+        setLocalFeedback({
+            message: 'Timetable imported successfully.',
+            type: 'success'
+        });
+    }
+
+    function setErrorFeedback(error) {
+        setLocalFeedback({
+            message: getSubscriptionFeedbackMessage(error),
+            type: 'error'
+        });
+    }
+
     async function handleSubmit(event) {
         event.preventDefault();
 
-        if (loading) return;
+        if (loading) {
+            return;
+        }
 
         clearLocalFeedback();
         setLoading(true);
@@ -92,20 +95,11 @@ function SubscriptionForm({
             resetForm();
 
             if (!feedbackMessage) {
-                setLocalFeedbackMessage('Timetable imported successfully.');
-                setLocalFeedbackType('success');
+                setSuccessFeedback();
             }
         } catch (error) {
             if (!feedbackMessage) {
-                const backendMessage =
-                    error?.response?.data?.source_url?.[0] ||
-                    error?.response?.data?.name?.[0] ||
-                    error?.response?.data?.message ||
-                    error?.response?.data?.detail ||
-                    'Failed to import timetable.';
-
-                setLocalFeedbackMessage(backendMessage);
-                setLocalFeedbackType('error');
+                setErrorFeedback(error);
             }
         } finally {
             setLoading(false);
@@ -115,12 +109,17 @@ function SubscriptionForm({
     return (
         <form className="subscription-form" onSubmit={handleSubmit}>
             <h2 className="subscription-title">Subscribe to timetable</h2>
-            {!hasParentFeedback && localFeedbackMessage && localFeedbackType === 'success' && (
-                <p className="subscription-success-text">{localFeedbackMessage}</p>
-            )}
 
-            {!hasParentFeedback && localFeedbackMessage && localFeedbackType === 'error' && (
-                <p className="subscription-error-text">{localFeedbackMessage}</p>
+            {!hasParentFeedback && localFeedback.message && (
+                <p
+                    className={
+                        localFeedback.type === 'success'
+                            ? 'subscription-success-text'
+                            : 'subscription-error-text'
+                    }
+                >
+                    {localFeedback.message}
+                </p>
             )}
 
             <SubscriptionInput
