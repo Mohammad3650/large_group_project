@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import NavbarBrand from '../../Navbar/NavbarBrand.jsx';
 
-vi.mock('../../components/stylesheets/Navbar/NavbarBrand.css', () => ({}));
+vi.mock('../../stylesheets/Navbar/NavbarBrand.css', () => ({}));
 
 describe('NavbarBrand component', () => {
     it('renders the StudySync title', () => {

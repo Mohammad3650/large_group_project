@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import NavbarLinks from '../../Navbar/NavbarLinks.jsx';
 
-vi.mock('../../components/stylesheets/Navbar/NavbarLinks.css', () => ({}));
+vi.mock('../../stylesheets/Navbar/NavbarLinks.css', () => ({}));
 vi.mock('react-icons/lu', () => ({
     LuClipboardList: () => <svg data-testid="icon-clipboard" />,
     LuCalendar: () => <svg data-testid="icon-calendar" />,
