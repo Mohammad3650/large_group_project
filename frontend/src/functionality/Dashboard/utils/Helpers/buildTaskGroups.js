@@ -40,6 +40,18 @@ function buildTaskGroups(filteredTasks, setters) {
 
     const dateGroupSetters = { setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks };
 
+    const dateGroups = [
+        { title: 'Overdue',            variant: 'overdue',  tasks: filteredOverdue,    setTasks: setOverdueTasks },
+        { title: 'Today',              variant: 'today',    tasks: filteredToday,      setTasks: setTodayTasks },
+        { title: 'Tomorrow',           variant: 'tomorrow', tasks: filteredTomorrow,   setTasks: setTomorrowTasks },
+        { title: 'Next 7 Days',        variant: 'week',     tasks: filteredWeek,       setTasks: setWeekTasks },
+        { title: 'After Next 7 Days',  variant: 'beyond',   tasks: filteredBeyondWeek, setTasks: setBeyondWeekTasks },
+    ].map(({ title, variant, tasks, setTasks }) => ({
+        title, variant, tasks, setTasks,
+        onComplete: (task) => handleCompleteTask(task, setTasks, setCompletedTasks),
+        onPin: (task) => handlePinTask(task, setTasks, setPinnedTasks),
+    }));
+
     return [
         {
             title: 'Pinned',
@@ -50,46 +62,7 @@ function buildTaskGroups(filteredTasks, setters) {
             onUndoComplete: (task) => handleUndoCompletePinnedTask(task, { setPinnedTasks }),
             onUnpin: (task) => handleUnpinTask(task, { setPinnedTasks, setCompletedTasks, ...dateGroupSetters }),
         },
-        {
-            title: 'Overdue',
-            variant: 'overdue',
-            tasks: filteredOverdue,
-            setTasks: setOverdueTasks,
-            onComplete: (task) => handleCompleteTask(task, setOverdueTasks, setCompletedTasks),
-            onPin: (task) => handlePinTask(task, setOverdueTasks, setPinnedTasks),
-        },
-        {
-            title: 'Today',
-            variant: 'today',
-            tasks: filteredToday,
-            setTasks: setTodayTasks,
-            onComplete: (task) => handleCompleteTask(task, setTodayTasks, setCompletedTasks),
-            onPin: (task) => handlePinTask(task, setTodayTasks, setPinnedTasks),
-        },
-        {
-            title: 'Tomorrow',
-            variant: 'tomorrow',
-            tasks: filteredTomorrow,
-            setTasks: setTomorrowTasks,
-            onComplete: (task) => handleCompleteTask(task, setTomorrowTasks, setCompletedTasks),
-            onPin: (task) => handlePinTask(task, setTomorrowTasks, setPinnedTasks),
-        },
-        {
-            title: 'Next 7 Days',
-            variant: 'week',
-            tasks: filteredWeek,
-            setTasks: setWeekTasks,
-            onComplete: (task) => handleCompleteTask(task, setWeekTasks, setCompletedTasks),
-            onPin: (task) => handlePinTask(task, setWeekTasks, setPinnedTasks),
-        },
-        {
-            title: 'After Next 7 Days',
-            variant: 'beyond',
-            tasks: filteredBeyondWeek,
-            setTasks: setBeyondWeekTasks,
-            onComplete: (task) => handleCompleteTask(task, setBeyondWeekTasks, setCompletedTasks),
-            onPin: (task) => handlePinTask(task, setBeyondWeekTasks, setPinnedTasks),
-        },
+        ...dateGroups,
         {
             title: 'Completed',
             variant: 'completed',
