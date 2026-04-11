@@ -1,0 +1,22 @@
+.task-options {
+    position: relative;
+    flex-shrink: 0;
+    height: fit-content;
+    align-self: center;
+}
+
+.task-options-btn {
+    background: var(--bg-main);
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: var(--font-size-base);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    line-height: 1;
+    transition: background-color var(--transition-speed);
+}
+
+.task-options-btn:hover {
+    background-color: var(--bg-soft-hover);
+}

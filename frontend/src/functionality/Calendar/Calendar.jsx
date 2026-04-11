@@ -3,6 +3,7 @@ import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
+import WelcomeMessage from '../../components/WelcomeMessage.jsx';
 import CalendarView from './CalendarView.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import useUsername from '../../utils/Hooks/useUsername.js';
@@ -34,7 +35,7 @@ function Calendar({ theme }) {
     if (blocks.length === 0) {
         return (
             <div className="calendar-content">
-                <h1>{`Welcome to your calendar, ${username}!`}</h1>
+                <WelcomeMessage page="calendar" username={username} />
                 <div className="empty-state">No events yet.</div>
             </div>
         );

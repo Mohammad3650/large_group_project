@@ -1,0 +1,18 @@
+.task-details-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.task-details-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-main);
+    font-size: var(--font-size-sm);
+}
+
+.task-details-icon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
