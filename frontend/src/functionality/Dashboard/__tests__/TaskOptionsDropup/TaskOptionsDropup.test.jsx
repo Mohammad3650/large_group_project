@@ -33,6 +33,18 @@ const renderDropup = (props = {}) =>
         </MemoryRouter>
     );
 
+const renderDropupWithParent = (additionalProps = {}) => {
+    const parentHandler = vi.fn();
+    render(
+        <MemoryRouter>
+            <div onClick={parentHandler}>
+                <TaskOptionsDropup {...defaultProps} {...additionalProps} />
+            </div>
+        </MemoryRouter>
+    );
+    return { parentHandler };
+};
+
 describe('TaskOptionsDropup component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -74,14 +86,7 @@ describe('TaskOptionsDropup component', () => {
     });
 
     it('stops propagation when view details is clicked', () => {
-        const parentHandler = vi.fn();
-        render(
-            <MemoryRouter>
-                <div onClick={parentHandler}>
-                    <TaskOptionsDropup {...defaultProps} />
-                </div>
-            </MemoryRouter>
-        );
+        const { parentHandler } = renderDropupWithParent();
         fireEvent.click(screen.getByText('View Details'));
         expect(parentHandler).not.toHaveBeenCalled();
     });
@@ -95,14 +100,7 @@ describe('TaskOptionsDropup component', () => {
     });
 
     it('stops propagation when edit is clicked', () => {
-        const parentHandler = vi.fn();
-        render(
-            <MemoryRouter>
-                <div onClick={parentHandler}>
-                    <TaskOptionsDropup {...defaultProps} />
-                </div>
-            </MemoryRouter>
-        );
+        const { parentHandler } = renderDropupWithParent();
         fireEvent.click(screen.getByText('Edit'));
         expect(parentHandler).not.toHaveBeenCalled();
     });
@@ -129,14 +127,7 @@ describe('TaskOptionsDropup component', () => {
 
     it('stops propagation when delete is clicked', () => {
         global.confirm.mockReturnValue(false);
-        const parentHandler = vi.fn();
-        render(
-            <MemoryRouter>
-                <div onClick={parentHandler}>
-                    <TaskOptionsDropup {...defaultProps} />
-                </div>
-            </MemoryRouter>
-        );
+        const { parentHandler } = renderDropupWithParent();
         fireEvent.click(screen.getByText('Delete'));
         expect(parentHandler).not.toHaveBeenCalled();
     });
@@ -151,14 +142,7 @@ describe('TaskOptionsDropup component', () => {
     });
 
     it('stops propagation when undo completion is clicked', () => {
-        const parentHandler = vi.fn();
-        render(
-            <MemoryRouter>
-                <div onClick={parentHandler}>
-                    <TaskOptionsDropup {...defaultProps} completed={true} />
-                </div>
-            </MemoryRouter>
-        );
+        const { parentHandler } = renderDropupWithParent({ completed: true });
         fireEvent.click(screen.getByText('Undo Completion'));
         expect(parentHandler).not.toHaveBeenCalled();
     });
