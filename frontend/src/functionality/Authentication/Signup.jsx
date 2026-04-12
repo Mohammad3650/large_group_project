@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import useAuthRedirect from '../../utils/Hooks/useAuthRedirect';
+import useAuthRedirect from './utils/useAuthRedirect';
 import AuthCard from '../../components/AuthCard';
 import AuthField from '../../components/AuthField';
 import AuthSubmitButton from '../../components/AuthSubmitButton';
-import useSignupForm from '../../utils/Hooks/useSignupForm';
+import useSignupForm from './utils/useSignupForm';
 import AuthErrorAlert from '../../components/AuthErrorAlert';
 import './stylesheets/AuthPages.css';
 import SignupForm from '../../components/SignupForm';

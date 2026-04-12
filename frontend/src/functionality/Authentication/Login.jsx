@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import useAuthRedirect from '../../utils/Hooks/useAuthRedirect';
+import useAuthRedirect from './utils/useAuthRedirect';
 import AuthCard from '../../components/AuthCard';
 import './stylesheets/AuthPages.css';
-import useLoginForm from '../../utils/Hooks/useLoginForm';
+import useLoginForm from './utils/useLoginForm';
 import AuthErrorAlert from '../../components/AuthErrorAlert';
 import LoginForm from '../../components/LoginForm';
 

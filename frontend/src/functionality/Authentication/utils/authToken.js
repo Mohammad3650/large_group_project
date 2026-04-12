@@ -1,4 +1,4 @@
-import { publicApi } from '../../api';
+import { publicApi } from '../../../api';
 import { getAccessToken, logout } from './authStorage';
 
 const VERIFY_ENDPOINT = '/api/token/verify/';

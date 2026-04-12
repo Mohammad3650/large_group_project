@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isTokenValid } from '../Auth/authToken';
+import { isTokenValid } from './authToken';
 
 /**
  * Custom hook that redirects the user if they are already authenticated.

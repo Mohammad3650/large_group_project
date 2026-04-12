@@ -1,5 +1,5 @@
-import { publicApi } from '../../api';
-import { saveTokens } from '../Auth/authStorage';
+import { publicApi } from '../../../api';
+import { saveTokens } from '../../../utils/Auth/authStorage';
 
 /**
  * Extracts tokens from API response,

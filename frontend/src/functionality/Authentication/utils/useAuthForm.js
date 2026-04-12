@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { formatApiError } from '../Errors/errors';
+import { formatApiError } from './errors';
 
 const initialErrors = {
     fieldErrors: {},

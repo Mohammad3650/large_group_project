@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { loginUser } from '../Auth/authService';
+import { loginUser } from './authService';
 import useAuthForm from './useAuthForm';
 
 /**
