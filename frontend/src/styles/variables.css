@@ -215,7 +215,22 @@
     --shadow-focus: 0 0 0 0.2rem rgba(37, 99, 235, 0.2);
     --shadow-hover-lg: 0 0 30px rgba(0, 0, 0, 0.3);
 
+    /* popup */
+    --popup-min-width: 320px;
+    --popup-max-width: 480px;
+
+    /* dropdown */
+    --dropdown-min-width: 180px;
+
+    /* z-index */
+    --z-index-dropup: 100;
+    --z-index-popup: 500;
+
+    /* transitions */
+    --transition-speed: 0.2s;
+
     /* misc */
+    --icon-size-user: 38px;
     --arrow-offset: -3px;
     --checkbox-size: 1.2rem;
     --navbar-height: 75px;

@@ -3,6 +3,7 @@ import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
+import WelcomeMessage from '../../components/WelcomeMessage.jsx';
 import CalendarView from './CalendarView.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import useUsername from '../../utils/Hooks/useUsername.js';

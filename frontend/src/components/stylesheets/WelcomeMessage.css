@@ -1,0 +1,14 @@
+.welcome-message {
+    color: var(--text-main);
+    font-size: var(--font-size-heading);
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+    .welcome-message {
+        font-size: var(--font-size-message);
+        line-height: 1.2;
+        margin-bottom: var(--space-md);
+    }
+}

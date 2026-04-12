@@ -2,14 +2,14 @@ import { useNavigate } from 'react-router-dom';
 import './stylesheets/AddTaskButton.css';
 
 /**
- * @returns {JSX.Element} A button that navigates to the create schedule page
+ * @returns {React.JSX.Element} A button that navigates to the create schedule page
  */
 function AddTaskButton() {
-    const nav = useNavigate();
+    const navigate = useNavigate();
     return (
         <button
             className="add-task-btn"
-            onClick={() => nav('/create-schedule')}
+            onClick={() => navigate('/create-schedule')}
         >
             + Add Task
         </button>

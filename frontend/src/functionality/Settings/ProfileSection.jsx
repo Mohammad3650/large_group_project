@@ -6,7 +6,7 @@ import './stylesheets/ProfileSection.css';
  * Settings section for managing the user's profile.
  * Provides links to the edit profile and change password pages.
  *
- * @returns {JSX.Element} The profile settings section
+ * @returns {React.JSX.Element} The profile settings section
  */
 function ProfileSection() {
     return (

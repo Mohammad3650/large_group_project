@@ -6,9 +6,9 @@ from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
 from scheduler.models.User import User
 from scheduler.services.timeblock_service import (
-    create_timeblock,
+    create_time_block,
     get_or_create_dayplan,
-    update_timeblock,
+    update_time_block,
 )
 from scheduler.utils.to_utc import to_utc
 
@@ -63,7 +63,7 @@ class TimeblockServiceTest(TestCase):
         self.assertEqual(dayplan.date, date(2026, 1, 16))
         self.assertEqual(DayPlan.objects.filter(user=self.user).count(), 2)
 
-    def test_create_timeblock_stores_timezone_and_converts_to_utc(self):
+    def test_create_time_block_stores_timezone_and_converts_to_utc(self):
         """
         Test that creating a TimeBlock correctly:
         - converts times to UTC
@@ -75,14 +75,16 @@ class TimeblockServiceTest(TestCase):
         )
 
         data = self.base_data.copy()
-        data.update({
-            "name": "Morning Lecture",
-            "timezone": "Europe/London",
-            "location": "Campus",
-            "description": "Attend class",
-        })
+        data.update(
+            {
+                "name": "Morning Lecture",
+                "timezone": "Europe/London",
+                "location": "Campus",
+                "description": "Attend class",
+            }
+        )
 
-        block = create_timeblock(july_day_plan, data, "2026-07-15")
+        block = create_time_block(july_day_plan, data, "2026-07-15")
 
         expected_start_time, expected_start_date = to_utc(
             "09:00",
@@ -102,22 +104,24 @@ class TimeblockServiceTest(TestCase):
         self.assertEqual(block.location, "Campus")
         self.assertEqual(block.description, "Attend class")
 
-    def test_create_timeblock_moves_to_different_dayplan_when_utc_date_changes(self):
+    def test_create_time_block_moves_to_different_dayplan_when_utc_date_changes(self):
         """
         Test that a TimeBlock is moved to a different DayPlan if UTC conversion changes the date.
         """
         data = self.base_data.copy()
-        data.update({
-            "name": "Late Study",
-            "start_time": "23:30",
-            "end_time": "23:59",
-            "location": "Home",
-            "block_type": "study",
-            "description": "Late revision",
-            "timezone": "America/New_York",
-        })
+        data.update(
+            {
+                "name": "Late Study",
+                "start_time": "23:30",
+                "end_time": "23:59",
+                "location": "Home",
+                "block_type": "study",
+                "description": "Late revision",
+                "timezone": "America/New_York",
+            }
+        )
 
-        block = create_timeblock(self.day_plan, data, "2026-01-15")
+        block = create_time_block(self.day_plan, data, "2026-01-15")
 
         expected_start_time, expected_start_date = to_utc(
             "23:30",
@@ -131,7 +135,7 @@ class TimeblockServiceTest(TestCase):
             DayPlan.objects.filter(user=self.user, date=expected_start_date).exists()
         )
 
-    def test_update_timeblock_updates_fields_and_timezone(self):
+    def test_update_time_block_updates_fields_and_timezone(self):
         """
         Test that updating a TimeBlock correctly updates:
         - all fields
@@ -150,13 +154,15 @@ class TimeblockServiceTest(TestCase):
         )
 
         data = self.base_update_data.copy()
-        data.update({
-            "name": "Updated Tutorial",
-            "timezone": "Europe/London",
-            "location": "New Room",
-        })
+        data.update(
+            {
+                "name": "Updated Tutorial",
+                "timezone": "Europe/London",
+                "location": "New Room",
+            }
+        )
 
-        updated_block = update_timeblock(
+        updated_block = update_time_block(
             block,
             self.day_plan,
             data,
@@ -183,7 +189,7 @@ class TimeblockServiceTest(TestCase):
         self.assertEqual(updated_block.description, "Updated description")
         self.assertEqual(updated_block.timezone, "Europe/London")
 
-    def test_update_timeblock_moves_dayplan_when_utc_date_changes(self):
+    def test_update_time_block_moves_dayplan_when_utc_date_changes(self):
         """
         Test that updating a TimeBlock moves it to a new DayPlan when UTC conversion changes the date.
         """
@@ -199,17 +205,19 @@ class TimeblockServiceTest(TestCase):
         )
 
         data = self.base_update_data.copy()
-        data.update({
-            "name": "Late Event Updated",
-            "start_time": "23:30",
-            "end_time": "23:59",
-            "location": "Home",
-            "block_type": "study",
-            "description": "Late update",
-            "timezone": "America/New_York",
-        })
+        data.update(
+            {
+                "name": "Late Event Updated",
+                "start_time": "23:30",
+                "end_time": "23:59",
+                "location": "Home",
+                "block_type": "study",
+                "description": "Late update",
+                "timezone": "America/New_York",
+            }
+        )
 
-        updated_block = update_timeblock(
+        updated_block = update_time_block(
             block,
             self.day_plan,
             data,

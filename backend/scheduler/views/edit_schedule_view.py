@@ -8,14 +8,15 @@ from ..models import TimeBlock, DayPlan
 from scheduler.serializers.time_block_serializer import TimeBlockSerializer
 from ..utils.to_utc import to_utc
 
-def get_user_timeblock(user, block_id):
+
+def get_user_time_block(user, block_id):
     """
     Retrieve a TimeBlock belonging to the authenticated user.
     """
     return get_object_or_404(TimeBlock, id=block_id, day__user=user)
 
 
-def serialize_timeblock_with_date(block):
+def serialize_time_block_with_date(block):
     """
     Serialise a TimeBlock and include its associated date.
     """
@@ -47,7 +48,7 @@ def apply_utc_time_updates(serializer, request, date, timezone):
         serializer.validated_data["end_time"] = end_time_utc
 
 
-def update_timeblock_day_if_needed(block, user, date):
+def update_time_block_day_if_needed(block, user, date):
     """
     Reassign the TimeBlock to a different DayPlan if the date has changed.
     """
@@ -59,7 +60,7 @@ def update_timeblock_day_if_needed(block, user, date):
     block.save(update_fields=["day"])
 
 
-def partially_update_timeblock(request, block):
+def partially_update_time_block(request, block):
     """
     Validate and partially update an existing TimeBlock.
     """
@@ -70,10 +71,11 @@ def partially_update_timeblock(request, block):
 
     timezone, date = get_request_timezone_and_date(request, block)
     apply_utc_time_updates(serializer, request, date, timezone)
-    update_timeblock_day_if_needed(block, request.user, date)
+    update_time_block_day_if_needed(block, request.user, date)
 
     serializer.save()
     return Response(serializer.data)
+
 
 def get_block_or_404(user, id):
     """Retrieve a TimeBlock belonging to a user or raise 404."""

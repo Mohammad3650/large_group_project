@@ -43,7 +43,7 @@ class CompleteScheduleViewTest(APITestCase):
             end_time="10:00",
         )
 
-        self.url = reverse("api-complete-timeblock", args=[self.block.id])
+        self.url = reverse("api-complete-time-block", args=[self.block.id])
 
     def test_complete_time_block_requires_authentication(self):
         """Tests that unauthenticated users cannot complete a time block."""
@@ -77,6 +77,6 @@ class CompleteScheduleViewTest(APITestCase):
 
     def test_complete_nonexistent_block_returns_404(self):
         """Tests that completing a non-existent time block returns 404."""
-        url = reverse("api-complete-timeblock", args=[99999])
+        url = reverse("api-complete-time-block", args=[99999])
         response = self.client.patch(url)
         self.assertEqual(response.status_code, 404)

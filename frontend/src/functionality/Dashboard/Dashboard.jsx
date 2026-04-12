@@ -1,15 +1,12 @@
-import { useState } from 'react';
-import TaskGroup from './TaskGroup.jsx';
-import TaskSearchBar from '../../components/TaskSearchBar.jsx';
+import TaskGroup from './TaskSection/TaskGroup.jsx';
+import WelcomeMessage from '../../components/WelcomeMessage.jsx';
+import TaskSearchBar from './TaskSearchBar.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
-import NotesSection from './NotesSection.jsx';
-import NoTasksMessage from './NoTasksMessage.jsx';
-import buildTaskGroups from '../../utils/Helpers/buildTaskGroups.js';
+import NotesSection from './NotesSection/NotesSection.jsx';
+import NoTasksMessage from './TaskSection/NoTasksMessage.jsx';
+import ErrorMessage from '../../components/ErrorMessage.jsx';
+import useDashboard from './utils/Hooks/useDashboard.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
-import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
-import useTasksByDateGroup from '../../utils/Hooks/useTasksByDateGroup.js';
-import useFilterTasksForSearch from '../../utils/Hooks/useFilterTasksForSearch.js';
-import useUsername from '../../utils/Hooks/useUsername.js';
 import './stylesheets/Dashboard.css';
 
 /**
@@ -17,42 +14,18 @@ import './stylesheets/Dashboard.css';
  * Displays tasks grouped by category (pinned, overdue, today, tomorrow,
  * next 7 days, beyond next 7 days, and completed) alongside a notes section.
  *
- * @returns {JSX.Element} The dashboard page
+ * @returns {React.JSX.Element} The dashboard page
  */
 function Dashboard() {
-    const [searchTerm, setSearchTerm] = useState('');
-
     useBodyClass('dashboard-page');
 
-    const { blocks, error: blocksError } = useTimeBlocks();
+    const { blocksError, username, searchTerm, setSearchTerm, taskGroups, totalTasks, filteredTasks } = useDashboard();
 
-    const {
-        pinnedTasks, setPinnedTasks,
-        overdueTasks, setOverdueTasks,
-        todayTasks, setTodayTasks,
-        tomorrowTasks, setTomorrowTasks,
-        weekTasks, setWeekTasks,
-        beyondWeekTasks, setBeyondWeekTasks,
-        completedTasks, setCompletedTasks,
-        totalTasks,
-    } = useTasksByDateGroup(blocks);
-
-    const { username } = useUsername(true);
-
-    const { filteredTasks } = useFilterTasksForSearch(
-        { pinnedTasks, overdueTasks, todayTasks, tomorrowTasks, weekTasks, beyondWeekTasks, completedTasks },
-        searchTerm
-    );
-
-    if (blocksError) return <p>{blocksError}</p>;
-
-    const setters = { setPinnedTasks, setOverdueTasks, setTodayTasks, setTomorrowTasks, setWeekTasks, setBeyondWeekTasks, setCompletedTasks };
-    const taskGroups = buildTaskGroups(filteredTasks, setters);
-
+    if (blocksError) return <ErrorMessage error={blocksError} />;
     return (
         <div className="dashboard-content">
             <div className="task-section">
-                <h1>Welcome to your Dashboard, {username}!</h1>
+                <WelcomeMessage page="dashboard" username={username} />
 
                 <AddTaskButton />
 

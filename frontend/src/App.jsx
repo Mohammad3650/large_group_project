@@ -14,7 +14,7 @@ import Settings from './functionality/Settings/Settings.jsx';
 import { setAuthToken } from './api';
 import SuccessfulTimeBlock from './components/SuccessfulTimeBlock.jsx';
 import EditTimeBlock from './components/EditTimeBlock';
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar/Navbar.jsx';
 import './styles/variables.css';
 
 function App() {
@@ -67,7 +67,7 @@ function App() {
                 />
 
                 <Route
-                    path="/successful-timeblock"
+                    path="/successful-time-block"
                     element={
                         <ProtectedRoute>
                             <SuccessfulTimeBlock />
@@ -76,7 +76,7 @@ function App() {
                 />
 
                 <Route
-                    path="/timeblocks/:id/edit"
+                    path="/time-blocks/:id/edit"
                     element={
                         <ProtectedRoute>
                             <EditTimeBlock />

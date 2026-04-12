@@ -1,5 +1,24 @@
 import { BLOCK_TYPES } from '../constants/blockTypes';
 
+/**
+ * Renders a single time block form section.
+ *
+ * Responsibilities:
+ * - Display inputs for a single block (name, location, type, time, description)
+ * - Show validation errors for each field
+ * - Handle updates to block state via updateBlock
+ * - Allow deletion of the block when multiple blocks exist
+ *
+ * @param {Object} props - Component props
+ * @param {Object} props.block - The current block data
+ * @param {number} props.index - Index of the block in the blocks array
+ * @param {Array} props.serverErrors - Validation errors from the backend
+ * @param {Function} props.updateBlock - Function to update a block field
+ * @param {Function} props.deleteBlock - Function to delete a block
+ * @param {number} props.blocksLength - Total number of blocks
+ * @returns {JSX.Element}
+ */
+
 function TimeBlockItem({
     block,
     index,

@@ -19,7 +19,7 @@ class CreateScheduleViewTest(APITestCase):
             phone_number="01122334455",
         )
 
-        self.url = reverse("api-create-timeblock")
+        self.url = reverse("api-create-time-block")
 
         self.base_data = {
             "date": "2026-02-18",

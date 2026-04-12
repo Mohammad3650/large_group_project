@@ -5,13 +5,13 @@ from datetime import date, time
 from scheduler.models.User import User
 from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
-from scheduler.views.edit_schedule_view import serialize_timeblock_with_date
+from scheduler.views.edit_schedule_view import serialize_time_block_with_date
 from scheduler.views.edit_schedule_view import (
-    get_user_timeblock,
+    get_user_time_block,
     apply_utc_time_updates,
-    update_timeblock_day_if_needed,
-    partially_update_timeblock,
-    serialize_timeblock_with_date,
+    update_time_block_day_if_needed,
+    partially_update_time_block,
+    serialize_time_block_with_date,
     get_request_timezone_and_date,
 )
 
@@ -77,7 +77,7 @@ class EditScheduleViewTest(APITestCase):
         """Authenticated user should be able to edit their own timeblocks."""
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         data_with_updated_name = self.base_data.copy()
         data_with_updated_name.update({"name": "Updated Session"})
 
@@ -96,7 +96,7 @@ class EditScheduleViewTest(APITestCase):
         # Confirm block no longer exists
         self.assertFalse(TimeBlock.objects.filter(id=block_id).exists())
 
-        url = reverse("api-edit-timeblock", args=[block_id])
+        url = reverse("api-edit-time-block", args=[block_id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 404)
@@ -106,7 +106,7 @@ class EditScheduleViewTest(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         # Invalidate the start and end time order
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         invalid_data = self.base_data.copy()
         invalid_data.update({"start_time": "10:00", "end_time": "09:00"})
 
@@ -118,7 +118,7 @@ class EditScheduleViewTest(APITestCase):
         """Users cannot edit TimeBlocks belonging to other users."""
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.other_block.id])
+        url = reverse("api-edit-time-block", args=[self.other_block.id])
         data = self.base_data.copy()
         data.update({"name": "Hacked Session"})
 
@@ -130,7 +130,7 @@ class EditScheduleViewTest(APITestCase):
         """Users cannot view TimeBlocks belonging to other users."""
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.other_block.id])
+        url = reverse("api-edit-time-block", args=[self.other_block.id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 404)
@@ -141,7 +141,7 @@ class EditScheduleViewTest(APITestCase):
 
         new_date = "2026-02-19"  # different from original
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         data_with_new_date = self.base_data.copy()
         data_with_new_date.update({"date": new_date})
 
@@ -158,7 +158,7 @@ class EditScheduleViewTest(APITestCase):
     def test_patch_only_start_time(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         data_with_new_start_time = self.base_data.copy()
         data_with_new_start_time.update({"start_time": "08:00"})
@@ -173,7 +173,7 @@ class EditScheduleViewTest(APITestCase):
     def test_patch_only_end_time(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         data_with_new_end_time = self.base_data.copy()
         data_with_new_end_time.update({"end_time": "11:00"})
@@ -192,7 +192,7 @@ class EditScheduleViewTest(APITestCase):
         """
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         data = self.base_data.copy()
 
@@ -208,7 +208,7 @@ class EditScheduleViewTest(APITestCase):
     def test_get_time_block_success(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -221,7 +221,7 @@ class EditScheduleViewTest(APITestCase):
         """
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         data_without_date = self.base_data.copy()
         data_without_date.pop("date")
@@ -233,7 +233,7 @@ class EditScheduleViewTest(APITestCase):
     def test_get_time_block_returns_correct_date(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -246,7 +246,7 @@ class EditScheduleViewTest(APITestCase):
         """
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
 
         invalid_data = self.base_data.copy()
         invalid_data["name"] = ""  # assuming name is required
@@ -265,23 +265,23 @@ class EditScheduleViewTest(APITestCase):
         self.assertEqual(timezone, self.block.timezone)
         self.assertEqual(date, str(self.block.day.date))
 
-    def test_serialize_timeblock_with_date(self):
+    def test_serialize_time_block_with_date(self):
         """
         Serializing a timeblock should include the associated date field.
         """
-        data = serialize_timeblock_with_date(self.block)
+        data = serialize_time_block_with_date(self.block)
 
         self.assertIn("date", data)
         self.assertEqual(data["date"], str(self.block.day.date))
 
-    def test_get_user_timeblock_returns_correct_block(self):
-        block = get_user_timeblock(self.user, self.block.id)
+    def test_get_user_time_block_returns_correct_block(self):
+        block = get_user_time_block(self.user, self.block.id)
         self.assertEqual(block, self.block)
 
-    def test_get_user_timeblock_raises_404_for_other_users_block(self):
-        """get_user_timeblock raises 404 when the block belongs to a different user."""
+    def test_get_user_time_block_raises_404_for_other_users_block(self):
+        """get_user_time_block raises 404 when the block belongs to a different user."""
         with self.assertRaises(Http404):
-            get_user_timeblock(self.user, self.other_block.id)
+            get_user_time_block(self.user, self.other_block.id)
 
     def test_get_request_timezone_and_date_uses_request_data_when_present(self):
         """When timezone and date are present in request data they should be returned directly."""
@@ -309,23 +309,23 @@ class EditScheduleViewTest(APITestCase):
         self.assertNotIn("start_time", serializer.validated_data)
         self.assertNotIn("end_time", serializer.validated_data)
 
-    def test_update_timeblock_day_if_needed_does_nothing_on_same_date(self):
+    def test_update_time_block_day_if_needed_does_nothing_on_same_date(self):
         """
-        Calling update_timeblock_day_if_needed with the same date should
+        Calling update_time_block_day_if_needed with the same date should
         leave the block's DayPlan unchanged (covers the early-return branch).
         """
         original_day_id = self.block.day.id
-        update_timeblock_day_if_needed(self.block, self.user, str(self.block.day.date))
+        update_time_block_day_if_needed(self.block, self.user, str(self.block.day.date))
         self.block.refresh_from_db()
         self.assertEqual(self.block.day.id, original_day_id)
 
-    def test_update_timeblock_day_if_needed_moves_block_on_date_change(self):
+    def test_update_time_block_day_if_needed_moves_block_on_date_change(self):
         """
-        Calling update_timeblock_day_if_needed with a new date should
+        Calling update_time_block_day_if_needed with a new date should
         reassign the block to a new or existing DayPlan for that date.
         """
         new_date = "2026-03-15"
-        update_timeblock_day_if_needed(self.block, self.user, new_date)
+        update_time_block_day_if_needed(self.block, self.user, new_date)
         self.block.refresh_from_db()
         self.assertEqual(str(self.block.day.date), new_date)
         self.assertTrue(DayPlan.objects.filter(user=self.user, date=new_date).exists())
@@ -337,7 +337,7 @@ class EditScheduleViewTest(APITestCase):
         """
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("api-edit-timeblock", args=[self.block.id])
+        url = reverse("api-edit-time-block", args=[self.block.id])
         data_updated = self.base_data.copy()
         data_updated.update(
             {
@@ -376,9 +376,9 @@ class EditScheduleViewTest(APITestCase):
         self.assertIn("start_time", serializer.validated_data)
         self.assertIn("end_time", serializer.validated_data)
 
-    def test_partially_update_timeblock_invalid_serializer_direct(self):
+    def test_partially_update_time_block_invalid_serializer_direct(self):
         """
-        Directly calling partially_update_timeblock with invalid data
+        Directly calling partially_update_time_block with invalid data
         should return a 400 response.
         """
         request = type(
@@ -390,13 +390,13 @@ class EditScheduleViewTest(APITestCase):
             },
         )()
 
-        response = partially_update_timeblock(request, self.block)
+        response = partially_update_time_block(request, self.block)
 
         self.assertEqual(response.status_code, 400)
 
-    def test_partially_update_timeblock_success_direct(self):
+    def test_partially_update_time_block_success_direct(self):
         """
-        Directly calling partially_update_timeblock with valid data
+        Directly calling partially_update_time_block with valid data
         should update and return 200.
         """
         data_partially_updated = self.base_data.copy()
@@ -417,7 +417,7 @@ class EditScheduleViewTest(APITestCase):
             },
         )()
 
-        response = partially_update_timeblock(request, self.block)
+        response = partially_update_time_block(request, self.block)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "Updated Name")

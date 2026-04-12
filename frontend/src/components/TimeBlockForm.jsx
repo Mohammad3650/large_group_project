@@ -15,6 +15,8 @@ import FormActions from './FormActions';
  * @param {Function} clearErrors - Clears server-side errors
  * @param {Object|null} initialData - Existing block data (edit mode)
  * @param {Function|null} onCancel - Cancel handler (edit mode only)
+ * 
+ * @returns {JSX.Element}
  */
 
 function TimeBlockForm({

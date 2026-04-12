@@ -8,11 +8,6 @@
     color: var(--text-main);
 }
 
-.calendar-content h1 {
-    color: var(--text-main);
-    margin-bottom: var(--space-md);
-}
-
 .actual-calendar {
     flex: 1;
     min-height: 0;
