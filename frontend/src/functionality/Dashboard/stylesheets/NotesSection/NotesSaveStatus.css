@@ -1,0 +1,9 @@
+.save-status {
+    font-size: var(--font-size-xs);
+    color: var(--text-light);
+    font-weight: normal;
+}
+
+.save-status.error {
+    color: var(--danger-soft);
+}

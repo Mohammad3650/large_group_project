@@ -8,11 +8,6 @@
     color: var(--text-main);
 }
 
-.calendar-content h1 {
-    color: var(--text-main);
-    margin-bottom: var(--space-md);
-}
-
 .actual-calendar {
     height: 90vh;
     width: 100%;
@@ -371,12 +366,6 @@ body.dark-theme .sx__event-modal-default > div {
     .calendar-content {
         padding: 0 12px 20px 12px;
         min-height: auto;
-    }
-
-    .calendar-content h1 {
-        font-size: 20px;
-        line-height: 1.2;
-        margin-bottom: 12px;
     }
 
     .actual-calendar {

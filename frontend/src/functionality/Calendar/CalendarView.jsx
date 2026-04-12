@@ -58,7 +58,7 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons, t
 
     return (
         <div className="calendar-content">
-            <h1>{title}</h1>
+            <h1 className="welcome-message">{title}</h1>
             {headerButtons}
             <div className="actual-calendar">
                 <CalendarRenderer key={calendarKey} blocks={blocks} calendarTimezone={calendarTimezone} customComponents={components} eventsService={eventsService} />
