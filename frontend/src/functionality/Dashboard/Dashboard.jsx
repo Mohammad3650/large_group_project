@@ -6,7 +6,7 @@ import NotesSection from './NotesSection.jsx';
 import NoTasksMessage from './NoTasksMessage.jsx';
 import buildTaskGroups from './utils/helpers/buildTaskGroups.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
-import useTimeBlocks from './utils/hooks/useTimeBlocks.js';
+import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import useTasksByDateGroup from './utils/hooks/useTasksByDateGroup.js';
 import useFilterTasksForSearch from './utils/hooks/useFilterTasksForSearch.js';
 import useUsername from '../../utils/Hooks/useUsername.js';

@@ -1,4 +1,4 @@
-import deleteCalendarSubscription from '../Api/deleteCalendarSubscription.js';
+import deleteCalendarSubscription from '../../functionality/Dashboard/utils/api/deleteCalendarSubscription.js';
 
 async function handleDeleteSubscription(subscriptionId, { setSubscriptions, setError, refetchBlocks }) {
     try {

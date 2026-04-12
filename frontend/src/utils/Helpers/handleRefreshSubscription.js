@@ -1,4 +1,4 @@
-import refreshCalendarSubscription from '../Api/refreshCalendarSubscription.js';
+import refreshCalendarSubscription from '../../functionality/Dashboard/utils/api/refreshCalendarSubscription.js';
 
 async function handleRefreshSubscription(subscriptionId, { setSubscriptions, setError, refetchBlocks }) {
     try {

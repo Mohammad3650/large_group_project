@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import getCalendarSubscriptions from '../Api/getCalendarSubscriptions.js';
+import getCalendarSubscriptions from '../../functionality/Dashboard/utils/api/getCalendarSubscriptions.js';
 
 function useSubscriptions(setError) {
     const [subscriptions, setSubscriptions] = useState([]);

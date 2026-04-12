@@ -1,4 +1,4 @@
-import createCalendarSubscription from '../Api/createCalendarSubscription.js';
+import createCalendarSubscription from '../../functionality/Dashboard/utils/api/createCalendarSubscription.js';
 
 async function handleImportSubscription(payload, { setSubscriptions, setError, refetchBlocks }) {
     try {
