@@ -53,8 +53,7 @@ function Calendar({ theme }) {
             eventButtons={(calendarEvent, handleDelete) => (
                 <>
                     {/* Navigate to edit page for selected event */}
-
-                    <button className="button" aria-label="Edit event" onClick={() => nav(`/timeblocks/${calendarEvent.id}/edit`)}>
+                    <button className="button" aria-label="Edit event" onClick={() => nav(`/time-blocks/${calendarEvent.id}/edit`)}>
                         Edit
                     </button>
                     {/* Delete event using handler from CalendarView */}

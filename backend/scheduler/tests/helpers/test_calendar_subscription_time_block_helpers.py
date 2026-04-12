@@ -3,9 +3,9 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from scheduler.services.calendar_subscription_timeblock_helpers import (
+from scheduler.services.calendar_subscription_time_block_helpers import (
     build_external_event_uid,
-    build_timeblock_data,
+    build_time_block_data,
 )
 
 
@@ -45,7 +45,7 @@ class CalendarSubscriptionTimeblockHelpersTest(TestCase):
         self.assertIn(self.start_datetime.isoformat(), result)
         self.assertIn(self.end_datetime.isoformat(), result)
 
-    def test_build_timeblock_data_truncates_name_and_cleans_description(self):
+    def test_build_time_block_data_truncates_name_and_cleans_description(self):
         """It should prepare cleaned and truncated time block data."""
         long_name = "A" * 120
         event = self.build_event(
@@ -55,7 +55,7 @@ class CalendarSubscriptionTimeblockHelpersTest(TestCase):
             end_datetime=self.start_datetime + timedelta(hours=2),
         )
 
-        data = build_timeblock_data(event)
+        data = build_time_block_data(event)
 
         self.assertEqual(len(data["name"]), 100)
         self.assertEqual(data["location"], "Room 101")

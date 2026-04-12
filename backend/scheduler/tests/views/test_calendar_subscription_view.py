@@ -29,7 +29,7 @@ class CalendarSubscriptionViewTest(APITestCase):
         self.refresh_url_name = "api-refresh-calendar-subscription"
         self.delete_url_name = "api-delete-calendar-subscription"
 
-        self.base_timeblock_data = {
+        self.base_time_block_data = {
             "name": "Imported Lecture",
             "block_type": "lecture",
             "start_time": time(9, 0),
@@ -74,7 +74,7 @@ class CalendarSubscriptionViewTest(APITestCase):
 
     def create_time_block(self, day_plan, **overrides):
         """Create a time block from the shared base fixture."""
-        data = self.base_timeblock_data.copy()
+        data = self.base_time_block_data.copy()
         data.update(overrides)
         return TimeBlock.objects.create(day=day_plan, **data)
 
@@ -311,7 +311,7 @@ class CalendarSubscriptionViewTest(APITestCase):
         response = self.client.delete(self.get_delete_url(subscription.id))
         self.assertEqual(response.status_code, 401)
 
-    def test_delete_subscription_deletes_imported_events_and_timeblocks(self):
+    def test_delete_subscription_deletes_imported_events_and_time_blocks(self):
         """It should delete imported events and linked user-owned time blocks."""
         subscription = self.create_subscription(
             self.user,
@@ -343,7 +343,7 @@ class CalendarSubscriptionViewTest(APITestCase):
         )
         self.assertFalse(TimeBlock.objects.filter(id=time_block.id).exists())
 
-    def test_delete_subscription_only_deletes_authenticated_users_timeblocks(self):
+    def test_delete_subscription_only_deletes_authenticated_users_time_blocks(self):
         """It should only delete imported time blocks owned by the authenticated user."""
         subscription = self.create_subscription(
             self.user,

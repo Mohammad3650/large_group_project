@@ -10,16 +10,16 @@ from scheduler.services.calendar_subscription_sync_result_helpers import (
     build_sync_result,
     record_sync_outcome,
 )
-from scheduler.services.calendar_subscription_timeblock_helpers import (
+from scheduler.services.calendar_subscription_time_block_helpers import (
     build_external_event_uid,
-    build_timeblock_data,
+    build_time_block_data,
 )
 from scheduler.services.ics_fetcher import fetch_ics_content
 from scheduler.services.ics_parser import parse_ics_events
-from scheduler.services.timeblock_service import (
-    create_timeblock,
+from scheduler.services.time_block_service import (
+    create_time_block,
     get_or_create_dayplan,
-    update_timeblock,
+    update_time_block,
 )
 
 
@@ -62,7 +62,7 @@ def create_imported_event(
     Returns:
         None
     """
-    time_block = create_timeblock(dayplan, timeblock_data, str(dayplan.date))
+    time_block = create_time_block(dayplan, timeblock_data, str(dayplan.date))
     ImportedCalendarEvent.objects.create(
         subscription=subscription,
         external_event_uid=external_event_uid,
@@ -82,7 +82,7 @@ def update_imported_event(imported_event, dayplan, timeblock_data):
     Returns:
         None
     """
-    update_timeblock(
+    update_time_block(
         imported_event.time_block,
         dayplan,
         timeblock_data,
@@ -107,7 +107,7 @@ def sync_single_event(subscription, event):
     external_event_uid = build_external_event_uid(event)
     event_date = get_event_date(event)
     dayplan = get_or_create_dayplan(subscription.user, event_date)
-    timeblock_data = build_timeblock_data(event)
+    timeblock_data = build_time_block_data(event)
 
     imported_event = get_existing_imported_event(subscription, external_event_uid)
 
