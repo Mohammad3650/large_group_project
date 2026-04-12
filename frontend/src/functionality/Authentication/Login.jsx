@@ -1,11 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import useAuthRedirect from '../../utils/Hooks/useAuthRedirect';
 import AuthCard from '../../components/AuthCard';
-import AuthField from '../../components/AuthField';
 import './stylesheets/AuthPages.css';
 import useLoginForm from '../../utils/Hooks/useLoginForm';
 import AuthErrorAlert from '../../components/AuthErrorAlert';
-import AuthSubmitButton from '../../components/AuthSubmitButton';
+import LoginForm from '../../components/LoginForm';
 
 /**
  * Login page component.
@@ -19,9 +18,9 @@ import AuthSubmitButton from '../../components/AuthSubmitButton';
  * @returns {JSX.Element} The login page UI
  */
 function Login() {
-    const nav = useNavigate();
+    const navigate = useNavigate();
 
-    useAuthRedirect(nav);
+    useAuthRedirect(navigate);
 
     const {
         email,
@@ -31,7 +30,7 @@ function Login() {
         errors,
         loading,
         handleSubmit
-    } = useLoginForm(nav);
+    } = useLoginForm(navigate);
 
 
     return (
@@ -45,39 +44,15 @@ function Login() {
                     footerLinkTo="/signup"
                 >
 
-                    <AuthErrorAlert messages={errors.global} />
-
-                    <form onSubmit={handleSubmit} noValidate>
-                        <div className="row g-3">
-                            <AuthField
-                                name="email"
-                                label="Email"
-                                type="email"
-                                placeholder="you@example.com"
-                                value={email}
-                                onChange={setEmail}
-                                error={errors.fieldErrors.email}
-                            />
-
-                            <AuthField
-                                name="password"
-                                label="Password"
-                                type="password"
-                                placeholder="Enter your password..."
-                                value={password}
-                                onChange={setPassword}
-                                error={errors.fieldErrors.password}
-                            />
-                        </div>
-
-                        <div className="d-grid mt-4">
-                            <AuthSubmitButton
-                                loading={loading}
-                                text="Log in"
-                                loadingText="Logging in..."
-                            />
-                        </div>
-                    </form>
+                    <LoginForm
+                        email={email}
+                        onEmailChange={setEmail}
+                        password={password}
+                        onPasswordChange={setPassword}
+                        errors={errors}
+                        loading={loading}
+                        onSubmit={handleSubmit}
+                    />
                 </AuthCard>
             </div>
         </div>
