@@ -1,7 +1,17 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const { mockCreateViewDay, mockCreateViewWeek, mockCreateViewMonthGrid, mockCreateEventModalPlugin, mockUseCalendarApp, mockRemove, mockDeleteTimeBlock, mockScheduleXCalendar } = vi.hoisted(() => ({
+const {
+    mockCreateViewDay,
+    mockCreateViewWeek,
+    mockCreateViewMonthGrid,
+    mockCreateEventModalPlugin,
+    mockUseCalendarApp,
+    mockRemove,
+    mockDeleteTimeBlock,
+    mockScheduleXCalendar,
+    mockCreateCalendarCustomComponents,
+} = vi.hoisted(() => ({
     mockCreateViewDay: vi.fn(() => 'day-view'),
     mockCreateViewWeek: vi.fn(() => 'week-view'),
     mockCreateViewMonthGrid: vi.fn(() => 'month-view'),
@@ -9,23 +19,24 @@ const { mockCreateViewDay, mockCreateViewWeek, mockCreateViewMonthGrid, mockCrea
     mockUseCalendarApp: vi.fn(() => 'mock-calendar-app'),
     mockRemove: vi.fn(),
     mockDeleteTimeBlock: vi.fn(),
-    mockScheduleXCalendar: vi.fn()
+    mockScheduleXCalendar: vi.fn(),
+    mockCreateCalendarCustomComponents: vi.fn(),
 }));
 
 vi.mock('@schedule-x/calendar', () => ({
     createViewDay: mockCreateViewDay,
     createViewWeek: mockCreateViewWeek,
-    createViewMonthGrid: mockCreateViewMonthGrid
+    createViewMonthGrid: mockCreateViewMonthGrid,
 }));
 
 vi.mock('@schedule-x/event-modal', () => ({
-    createEventModalPlugin: mockCreateEventModalPlugin
+    createEventModalPlugin: mockCreateEventModalPlugin,
 }));
 
 vi.mock('@schedule-x/events-service', () => ({
     createEventsServicePlugin: () => ({
-        remove: mockRemove
-    })
+        remove: mockRemove,
+    }),
 }));
 
 vi.mock('@schedule-x/react', () => ({
@@ -33,14 +44,34 @@ vi.mock('@schedule-x/react', () => ({
     ScheduleXCalendar: (props) => {
         mockScheduleXCalendar(props);
         return <div>Mock ScheduleXCalendar</div>;
-    }
+    },
 }));
 
 vi.mock('../../../utils/Api/deleteTimeBlock.js', () => ({
-    default: mockDeleteTimeBlock
+    default: mockDeleteTimeBlock,
 }));
 
-import CalendarView from '../CalendarView';
+vi.mock('../createCalendarCustomComponents.jsx', async () => {
+    const actual = await vi.importActual('../CalendarEventModal.jsx');
+
+    return {
+        createCalendarCustomComponents: (...args) => {
+            mockCreateCalendarCustomComponents(...args);
+
+            return {
+                eventModal: ({ calendarEvent }) => (
+                    <actual.default
+                        calendarEvent={calendarEvent}
+                        eventButtons={args[0]}
+                        handleDelete={args[1]}
+                    />
+                ),
+            };
+        },
+    };
+});
+
+import CalendarView from '../CalendarView.jsx';
 import getUserTimezone from '../../../utils/Helpers/getUserTimezone.js';
 
 const blocks = [
@@ -52,15 +83,15 @@ const blocks = [
         endTime: '11:00',
         location: 'Bush House',
         blockType: 'Lecture',
-        description: 'Graphs and shortest paths'
-    }
+        description: 'Graphs and shortest paths',
+    },
 ];
 
 function renderCalendarView(overrides = {}) {
     const defaultProps = {
         blocks,
         setBlocks: vi.fn(),
-        title: 'Calendar'
+        title: 'Calendar',
     };
 
     return render(<CalendarView {...defaultProps} {...overrides} />);
@@ -81,7 +112,7 @@ describe('Tests for CalendarView', () => {
     it('renders the title, header buttons and calendar', () => {
         renderCalendarView({
             title: 'Welcome to your calendar, Mohammad!',
-            headerButtons: <button>Add Task</button>
+            headerButtons: <button>Add Task</button>,
         });
 
         expect(screen.getByText('Welcome to your calendar, Mohammad!')).toBeInTheDocument();
@@ -97,14 +128,24 @@ describe('Tests for CalendarView', () => {
         expect(mockCreateViewMonthGrid).toHaveBeenCalled();
         expect(mockCreateEventModalPlugin).toHaveBeenCalled();
 
-        expect(mockUseCalendarApp.mock.calls[0][0]).toEqual({
+        expect(mockUseCalendarApp).toHaveBeenCalledWith({
             views: ['day-view', 'week-view', 'month-view'],
             plugins: ['event-modal-plugin', { remove: mockRemove }],
             events: blocks,
-            isResponsive: false,
+            timezone: getUserTimezone(),
             selectedDate: Temporal.Now.plainDateISO(getUserTimezone()),
-            timezone: getUserTimezone()
+            isResponsive: false,
         });
+    });
+
+    it('creates custom components with eventButtons and handleDelete', () => {
+        const eventButtons = vi.fn();
+
+        renderCalendarView({ eventButtons });
+
+        expect(mockCreateCalendarCustomComponents).toHaveBeenCalledTimes(1);
+        expect(mockCreateCalendarCustomComponents.mock.calls[0][0]).toBe(eventButtons);
+        expect(typeof mockCreateCalendarCustomComponents.mock.calls[0][1]).toBe('function');
     });
 
     it('passes custom components to ScheduleXCalendar and renders event modal content', () => {
@@ -125,15 +166,12 @@ describe('Tests for CalendarView', () => {
         expect(screen.getByText('Lecture')).toBeInTheDocument();
         expect(screen.getByText('Graphs and shortest paths')).toBeInTheDocument();
 
-        expect(screen.getByAltText('Date')).toBeInTheDocument();
-        expect(screen.getByAltText('Time')).toBeInTheDocument();
-        expect(screen.getByAltText('Location')).toBeInTheDocument();
-        expect(screen.getByAltText('Block Type')).toBeInTheDocument();
-        expect(screen.getByAltText('Description')).toBeInTheDocument();
-
+        expect(container.querySelector('.event-modal-container')).toBeInTheDocument();
         expect(container.querySelector('.sx__event-modal__title')).toBeInTheDocument();
         expect(container.querySelector('.sx__event-modal__description')).toBeInTheDocument();
         expect(container.querySelector('.buttons')).toBeInTheDocument();
+        expect(container.querySelectorAll('.event-detail')).toHaveLength(5);
+        expect(container.querySelectorAll('.event-detail-icon')).toHaveLength(5);
     });
 
     it('renders event buttons when eventButtons is provided', () => {
@@ -160,7 +198,9 @@ describe('Tests for CalendarView', () => {
         mockDeleteTimeBlock.mockResolvedValue({});
         const setBlocks = vi.fn();
 
-        const eventButtons = (calendarEvent, handleDelete) => <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>;
+        const eventButtons = (calendarEvent, handleDelete) => (
+            <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>
+        );
 
         renderCalendarView({ setBlocks, eventButtons });
         renderEventModal();
@@ -182,7 +222,9 @@ describe('Tests for CalendarView', () => {
         global.confirm.mockReturnValue(false);
         const setBlocks = vi.fn();
 
-        const eventButtons = (calendarEvent, handleDelete) => <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>;
+        const eventButtons = (calendarEvent, handleDelete) => (
+            <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>
+        );
 
         renderCalendarView({ setBlocks, eventButtons });
         renderEventModal();
@@ -201,7 +243,9 @@ describe('Tests for CalendarView', () => {
         const setBlocks = vi.fn();
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-        const eventButtons = (calendarEvent, handleDelete) => <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>;
+        const eventButtons = (calendarEvent, handleDelete) => (
+            <button onClick={() => handleDelete(calendarEvent.id)}>Delete</button>
+        );
 
         renderCalendarView({ setBlocks, eventButtons });
         renderEventModal();
@@ -217,28 +261,24 @@ describe('Tests for CalendarView', () => {
 
         consoleSpy.mockRestore();
     });
-});
 
-it('passes an empty events array when blocks is not an array', () => {
-    renderCalendarView({ blocks: null });
+    it('passes an empty events array when blocks is not an array', () => {
+        renderCalendarView({ blocks: null });
 
-    expect(mockUseCalendarApp.mock.calls.at(-1)[0]).toEqual({
-        views: ['day-view', 'week-view', 'month-view'],
-        plugins: ['event-modal-plugin', { remove: mockRemove }],
-        events: [],
-        isResponsive: false,
-        selectedDate: Temporal.Now.plainDateISO(getUserTimezone()),
-        timezone: getUserTimezone()
+        expect(mockUseCalendarApp).toHaveBeenLastCalledWith({
+            views: ['day-view', 'week-view', 'month-view'],
+            plugins: ['event-modal-plugin', { remove: mockRemove }],
+            events: [],
+            timezone: getUserTimezone(),
+            selectedDate: Temporal.Now.plainDateISO(getUserTimezone()),
+            isResponsive: false,
+        });
     });
-});
 
-it('renders the event modal in dark theme', () => {
-    document.body.classList.add('dark-theme');
+    it('applies the expected layout classes', () => {
+        const { container } = renderCalendarView();
 
-    renderCalendarView();
-    renderEventModal();
-
-    expect(screen.getByText('Algorithms Lecture')).toBeInTheDocument();
-
-    document.body.classList.remove('dark-theme');
+        expect(container.querySelector('.calendar-content')).toBeInTheDocument();
+        expect(container.querySelector('.actual-calendar')).toBeInTheDocument();
+    });
 });

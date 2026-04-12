@@ -5,56 +5,72 @@ import useAuthStatus from '../../utils/Auth/authStatus';
 import heroPicLight from '../../assets/LandingPage/heropicture.png';
 import heroPicDark from '../../assets/LandingPage/heropicture_dark.png';
 
-/*
-  Hero Component
+/**
+ * Returns the hero image for the current theme.
+ *
+ * @returns {string} Hero image path
+ */
 
-  - Top section of landing page with main message and CTA.
-  - Encourages users to sign up or log in.
-  - Uses navigation hook for route changes.
-  - Presentational with simple interaction (button clicks).
-*/
+function getHeroImage() {
+    const isDarkTheme = document.body.classList.contains('dark-theme');
+    return isDarkTheme ? heroPicLight  : heroPicDark;
+}
 
-function Hero() {
-    const isLoggedIn = useAuthStatus();
-
-    // Hook used to programmatically navigate between routes
-    const nav = useNavigate();
-
-    const isDark = document.body.classList.contains('dark-theme');
-    const heropic = !isDark ? heroPicDark : heroPicLight;
-	// Button configurations based on authentication states
-    const buttons = isLoggedIn
+/**
+ * Returns the hero button configuration for the current user state.
+ *
+ * @param {boolean} isLoggedIn - Whether the user is authenticated
+ * @returns {Array<Object>} Hero button configuration
+ */
+function getHeroButtons(isLoggedIn) {
+    return isLoggedIn
         ? [
-              { label: 'Calendar', path: '/calendar', style: 'black' },
-              { label: 'Dashboard', path: '/dashboard', style: 'white' }
+              { label: 'Dashboard', path: '/dashboard', style: 'black' },
+              { label: 'Calendar', path: '/calendar', style: 'white' }
           ]
         : [
               { label: 'Sign Up', path: '/signup', style: 'black' },
               { label: 'Login', path: '/login', style: 'white' }
           ];
+}
+
+/**
+ * Displays the hero section of the landing page.
+ *
+ * @returns {JSX.Element} Hero section
+ */
+function Hero() {
+    const isLoggedIn = useAuthStatus();
+    const navigate = useNavigate();
+
+    const heroImage = getHeroImage();
+    const buttons = getHeroButtons(isLoggedIn);
 
     return (
         <div className="hero">
-            {/* Wrapper for layout (split left/right) */}
             <div className="hero-content">
                 <div className="hero-left">
                     <div className="hero-quote">
                         <span className="hero-text-top">Plan your study.</span>
-                        <br/>
+                        <br />
                         <span className="hero-text-bottom">Live your life.</span>
                     </div>
 
                     <div className="hero-buttons">
-                        {buttons.map((btn) => (
-                            <button key={btn.label} className={`hero-button ${btn.style}`} onClick={() => nav(btn.path)}>
-                                {btn.label}
+                        {buttons.map((button) => (
+                            <button
+                                key={button.label}
+                                className={`hero-button ${button.style}`}
+                                onClick={() => navigate(button.path)}
+                            >
+                                {button.label}
                             </button>
                         ))}
                     </div>
                 </div>
 
                 <div className="hero-right">
-                    <img className="hero-image" src={heropic} alt="StudySync hero"/>
+                    <img className="hero-image" src={heroImage} alt="StudySync hero" />
                 </div>
             </div>
         </div>

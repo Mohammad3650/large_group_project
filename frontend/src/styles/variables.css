@@ -11,7 +11,30 @@
     --font-size-heading: 1.4rem;
     --font-size-lg: 1.5rem;
     --font-size-xl: 1.875rem;
+    --font-size-testimonials-title-mobile: 32px;
     --font-size-2xl: 2rem;
+    --font-size-card-title: 1.125rem;
+    --font-size-heading-hero: 80px;
+    --font-size-heading-mobile: 42px;
+    --font-size-body-lg: 20px;
+    --font-size-event-time: 16px;
+    --font-size-event-time-mobile: 11px;
+    --font-size-event-location-mobile: 10px;
+
+    --font-size-month-grid-event-mobile: 11px;
+    --font-size-month-agenda-day-mobile: 12px;
+    --font-size-range-heading-mobile: 16px;
+    --font-size-title-md: 22px;
+    --font-size-body-md: 1rem;
+    --font-size-hero-text: 70px;
+    --font-size-hero-button: 1.4rem;
+    --font-size-date-picker-day-mobile: 16px;
+    --font-size-hero-button-mobile: 1.1rem;
+    --font-weight-bold: 700;
+    --font-weight-semi-bold: 600;
+    --font-size-hero-clamp-min: 42px;
+    --font-size-hero-clamp-fluid: 12vw;
+    --font-size-hero-clamp-max: 64px;
 
     /* text colours */
     --text-main: #222;
@@ -31,6 +54,24 @@
     --border-soft: #dcdcdc;
     --border-input: #cfcfcf;
     --border-strong: #808080;
+
+    /* line heights */
+    --line-height-card-text: 1.4;
+    --line-height-card-text-mobile: 1.5;
+    --line-height-tight: 1;
+    --line-height-event-detail: 20px;
+    --line-height-snug: 1.1;
+    --line-height-md: 1.2;
+    --line-height-calendar-heading-mobile: 1.2;
+    --line-height-hero-tight: 1.05;
+    --line-height-relaxed: 1.6;
+
+    /* font weights */
+    --font-weight-medium: 500;
+
+    /* letter spacing */
+    --letter-spacing-sm: 1px;
+    --letter-spacing-tight-sm: -0.3px;
 
     /* action colours */
     --danger: red;
@@ -52,18 +93,119 @@
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 10px;
+    --radius-hero-button: 1rem;
     --radius-xl: 16px;
     --radius-2xl: 30px;
 
     /* spacing */
     --space-xs: 5px;
     --space-sm: 8px;
+    --space-hero-button-padding-y: 1rem;
+    --space-landing-testimonials-wrapper-bottom: 80px;
+    --space-landing-testimonials-title-margin-bottom-mobile: 20px;
+    --space-hero-button-padding-x: 3rem;
+    --space-hero-button-padding-mobile-y: 0.9rem;
+    --space-event-detail-bottom: 12px;
+    --space-calendar-header-gap-mobile-sm: 6px;
+    --space-event-title-bottom: 7px;
+
+    --space-calendar-header: 12px;
+    --space-calendar-header-radius: 8px;
+
+    --space-label-y: 2px;
+    --space-label-x: 6px;
+
+    --space-calendar-mobile: 12px;
+    --space-calendar-mobile-sm: 6px;
+
+    --space-event-mobile-bottom: 4px;
+    --space-month-grid-day-padding-mobile: 4px;
+    --space-month-grid-event-y-mobile: 2px;
+    --space-month-grid-event-x-mobile: 4px;
+
+    --space-calendar-control-y-mobile: 6px;
+    --space-calendar-control-x-mobile: 10px;
+
+    --space-chevron-border-mobile: 2px;
+    --space-hero-button-padding-mobile-x: 1.4rem;
+
+    --space-hero-quote-left: 30px;
+    --space-hero-bottom: 70px;
+
+    --space-hero-button-margin: 40px;
+    --space-hero-content-gap-mobile: 30px;
     --space-md: 10px;
     --space-lg: 16px;
     --space-xl: 20px;
     --space-2xl: 30px;
     --space-3xl: 50px;
+    --space-features-y-lg: 100px;
     --space-navbar-x: 32px;
+    --space-card-x: 40px;
+    --space-card-gap-sm: 10px;
+    --space-card-gap-xs: 8px;
+    --space-card-padding-mobile-y: 20px;
+    --space-card-padding-mobile-x: 16px;
+    --space-card-x-lg: 40px;
+    --space-header-left-lg: 50px;
+    --space-header-top-lg: 60px;
+    --space-header-bottom-lg: 20px;
+    --space-header-margin-bottom-lg: 20px;
+    --space-header-margin-top-sm: 5px;
+    --space-title-margin-bottom-xs: 2px;
+    --space-image-padding-md: 15px;
+    --space-image-margin-bottom-md: 12px;
+    --space-header-top-md: 20px;
+    --space-header-bottom-sm: 10px;
+    --space-gap-mobile-md: 16px;
+    --space-margin-top-mobile-md: 20px;
+    --space-card-padding-y-md: 24px;
+    --space-image-padding-sm: 10px;
+    --space-title-margin-bottom-sm: 12px;
+
+    /* avatar styles */
+    --avatar-gradient: linear-gradient(135deg, #4f46e5, #38bdf8);
+    --avatar-shadow: 0 8px 20px rgba(79, 70, 229, 0.35), inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+
+    /* mobile font sizes */
+    --font-size-avatar-mobile: 24px;
+    --font-size-stars-mobile: 22px;
+
+    /* sizing */
+    --card-min-height: 200px;
+    --avatar-size-lg: 85px;
+    --avatar-size-sm: 70px;
+    --container-max-width: 1200px;
+    --calendar-modal-size: 500px;
+    --calendar-chevron-size: 44px;
+    --card-min-height-lg: 270px;
+    --calendar-chevron-size: 44px;
+    --calendar-chevron-icon-size: 12px;
+
+    --space-chevron-border: 2px;
+    --hero-button-min-width: 170px;
+    --hero-button-black-max-width: 180px;
+    --calendar-control-min-height-mobile: 36px;
+    --calendar-modal-size: 500px;
+    --empty-state-max-width: 600px;
+
+    --date-picker-popup-max-width-mobile: 90vw;
+    --date-picker-day-size-mobile: 40px;
+
+    --month-grid-day-min-height-mobile: 72px;
+    --month-grid-event-min-height-mobile: 18px;
+
+    --calendar-chevron-size-mobile: 32px;
+    --calendar-chevron-icon-size-mobile: 10px;
+    --hero-button-white-max-width: 230px;
+    --hero-image-max-width: 750px;
+
+    --hero-button-min-width-mobile: 140px;
+    --hero-button-max-width-mobile: 200px;
+    --hero-button-flex-basis-mobile: 140px;
+    --hero-button-width-mobile: 50%;
+    --image-height-lg: 150px;
+    --image-height-md: 120px;
 
     /* shadows */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -71,19 +213,29 @@
     --shadow-lg: 5px 5px 5px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 12px 25px rgba(0, 0, 0, 0.12);
     --shadow-focus: 0 0 0 0.2rem rgba(37, 99, 235, 0.2);
+    --shadow-hover-lg: 0 0 30px rgba(0, 0, 0, 0.3);
 
     /* misc */
     --arrow-offset: -3px;
     --checkbox-size: 1.2rem;
     --navbar-height: 75px;
+    --breakpoint-sm: 480px;
+    --translate-distance-sm: 4px;
     --overlay-bg: rgba(0, 0, 0, 0.4);
+    --animation-duration-slow: 9s;
+    --translate-distance-lg: 100px;
+    --scale-hover-sm: 1.02;
+    --opacity-muted: 0.75;
+    --animation-entry-start: 20%;
+    --animation-entry-end: 60%;
+    --breakpoint-md: 768px;
 
-    --font-size-time: 0.875rem;      /* 14px */
+    --font-size-time: 0.875rem; /* 14px */
     --font-size-calendar-sm: 0.8125rem; /* 13px */
-    --font-size-calendar-md: 1.125rem;  /* 18px */
-    --font-size-calendar-lg: 1.25rem;   /* 20px */
-    --font-size-calendar-xl: 1.375rem;  /* 22px */
-    --font-size-modal-title: 1.875rem;  /* 30px */
+    --font-size-calendar-md: 1.125rem; /* 18px */
+    --font-size-calendar-lg: 1.25rem; /* 20px */
+    --font-size-calendar-xl: 1.375rem; /* 22px */
+    --font-size-modal-title: 1.875rem; /* 30px */
 
     --space-xxs: 4px;
     --space-button-y: 12px;
@@ -92,10 +244,17 @@
     --calendar-height-mobile: 72vh;
     --calendar-height-mobile-sm: 68vh;
 
+    --calendar-event-modal-parent-max-width: 90vw;
+    --calendar-event-modal-width: 82vw;
+    --calendar-event-modal-max-width: 280px;
+    --calendar-event-modal-width-mobile: 40vw;
+    --calendar-event-modal-max-width-mobile: 240px;
+
     --event-text-soft: rgba(255, 255, 255, 0.85);
     --shadow-event-hover: 0 9px 10px rgba(0, 0, 0, 0.5);
 
-
+    --transition-duration-fast: 0.2s;
+    --transition-ease-standard: ease;
 }
 
 body.dark-theme,
