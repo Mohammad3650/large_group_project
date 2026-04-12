@@ -1,0 +1,50 @@
+.task-options-drop-up {
+    position: absolute;
+    bottom: calc(100% + var(--space-xs));
+    right: 0;
+    background: var(--bg-soft);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-xs);
+    z-index: var(--z-index-dropup);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: var(--dropdown-min-width);
+}
+
+.task-options-edit-btn,
+.task-options-delete-btn {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    transition: background-color var(--transition-speed);
+}
+
+.task-options-edit-btn {
+    color: var(--text-main);
+}
+
+.task-options-edit-btn:hover,
+.task-options-delete-btn:hover {
+    background-color: var(--bg-soft-hover);
+}
+
+.task-options-delete-btn {
+    color: var(--danger-soft);
+}
+
+.task-options-divider {
+    border: none;
+    border-top: 1px solid var(--border-strong);
+    margin: 0;
+}

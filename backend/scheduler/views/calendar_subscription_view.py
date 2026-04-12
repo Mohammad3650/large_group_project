@@ -1,15 +1,27 @@
-from django.db import transaction
-from django.shortcuts import get_object_or_404
-from rest_framework import serializers, status
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from scheduler.models import CalendarSubscription, TimeBlock
 from scheduler.serializers.calendar_subscription_serializer import (
     CalendarSubscriptionSerializer,
 )
+from scheduler.services.calendar_subscription_mutation_helpers import (
+    create_and_sync_subscription,
+    delete_subscription_with_imports,
+)
+from scheduler.services.calendar_subscription_query_helpers import (
+    get_user_subscription_or_404,
+    list_calendar_subscriptions,
+)
+from scheduler.services.calendar_subscription_response_helpers import (
+    build_message_response,
+    build_subscription_response_data,
+)
 from scheduler.services.calendar_subscription_sync import sync_calendar_subscription
+from scheduler.services.calendar_subscription_validation_helpers import (
+    validate_unique_subscription,
+)
 
 
 @api_view(["GET", "POST"])
@@ -23,41 +35,24 @@ def calendar_subscriptions(request):
         and import summary on POST.
     """
     if request.method == "GET":
-        subscriptions = CalendarSubscription.objects.filter(user=request.user).order_by(
-            "-created_at"
-        )
-        serializer = CalendarSubscriptionSerializer(subscriptions, many=True)
-        return Response(serializer.data)
+        return list_calendar_subscriptions(request.user)
 
     serializer = CalendarSubscriptionSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    source_url = serializer.validated_data["source_url"]
+    validated_data = serializer.validated_data
+    validate_unique_subscription(request.user, validated_data["source_url"])
 
-    if CalendarSubscription.objects.filter(user=request.user, source_url=source_url).exists():
-        raise serializers.ValidationError(
-            {"source_url": ["You have already added this calendar subscription."]}
-        )
-
-    with transaction.atomic():
-        subscription = CalendarSubscription.objects.create(
-            user=request.user,
-            name=serializer.validated_data["name"],
-            source_url=source_url,
-        )
-
-        sync_result = sync_calendar_subscription(subscription)
-
-    response_serializer = CalendarSubscriptionSerializer(subscription)
-
-    return Response(
-        {
-            "subscription": response_serializer.data,
-            "sync_result": sync_result,
-            "message": "Calendar subscription imported successfully.",
-        },
-        status=status.HTTP_201_CREATED,
+    subscription, sync_result = create_and_sync_subscription(
+        request.user,
+        validated_data,
     )
+    response_data = build_subscription_response_data(
+        subscription,
+        sync_result,
+        "Calendar subscription imported successfully.",
+    )
+    return Response(response_data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["POST"])
@@ -69,23 +64,15 @@ def refresh_calendar_subscription(request, subscription_id):
     Returns:
         Response: The updated subscription details and sync summary.
     """
-    subscription = get_object_or_404(
-        CalendarSubscription,
-        id=subscription_id,
-        user=request.user,
-    )
-
+    subscription = get_user_subscription_or_404(request.user, subscription_id)
     sync_result = sync_calendar_subscription(subscription)
-    serializer = CalendarSubscriptionSerializer(subscription)
 
-    return Response(
-        {
-            "subscription": serializer.data,
-            "sync_result": sync_result,
-            "message": "Calendar subscription refreshed successfully.",
-        },
-        status=status.HTTP_200_OK,
+    response_data = build_subscription_response_data(
+        subscription,
+        sync_result,
+        "Calendar subscription refreshed successfully.",
     )
+    return Response(response_data, status=status.HTTP_200_OK)
 
 
 @api_view(["DELETE"])
@@ -97,24 +84,10 @@ def delete_calendar_subscription(request, subscription_id):
     Returns:
         Response: Success message after deletion.
     """
-    subscription = get_object_or_404(
-        CalendarSubscription,
-        id=subscription_id,
-        user=request.user,
-    )
-
-    imported_events = subscription.imported_events.select_related("time_block")
-    time_block_ids = [event.time_block_id for event in imported_events]
-
-    with transaction.atomic():
-        imported_events.delete()
-        TimeBlock.objects.filter(
-            id__in=time_block_ids,
-            day__user=request.user,
-        ).delete()
-        subscription.delete()
+    subscription = get_user_subscription_or_404(request.user, subscription_id)
+    delete_subscription_with_imports(subscription, request.user)
 
     return Response(
-        {"message": "Calendar subscription deleted successfully."},
+        build_message_response("Calendar subscription deleted successfully."),
         status=status.HTTP_200_OK,
     )

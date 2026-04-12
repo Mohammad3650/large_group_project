@@ -31,6 +31,8 @@ function App() {
     useEffect(() => {
         document.body.classList.remove('light-theme', 'dark-theme');
         document.body.classList.add(`${theme}-theme`);
+        document.documentElement.classList.remove('light-theme', 'dark-theme');
+        document.documentElement.classList.add(`${theme}-theme`);
         localStorage.setItem('theme', theme);
     }, [theme]);
 
@@ -66,7 +68,7 @@ function App() {
                 />
 
                 <Route
-                    path="/successful-timeblock"
+                    path="/successful-time-block"
                     element={
                         <ProtectedRoute>
                             <SuccessfulTimeBlock />
@@ -75,7 +77,7 @@ function App() {
                 />
 
                 <Route
-                    path="/timeblocks/:id/edit"
+                    path="/time-blocks/:id/edit"
                     element={
                         <ProtectedRoute>
                             <EditTimeBlock />

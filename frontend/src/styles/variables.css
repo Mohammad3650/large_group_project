@@ -72,14 +72,30 @@
     --shadow-xl: 0 12px 25px rgba(0, 0, 0, 0.12);
     --shadow-focus: 0 0 0 0.2rem rgba(37, 99, 235, 0.2);
 
+    /* popup */
+    --popup-min-width: 320px;
+    --popup-max-width: 480px;
+
+    /* dropdown */
+    --dropdown-min-width: 180px;
+
+    /* z-index */
+    --z-index-dropup: 100;
+    --z-index-popup: 500;
+
+    /* transitions */
+    --transition-speed: 0.2s;
+
     /* misc */
+    --icon-size-user: 38px;
     --arrow-offset: -3px;
     --checkbox-size: 1.2rem;
     --navbar-height: 75px;
     --overlay-bg: rgba(0, 0, 0, 0.4);
 }
 
-body.dark-theme {
+body.dark-theme,
+html.dark-theme {
     --text-main: #f5f5f5;
     --text-dark: #e0e0e0;
     --text-muted: #b0b0b0;

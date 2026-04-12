@@ -1,10 +1,11 @@
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict
 
 from scheduler.services.request_parser import ScheduleRequestParser
 from scheduler.services.response_builder import ScheduleResponseBuilder
 from scheduler.models import TimeBlock
 from django.db.models import F
 from scheduler.services.schedule_generator import Scheduler
+from .constants import DAY_MINS, MINS_IN_HOUR
 
 class ScheduleService:
     """
@@ -43,20 +44,18 @@ class ScheduleService:
         @param week_start: Week start date reference
         @return: List of tuples (start_min, end_min, name)
         """
-        DAY_MINS = 1440
-
         events = []
 
-        for tb in time_blocks:
+        for time_block in time_blocks:
 
-            day_offset = (tb.day.date - week_start).days
-            start_minutes = tb.start_time.hour * 60 + tb.start_time.minute
-            end_minutes = tb.end_time.hour * 60 + tb.end_time.minute
+            day_offset = (time_block.day.date - week_start).days
+            start_minutes = time_block.start_time.hour * MINS_IN_HOUR + time_block.start_time.minute
+            end_minutes = time_block.end_time.hour * MINS_IN_HOUR + time_block.end_time.minute
 
             start_min = day_offset * DAY_MINS + start_minutes
             end_min = day_offset * DAY_MINS + end_minutes
 
-            events.append((start_min, end_min, tb.name))
+            events.append((start_min, end_min, time_block.name))
         
         return events
 
@@ -77,8 +76,7 @@ class ScheduleService:
         scheduled = self.extract_scheduled_mins(time_blocks, parsed.week_start)
 
         engine = Scheduler( request=parsed, scheduled=scheduled )
-        
-        #: List[Tuple[int, int, int, str, str, str, str]]
+
         solutions = engine.solve()
         week_start = parsed.week_start
         return self.builder.build(solutions, list(time_blocks.values()), week_start=week_start, timezone=parsed.timezone)

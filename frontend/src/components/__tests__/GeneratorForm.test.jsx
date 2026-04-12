@@ -203,6 +203,10 @@ describe('Tests for GeneratorForm', () => {
         ).toBeInTheDocument();
     });
 
+    vi.mock('../../utils/Helpers/getUserTimezone', () => ({
+        default: () => 'UTC'
+    }));
+
     it('submits the full payload', async () => {
         const user = userEvent.setup();
         const mockOnSubmit = vi.fn();
@@ -257,7 +261,7 @@ describe('Tests for GeneratorForm', () => {
             week_end: '2026-03-29',
             even_spread: true,
             include_scheduled: true,
-            windows: [{ start_min: '08:00', end_min: '22:30', daily: true }],
+            windows: [{ start_min: '08:00', end_min: '22:30', daily: true, timezone: 'UTC', }],
             unscheduled: [
                 {
                     name: 'Algorithms',
@@ -267,7 +271,9 @@ describe('Tests for GeneratorForm', () => {
                     start_time_preference: 'Early',
                     location: 'Campus',
                     block_type: 'lecture',
-                    description: 'Past papers'
+                    description: 'Past papers',
+                    timezone: 'UTC',
+                    
                 }
             ]
         });

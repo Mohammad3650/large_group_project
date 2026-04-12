@@ -1,7 +1,8 @@
-from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from scheduler.services.user_deletion_helpers import delete_authenticated_user
 
 
 @api_view(["DELETE"])
@@ -17,10 +18,5 @@ def delete_user(request):
         Response: A success response confirming that the account
         has been deleted.
     """
-    user = request.user
-    user.delete()
-
-    return Response(
-        {"message": "Account deleted"},
-        status=status.HTTP_200_OK,
-    )
+    response_data, response_status = delete_authenticated_user(request.user)
+    return Response(response_data, status=response_status)

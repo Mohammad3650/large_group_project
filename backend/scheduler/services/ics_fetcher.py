@@ -1,10 +1,12 @@
-from urllib.parse import urlparse
-from urllib.request import Request, urlopen
-
 from rest_framework import serializers
 
-
-ALLOWED_CALENDAR_SCHEMES = {"http", "https", "webcal"}
+from scheduler.services.ics_request_helpers import (
+    FETCH_FAILED_ERROR,
+    build_calendar_request,
+    decode_response_content,
+    open_calendar_request,
+)
+from scheduler.services.ics_url_helpers import normalise_source_url_value
 
 
 def normalise_subscription_url(source_url):
@@ -20,25 +22,7 @@ def normalise_subscription_url(source_url):
     Raises:
         serializers.ValidationError: If the URL is invalid.
     """
-    if not source_url or not source_url.strip():
-        raise serializers.ValidationError({"source_url": ["A calendar URL must be provided."]})
-
-    cleaned_url = source_url.strip()
-
-    if cleaned_url.startswith("webcal://"):
-        cleaned_url = "https://" + cleaned_url[len("webcal://"):]
-
-    parsed_url = urlparse(cleaned_url)
-
-    if parsed_url.scheme not in {"http", "https"}:
-        raise serializers.ValidationError(
-            {"source_url": ["Only http, https, or webcal calendar URLs are supported."]}
-        )
-
-    if not parsed_url.netloc:
-        raise serializers.ValidationError({"source_url": ["A valid calendar URL must be provided."]})
-
-    return cleaned_url
+    return normalise_source_url_value(source_url)
 
 
 def fetch_ics_content(source_url):
@@ -54,20 +38,10 @@ def fetch_ics_content(source_url):
     Raises:
         serializers.ValidationError: If the calendar could not be fetched.
     """
-    request = Request(
-        source_url,
-        headers={
-            "User-Agent": "StudySync Calendar Import/1.0",
-            "Accept": "text/calendar, text/plain, */*",
-        },
-    )
+    request = build_calendar_request(source_url)
 
     try:
-        with urlopen(request, timeout=10) as response:
-            raw_content = response.read()
-            charset = response.headers.get_content_charset() or "utf-8"
-            return raw_content.decode(charset, errors="replace")
+        with open_calendar_request(request) as response:
+            return decode_response_content(response)
     except Exception:
-        raise serializers.ValidationError(
-            {"source_url": ["Unable to fetch the calendar feed from the provided URL."]}
-        )
+        raise serializers.ValidationError(FETCH_FAILED_ERROR)
