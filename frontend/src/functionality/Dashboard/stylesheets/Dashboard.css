@@ -18,7 +18,6 @@ body.dashboard-page .navbar-container {
     justify-content: space-between;
     align-items: stretch;
     background: var(--bg-main);
-    color: var(--text-main);
     overflow: hidden;
 }
 
@@ -28,14 +27,6 @@ body.dashboard-page .navbar-container {
     display: flex;
     flex-direction: column;
     padding: var(--space-lg) var(--space-sm) var(--space-2xl) var(--space-navbar-x);
-    color: var(--text-main);
-}
-
-.task-section h1 {
-    color: var(--text-main);
-    font-size: var(--font-size-heading);
-    font-weight: 500;
-    margin-bottom: var(--space-sm);
 }
 
 @media (max-width: 768px) {

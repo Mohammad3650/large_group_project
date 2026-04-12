@@ -3,11 +3,16 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import SettingsSidebar from '../SettingsSidebar';
 
-vi.mock('react-icons/fa', () => ({
-    FaUser: () => <span data-testid="icon-profile" />,
-    FaCalendarAlt: () => <span data-testid="icon-subscriptions" />,
-    FaFileExport: () => <span data-testid="icon-export" />,
-    FaSignOutAlt: () => <span data-testid="icon-logout" />,
+vi.mock('../SettingsNavItem.jsx', () => ({
+    default: ({ label, isActive, onClick }) => (
+        <button
+            data-testid={`nav-item-${label.toLowerCase()}`}
+            className={isActive ? 'active' : ''}
+            onClick={onClick}
+        >
+            {label}
+        </button>
+    ),
 }));
 
 vi.mock('../../../components/LogoutButton.jsx', () => ({
@@ -45,45 +50,38 @@ describe('SettingsSidebar', () => {
         expect(screen.getByTestId('logout-button')).toBeInTheDocument();
     });
 
-    it('renders all navigation icons', () => {
-        renderSidebar();
-        expect(screen.getByTestId('icon-profile')).toBeInTheDocument();
-        expect(screen.getByTestId('icon-subscriptions')).toBeInTheDocument();
-        expect(screen.getByTestId('icon-export')).toBeInTheDocument();
-    });
-
-    it('applies the active class to the active section button', () => {
+    it('passes isActive true to the active nav item', () => {
         renderSidebar('profile');
-        expect(screen.getByText('Profile').closest('button')).toHaveClass('active');
-        expect(screen.getByText('Subscriptions').closest('button')).not.toHaveClass('active');
-        expect(screen.getByText('Export').closest('button')).not.toHaveClass('active');
+        expect(screen.getByTestId('nav-item-profile')).toHaveClass('active');
+        expect(screen.getByTestId('nav-item-subscriptions')).not.toHaveClass('active');
+        expect(screen.getByTestId('nav-item-export')).not.toHaveClass('active');
     });
 
-    it('applies the active class to subscriptions when it is the active section', () => {
+    it('passes isActive true to subscriptions when it is active', () => {
         renderSidebar('subscriptions');
-        expect(screen.getByText('Subscriptions').closest('button')).toHaveClass('active');
-        expect(screen.getByText('Profile').closest('button')).not.toHaveClass('active');
+        expect(screen.getByTestId('nav-item-subscriptions')).toHaveClass('active');
+        expect(screen.getByTestId('nav-item-profile')).not.toHaveClass('active');
     });
 
-    it('applies the active class to export when it is the active section', () => {
+    it('passes isActive true to export when it is active', () => {
         renderSidebar('export');
-        expect(screen.getByText('Export').closest('button')).toHaveClass('active');
-        expect(screen.getByText('Profile').closest('button')).not.toHaveClass('active');
+        expect(screen.getByTestId('nav-item-export')).toHaveClass('active');
+        expect(screen.getByTestId('nav-item-profile')).not.toHaveClass('active');
     });
 
-    it('calls setActiveSection with the correct key when Profile is clicked', () => {
+    it('calls setActiveSection with profile when Profile is clicked', () => {
         renderSidebar();
         fireEvent.click(screen.getByText('Profile'));
         expect(mockSetActiveSection).toHaveBeenCalledWith('profile');
     });
 
-    it('calls setActiveSection with the correct key when Subscriptions is clicked', () => {
+    it('calls setActiveSection with subscriptions when Subscriptions is clicked', () => {
         renderSidebar();
         fireEvent.click(screen.getByText('Subscriptions'));
         expect(mockSetActiveSection).toHaveBeenCalledWith('subscriptions');
     });
 
-    it('calls setActiveSection with the correct key when Export is clicked', () => {
+    it('calls setActiveSection with export when Export is clicked', () => {
         renderSidebar();
         fireEvent.click(screen.getByText('Export'));
         expect(mockSetActiveSection).toHaveBeenCalledWith('export');
