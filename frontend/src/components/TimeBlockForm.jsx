@@ -1,20 +1,24 @@
-import { useState, useEffect } from 'react';
 import './stylesheets/TimeBlockForm.css';
-import getUserTimezone from '../utils/Helpers/getUserTimezone.js';
-import { BLOCK_TYPES } from '../constants/blockTypes';
+import { useTimeBlockForm } from '../utils/Hooks/useTimeBlockForm';
 import TimeBlockItem from './TimeBlockItem';
+import FormActions from './FormActions';
 
 /**
- * TimeBlockForm
- * Handles creation and editing of multiple time blocks for a schedule.
+ * Main form for creating or editing time blocks.
+ * Delegates state management to a custom hook (useTimeBlockForm)
+ * to keep this component focused on rendering.
+ *
  * Props:
- * - onSubmit: function to submit data to parent component
- * - loading: boolean indicating if server call is in progress
- * - serverErrors: array of server validation errors per block
- * - clearErrors: function to clear server errors
- * - initialData: optional object for editing an existing block
- * - onCancel: optional function to cancel editing
+ * @param {Function} onSubmit - Function to handle form submission
+ * @param {boolean} loading - Indicates if submission is in progress
+ * @param {Array} serverErrors - Errors returned from backend
+ * @param {Function} clearErrors - Clears server-side errors
+ * @param {Object|null} initialData - Existing block data (edit mode)
+ * @param {Function|null} onCancel - Cancel handler (edit mode only)
+ * 
+ * @returns {JSX.Element}
  */
+
 function TimeBlockForm({
     onSubmit,
     loading,
@@ -22,122 +26,14 @@ function TimeBlockForm({
     clearErrors,
     initialData = null,
     onCancel = null
-
 }) {
-    const emptyBlock = {
-    name: '',
-    location: '',
-    block_type: 'study',
-    description: '',
-    start_time: '',
-    end_time: ''
-    };
-
-    const [date, setDate] = useState(initialData?.date || '');
-
-    const [blocks, setBlocks] = useState(
-        initialData
-            ? [
-                  {
-                      id: initialData.id,
-                      name: initialData.name,
-                      location: initialData.location,
-                      block_type: initialData.block_type,
-                      description: initialData.description,
-                      start_time: initialData.start_time || '',
-                      end_time: initialData.end_time || ''
-                  }
-              ]
-            : [
-                  emptyBlock
-              ]
-    );
-
-    useEffect(() => {
-        if (initialData) {
-            setDate(initialData.date || '');
-
-            setBlocks([
-                {
-                    id: initialData.id,
-                    name: initialData.name,
-                    location: initialData.location,
-                    block_type: initialData.block_type,
-                    description: initialData.description,
-                    start_time: initialData.start_time || '',
-                    end_time: initialData.end_time || ''
-                }
-            ]);
-        }
-    }, [initialData]);
-
-    /**
-     * Adds a new empty time block to the form.
-     * Also clears any existing server validation errors.
-     */
-    function addBlock() {
-        setBlocks([
-            ...blocks,
-            emptyBlock
-        ]);
-        clearErrors();
-    }
-
-    /**
-     * Updates a specific field of a time block at a given index.
-     *
-     * @param {number} index - The index of the block to update.
-     * @param {string} field - The field name to update.
-     * @param {string} value - The new value for the field.
-     */
-    function updateBlock(index, field, value) {
-        const updated = [...blocks];
-        updated[index][field] = value;
-        setBlocks(updated);
-        clearErrors();
-    }
-
-    /**
-     * Removes a time block from the form by its index.
-     * Also clears any existing server validation errors.
-     *
-     * @param {number} indexToDelete - The index of the block to remove.
-     */
-    function deleteBlock(indexToDelete) {
-        setBlocks(blocks.filter((_, index) => index !== indexToDelete));
-        clearErrors();
-    }
-
-    /**
-     * Handles form submission.
-     * Prevents default form behaviour, attaches the user's timezone,
-     * formats all blocks into a list, and passes the data to the parent
-     * component via the onSubmit prop.
-     *
-     * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
-     */
-    function handleSubmit(e) {
-        e.preventDefault();
-        const timezone = getUserTimezone();
-
-        const dataList = blocks.map((block) => ({
-                id: block.id,
-                date: date,
-                name: block.name,
-                location: block.location,
-                description: block.description,
-                block_type: block.block_type,
-                start_time: block.start_time,
-                end_time: block.end_time,
-                timezone: timezone
-        }));
-        onSubmit(dataList);
-    }
+    const { date, setDate, blocks, addBlock, updateBlock, deleteBlock, handleSubmit } =
+        useTimeBlockForm({ initialData, onSubmit, clearErrors });
 
     return (
         <form onSubmit={handleSubmit}>
             {serverErrors[0]?.date && (
-                <p className="error-text-date"> {serverErrors[0].date[0]} </p>
+                <p className="error-text-date">{serverErrors[0].date[0]}</p>
             )}
             <input
                 type="date"
@@ -157,40 +53,12 @@ function TimeBlockForm({
                 />
             ))}
 
-            <div className="time-block-form-btn">
-
-                {!initialData && (
-                    <button
-                        className="btn btn-secondary btn"
-                        type="button"
-                        onClick={addBlock}
-                    >
-                        Add Another Event
-                    </button>
-                )}
-
-                {initialData && onCancel && (
-                    <button
-                        className="btn cancel-btn"
-                        type="button"
-                        onClick={onCancel}
-                        disabled={loading}
-                    >
-                        Cancel
-                    </button>
-                )}
-
-                <button
-                    className={`btn ${initialData ? 'edit-btn' : 'btn-primary'}`}
-                    type="submit"
-                    disabled={loading}
-                >
-                    {loading && 'Saving...'}
-                    {!loading && initialData && 'Edit Time Block'}
-                    {!loading && !initialData && 'Create Time Block'}
-                </button>
-
-            </div>
+            <FormActions
+                initialData={initialData}
+                onCancel={onCancel}
+                loading={loading}
+                addBlock={addBlock}
+            />
         </form>
     );
 }

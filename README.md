@@ -19,7 +19,7 @@ The members of this team are:
 
 ## Deployment
 
-Live URL: https://razascrew.netlify.app/
+Live URL: https://razas-crew.netlify.app/
 
 ## Demo Accounts 
 

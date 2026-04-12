@@ -1,6 +1,6 @@
 .time-block-form-btn {
     display: flex;
-    gap: 12px;
+    gap: var(--space-lg);
     margin-top: var(--space-xl);
 }
 
@@ -25,8 +25,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
-    margin: 28px 0;
-    padding: 18px;
+    margin: var(--space-2xl) 0;
+    padding: var(--space-xl);
     border: 1px solid var(--border-soft);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
@@ -39,7 +39,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 40px var(--space-lg);
+    padding: var(--space-3xl) var(--space-lg);
     overflow-y: auto;
     background: var(--bg-main);
     color: var(--text-main);
@@ -47,7 +47,7 @@
 
 .delete-btn {
     display: flex;
-    gap: 12px;
+    gap: var(--space-lg);
     margin-top: var(--space-xl);
     background-color: var(--danger);
     color: var(--text-white);
@@ -79,14 +79,14 @@
 
 .error-text-date {
     color: var(--danger);
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
     margin-top: 2px;
     margin-bottom: 2px;
 }
 
 .error-text {
     color: var(--danger);
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
     margin-top: 2px;
     margin-bottom: 2px;
     text-align: left;
@@ -95,7 +95,7 @@
 .tab-bar {
     display: flex;
     border-bottom: 2px solid var(--border-light);
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-2xl);
     gap: 0;
 }
 
@@ -124,12 +124,12 @@
 }
 
 .tab-panel {
-    padding: 0.5rem 0;
+    padding: var(--space-xs) 0;
 }
 
 .global-options {
     display: flex;
-    gap: 1.5rem;
+    gap: var(--space-2xl);
     margin: 1rem 0;
 }
 
@@ -155,7 +155,7 @@
     border-top-color: white;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
-    margin-right: 8px;
+    margin-right: var(--space-sm);
     vertical-align: middle;
 }
 
@@ -183,13 +183,13 @@
 .time-block-form-card input,
 .time-block-form-card select,
 .time-block-form-card textarea {
-    padding: 8px 14px;
-    border-radius: 10px;
+    padding: var(--space-sm) 14px;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border-input);
     background-color: var(--bg-main);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--text-main);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     transition: all 0.2s ease;
 }
 
@@ -204,5 +204,5 @@
 .time-block-form-card textarea:focus {
     outline: none;
     border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    box-shadow: var(--shadow-focus);
 }

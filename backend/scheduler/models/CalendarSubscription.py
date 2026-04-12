@@ -2,6 +2,10 @@ from django.db import models
 
 from .User import User
 
+NAME_MAX_LENGTH = 100
+SOURCE_URL_MAX_LENGTH = 1000
+UNIQUE_USER_SOURCE_URL_CONSTRAINT = "unique_calendar_subscription_per_user_url"
+
 
 class CalendarSubscription(models.Model):
     """
@@ -13,8 +17,8 @@ class CalendarSubscription(models.Model):
         on_delete=models.CASCADE,
         related_name="calendar_subscriptions",
     )
-    name = models.CharField(max_length=100)
-    source_url = models.CharField(max_length=1000)
+    name = models.CharField(max_length=NAME_MAX_LENGTH)
+    source_url = models.CharField(max_length=SOURCE_URL_MAX_LENGTH)
     is_active = models.BooleanField(default=True)
     last_synced_at = models.DateTimeField(null=True, blank=True)
     last_error = models.TextField(blank=True, default="")
@@ -25,7 +29,7 @@ class CalendarSubscription(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "source_url"],
-                name="unique_calendar_subscription_per_user_url",
+                name=UNIQUE_USER_SOURCE_URL_CONSTRAINT,
             )
         ]
 

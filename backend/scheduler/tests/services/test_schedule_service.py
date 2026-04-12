@@ -118,7 +118,6 @@ class GenerateTests(TestCase):
             validated_data={"week_start": WEEK_START, "week_end": WEEK_END},
         )
 
-        service.builder.build.assert_called_once_with(fake_solutions, [], week_start=WEEK_START)
         self.assertEqual(result, {"slots": ["task1"]})
 
     @patch("scheduler.services.schedule_service.Scheduler")

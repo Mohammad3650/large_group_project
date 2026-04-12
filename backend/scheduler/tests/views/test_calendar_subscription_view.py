@@ -14,20 +14,14 @@ from scheduler.models.User import User
 class CalendarSubscriptionViewTest(APITestCase):
     def setUp(self):
         """Create reusable users, URLs, and time block fixture data."""
-        self.user = User.objects.create_user(
+        self.user = self.create_user(
             username="subscriptionuser",
             email="subscriptionuser@example.com",
-            password="password123",
-            first_name="Test",
-            last_name="User",
             phone_number="07700900000",
         )
-        self.other_user = User.objects.create_user(
+        self.other_user = self.create_user(
             username="otheruser",
             email="otheruser@example.com",
-            password="password123",
-            first_name="Other",
-            last_name="User",
             phone_number="07700900001",
         )
 
@@ -35,7 +29,7 @@ class CalendarSubscriptionViewTest(APITestCase):
         self.refresh_url_name = "api-refresh-calendar-subscription"
         self.delete_url_name = "api-delete-calendar-subscription"
 
-        self.base_timeblock_data = {
+        self.base_time_block_data = {
             "name": "Imported Lecture",
             "block_type": "lecture",
             "start_time": time(9, 0),
@@ -44,6 +38,17 @@ class CalendarSubscriptionViewTest(APITestCase):
             "description": "Imported from ICS",
             "timezone": "Europe/London",
         }
+
+    def create_user(self, username, email, phone_number):
+        """Create a reusable test user."""
+        return User.objects.create_user(
+            username=username,
+            email=email,
+            password="password123",
+            first_name="Test",
+            last_name="User",
+            phone_number=phone_number,
+        )
 
     def get_refresh_url(self, subscription_id):
         """Build the refresh endpoint URL for a subscription."""
@@ -59,9 +64,17 @@ class CalendarSubscriptionViewTest(APITestCase):
             kwargs={"subscription_id": subscription_id},
         )
 
+    def create_subscription(self, user, name, source_url):
+        """Create a calendar subscription fixture."""
+        return CalendarSubscription.objects.create(
+            user=user,
+            name=name,
+            source_url=source_url,
+        )
+
     def create_time_block(self, day_plan, **overrides):
         """Create a time block from the shared base fixture."""
-        data = self.base_timeblock_data.copy()
+        data = self.base_time_block_data.copy()
         data.update(overrides)
         return TimeBlock.objects.create(day=day_plan, **data)
 
@@ -84,20 +97,20 @@ class CalendarSubscriptionViewTest(APITestCase):
 
     def test_list_subscriptions_returns_only_authenticated_users_subscriptions(self):
         """It should only return subscriptions belonging to the logged-in user."""
-        first_subscription = CalendarSubscription.objects.create(
-            user=self.user,
-            name="First Calendar",
-            source_url="https://example.com/first.ics",
+        first_subscription = self.create_subscription(
+            self.user,
+            "First Calendar",
+            "https://example.com/first.ics",
         )
-        second_subscription = CalendarSubscription.objects.create(
-            user=self.user,
-            name="Second Calendar",
-            source_url="https://example.com/second.ics",
+        second_subscription = self.create_subscription(
+            self.user,
+            "Second Calendar",
+            "https://example.com/second.ics",
         )
-        CalendarSubscription.objects.create(
-            user=self.other_user,
-            name="Other User Calendar",
-            source_url="https://example.com/other.ics",
+        self.create_subscription(
+            self.other_user,
+            "Other User Calendar",
+            "https://example.com/other.ics",
         )
 
         self.client.force_authenticate(user=self.user)
@@ -115,7 +128,9 @@ class CalendarSubscriptionViewTest(APITestCase):
         self.assertIn("Second Calendar", returned_names)
         self.assertNotIn("Other User Calendar", returned_names)
 
-    @patch("scheduler.views.calendar_subscription_view.sync_calendar_subscription")
+    @patch(
+        "scheduler.services.calendar_subscription_mutation_helpers.sync_calendar_subscription"
+    )
     def test_create_subscription_success(self, mock_sync_calendar_subscription):
         """It should create and immediately sync a valid subscription."""
         mock_sync_calendar_subscription.return_value = {
@@ -151,16 +166,18 @@ class CalendarSubscriptionViewTest(APITestCase):
 
         mock_sync_calendar_subscription.assert_called_once_with(subscription)
 
-    @patch("scheduler.views.calendar_subscription_view.sync_calendar_subscription")
+    @patch(
+        "scheduler.services.calendar_subscription_mutation_helpers.sync_calendar_subscription"
+    )
     def test_create_subscription_rejects_duplicate_url_for_same_user(
         self,
         mock_sync_calendar_subscription,
     ):
         """It should reject duplicate calendar URLs for the same user."""
-        CalendarSubscription.objects.create(
-            user=self.user,
-            name="Existing Calendar",
-            source_url="https://example.com/calendar.ics",
+        self.create_subscription(
+            self.user,
+            "Existing Calendar",
+            "https://example.com/calendar.ics",
         )
 
         self.client.force_authenticate(user=self.user)
@@ -181,16 +198,18 @@ class CalendarSubscriptionViewTest(APITestCase):
         )
         mock_sync_calendar_subscription.assert_not_called()
 
-    @patch("scheduler.views.calendar_subscription_view.sync_calendar_subscription")
+    @patch(
+        "scheduler.services.calendar_subscription_mutation_helpers.sync_calendar_subscription"
+    )
     def test_create_subscription_allows_same_url_for_different_user(
         self,
         mock_sync_calendar_subscription,
     ):
         """It should allow different users to use the same source URL."""
-        CalendarSubscription.objects.create(
-            user=self.other_user,
-            name="Other User Calendar",
-            source_url="https://example.com/calendar.ics",
+        self.create_subscription(
+            self.other_user,
+            "Other User Calendar",
+            "https://example.com/calendar.ics",
         )
         mock_sync_calendar_subscription.return_value = {
             "created": 1,
@@ -233,10 +252,10 @@ class CalendarSubscriptionViewTest(APITestCase):
 
     def test_refresh_subscription_requires_authentication(self):
         """It should require authentication to refresh a subscription."""
-        subscription = CalendarSubscription.objects.create(
-            user=self.user,
-            name="KCL Timetable",
-            source_url="https://example.com/calendar.ics",
+        subscription = self.create_subscription(
+            self.user,
+            "KCL Timetable",
+            "https://example.com/calendar.ics",
         )
 
         response = self.client.post(self.get_refresh_url(subscription.id))
@@ -245,10 +264,10 @@ class CalendarSubscriptionViewTest(APITestCase):
     @patch("scheduler.views.calendar_subscription_view.sync_calendar_subscription")
     def test_refresh_subscription_success(self, mock_sync_calendar_subscription):
         """It should refresh a subscription owned by the authenticated user."""
-        subscription = CalendarSubscription.objects.create(
-            user=self.user,
-            name="KCL Timetable",
-            source_url="https://example.com/calendar.ics",
+        subscription = self.create_subscription(
+            self.user,
+            "KCL Timetable",
+            "https://example.com/calendar.ics",
         )
         mock_sync_calendar_subscription.return_value = {
             "created": 0,
@@ -270,10 +289,10 @@ class CalendarSubscriptionViewTest(APITestCase):
 
     def test_refresh_subscription_returns_404_for_other_users_subscription(self):
         """It should return 404 when accessing another user's subscription."""
-        subscription = CalendarSubscription.objects.create(
-            user=self.other_user,
-            name="Other Calendar",
-            source_url="https://example.com/other.ics",
+        subscription = self.create_subscription(
+            self.other_user,
+            "Other Calendar",
+            "https://example.com/other.ics",
         )
 
         self.client.force_authenticate(user=self.user)
@@ -283,24 +302,25 @@ class CalendarSubscriptionViewTest(APITestCase):
 
     def test_delete_subscription_requires_authentication(self):
         """It should require authentication to delete a subscription."""
-        subscription = CalendarSubscription.objects.create(
-            user=self.user,
-            name="KCL Timetable",
-            source_url="https://example.com/calendar.ics",
+        subscription = self.create_subscription(
+            self.user,
+            "KCL Timetable",
+            "https://example.com/calendar.ics",
         )
 
         response = self.client.delete(self.get_delete_url(subscription.id))
         self.assertEqual(response.status_code, 401)
 
-    def test_delete_subscription_deletes_imported_events_and_timeblocks(self):
+    def test_delete_subscription_deletes_imported_events_and_time_blocks(self):
         """It should delete imported events and linked user-owned time blocks."""
-        subscription = CalendarSubscription.objects.create(
-            user=self.user,
-            name="KCL Timetable",
-            source_url="https://example.com/calendar.ics",
+        subscription = self.create_subscription(
+            self.user,
+            "KCL Timetable",
+            "https://example.com/calendar.ics",
         )
         day_plan = DayPlan.objects.create(user=self.user, date=date(2026, 4, 10))
         time_block = self.create_time_block(day_plan)
+
         ImportedCalendarEvent.objects.create(
             subscription=subscription,
             external_event_uid="event-123",
@@ -323,12 +343,12 @@ class CalendarSubscriptionViewTest(APITestCase):
         )
         self.assertFalse(TimeBlock.objects.filter(id=time_block.id).exists())
 
-    def test_delete_subscription_only_deletes_authenticated_users_timeblocks(self):
+    def test_delete_subscription_only_deletes_authenticated_users_time_blocks(self):
         """It should only delete imported time blocks owned by the authenticated user."""
-        subscription = CalendarSubscription.objects.create(
-            user=self.user,
-            name="KCL Timetable",
-            source_url="https://example.com/calendar.ics",
+        subscription = self.create_subscription(
+            self.user,
+            "KCL Timetable",
+            "https://example.com/calendar.ics",
         )
 
         user_day_plan = DayPlan.objects.create(user=self.user, date=date(2026, 4, 10))
@@ -372,10 +392,10 @@ class CalendarSubscriptionViewTest(APITestCase):
 
     def test_delete_subscription_returns_404_for_other_users_subscription(self):
         """It should return 404 when deleting another user's subscription."""
-        subscription = CalendarSubscription.objects.create(
-            user=self.other_user,
-            name="Other Calendar",
-            source_url="https://example.com/other.ics",
+        subscription = self.create_subscription(
+            self.other_user,
+            "Other Calendar",
+            "https://example.com/other.ics",
         )
 
         self.client.force_authenticate(user=self.user)

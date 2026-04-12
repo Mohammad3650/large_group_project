@@ -17,16 +17,8 @@ vi.mock('../SettingsSidebar.jsx', () => ({
     ),
 }));
 
-vi.mock('../ProfileSection.jsx', () => ({
-    default: () => <div data-testid="profile-section" />,
-}));
-
-vi.mock('../SubscriptionSection.jsx', () => ({
-    default: ({ error }) => <div data-testid="subscription-section">{error}</div>,
-}));
-
-vi.mock('../ExportSection.jsx', () => ({
-    default: () => <div data-testid="export-section" />,
+vi.mock('../SettingsContent.jsx', () => ({
+    default: ({ activeSection }) => <div data-testid={`content-${activeSection}`} />,
 }));
 
 vi.mock('../../../utils/Hooks/useSubscriptions.js', () => ({
@@ -62,37 +54,28 @@ describe('Settings', () => {
         vi.clearAllMocks();
     });
 
-    it('renders the profile section by default', () => {
+    it('renders the profile content by default', () => {
         renderSettings();
-        expect(screen.getByTestId('profile-section')).toBeInTheDocument();
+        expect(screen.getByTestId('content-profile')).toBeInTheDocument();
     });
 
-    it('does not render subscription or export sections by default', () => {
-        renderSettings();
-        expect(screen.queryByTestId('subscription-section')).not.toBeInTheDocument();
-        expect(screen.queryByTestId('export-section')).not.toBeInTheDocument();
-    });
-
-    it('renders the subscription section when subscriptions is selected', () => {
+    it('renders the subscriptions content when subscriptions is selected', () => {
         renderSettings();
         fireEvent.click(screen.getByText('Subscriptions'));
-        expect(screen.getByTestId('subscription-section')).toBeInTheDocument();
-        expect(screen.queryByTestId('profile-section')).not.toBeInTheDocument();
+        expect(screen.getByTestId('content-subscriptions')).toBeInTheDocument();
     });
 
-    it('renders the export section when export is selected', () => {
+    it('renders the export content when export is selected', () => {
         renderSettings();
         fireEvent.click(screen.getByText('Export'));
-        expect(screen.getByTestId('export-section')).toBeInTheDocument();
-        expect(screen.queryByTestId('profile-section')).not.toBeInTheDocument();
+        expect(screen.getByTestId('content-export')).toBeInTheDocument();
     });
 
-    it('renders the profile section when profile is selected after switching', () => {
+    it('renders the profile content when profile is selected after switching', () => {
         renderSettings();
         fireEvent.click(screen.getByText('Export'));
         fireEvent.click(screen.getByText('Profile'));
-        expect(screen.getByTestId('profile-section')).toBeInTheDocument();
-        expect(screen.queryByTestId('export-section')).not.toBeInTheDocument();
+        expect(screen.getByTestId('content-profile')).toBeInTheDocument();
     });
 
     it('applies the settings-page body class', () => {

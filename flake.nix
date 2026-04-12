@@ -14,8 +14,38 @@
         python = pkgs.python3;
         node = pkgs.nodejs_20;
 
-        # Path containing libstdc++.so.6 — needed on Linux for numpy/ortools C extensions
         libPath = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
+
+        backendRequirements = pkgs.writeText "requirements.txt" ''
+            asgiref==3.11.1
+            Django==5.2.7
+            django-cors-headers==4.9.0
+            djangorestframework==3.16.1
+            djangorestframework_simplejwt==5.5.1
+            psycopg2-binary==2.9.11
+            PyJWT==2.11.0
+            python-dotenv==1.2.1
+            pytz==2025.2
+            sqlparse==0.5.5
+            tzdata==2025.3
+            coverage==7.13.4
+            icalendar==5.0.11
+            Faker==40.11.1
+
+            # Django – core backend framework
+
+            # djangorestframework – clean API for React
+
+            # simplejwt – token-based auth (easy with React)
+
+            # cors-headers – required for frontend → backend calls
+
+            # python-dotenv – keep secrets out of git
+
+            # psycopg2-binary – safe if you later move to Postgres
+
+            # pytz – timezone handling (important for schedules)
+            '';
 
         runtimeInputs = with pkgs; [
           bash
@@ -27,7 +57,7 @@
           node
           python
           sqlite
-          stdenv.cc.cc.lib  # provides libstdc++.so.6 for numpy/ortools on Linux
+          stdenv.cc.cc.lib
         ];
 
         mkApp = script: {
@@ -67,26 +97,23 @@
             set -euo pipefail
             ${rootChecks}
 
-            # Make libstdc++.so.6 visible to pip-installed C extensions (numpy, ortools, etc.)
             export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
             ROOT="$PWD"
             BACKEND_DIR="$ROOT/backend"
             FRONTEND_DIR="$ROOT/frontend"
-            REQUIREMENTS_FILE="$ROOT/backend/requirements.txt"
+            REQUIREMENTS_FILE="$BACKEND_DIR/requirements.txt"
             VENV_DIR="$BACKEND_DIR/venv"
 
             require_root "$ROOT"
-
-            if [ ! -f "$REQUIREMENTS_FILE" ]; then
-              echo "ERROR: requirements.txt not found at $REQUIREMENTS_FILE"
-              exit 1
-            fi
 
             echo "==> StudySync initialisation"
             echo "==> Platform: ${system}"
             echo "==> Repo root: $ROOT"
             echo
+
+            echo "==> Syncing backend requirements"
+            cp "${backendRequirements}" "$REQUIREMENTS_FILE"
 
             echo "==> Creating backend virtual environment at backend/venv"
             ${python}/bin/python -m venv "$VENV_DIR"
@@ -105,12 +132,12 @@
             echo
             echo "==> Installing frontend npm dependencies"
             (
-            cd "$FRONTEND_DIR"
-            if [ -f package-lock.json ]; then
+              cd "$FRONTEND_DIR"
+              if [ -f package-lock.json ]; then
                 npm ci
-            else
+              else
                 npm install
-            fi
+              fi
             )
 
             echo
@@ -135,7 +162,6 @@
             set -euo pipefail
             ${rootChecks}
 
-            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
             export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
             ROOT="$PWD"
@@ -192,10 +218,9 @@
           name = "studysync-tests";
           runtimeInputs = runtimeInputs;
           text = ''
-            set -euo pipefail
+            set -uo pipefail
             ${rootChecks}
 
-            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
             export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
             ROOT="$PWD"
@@ -216,6 +241,9 @@
 
             mkdir -p "$BACKEND_COVERAGE_DIR"
 
+            backend_status=0
+            frontend_status=0
+
             echo "==> Running backend tests"
             (
               cd "$BACKEND_DIR"
@@ -224,20 +252,29 @@
               "$VENV_DIR/bin/coverage" report -m
               "$VENV_DIR/bin/coverage" xml -o "$BACKEND_COVERAGE_DIR/coverage.xml"
               "$VENV_DIR/bin/coverage" html -d "$BACKEND_COVERAGE_DIR/html"
-            )
+            ) || backend_status=$?
 
             echo
             echo "==> Running frontend tests"
             (
               cd "$FRONTEND_DIR"
-              npm run test
               npm run coverage
-            )
+            ) || frontend_status=$?
 
             echo
             echo "==> Coverage output locations"
-            echo "  Backend XML:  $BACKEND_COVERAGE_DIR/coverage.xml"
-            echo "  Backend HTML: $BACKEND_COVERAGE_DIR/html/index.html"
+
+            if [ -f "$BACKEND_COVERAGE_DIR/coverage.xml" ]; then
+              echo "  Backend XML:  $BACKEND_COVERAGE_DIR/coverage.xml"
+            else
+              echo "  Backend XML:  not generated"
+            fi
+
+            if [ -d "$BACKEND_COVERAGE_DIR/html" ]; then
+              echo "  Backend HTML: $BACKEND_COVERAGE_DIR/html/index.html"
+            else
+              echo "  Backend HTML: not generated"
+            fi
 
             if [ -d "$FRONTEND_COVERAGE_DIR" ]; then
               echo "  Frontend:     $FRONTEND_COVERAGE_DIR"
@@ -246,7 +283,15 @@
             fi
 
             echo
-            echo "==> Tests and coverage completed"
+            if [ "$backend_status" -eq 0 ] && [ "$frontend_status" -eq 0 ]; then
+              echo "==> All tests passed"
+              exit 0
+            fi
+
+            echo "==> Some tests failed"
+            echo "  Backend exit code:  $backend_status"
+            echo "  Frontend exit code: $frontend_status"
+            exit 1
           '';
         };
 
@@ -257,7 +302,6 @@
             set -euo pipefail
             ${rootChecks}
 
-            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
             export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
             ROOT="$PWD"
@@ -289,7 +333,6 @@
             set -euo pipefail
             ${rootChecks}
 
-            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
             export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
             ROOT="$PWD"
@@ -326,7 +369,6 @@
         devShells.default = pkgs.mkShell {
           packages = runtimeInputs;
           shellHook = ''
-            # Make libstdc++.so.6 visible to C extensions (numpy, ortools, etc.)
             export LD_LIBRARY_PATH="${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
             echo "StudySync development shell"
             echo "Available entrypoints:"

@@ -2,9 +2,11 @@ import bisect
 from dataclasses import dataclass
 import datetime
 from datetime import time
+from .constants import DAY_MINS, MINS_IN_HOUR
 
-DAY_MINS = 1440
 FINAL_MIN = 1439
+LATE_PREFERENCE = "Late"
+WINDOW_EVENT_NAME = "window"
 
 class Event:
     def __init__(self, scheduled, start_time = None, end_time = None, name = None):
@@ -36,7 +38,7 @@ class Event:
         return self.__str__()
     
     def _abs_mins_to_time(self, abs):
-        return f"{abs // 60}:{abs % 60}"
+        return f"{abs // MINS_IN_HOUR}:{abs % MINS_IN_HOUR}"
 
     def _abs_time_to_datetime(self, abs_min: int) -> tuple[str, str]:
         """
@@ -46,8 +48,8 @@ class Event:
         """
         mins_in_day = abs_min % DAY_MINS
 
-        hour = mins_in_day // 60
-        minute = mins_in_day % 60
+        hour = mins_in_day // MINS_IN_HOUR
+        minute = mins_in_day % MINS_IN_HOUR
 
         return time(hour=hour, minute=minute, second=0)
     
@@ -156,8 +158,11 @@ class Scheduler:
         Returns: None
         """
         for start, end, _ in windows:
-            for day in self.days:
-                day.add_event(Event(True, start, end, "window"))
+            self._add_window_to_each_day(start, end)
+
+    def _add_window_to_each_day(self, start, end):
+        for day in self.days:
+            day.add_event(Event(True, start, end, WINDOW_EVENT_NAME))
     
     # Add scheduled events to the respective days
     def add_scheduled_events(self):
@@ -199,8 +204,16 @@ class Scheduler:
         events = self.request.unscheduled
         return sorted(
             events,
-            key = lambda event: (not event[3], event[4] != "Late")
+            key = lambda event: (not event[3], event[4] != LATE_PREFERENCE)
         )
+    
+    def _place_event_n_times(self, event, frequency, late):
+        """Attempt to place a non-daily event `frequency` times."""
+        for _ in range(frequency):
+            success = self._place_late_event(event) if late else self._place_event(event)
+            if not success:
+                return False
+        return True
     
     def add_unscheduled_events(self):
         """
@@ -210,19 +223,29 @@ class Scheduler:
         """
         for event in self._sort_unscheduled_events():
             daily = event[3]
-            late = event[4] == "Late"
+            late = event[4] == LATE_PREFERENCE
             frequency = event[2]
 
-            if daily:
-                success = self._place_daily_event(event, late)
-                if not success:
-                    return False
-            else:
-                for _ in range(frequency):
-                    success = self._place_late_event(event) if late else self._place_event(event)
-                    if not success:
-                        return False
+            success = self._dispatch_event_placement(event, daily, late, frequency)
+
+            if not success:
+                return False
+
         return True
+
+    def _dispatch_event_placement(self, event, daily, late, frequency):
+        if daily:
+            success = self._place_daily_event(event, late)
+        else:
+            success = self._place_event_n_times(event, frequency, late)
+        return success
+    
+    def _place_event_on_day(self, event, day, late):
+        """Attempt to place an event on a single day, using latest or earliest slot."""
+        event_obj = self._create_unsched_event_object(event)
+        if late:
+            return self._place_event_in_latest_slot_on_day(event_obj, day)
+        return self._try_add_event_to_day(event_obj, day)
 
     def _place_daily_event(self, event, late):
         """
@@ -233,15 +256,31 @@ class Scheduler:
         Returns: bool: True if placed on all days, False otherwise.
         """
         for day in self.days:
-            event_obj = self._create_unsched_event_object(event)
-            if late:
-                success = self._place_event_in_latest_slot_on_day(event_obj, day)
-            else:
-                success = self._try_add_event_to_day(event_obj, day)
-            if not success:
+            if not self._place_event_on_day(event, day, late):
                 print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED on day")
                 return False
         return True
+    
+    def _add_candidate(self, candidates, start, index):
+        """Add the (start, index) pair to the candidates list using insertion sort"""
+        if start is not None:
+                bisect.insort(candidates, (start, index))
+    
+    def _collect_late_candidates(self, event):
+        """Collect (start_time, day_index) pairs for latest-slot placement across all days."""
+        candidates = []
+        for index, day in enumerate(self.days):
+            event_obj = self._create_unsched_event_object(event)
+            start = self._find_latest_slot_for_event(event_obj, day.events)
+            self._add_candidate(candidates, start, index)
+        return candidates
+
+    def _place_event_at(self, event, start, day_idx):
+        """Place an event at a specific start time on a specific day."""
+        event_obj = self._create_unsched_event_object(event)
+        event_obj.start_time = start
+        event_obj.end_time = start + event_obj.duration
+        self.days[day_idx].add_event(event_obj)
 
     def _place_late_event(self, event):
         """
@@ -249,22 +288,14 @@ class Scheduler:
         Args: event (tuple): Event data.
         Returns: bool: True if placed, False if no slot found on any day.
         """
-        candidates = []
-        for i, day in enumerate(self.days):
-            event_obj = self._create_unsched_event_object(event)
-            start = self._find_latest_slot_for_event(event_obj, day.events)
-            if start is not None:
-                bisect.insort(candidates, (start, i))
+        candidates = self._collect_late_candidates(event)
 
         if not candidates:
             print(f"ERROR: Infeasible. {event} COULD NOT BE PLACED")
             return False
 
         start, day_idx = candidates[-1]
-        event_obj = self._create_unsched_event_object(event)
-        event_obj.start_time = start
-        event_obj.end_time = start + event_obj.duration
-        self.days[day_idx].add_event(event_obj)
+        self._place_event_at(event, start, day_idx)
         return True
 
     def _place_event(self, event):
@@ -311,6 +342,7 @@ class Scheduler:
             return True
         else:
             return False
+    
 
     def _try_find_slot_for_event(self, unsched_event, events_list):
         """
@@ -326,9 +358,8 @@ class Scheduler:
             gap = event.start_time - gap_start
 
             # handle overlapping events
-            if gap < 0:
-                if event.end_time > gap_start:
-                    gap_start = event.end_time
+            if gap < 0 and (event.end_time > gap_start):
+                gap_start = event.end_time
                 continue
 
             if gap >= unsched_event.duration:
@@ -355,14 +386,11 @@ class Scheduler:
             event = events_list[i][1]
             gap = event.start_time - gap_start
 
-            # handle overlapping events
-            if gap < 0:
-                if event.end_time > gap_start:
-                    gap_start = event.end_time
+            if gap < 0 and (event.end_time > gap_start):
+                gap_start = event.end_time
                 continue
 
             if gap > unsched_event.duration:
-                # Add event to day
                 start_times.append((gap_start, gap))
 
             gap_start = event.end_time
@@ -415,9 +443,12 @@ class Scheduler:
         """
         events = []
         for _, event in day.events:
-            if not event.scheduled:
-                events.append((event.start_time_dt, event.end_time_dt, self._calculate_date(index), event.name, event.location, event.block_type, event.description))
+            self._add_unscheduled_events_to_event_list(index, events, event)
         return events
+
+    def _add_unscheduled_events_to_event_list(self, index, events, event):
+        if not event.scheduled:
+            events.append((event.start_time_dt, event.end_time_dt, self._calculate_date(index), event.name, event.location, event.block_type, event.description))
 
     def _calculate_date(self, index):
         """

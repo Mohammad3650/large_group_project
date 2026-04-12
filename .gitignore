@@ -4,6 +4,7 @@ __pycache__/
 
 # Virtual env
 venv/
+.venv/
 .env
 backend/venv/
 
@@ -22,6 +23,8 @@ staticfiles/
 node_modules/
 frontend/node_modules/
 frontend/coverage/
+frontend/.env.development
+frontend/.env.production
 
 # Coverage (backend)
 backend/.coverage
