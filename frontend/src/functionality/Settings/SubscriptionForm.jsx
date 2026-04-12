@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FaCloudDownloadAlt } from 'react-icons/fa';
-import getSubscriptionFeedbackMessage from './utils/helpers/getSubscriptionFeedbackMessage.js';
+import getSubscriptionFeedbackMessage from '../../utils/Helpers/getSubscriptionFeedbackMessage.js';
 import './stylesheets/SubscriptionForm.css';
 
 /**

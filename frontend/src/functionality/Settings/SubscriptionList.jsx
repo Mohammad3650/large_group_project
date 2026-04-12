@@ -1,4 +1,4 @@
-import formatSubscriptionLastSyncedAt from './utils/helpers/formatSubscriptionLastSyncedAt.js';
+import formatSubscriptionLastSyncedAt from '../../utils/Helpers/formatSubscriptionLastSyncedAt.js';
 import './stylesheets/SubscriptionList.css';
 
 /**
