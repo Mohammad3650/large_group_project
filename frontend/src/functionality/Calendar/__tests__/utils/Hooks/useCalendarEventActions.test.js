@@ -36,7 +36,7 @@ describe('useCalendarEventActions', () => {
 
         handleEdit();
 
-        expect(mockNavigate).toHaveBeenCalledWith('/timeblocks/42/edit');
+        expect(mockNavigate).toHaveBeenCalledWith('/time-blocks/42/edit');
     });
 
     it('handleDeleteEvent calls handleDelete with the correct id', () => {
@@ -59,7 +59,7 @@ describe('useCalendarEventActions', () => {
         handleEdit();
         handleDeleteEvent();
 
-        expect(mockNavigate).toHaveBeenCalledWith('/timeblocks/abc/edit');
+        expect(mockNavigate).toHaveBeenCalledWith('/time-blocks/abc/edit');
         expect(handleDelete).toHaveBeenCalledWith('abc');
     });
 });

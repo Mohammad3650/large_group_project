@@ -19,10 +19,6 @@ vi.mock('../../../components/AddTaskButton.jsx', () => ({
     default: () => <div>Mock Add Task Button</div>
 }));
 
-vi.mock('../CalendarPlaceholder.jsx', () => ({
-    default: () => <div>Mock Calendar Placeholder</div>
-}));
-
 vi.mock('../CalendarEmptyState.jsx', () => ({
     default: ({ username }) => (
         <div>
@@ -74,10 +70,10 @@ describe('Calendar', () => {
         vi.clearAllMocks();
     });
 
-    it('renders the placeholder when blocks are null', () => {
-        renderCalendar({ blocks: null });
+    it('renders nothing when blocks are null', () => {
+        const { container } = renderCalendar({ blocks: null });
 
-        expect(screen.getByText('Mock Calendar Placeholder')).toBeInTheDocument();
+        expect(container).toBeEmptyDOMElement();
     });
 
     it('renders the calendar view when there are no events', () => {

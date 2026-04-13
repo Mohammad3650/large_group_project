@@ -10,21 +10,16 @@ import { useNavigate } from 'react-router-dom';
  */
 function useCalendarEventActions({calendarEvent: {id}, handleDelete }) {
     const navigate = useNavigate();
-
     function handleEdit(){
-        navigate(`/timeblocks/${id}/edit`);
+        navigate(`/time-blocks/${id}/edit`);
     }
-
+    
     function handleDeleteEvent(){
         handleDelete(id);   
     };
-
     return{
-        
             handleEdit,
             handleDeleteEvent
-        
     };
 }
-
 export default useCalendarEventActions;

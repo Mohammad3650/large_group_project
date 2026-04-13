@@ -6,7 +6,6 @@ import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import CalendarView from './CalendarView.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import useUsername from '../../utils/Hooks/useUsername.js';
-import CalendarPlaceholder from './CalendarPlaceholder.jsx';
 import renderEventActions from './RenderEventActions.jsx';
 
 /**
@@ -22,7 +21,7 @@ function Calendar() {
     const { blocks, setBlocks } = useTimeBlocks();
     const { username } = useUsername(true);
 
-    if (blocks === null) return <CalendarPlaceholder />;
+    if (blocks === null) return null;
 
     return (
         <CalendarView

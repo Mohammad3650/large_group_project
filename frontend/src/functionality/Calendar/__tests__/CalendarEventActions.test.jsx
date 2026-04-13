@@ -37,7 +37,7 @@ describe('CalendarEventActions', () => {
 
         fireEvent.click(screen.getByRole('button', { name: 'Edit event' }));
 
-        expect(mockNavigate).toHaveBeenCalledWith('/timeblocks/42/edit');
+        expect(mockNavigate).toHaveBeenCalledWith('/time-blocks/42/edit');
     });
 
     it('calls handleDelete with the event id when Delete is clicked', () => {

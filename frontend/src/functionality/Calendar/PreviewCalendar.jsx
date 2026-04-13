@@ -5,7 +5,6 @@ import '@schedule-x/theme-default/dist/index.css';
 import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 import CalendarView from './CalendarView.jsx';
-import CalendarPlaceholder from './CalendarPlaceholder.jsx';
 import mapTimeBlocks from '../../utils/Helpers/mapTimeBlocks.js';
 import savePlan from '../../utils/Api/savePlan.js';
 import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
@@ -66,7 +65,7 @@ function PreviewCalendar() {
         nav('/dashboard');
     }
 
-    if (blocks === null) return <CalendarPlaceholder />;
+    if (blocks === null) return null;
 
     return (
         <CalendarView
