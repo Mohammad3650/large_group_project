@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import renderEventActions from '../renderEventActions.jsx';
+import renderEventActions from '../RenderEventActions.jsx';
 
 vi.mock('../CalendarEventActions.jsx', () => ({
     default: ({ calendarEvent, handleDelete }) => (
