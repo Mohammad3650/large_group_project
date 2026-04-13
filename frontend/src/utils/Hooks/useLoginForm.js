@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { loginUser } from '../Auth/authService';
 import useAuthForm from './useAuthForm';
+import validateLoginForm from '../Validation/validateLoginForm';
 
 /**
  * Hook that manages login form state, validation and submission.
@@ -17,25 +18,19 @@ import useAuthForm from './useAuthForm';
  * }}
  */
 
-function useLoginForm(nav) {
+function useLoginForm(navigate) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function validateLoginForm() {
-        const fieldErrors = {};
-
-        if (!email.trim()) fieldErrors.email = 'Email is required.';
-        if (!password) fieldErrors.password = 'Password is required.';
-
-        return fieldErrors;
-    }
 
     async function submitLogin() {
         await loginUser(email, password);
-        nav('/dashboard');
+        navigate('/dashboard');
     }
 
-    const form = useAuthForm(validateLoginForm, submitLogin);
+    const form = useAuthForm(
+        () => validateLoginForm({ email, password }),
+        submitLogin);
 
     return {
         email,

@@ -15,8 +15,8 @@ const initialErrors = {
  * - tracks loading state
  * - formats backend errors consistently
  *
- * @param {Function} validate - Returns an object of field errors
- * @param {Function} onSubmit - Async function to run if validation passes
+ * @param {Function} validateForm - Returns an object of field errors
+ * @param {Function} submitForm - Async function to run if validation passes
  * @returns {{
  *   errors: { fieldErrors: Object<string, string>, global: string[] },
  *   loading: boolean,

@@ -33,7 +33,7 @@ async function verifyToken(token) {
 
 export async function isTokenValid() {
     const token = getAccessToken();
-    // If there's no token, it's not valid
+
     if (!token) return false;
 
     try {
@@ -42,7 +42,6 @@ export async function isTokenValid() {
     } catch (error) {
         const status = error?.response?.status;
 
-        // Token is invalid or expired → log out user
         if (status === 401 || status === 403) {
             logout();
         }

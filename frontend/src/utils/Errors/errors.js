@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const FALLBACK_MESSAGE = 'Request failed.';
+
 /**
  * Returns the standard frontend error shape with a single global message.
  *
@@ -16,6 +17,26 @@ function buildGlobalError(message) {
 }
 
 /**
+ * Returns whether given value is a non-null object
+ * 
+ * @param {unknown} value - Value to check
+ * @return {boolean} 
+ */
+function isErrorObject(value) {
+    return typeof value === 'object' && value !== null;
+}
+
+/**
+ * Returns whether an error response object contains a DRF detail message
+ * 
+ * @param {Record<string, unknown>} data - Response data to check
+ * @return {boolean}
+ */
+function hasDetailMessage(data) {
+    return typeof data.detail === 'string';
+}
+
+/**
  * Handles DRF-style object errors and maps them into
  * field-level and global errors.
  *
@@ -24,10 +45,14 @@ function buildGlobalError(message) {
  */
 
 function handleObjectErrors(data) {
-    const out = { fieldErrors: {}, global: [] };
+    const out = {
+        fieldErrors: {},
+        global: []
+    };
 
     for (const [key, value] of Object.entries(data)) {
         const messages = Array.isArray(value) ? value : [String(value)];
+
         if (key === 'non_field_errors') {
             out.global.push(...messages);
         } else {
@@ -84,11 +109,11 @@ export function formatApiError(err) {
     }
 
     // DRF common: { detail: "..." }
-    if (typeof data === 'object' && typeof data.detail === 'string') {
+    if (isErrorObject(data) && hasDetailMessage(data)) {
         return buildGlobalError(data.detail);
     }
 
-    if (typeof data === 'object' && data !== null) {
+    if (isErrorObject(data)) {
         return handleObjectErrors(data);
     }
 

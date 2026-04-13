@@ -22,58 +22,63 @@
  * @returns {Object<string, string>} Validation errors keyed by field name
  */
 
-const REQUIRED_MESSAGES = {
-    email: 'Email is required.',
-    username: 'Username is required.',
-    first_name: 'First name is required.',
-    last_name: 'Last name is required.',
-    phone_number: 'Phone number is required.',
-    password: 'Password is required.',
-    confirmPassword: 'Please confirm your password.',
-};
+const REQUIRED_FIELDS = [
+    { formKey: 'email', errorKey: 'email', message: 'Email is required.' },
+    { formKey: 'username', errorKey: 'username', message: 'Username is required.' },
+    { formKey: 'firstName', errorKey: 'first_name', message: 'First name is required.' },
+    { formKey: 'lastName', errorKey: 'last_name', message: 'Last name is required.' },
+    { formKey: 'phoneNumber', errorKey: 'phone_number', message: 'Phone number is required.' },
+    { formKey: 'password', errorKey: 'password', message: 'Password is required.' },
+    { formKey: 'confirmPassword', errorKey: 'confirmPassword', message: 'Please confirm your password.' }
+];
 
+/**
+ * Checks if a value is blank.
+ * 
+ * @param {unknown} value 
+ * @returns {boolean}
+ */
 function isBlank(value) {
     return typeof value === 'string' ? !value.trim() : !value;
 }
 
+/**
+ * Applies required field validation
+ * 
+ * @param {Object} form 
+ * @returns {Object} errors
+ */
+function applyRequiredFieldValidation(form, errors) {
+    for (const field of REQUIRED_FIELDS) {
+        if (isBlank(form[field.formKey])) {
+            errors[field.errorKey] = field.message;
+        }
+    }
+}
+
+/**
+ * Applies password-specific validation rules
+ * 
+ * @param {Object} form 
+ * @returns {Object} errors
+ */
+function applyPasswordValidation(form, errors) {
+    if (form.password && form.confirmPassword && form.password !== form.confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match.';
+    }
+}
+
+/**
+ * Main validation function
+ * 
+ * @param {Object} form 
+ * @returns {Object<string, string>} errors
+ */
 export function validateSignupForm(form) {
     const errors = {};
 
-    if (isBlank(form.email)) {
-        errors.email = REQUIRED_MESSAGES.email;
-    }
-
-    if (isBlank(form.username)) {
-        errors.username = REQUIRED_MESSAGES.username;
-    }
-
-    if (isBlank(form.firstName)) {
-        errors.first_name = REQUIRED_MESSAGES.first_name;
-    }
-
-    if (isBlank(form.lastName)) {
-        errors.last_name = REQUIRED_MESSAGES.last_name;
-    }
-
-    if (isBlank(form.phoneNumber)) {
-        errors.phone_number = REQUIRED_MESSAGES.phone_number;
-    }
-
-    if (!form.password) {
-        errors.password = REQUIRED_MESSAGES.password;
-    }
-
-    if (!form.confirmPassword) {
-        errors.confirmPassword = REQUIRED_MESSAGES.confirmPassword;
-    }
-
-    if (
-        form.password &&
-        form.confirmPassword &&
-        form.password !== form.confirmPassword
-    ) {
-        errors.confirmPassword = 'Passwords do not match.';
-    }
+    applyRequiredFieldValidation(form, errors);
+    applyPasswordValidation(form, errors);
 
     return errors;
 }
