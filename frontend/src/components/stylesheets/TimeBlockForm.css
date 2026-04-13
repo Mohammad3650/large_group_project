@@ -52,7 +52,7 @@
     background-color: var(--danger);
     color: var(--text-white);
     border-radius: var(--radius-lg);
-    width: 250px;
+    width: 125px;
 }
 
 .btn.cancel-btn {

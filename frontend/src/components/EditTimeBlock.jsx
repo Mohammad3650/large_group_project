@@ -51,7 +51,7 @@ function EditTimeBlock() {
     return (
         <div className="page-center">
             <div className="time-block-form-card">
-                <h2>Edit Time Block</h2>
+                <h2>Edit Task</h2>
                 <TimeBlockForm
                     onSubmit={handleUpdate}
                     onCancel={handleCancel}

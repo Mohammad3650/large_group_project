@@ -41,11 +41,11 @@ describe('Tests for FormActions', () => {
             ).toBeInTheDocument();
         });
 
-        it('shows the Create Time Block submit button', () => {
+        it('shows the Create Task Block submit button', () => {
             renderFormActions();
 
             expect(
-                screen.getByRole('button', { name: /create time block/i })
+                screen.getByRole('button', { name: /create task/i })
             ).toBeInTheDocument();
         });
 
@@ -57,11 +57,11 @@ describe('Tests for FormActions', () => {
             ).not.toBeInTheDocument();
         });
 
-        it('does not show the Edit Time Block button', () => {
+        it('does not show the Edit Task button', () => {
             renderFormActions();
 
             expect(
-                screen.queryByRole('button', { name: /edit time block/i })
+                screen.queryByRole('button', { name: /edit task/i })
             ).not.toBeInTheDocument();
         });
 
@@ -80,7 +80,7 @@ describe('Tests for FormActions', () => {
             renderFormActions();
 
             expect(
-                screen.getByRole('button', { name: /create time block/i })
+                screen.getByRole('button', { name: /create task/i })
             ).not.toBeDisabled();
         });
 
@@ -101,11 +101,11 @@ describe('Tests for FormActions', () => {
     });
 
     describe('Edit mode (with initialData)', () => {
-        it('shows the Edit Time Block submit button', () => {
+        it('shows the Edit Task submit button', () => {
             renderFormActions({ initialData: makeInitialData() });
 
             expect(
-                screen.getByRole('button', { name: /edit time block/i })
+                screen.getByRole('button', { name: /edit task/i })
             ).toBeInTheDocument();
         });
 
@@ -117,11 +117,11 @@ describe('Tests for FormActions', () => {
             ).not.toBeInTheDocument();
         });
 
-        it('does not show the Create Time Block button', () => {
+        it('does not show the Create Task button', () => {
             renderFormActions({ initialData: makeInitialData() });
 
             expect(
-                screen.queryByRole('button', { name: /create time block/i })
+                screen.queryByRole('button', { name: /create task/i })
             ).not.toBeInTheDocument();
         });
 
@@ -154,7 +154,7 @@ describe('Tests for FormActions', () => {
             renderFormActions({ initialData: makeInitialData() });
 
             expect(
-                screen.getByRole('button', { name: /edit time block/i })
+                screen.getByRole('button', { name: /edit task/i })
             ).not.toBeDisabled();
         });
 
