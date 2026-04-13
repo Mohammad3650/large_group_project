@@ -5,10 +5,10 @@ from django.test import TestCase
 from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
 from scheduler.models.User import User
-from scheduler.services.timeblock_service import (
-    create_timeblock,
+from scheduler.services.time_block_service import (
+    create_time_block,
     get_or_create_dayplan,
-    update_timeblock,
+    update_time_block,
 )
 from scheduler.utils.to_utc import to_utc
 
@@ -16,7 +16,7 @@ from scheduler.utils.to_utc import to_utc
 class TimeblockServiceTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="timeblockuser",
+            username="time_blockuser",
             password="password123",
         )
         self.day_plan = DayPlan.objects.create(
@@ -82,7 +82,7 @@ class TimeblockServiceTest(TestCase):
             "description": "Attend class",
         })
 
-        block = create_timeblock(july_day_plan, data, "2026-07-15")
+        block = create_time_block(july_day_plan, data, "2026-07-15")
 
         expected_start_time, expected_start_date = to_utc(
             "09:00",
@@ -117,7 +117,7 @@ class TimeblockServiceTest(TestCase):
             "timezone": "America/New_York",
         })
 
-        block = create_timeblock(self.day_plan, data, "2026-01-15")
+        block = create_time_block(self.day_plan, data, "2026-01-15")
 
         expected_start_time, expected_start_date = to_utc(
             "23:30",
@@ -156,7 +156,7 @@ class TimeblockServiceTest(TestCase):
             "location": "New Room",
         })
 
-        updated_block = update_timeblock(
+        updated_block = update_time_block(
             block,
             self.day_plan,
             data,
@@ -209,7 +209,7 @@ class TimeblockServiceTest(TestCase):
             "timezone": "America/New_York",
         })
 
-        updated_block = update_timeblock(
+        updated_block = update_time_block(
             block,
             self.day_plan,
             data,

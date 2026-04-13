@@ -16,7 +16,7 @@ def get_or_create_dayplan(user, date):
     day_plan, _ = DayPlan.objects.get_or_create(user=user, date=date)
     return day_plan
 
-def prepare_timeblock_data(day_plan, data, original_date):
+def prepare_time_block_data(day_plan, data, original_date):
     """
     Prepare shared TimeBlock values and resolve the correct DayPlan.
 
@@ -57,7 +57,7 @@ def prepare_timeblock_data(day_plan, data, original_date):
     return day_plan, prepared_fields
 
 
-def create_timeblock(day_plan, data, original_date):
+def create_time_block(day_plan, data, original_date):
     """
     Create a TimeBlock for a given DayPlan using validated data.
 
@@ -69,7 +69,7 @@ def create_timeblock(day_plan, data, original_date):
     Returns:
         TimeBlock: The created TimeBlock instance.
     """
-    day_plan, prepared_fields = prepare_timeblock_data(
+    day_plan, prepared_fields = prepare_time_block_data(
         day_plan, data, original_date
     )
 
@@ -79,7 +79,7 @@ def create_timeblock(day_plan, data, original_date):
     )
 
 
-def update_timeblock(time_block, day_plan, data, original_date):
+def update_time_block(time_block, day_plan, data, original_date):
     """
     Update an existing TimeBlock using imported calendar data.
 
@@ -93,7 +93,7 @@ def update_timeblock(time_block, day_plan, data, original_date):
         TimeBlock: The updated TimeBlock instance.
     """
 
-    day_plan, prepared_fields = prepare_timeblock_data(
+    day_plan, prepared_fields = prepare_time_block_data(
         day_plan, data, original_date
     )
 
