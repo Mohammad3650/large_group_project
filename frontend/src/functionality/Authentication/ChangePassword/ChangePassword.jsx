@@ -25,8 +25,8 @@ function ChangePassword() {
             footerLinkTo="/settings"
         >
             <StatusAlerts
-                errors={errors}
-                successMessage={successMessage}
+                errors={errors.global}
+                successMessage={message}
             />
 
             <form onSubmit={handleSubmit} noValidate>
