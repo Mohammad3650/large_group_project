@@ -44,7 +44,6 @@ function CreateSchedule() {
                 errors.push({});
                 if (!createdBlockId) createdBlockId = res.data.id;
             } catch (err) {
-                console.log('ERROR RESPONSE:', err.response?.data);
                 errors.push(err.response?.data || {});
                 allSuccess = false;
             }
@@ -92,14 +91,12 @@ function CreateSchedule() {
             );
             navigate('/preview-calendar');
         } catch (err) {
-            console.log('ERROR RESPONSE:', err.response?.data);
 
             setServerErrors(err.response?.data || {});
             allSuccess = false;
         } finally {
             setLoading(false);
         }
-        console.log(response);
     }
 
     return (

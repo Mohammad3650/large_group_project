@@ -1,28 +1,22 @@
 .testimonial-card {
-    margin-top: 20px;
+    margin-top: var(--space-xl);
     display: inline-block;
 }
 
 .card-container {
-    padding: var(--space-2xl) 40px;
+    padding: var(--space-2xl) var(--space-card-x);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--border-soft);
     background: var(--bg-soft);
     width: 100%;
-    min-height: 200px;
+    min-height: var(--card-min-height);
     box-sizing: border-box;
-    gap: 24px;
+    gap: var(--space-lg);
     align-items: center;
     display: flex;
     justify-content: flex-start;
 }
-
-/* @media (max-width: 900px) {
-  .testimonials-grid {
-    grid-template-columns: 1fr;
-  }
-} */
 
 .card-title,
 .card-text,
@@ -31,38 +25,36 @@
 }
 
 .card-title {
-    font-size: large;
+    font-size: var(--font-size-card-title);
     color: var(--text-dark);
 }
 
 .card-text {
-    font-size: 18px;
-    line-height: 1.4;
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-card-text);
     color: var(--text-main);
 }
 
 .card-stars {
-    font-size: 25px;
-    line-height: 1;
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-tight);
 }
 
 .card-avatar {
-    width: 85px;
-    height: 85px;
+    width: var(--avatar-size-lg);
+    height: var(--avatar-size-lg);
     flex: 0 0 auto;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4f46e5, #38bdf8);
-    box-shadow:
-        0 8px 20px rgba(79, 70, 229, 0.35),
-        inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+    background: var(--avatar-gradient);
+    box-shadow: var(--avatar-shadow);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 30px;
-    font-weight: 500;
+    color: var(--text-white);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
     font-family: Arial, Helvetica, sans-serif;
-    letter-spacing: 1px;
+    letter-spacing: var(--letter-spacing-sm);
 }
 
 .card-content {
@@ -72,13 +64,12 @@
     flex: 1;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 10px;
+    gap: var(--space-card-gap-sm);
     margin-left: 0;
     min-width: 0;
     font-family: Arial, sans-serif;
     color: var(--text-dark);
 }
-
 
 @media (max-width: 768px) {
     .testimonial-card {
@@ -92,33 +83,33 @@
         width: 100%;
         height: 100%;
         min-height: auto;
-        padding: 20px 16px;
-        gap: 16px;
+        padding: var(--space-card-padding-mobile-y) var(--space-card-padding-mobile-x);
+        gap: var(--space-lg);
         flex-direction: column;
         align-items: flex-start;
     }
 
     .card-avatar {
-        width: 70px;
-        height: 70px;
-        font-size: 24px;
+        width: var(--avatar-size-sm);
+        height: var(--avatar-size-sm);
+        font-size: var(--font-size-avatar-mobile);
     }
 
     .card-stars {
-        font-size: 22px;
+        font-size: var(--font-size-stars-mobile);
     }
 
     .card-text {
-        font-size: 16px;
-        line-height: 1.5;
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-card-text-mobile);
     }
 
     .card-title {
-        font-size: 18px;
+        font-size: var(--font-size-body);
     }
 
     .card-content {
         width: 100%;
-        gap: 8px;
+        gap: var(--space-card-gap-xs);
     }
 }

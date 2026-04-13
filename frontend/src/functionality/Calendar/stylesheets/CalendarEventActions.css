@@ -1,0 +1,28 @@
+.buttons {
+    align-items: center;
+    justify-content: center;
+    padding-top: var(--space-xl);
+    display: flex;
+}
+
+.button {
+    width: 100%;
+    padding: var(--space-button-y);
+    margin-top: var(--space-xl);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-body);
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--bg-soft-hover);
+}
+
+.modal-btn {
+    color: var(--text-main);
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+}

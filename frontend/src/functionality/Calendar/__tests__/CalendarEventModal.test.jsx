@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import CalendarEventModal from '../CalendarEventModal.jsx';
 
-describe('Tests for CalendarEventModal', () => {
+describe('CalendarEventModal', () => {
     const mockEvent = {
         id: 42,
         title: 'SEG Lecture',
@@ -44,10 +44,7 @@ describe('Tests for CalendarEventModal', () => {
         );
 
         expect(mockEventButtons).toHaveBeenCalledTimes(1);
-        expect(mockEventButtons).toHaveBeenCalledWith(
-            mockEvent,
-            mockHandleDelete
-        );
+        expect(mockEventButtons).toHaveBeenCalledWith(mockEvent, mockHandleDelete);
         expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
     });
 
@@ -60,5 +57,41 @@ describe('Tests for CalendarEventModal', () => {
         );
 
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+
+    it('renders fallback values when optional fields are missing', () => {
+        const partialEvent = {
+            title: 'Untitled Event'
+        };
+
+        render(
+            <CalendarEventModal
+                calendarEvent={partialEvent}
+                handleDelete={vi.fn()}
+            />
+        );
+
+        expect(screen.getByText('Untitled Event')).toBeInTheDocument();
+        expect(screen.getByText('No date')).toBeInTheDocument();
+        expect(screen.getByText('No time')).toBeInTheDocument();
+        expect(screen.getByText('No location')).toBeInTheDocument();
+        expect(screen.getByText('No category')).toBeInTheDocument();
+        expect(screen.getByText('No description')).toBeInTheDocument();
+    });
+
+    it('applies the main modal layout classes', () => {
+        const { container } = render(
+            <CalendarEventModal
+                calendarEvent={mockEvent}
+                handleDelete={vi.fn()}
+            />
+        );
+
+        expect(container.querySelector('.event-modal-container')).toBeInTheDocument();
+        expect(container.querySelector('.sx__event-modal__title')).toBeInTheDocument();
+        expect(container.querySelector('.sx__event-modal__description')).toBeInTheDocument();
+        expect(container.querySelector('.buttons')).toBeInTheDocument();
+        expect(container.querySelectorAll('.event-detail')).toHaveLength(5);
+        expect(container.querySelectorAll('.event-detail-icon')).toHaveLength(5);
     });
 });
