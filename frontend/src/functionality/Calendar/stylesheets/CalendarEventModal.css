@@ -68,9 +68,12 @@
     color: var(--text-muted);
 }
 
-@media (max-width: var(--breakpoint-md)) {
+@media (max-width: 768px) {
     .event-modal-container {
-        width: min(var(--calendar-event-modal-width-mobile), var(--calendar-event-modal-max-width-mobile));
+        width: min(
+            var(--calendar-event-modal-width-mobile),
+            var(--calendar-event-modal-max-width-mobile)
+        );
         padding: var(--space-md);
         border-radius: var(--radius-md);
     }

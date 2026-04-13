@@ -13,7 +13,7 @@ import heroPicDark from '../../assets/LandingPage/heropicture_dark.png';
 
 function getHeroImage() {
     const isDarkTheme = document.body.classList.contains('dark-theme');
-    return isDarkTheme ? heroPicLight  : heroPicDark;
+    return isDarkTheme ? heroPicLight : heroPicDark;
 }
 
 /**
@@ -35,6 +35,67 @@ function getHeroButtons(isLoggedIn) {
 }
 
 /**
+ * Renders the action buttons displayed in the hero section.
+ *
+ * @param {Object} props
+ * @param {Array<Object>} props.buttons - Button configuration objects
+ * @param {Function} props.onNavigate - Navigation handler
+ * @returns {JSX.Element} Hero action buttons
+ */
+function HeroButtons({ buttons, onNavigate }) {
+    return (
+        <div className="hero-buttons">
+            {buttons.map((button) => (
+                <button
+                    key={button.label}
+                    className={`hero-button ${button.style}`}
+                    onClick={() => onNavigate(button.path)}
+                >
+                    {button.label}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+/**
+ * Renders the text content shown on the left side of the hero section.
+ *
+ * @param {Object} props
+ * @param {Array<Object>} props.buttons - Button configuration objects
+ * @param {Function} props.onNavigate - Navigation handler
+ * @returns {JSX.Element} Hero text content
+ */
+function HeroContent({ buttons, onNavigate }) {
+    return (
+        <div className="hero-left">
+            <div className="hero-quote">
+                <span className="hero-text-top">Plan your study.</span>
+                <br />
+                <span className="hero-text-bottom">Live your life.</span>
+            </div>
+            <HeroButtons buttons={buttons} onNavigate={onNavigate} />
+        </div>
+    );
+}
+
+/**
+ * Renders the image shown on the right side of the hero section.
+ *
+ * @param {Object} props
+ * @param {string} props.heroImage - Hero image source
+ * @returns {JSX.Element} Hero image section
+ */
+
+function HeroImage({ heroImage }) {
+    return (
+        <div className="hero-right">
+            <img className="hero-image" src={heroImage} alt="StudySync hero" />
+        </div>
+    );
+}
+
+/**
  * Displays the hero section of the landing page.
  *
  * @returns {JSX.Element} Hero section
@@ -47,33 +108,12 @@ function Hero() {
     const buttons = getHeroButtons(isLoggedIn);
 
     return (
-        <div className="hero">
+        <section className="hero">
             <div className="hero-content">
-                <div className="hero-left">
-                    <div className="hero-quote">
-                        <span className="hero-text-top">Plan your study.</span>
-                        <br />
-                        <span className="hero-text-bottom">Live your life.</span>
-                    </div>
-
-                    <div className="hero-buttons">
-                        {buttons.map((button) => (
-                            <button
-                                key={button.label}
-                                className={`hero-button ${button.style}`}
-                                onClick={() => navigate(button.path)}
-                            >
-                                {button.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="hero-right">
-                    <img className="hero-image" src={heroImage} alt="StudySync hero" />
-                </div>
+                <HeroContent buttons={buttons} onNavigate={navigate} />
+                <HeroImage heroImage={heroImage} />
             </div>
-        </div>
+        </section>
     );
 }
 

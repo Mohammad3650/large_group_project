@@ -278,7 +278,7 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
     transform: translate(-65%, -50%) rotate(-45deg);
 }
 
-@media (max-width: var(--breakpoint-md)) {
+@media (max-width: 768px) {
     .sx__calendar-header {
         gap: var(--space-calendar-header-gap-mobile-sm) !important;
         display: flex !important;
