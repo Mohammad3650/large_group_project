@@ -1,3 +1,5 @@
+import '../stylesheets/Hero/HeroButtons.css';
+
 /**
  * Renders the action buttons displayed in the hero section.
  *

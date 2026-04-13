@@ -1,15 +1,14 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Landing from '../Landing';
 
-vi.mock('../Hero', () => ({
+vi.mock('../stylesheets/Landing.css', () => ({}));
+vi.mock('../Hero/Hero.jsx', () => ({
     default: () => <div>Mock Hero</div>
 }));
-
 vi.mock('../Features', () => ({
     default: () => <div>Mock Features</div>
 }));
-
 vi.mock('../Card', () => ({
     default: ({ avatar, name, stars, review }) => (
         <div data-testid="mock-card">
@@ -20,89 +19,63 @@ vi.mock('../Card', () => ({
         </div>
     )
 }));
+vi.mock('../utils/Helpers/getTestimonials.js', () => ({
+    default: vi.fn(),
+}));
 
-function renderLanding() {
-    return render(<Landing />);
-}
+import * as getTestimonialsModule from '../utils/Helpers/getTestimonials.js';
 
-describe('Tests for Landing', () => {
-    it('renders the main layout and child components', () => {
-        const { container } = renderLanding();
+const mockTestimonials = [
+    { avatar: 'OK', name: 'Omar Kassam', stars: '⭐⭐⭐⭐⭐', review: 'Review 1' },
+    { avatar: 'IA', name: 'Ijaj Ahmed', stars: '⭐⭐⭐⭐⭐', review: 'Review 2' },
+    { avatar: 'HK', name: 'Hamza Khan', stars: '⭐⭐⭐⭐⭐', review: 'Review 3' },
+    { avatar: 'MI', name: 'Mohammed Islam', stars: '⭐⭐⭐⭐⭐', review: 'Review 4' },
+    { avatar: 'AS', name: 'Abdulrahman Sharif', stars: '⭐⭐⭐⭐', review: 'Review 5' },
+    { avatar: 'NA', name: 'Nabil Ahmed', stars: '⭐⭐⭐⭐⭐', review: 'Review 6' },
+];
 
-        expect(container.querySelector('.landing')).toBeInTheDocument();
-        expect(container.querySelector('.landing-testimonials-wrapper')).toBeInTheDocument();
-        expect(container.querySelector('.landing-testimonials')).toBeInTheDocument();
-        expect(container.querySelector('.landing-testimonials-title')).toBeInTheDocument();
+describe('Landing component', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        getTestimonialsModule.default.mockReturnValue(mockTestimonials);
+    });
 
+    it('renders the hero and features components', () => {
+        render(<Landing theme="light" />);
         expect(screen.getByText('Mock Hero')).toBeInTheDocument();
         expect(screen.getByText('Mock Features')).toBeInTheDocument();
+    });
+
+    it('renders the testimonials section heading', () => {
+        render(<Landing theme="light" />);
         expect(screen.getByText('Student Testimonials')).toBeInTheDocument();
     });
 
-    it('renders all six testimonial cards', () => {
-        renderLanding();
-
+    it('renders a card for each testimonial', () => {
+        render(<Landing theme="light" />);
         expect(screen.getAllByTestId('mock-card')).toHaveLength(6);
     });
 
-    it('renders the correct testimonial content', () => {
-        renderLanding();
-
+    it('passes the correct props to each card', () => {
+        render(<Landing theme="light" />);
         expect(screen.getByText('Omar Kassam')).toBeInTheDocument();
-        expect(screen.getByText('Ijaj Ahmed')).toBeInTheDocument();
-        expect(screen.getByText('Hamza Khan')).toBeInTheDocument();
-        expect(screen.getByText('Mohammed Islam')).toBeInTheDocument();
-        expect(screen.getByText('Abdulrahman Sharif')).toBeInTheDocument();
-        expect(screen.getByText('Nabil Ahmed')).toBeInTheDocument();
-
         expect(screen.getByText('OK')).toBeInTheDocument();
-        expect(screen.getByText('IA')).toBeInTheDocument();
-        expect(screen.getByText('HK')).toBeInTheDocument();
-        expect(screen.getByText('MI')).toBeInTheDocument();
-        expect(screen.getByText('AS')).toBeInTheDocument();
+        expect(screen.getByText('Review 1')).toBeInTheDocument();
+        expect(screen.getByText('Nabil Ahmed')).toBeInTheDocument();
         expect(screen.getByText('NA')).toBeInTheDocument();
+        expect(screen.getByText('Review 6')).toBeInTheDocument();
     });
 
-    it('renders the review text and star ratings', () => {
-        renderLanding();
+    it('renders the correct layout structure', () => {
+        const { container } = render(<Landing theme="light" />);
+        expect(container.querySelector('.landing')).toBeInTheDocument();
+        expect(container.querySelector('.landing-testimonials-wrapper')).toBeInTheDocument();
+        expect(container.querySelector('.landing-testimonials')).toBeInTheDocument();
+        expect(container.querySelector('.testimonials-grid')).toBeInTheDocument();
+    });
 
-        expect(
-            screen.getByText(
-                '“StudySync helped me actually plan my week instead of just hoping for the best. It’s simple and clear.”'
-            )
-        ).toBeInTheDocument();
-
-        expect(
-            screen.getByText(
-                '“I used to miss deadlines all the time. Having everything in one place made a huge difference.”'
-            )
-        ).toBeInTheDocument();
-
-        expect(
-            screen.getByText(
-                '“Perfect for university life. I like that it focuses on planning, not distractions or unnecessary clutter.”'
-            )
-        ).toBeInTheDocument();
-
-        expect(
-            screen.getByText(
-                '“Straightforward, easy to use, and actually helpful. Exactly what I needed as a student.”'
-            )
-        ).toBeInTheDocument();
-
-        expect(
-            screen.getByText(
-                '“Using StudySync made my weeks feel more organised, and far less chaotic.”'
-            )
-        ).toBeInTheDocument();
-
-        expect(
-            screen.getByText(
-                '“It’s really helped me balance lectures, coursework, and revision without feeling overwhelmed.”'
-            )
-        ).toBeInTheDocument();
-
-        expect(screen.getAllByText('⭐⭐⭐⭐⭐')).toHaveLength(5);
-        expect(screen.getByText('⭐⭐⭐⭐')).toBeInTheDocument();
+    it('calls getTestimonials once', () => {
+        render(<Landing theme="light" />);
+        expect(getTestimonialsModule.default).toHaveBeenCalledTimes(1);
     });
 });
