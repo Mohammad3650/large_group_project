@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from './functionality/Authentication/Login';
 import Signup from './functionality/Authentication/Signup';
-import EditProfile from './functionality/Authentication/UserProfile/EditProfile.jsx';
+import EditProfile from './functionality/Authentication/UserProfile/EditProfile/EditProfile.jsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './functionality/Dashboard/Dashboard.jsx';
 import Landing from './functionality/LandingPage/Landing.jsx';

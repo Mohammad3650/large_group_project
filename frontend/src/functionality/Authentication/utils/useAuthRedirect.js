@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { isTokenValid } from './authToken';
 
 /**
@@ -8,18 +9,21 @@ import { isTokenValid } from './authToken';
  * - Checks if a valid authentication token exists
  * - If valid, redirects the user to a specified path (default: /dashboard)
  *
- * @param {Function} navigate - The navigation function
- * @param {string} [path='/dashboard'] - Route to redirect authenticated users to
+ * @param {string} path - Destination for authenticated users
  */
+function useAuthRedirect(path = '/dashboard') {
+    const navigate = useNavigate();
 
-function useAuthRedirect(navigate, path = '/dashboard') {
     useEffect(() => {
-        async function redirectUser() {
+        async function redirectIfAuthenticated() {
             const isAuthenticated = await isTokenValid();
-            if (isAuthenticated) navigate(path);
+
+            if (isAuthenticated) {
+                navigate(path);
+            }
         }
 
-        redirectUser();
+        redirectIfAuthenticated();
     }, [navigate, path]);
 }
 
