@@ -3,42 +3,12 @@ import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 
 import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
-import WelcomeMessage from '../../components/WelcomeMessage.jsx';
 import CalendarView from './CalendarView.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import useUsername from '../../utils/Hooks/useUsername.js';
 import CalendarPlaceholder from './CalendarPlaceholder.jsx';
-import CalendarEventActions from './CalendarEventActions.jsx';
-
-/**
- * Renders the empty calendar state.
- *
- * @param {Object} props
- * @param {string} props.username - Current user's username
- * @returns {JSX.Element} Empty calendar state
- */
-
-function CalendarEmptyState({ username }) {
-    return (
-        <div className="calendar-content">
-            <WelcomeMessage page="calendar" username={username} />
-            <AddTaskButton />
-            <div className="empty-state">No events yet.</div>
-        </div>
-    );
-}
-
-/**
- * Renders the action buttons for a calendar event.
- *
- * @param {Object} calendarEvent - Selected calendar event
- * @param {Function} handleDelete - Deletes the selected event
- * @returns {JSX.Element} Event action buttons
- */
-
-function renderEventActions(calendarEvent, handleDelete) {
-    return <CalendarEventActions calendarEvent={calendarEvent} handleDelete={handleDelete} />;
-}
+import CalendarEmptyState from './CalendarEmptyState.jsx';
+import renderEventActions from './renderEventActions.jsx';
 
 /**
  * Displays the user's calendar page.

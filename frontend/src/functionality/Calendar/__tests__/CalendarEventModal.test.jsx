@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CalendarEventModal from '../CalendarEventModal.jsx';
 
 describe('CalendarEventModal', () => {
@@ -13,6 +13,10 @@ describe('CalendarEventModal', () => {
         blockType: 'lecture',
         description: 'Weekly lecture'
     };
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('renders the event details', () => {
         render(
@@ -45,7 +49,7 @@ describe('CalendarEventModal', () => {
 
         expect(mockEventButtons).toHaveBeenCalledTimes(1);
         expect(mockEventButtons).toHaveBeenCalledWith(mockEvent, mockHandleDelete);
-        expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
     });
 
     it('renders no action buttons when eventButtons is not provided', () => {
@@ -59,7 +63,7 @@ describe('CalendarEventModal', () => {
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 
-    it('renders fallback values when optional fields are missing', () => {
+    it('renders fallback values when all optional fields are missing', () => {
         const partialEvent = {
             title: 'Untitled Event'
         };
@@ -74,6 +78,52 @@ describe('CalendarEventModal', () => {
         expect(screen.getByText('Untitled Event')).toBeInTheDocument();
         expect(screen.getByText('No date')).toBeInTheDocument();
         expect(screen.getByText('No time')).toBeInTheDocument();
+        expect(screen.getByText('No location')).toBeInTheDocument();
+        expect(screen.getByText('No category')).toBeInTheDocument();
+        expect(screen.getByText('No description')).toBeInTheDocument();
+    });
+
+    it('renders no time when only one time value is missing', () => {
+        const partialEvent = {
+            title: 'Partial Time Event',
+            date: '2026-04-10',
+            startTime: '09:00',
+            location: 'Bush House',
+            blockType: 'lecture',
+            description: 'Missing end time'
+        };
+
+        render(
+            <CalendarEventModal
+                calendarEvent={partialEvent}
+                handleDelete={vi.fn()}
+            />
+        );
+
+        expect(screen.getByText('10/04/2026')).toBeInTheDocument();
+        expect(screen.getByText('No time')).toBeInTheDocument();
+    });
+
+    it('renders fallback values for empty strings', () => {
+        const emptyStringEvent = {
+            title: 'Empty Values Event',
+            date: '2026-04-10',
+            startTime: '11:00',
+            endTime: '12:00',
+            location: '',
+            blockType: '',
+            description: ''
+        };
+
+        render(
+            <CalendarEventModal
+                calendarEvent={emptyStringEvent}
+                handleDelete={vi.fn()}
+            />
+        );
+
+        expect(screen.getByText('10/04/2026')).toBeInTheDocument();
+        expect(screen.getByText('11:00 - 12:00')).toBeInTheDocument();
         expect(screen.getByText('No location')).toBeInTheDocument();
         expect(screen.getByText('No category')).toBeInTheDocument();
         expect(screen.getByText('No description')).toBeInTheDocument();
