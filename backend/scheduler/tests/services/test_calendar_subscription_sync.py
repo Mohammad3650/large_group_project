@@ -161,7 +161,7 @@ class CalendarSubscriptionSyncTest(TestCase):
 
     @patch("scheduler.services.calendar_subscription_sync.parse_ics_events")
     @patch("scheduler.services.calendar_subscription_sync.fetch_ics_content")
-    def test_sync_calendar_subscription_creates_dayplan_for_event_date(
+    def test_sync_calendar_subscription_creates_day_plan_for_event_date(
         self,
         mock_fetch_ics_content,
         mock_parse_ics_events,
@@ -173,7 +173,7 @@ class CalendarSubscriptionSyncTest(TestCase):
         mock_fetch_ics_content.return_value = "BEGIN:VCALENDAR"
         mock_parse_ics_events.return_value = [
             self.build_event(
-                uid="event-dayplan",
+                uid="event-day_plan",
                 start_datetime=start_datetime,
                 end_datetime=end_datetime,
             )

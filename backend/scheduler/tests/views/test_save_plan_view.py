@@ -9,9 +9,12 @@ from scheduler.models import DayPlan, TimeBlock
 
 User = get_user_model()
 
+
 class SaveWeeklyPlanViewTests(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user( username="testuser", password="testpass123" )
+        self.user = User.objects.create_user(
+            username="testuser", password="testpass123"
+        )
         self.url = reverse("plans-save")
 
         self.valid_payload = {
@@ -24,7 +27,7 @@ class SaveWeeklyPlanViewTests(APITestCase):
                     "block_type": "study",
                     "location": "Library",
                     "name": "Maths Revision",
-                    "description": "Chapter 1"
+                    "description": "Chapter 1",
                 },
                 {
                     "date": "2026-03-10",
@@ -33,16 +36,19 @@ class SaveWeeklyPlanViewTests(APITestCase):
                     "block_type": "exercise",
                     "location": "Gym",
                     "name": "Workout",
-                    "description": "Leg day"
-                }
-            ]
+                    "description": "Leg day",
+                },
+            ],
         }
-    
+
     def test_post_requires_authentication(self):
         response = self.client.post(self.url, self.valid_payload, format="json")
 
-        self.assertIn(response.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
-    
+        self.assertIn(
+            response.status_code,
+            [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN],
+        )
+
     def test_post_saves_weekly_plan_successfully(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, self.valid_payload, format="json")
@@ -60,8 +66,8 @@ class SaveWeeklyPlanViewTests(APITestCase):
         self.assertEqual(first_block.location, "Library")
         self.assertEqual(first_block.block_type, "study")
         self.assertEqual(first_block.description, "Chapter 1")
-    
-    def test_post_creates_one_dayplan_for_multiple_events_same_day(self):
+
+    def test_post_creates_one_day_plan_for_multiple_events_same_day(self):
         self.client.force_authenticate(user=self.user)
 
         payload = {
@@ -74,7 +80,7 @@ class SaveWeeklyPlanViewTests(APITestCase):
                     "block_type": "study",
                     "location": "Library",
                     "name": "Task 1",
-                    "description": ""
+                    "description": "",
                 },
                 {
                     "date": "2026-03-09",
@@ -83,15 +89,17 @@ class SaveWeeklyPlanViewTests(APITestCase):
                     "block_type": "study",
                     "location": "Library",
                     "name": "Task 2",
-                    "description": ""
-                }
-            ]
+                    "description": "",
+                },
+            ],
         }
 
         response = self.client.post(self.url, payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["events_saved"], 2)
-        self.assertEqual(DayPlan.objects.count(), 1) # Only one dayplan object required
+        self.assertEqual(
+            DayPlan.objects.count(), 1
+        )  # Only one day_plan object required
         self.assertEqual(TimeBlock.objects.count(), 2)
 
     def test_post_returns_400_for_invalid_payload(self):
@@ -106,14 +114,14 @@ class SaveWeeklyPlanViewTests(APITestCase):
                     "block_type": "study",
                     "location": "Library",
                     "name": "Broken event",
-                    "description": ""
+                    "description": "",
                 }
-            ]
+            ],
         }
         response = self.client.post(self.url, payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(TimeBlock.objects.count(), 0)
-    
+
     def test_post_is_atomic_if_one_event_fails(self):
         self.client.force_authenticate(user=self.user)
         payload = {
@@ -126,7 +134,7 @@ class SaveWeeklyPlanViewTests(APITestCase):
                     "block_type": "study",
                     "location": "Library",
                     "name": "Valid event",
-                    "description": ""
+                    "description": "",
                 },
                 {
                     "date": "2026-03-09",
@@ -135,9 +143,9 @@ class SaveWeeklyPlanViewTests(APITestCase):
                     "block_type": "study",
                     "location": "Library",
                     "name": "Invalid event",
-                    "description": ""
-                }
-            ]
+                    "description": "",
+                },
+            ],
         }
         response = self.client.post(self.url, payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

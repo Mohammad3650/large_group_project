@@ -2,7 +2,7 @@ from scheduler.models import DayPlan, TimeBlock
 from scheduler.utils.to_utc import to_utc
 
 
-def get_or_create_dayplan(user, date):
+def get_or_create_day_plan(user, date):
     """
     Get or create the DayPlan for a given user and date.
 
@@ -43,7 +43,7 @@ def prepare_time_block_data(day_plan, data, original_date):
     )
 
     if str(start_date_utc) != str(original_date):
-        day_plan = get_or_create_dayplan(day_plan.user, start_date_utc)
+        day_plan = get_or_create_day_plan(day_plan.user, start_date_utc)
 
     prepared_fields = {
         "name": data.get("name"),
@@ -63,7 +63,7 @@ def create_time_block(day_plan, data, original_date):
     Create a TimeBlock for a given DayPlan using validated data.
 
     Args:
-        dayplan (DayPlan): The parent DayPlan.
+        day_plan (DayPlan): The parent DayPlan.
         data (dict): TimeBlock field values.
         original_date (str): The original local date before UTC conversion.
 
@@ -84,7 +84,7 @@ def update_time_block(time_block, day_plan, data, original_date):
 
     Args:
         time_block (TimeBlock): The TimeBlock to update.
-        dayplan (DayPlan): The DayPlan the block should belong to.
+        day_plan (DayPlan): The DayPlan the block should belong to.
         data (dict): Updated field values.
         original_date (str): The original local date before UTC conversion.
 

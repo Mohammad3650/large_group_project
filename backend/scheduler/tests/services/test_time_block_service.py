@@ -5,9 +5,9 @@ from django.test import TestCase
 from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
 from scheduler.models.User import User
-from scheduler.services.timeblock_service import (
+from scheduler.services.time_block_service import (
     create_time_block,
-    get_or_create_dayplan,
+    get_or_create_day_plan,
     update_time_block,
 )
 from scheduler.utils.to_utc import to_utc
@@ -44,20 +44,20 @@ class TimeblockServiceTest(TestCase):
             "timezone": "UTC",
         }
 
-    def test_get_or_create_dayplan_returns_existing_dayplan(self):
+    def test_get_or_create_day_plan_returns_existing_dayplan(self):
         """
         Test that an existing DayPlan is returned and no duplicate is created.
         """
-        dayplan = get_or_create_dayplan(self.user, date(2026, 1, 15))
+        dayplan = get_or_create_day_plan(self.user, date(2026, 1, 15))
 
         self.assertEqual(dayplan.id, self.day_plan.id)
         self.assertEqual(DayPlan.objects.filter(user=self.user).count(), 1)
 
-    def test_get_or_create_dayplan_creates_new_dayplan(self):
+    def test_get_or_create_day_plan_creates_new_day_plan(self):
         """
         Test that a new DayPlan is created when one does not exist.
         """
-        dayplan = get_or_create_dayplan(self.user, date(2026, 1, 16))
+        dayplan = get_or_create_day_plan(self.user, date(2026, 1, 16))
 
         self.assertEqual(dayplan.user, self.user)
         self.assertEqual(dayplan.date, date(2026, 1, 16))
