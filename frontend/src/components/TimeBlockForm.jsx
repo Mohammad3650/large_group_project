@@ -32,15 +32,21 @@ function TimeBlockForm({
 
     return (
         <form onSubmit={handleSubmit}>
-            {serverErrors[0]?.date && (
-                <p className="error-text-date">{serverErrors[0].date[0]}</p>
-            )}
-            <input
+            <div className='date-row'>
+                {serverErrors[0]?.date && (
+                    <p className="error-text-date">{serverErrors[0].date[0]}</p>
+                )}
+                <label>
+                    Date
+                </label>
+                <input
                 type="date"
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
-            />
-
+                onChange={(e) => 
+                    setDate(e.target.value)}
+                />
+            </div>
+            
             {blocks.map((block, index) => (
                 <TimeBlockItem
                     key={index}
