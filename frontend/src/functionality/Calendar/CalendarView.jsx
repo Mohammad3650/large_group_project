@@ -16,7 +16,7 @@ import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
  * timezone, and custom modal components.
  *
  * @param {Object} props
- * @param {Array} props.blocks - Calendar event data
+ * @param {Array<Object>} props.blocks - Array of calendar event objects
  * @param {string} props.calendarTimezone - User timezone
  * @param {Object} props.customComponents - Custom modal/calendar components
  * @param {Object} props.eventsService - Schedule-X events service plugin
@@ -39,38 +39,72 @@ function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsSe
 }
 
 /**
- * Creates the delete handler for calendar events.
+ * Prompts the user to confirm deletion of a calendar event.
  *
- * @param {Object} eventsService - Schedule-X events service plugin
- * @param {Function} setBlocks - Updates calendar blocks state
- * @param {Function} setCalendarKey - Forces calendar rerender when needed
- * @returns {Function} Delete handler for a calendar event id
+ * @returns {boolean} True if the user confirms deletion, otherwise false
  */
 
+function confirmEventDeletion() {
+    return confirm('Are you sure you want to delete this event?');
+}
+
+/**
+ * Removes a deleted event from the calendar service and local state,
+ * and triggers a calendar rerender.
+ *
+ * @param {string|number} id - Unique identifier of the deleted event
+ * @param {Object} eventsService - Schedule-X events service plugin instance
+ * @param {Function} setBlocks - State setter for updating calendar events
+ * @param {Function} setCalendarKey - State setter used to force calendar rerender
+ * @returns {void}
+ */
+function removeDeletedEvent(id, eventsService, setBlocks, setCalendarKey) {
+    eventsService.remove(id);
+    setBlocks((block) => block.filter((block) => block.id !== id));
+    setCalendarKey((key) => key + 1);
+}
+
+/**
+ * Logs an error when deleting a calendar event fails.
+ *
+ * @param {string|number} id - Unique identifier of the event that failed to delete
+ * @param {Error} error - Error object returned from the failed delete operation
+ * @returns {void}
+ */
+function logDeleteFailure(id, error) {
+    console.error('Failed to delete event with ID', id, error);
+}
+
+/**
+ * Creates a handler function for deleting calendar events.
+ * The handler confirms deletion, calls the delete API,
+ * updates local state on success, and logs errors on failure.
+ *
+ * @param {Object} eventsService - Schedule-X events service plugin instance
+ * @param {Function} setBlocks - State setter for updating calendar events
+ * @param {Function} setCalendarKey - State setter used to force calendar rerender
+ * @returns {Function} Handler that deletes a calendar event by id
+ */
 function createDeleteHandler(eventsService, setBlocks, setCalendarKey) {
     return (id) => {
-        if (!confirm('Are you sure you want to delete this event?')) return;
+        if (!confirmEventDeletion()) return;
         deleteTimeBlock(id)
-            .then(() => {
-                eventsService.remove(id);
-                setBlocks((b) => b.filter((block) => block.id !== id));
-                setCalendarKey((k) => k + 1);
-            })
-            .catch((err) => console.error('Failed to delete event with ID', id, err));
+            .then(() => removeDeletedEvent(id, eventsService, setBlocks, setCalendarKey))
+            .catch((error) => logDeleteFailure(id, error));
     };
 }
 
 /**
- * Displays the calendar view and wires calendar actions to the renderer.
+ * Displays the calendar view and wires together calendar state,
+ * event handlers, and rendering components.
  *
  * @param {Object} props
- * @param {Array} props.blocks - Calendar event data
- * @param {Function} props.setBlocks - Updates calendar blocks state
- * @param {string} props.title - Calendar page title
- * @param {JSX.Element} props.headerButtons - Buttons shown above the calendar
- * @param {Function} props.eventButtons - Function that renders event action buttons
- * @param {string} props.theme - Current theme
- * @returns {JSX.Element}
+ * @param {Array<Object>} props.blocks - Array of calendar event objects
+ * @param {Function} props.setBlocks - State setter for updating calendar events
+ * @param {string} props.title - Title displayed above the calendar
+ * @param {JSX.Element} props.headerButtons - Elements rendered above the calendar (e.g. action buttons)
+ * @param {Function} props.eventButtons - Function used to render event action buttons
+ * @returns {JSX.Element} Complete calendar view component
  */
 
 function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
