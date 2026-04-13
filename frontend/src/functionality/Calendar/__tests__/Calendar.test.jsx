@@ -53,11 +53,7 @@ vi.mock('../CalendarView.jsx', () => ({
 
 import Calendar from '../Calendar.jsx';
 
-function renderCalendar({
-    blocks = [{ id: 1 }],
-    setBlocks = vi.fn(),
-    username = 'Mohammad'
-} = {}) {
+function renderCalendar({ blocks = [{ id: 1 }], setBlocks = vi.fn(), username = 'Mohammad' } = {}) {
     mockUseTimeBlocks.mockReturnValue({
         blocks,
         setBlocks
@@ -84,11 +80,11 @@ describe('Calendar', () => {
         expect(screen.getByText('Mock Calendar Placeholder')).toBeInTheDocument();
     });
 
-    it('renders the empty state when there are no events', () => {
+    it('renders the calendar view when there are no events', () => {
         renderCalendar({ blocks: [] });
 
-        expect(screen.getByText('Welcome to your calendar, Mohammad!')).toBeInTheDocument();
-        expect(screen.getByText('No events yet.')).toBeInTheDocument();
+        expect(screen.getByText('Mock Calendar View')).toBeInTheDocument();
+        expect(screen.getByTestId('blocks-length')).toHaveTextContent('0');
     });
 
     it('renders the calendar view with the correct props', () => {

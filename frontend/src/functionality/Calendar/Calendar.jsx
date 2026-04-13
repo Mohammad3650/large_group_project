@@ -25,10 +25,6 @@ function Calendar() {
 
     if (blocks === null) return <CalendarPlaceholder />;
 
-    if (blocks.length === 0) {
-        return <CalendarEmptyState username={username} />;
-    }
-
     return (
         <CalendarView
             blocks={blocks}
