@@ -2,7 +2,7 @@ from scheduler.models import DayPlan, TimeBlock
 from scheduler.utils.to_utc import to_utc
 
 
-def get_or_create_dayplan(user, date):
+def get_or_create_day_plan(user, date):
     """
     Get or create the DayPlan for a given user and date.
 
@@ -15,7 +15,6 @@ def get_or_create_dayplan(user, date):
     """
     day_plan, _ = DayPlan.objects.get_or_create(user=user, date=date)
     return day_plan
-
 
 def prepare_time_block_data(day_plan, data, original_date):
     """
@@ -43,7 +42,7 @@ def prepare_time_block_data(day_plan, data, original_date):
     )
 
     if str(start_date_utc) != str(original_date):
-        day_plan = get_or_create_dayplan(day_plan.user, start_date_utc)
+        day_plan = get_or_create_day_plan(day_plan.user, start_date_utc)
 
     prepared_fields = {
         "name": data.get("name"),
@@ -63,14 +62,16 @@ def create_time_block(day_plan, data, original_date):
     Create a TimeBlock for a given DayPlan using validated data.
 
     Args:
-        dayplan (DayPlan): The parent DayPlan.
+        day_plan (DayPlan): The parent DayPlan.
         data (dict): TimeBlock field values.
         original_date (str): The original local date before UTC conversion.
 
     Returns:
         TimeBlock: The created TimeBlock instance.
     """
-    day_plan, prepared_fields = prepare_time_block_data(day_plan, data, original_date)
+    day_plan, prepared_fields = prepare_time_block_data(
+        day_plan, data, original_date
+    )
 
     return TimeBlock.objects.create(
         day=day_plan,
@@ -84,7 +85,7 @@ def update_time_block(time_block, day_plan, data, original_date):
 
     Args:
         time_block (TimeBlock): The TimeBlock to update.
-        dayplan (DayPlan): The DayPlan the block should belong to.
+        day_plan (DayPlan): The DayPlan the block should belong to.
         data (dict): Updated field values.
         original_date (str): The original local date before UTC conversion.
 
@@ -92,14 +93,18 @@ def update_time_block(time_block, day_plan, data, original_date):
         TimeBlock: The updated TimeBlock instance.
     """
 
-    day_plan, prepared_fields = prepare_time_block_data(day_plan, data, original_date)
+    day_plan, prepared_fields = prepare_time_block_data(
+        day_plan, data, original_date
+    )
 
     time_block.day = day_plan
     time_block.name = prepared_fields["name"] or time_block.name
     time_block.start_time = prepared_fields["start_time"]
     time_block.end_time = prepared_fields["end_time"]
     time_block.location = prepared_fields["location"]
-    time_block.block_type = prepared_fields["block_type"] or time_block.block_type
+    time_block.block_type = (
+        prepared_fields["block_type"] or time_block.block_type
+    )
     time_block.description = prepared_fields["description"]
     time_block.timezone = prepared_fields["timezone"]
     time_block.save()

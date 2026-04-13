@@ -17,7 +17,7 @@ function SuccessfulTimeBlock() {
 
     const buttons = [
         {
-            label: 'New Time Block',
+            label: 'New Task',
             className: 'go-time-block-btn',
             action: () => nav('/create-schedule'),
         },
@@ -71,7 +71,7 @@ function SuccessfulTimeBlock() {
                             className="edit-time-block-btn"
                             onClick={() => nav(`/time-blocks/${blockId}/edit`)}
                         >
-                            Edit Time Block
+                            Edit Task
                         </button>
                     )}
                 </div>

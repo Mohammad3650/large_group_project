@@ -18,7 +18,7 @@ from scheduler.services.ics_fetcher import fetch_ics_content
 from scheduler.services.ics_parser import parse_ics_events
 from scheduler.services.time_block_service import (
     create_time_block,
-    get_or_create_dayplan,
+    get_or_create_day_plan,
     update_time_block,
 )
 
@@ -47,7 +47,7 @@ def get_existing_imported_event(subscription, external_event_uid):
 def create_imported_event(
     subscription,
     external_event_uid,
-    dayplan,
+    day_plan,
     timeblock_data,
 ):
     """
@@ -56,13 +56,13 @@ def create_imported_event(
     Args:
         subscription (CalendarSubscription): Subscription being synced.
         external_event_uid (str): Stable external event identifier.
-        dayplan (DayPlan): Target day plan.
+        day_plan (DayPlan): Target day plan.
         timeblock_data (dict): TimeBlock payload.
 
     Returns:
         None
     """
-    time_block = create_time_block(dayplan, timeblock_data, str(dayplan.date))
+    time_block = create_time_block(day_plan, timeblock_data, str(day_plan.date))
     ImportedCalendarEvent.objects.create(
         subscription=subscription,
         external_event_uid=external_event_uid,
@@ -70,13 +70,13 @@ def create_imported_event(
     )
 
 
-def update_imported_event(imported_event, dayplan, timeblock_data):
+def update_imported_event(imported_event, day_plan, timeblock_data):
     """
     Update the linked TimeBlock for an existing imported event.
 
     Args:
         imported_event (ImportedCalendarEvent): Existing imported event mapping.
-        dayplan (DayPlan): Target day plan.
+        day_plan (DayPlan): Target day plan.
         timeblock_data (dict): Updated TimeBlock payload.
 
     Returns:
@@ -84,9 +84,9 @@ def update_imported_event(imported_event, dayplan, timeblock_data):
     """
     update_time_block(
         imported_event.time_block,
-        dayplan,
+        day_plan,
         timeblock_data,
-        str(dayplan.date),
+        str(day_plan.date),
     )
 
 
@@ -106,7 +106,7 @@ def sync_single_event(subscription, event):
 
     external_event_uid = build_external_event_uid(event)
     event_date = get_event_date(event)
-    dayplan = get_or_create_dayplan(subscription.user, event_date)
+    day_plan = get_or_create_day_plan(subscription.user, event_date)
     timeblock_data = build_time_block_data(event)
 
     imported_event = get_existing_imported_event(subscription, external_event_uid)
@@ -115,12 +115,12 @@ def sync_single_event(subscription, event):
         create_imported_event(
             subscription,
             external_event_uid,
-            dayplan,
+            day_plan,
             timeblock_data,
         )
         return "created"
 
-    update_imported_event(imported_event, dayplan, timeblock_data)
+    update_imported_event(imported_event, day_plan, timeblock_data)
     return "updated"
 
 

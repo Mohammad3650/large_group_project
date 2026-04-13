@@ -44,11 +44,11 @@ describe('Tests for SuccessfulTimeBlock', () => {
         );
 
         const newBlockButton = screen.getByRole('button', {
-            name: /new time block/i
+            name: /new task/i
         });
 
         const editTimeBlockButton = screen.getByRole('button', {
-            name: /edit time block/i
+            name: /edit task/i
         });
 
         const dashboardButton = screen.getByRole('button', {
@@ -79,7 +79,7 @@ describe('Tests for SuccessfulTimeBlock', () => {
         expect(image).toBeInTheDocument();
     });
 
-    it('new time block button takes the user to the create time block page', () => {
+    it('New Task button takes the user to the create time block page', () => {
         render(
             <MemoryRouter initialEntries={['/successful-time-block']}>
                 <Routes>
@@ -89,19 +89,19 @@ describe('Tests for SuccessfulTimeBlock', () => {
                     />
                     <Route
                         path="/create-schedule"
-                        element={<h2>Create Time Block</h2>}
+                        element={<h2>Create Task</h2>}
                     />
                 </Routes>
             </MemoryRouter>
         );
 
         const newBlockButton = screen.getByRole('button', {
-            name: /new time block/i
+            name: /new task/i
         });
 
         fireEvent.click(newBlockButton);
 
-        expect(screen.getByText('Create Time Block')).toBeInTheDocument();
+        expect(screen.getByText('Create Task')).toBeInTheDocument();
     });
 
     it('return to dashboard navigates to /dashboard', async () => {
@@ -137,7 +137,7 @@ describe('Tests for SuccessfulTimeBlock', () => {
         ).toBeInTheDocument();
     });
 
-    it('does not render the Edit Time Block button when blockId is missing', () => {
+    it('does not render the Edit Task button when blockId is missing', () => {
         render(
             <MemoryRouter initialEntries={['/success']}>
                 <Routes>
@@ -147,11 +147,11 @@ describe('Tests for SuccessfulTimeBlock', () => {
         );
 
         expect(
-            screen.queryByRole('button', { name: /edit time block/i })
+            screen.queryByRole('button', { name: /edit task/i })
         ).not.toBeInTheDocument();
     });
 
-    it('edit Time Block button navigates to the edit page when blockId exists', () => {
+    it('Edit Task button navigates to the edit page when blockId exists', () => {
         render(
             <MemoryRouter
                 initialEntries={[{ pathname: '/success', state: { id: 123 } }]}
@@ -167,7 +167,7 @@ describe('Tests for SuccessfulTimeBlock', () => {
         );
 
         const editButton = screen.getByRole('button', {
-            name: /edit time block/i
+            name: /edit task/i
         });
 
         fireEvent.click(editButton);

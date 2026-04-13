@@ -52,7 +52,7 @@
     background-color: var(--danger);
     color: var(--text-white);
     border-radius: var(--radius-lg);
-    width: 250px;
+    width: 125px;
 }
 
 .btn.cancel-btn {
@@ -131,6 +131,7 @@
     display: flex;
     gap: var(--space-2xl);
     margin: 1rem 0;
+    padding-left: var(--space-2xl);
 }
 
 .checkbox-label {
@@ -140,11 +141,36 @@
     cursor: pointer;
     font-size: 0.95rem;
     color: var(--text-main);
+    
 }
 
 .checkbox-label--disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+.checkbox-label-input:checked {
+    background-color: var(--blue);
+    border-color: var(--blue);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2' d='M3 8l4 4 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: var(--font-size-xs);
+}
+
+.checkbox-label-input {
+    flex-shrink: 0;
+    margin: 0 !important;
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+    position: static !important;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: var(--bg-main);
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
 }
 
 .spinner {
@@ -166,18 +192,30 @@
 }
 
 .range-box {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--space-md);
     justify-content: center;
+    align-items: end;
     margin-bottom: var(--space-sm);
 }
 
 .range-box label {
     display: flex;
-    flex-direction: row;
-    gap: var(--space-lg);
+    flex-direction: column;
     color: var(--text-main);
+    min-width: 0;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    gap: var(--space-xs);
+}
+
+.range-box input {
+    width: 100%;
+    min-width: 0;
+    max-width: 260px;
 }
 
 .time-block-form-card input,
@@ -205,4 +243,12 @@
     outline: none;
     border-color: var(--blue);
     box-shadow: var(--shadow-focus);
+}
+
+.time-block-form-card input[type="checkbox"] {
+    border-radius: 5px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    transition: all 0.1s ease;
 }
