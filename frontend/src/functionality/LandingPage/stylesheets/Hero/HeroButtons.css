@@ -1,0 +1,69 @@
+.hero-buttons {
+    margin: var(--space-modal);
+    gap: var(--space-2xl);
+    display: flex;
+    align-items: center;
+}
+
+.hero-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-width: var(--hero-button-min-width);
+    padding: var(--space-hero-button-padding-y) var(--space-hero-button-padding-x);
+    border-radius: var(--radius-hero-button);
+    font-size: var(--font-size-hero-button);
+    font-weight: var(--font-weight-semi-bold);
+    letter-spacing: var(--letter-spacing-tight-sm);
+    text-align: center;
+    justify-content: center;
+    transition: all var(--transition-duration-fast);
+    cursor: pointer;
+}
+
+.black {
+    max-width: var(--hero-button-black-max-width);
+    background-color: var(--text-main);
+    color: var(--bg-main);
+    box-shadow: var(--shadow-md);
+}
+
+.black:hover {
+    transform: translateY(var(--translate-distance-sm));
+    box-shadow: var(--shadow-lg);
+}
+
+.white {
+    max-width: var(--hero-button-white-max-width);
+    background-color: var(--bg-soft);
+    color: var(--text-main);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.white:hover {
+    transform: translateY(var(--translate-distance-sm));
+    box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 768px) {
+    .hero-buttons {
+        margin: var(--space-xl) 0 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-md);
+        align-items: stretch;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .hero-button {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        flex: 1 1 100%;
+        padding: var(--space-hero-button-padding-mobile-y) 1rem;
+        font-size: var(--font-size-hero-button-mobile);
+    }
+}
