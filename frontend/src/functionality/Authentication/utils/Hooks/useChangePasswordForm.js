@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { api } from "../../../../api.js";
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../../../api.js';
 import {
     CHANGE_PASSWORD_MESSAGES,
     PASSWORD_CHANGE_REDIRECT_DELAY_MS
-} from "../../../../constants/changePasswordConstants.js";
-import { validateChangePasswordForm } from "../Validation/validateChangePasswordForm.js";
+} from '../../../../constants/changePasswordConstants.js';
+import { validateChangePasswordForm } from '../Validation/validateChangePasswordForm.js';
 
 /**
  * Manages change password form state, validation, submission and redirect behaviour
- * @param {*} navigate 
  * @returns {{
  *  currentPassword: string,
  *  newPassword: string,
@@ -20,7 +20,9 @@ import { validateChangePasswordForm } from "../Validation/validateChangePassword
  *  handleSubmit: function
  * }}
  */
-function useChangePasswordForm(navigate) {
+function useChangePasswordForm() {
+    const navigate = useNavigate();
+
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -47,7 +49,7 @@ function useChangePasswordForm(navigate) {
 
         const fieldErrors = validateChangePasswordForm({
             currentPassword,
-            newPassword,
+            newPassword
         });
 
         if (Object.keys(fieldErrors).length > 0) {

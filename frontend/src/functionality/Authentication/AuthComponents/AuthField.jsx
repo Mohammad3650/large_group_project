@@ -20,7 +20,15 @@ import '../stylesheets/AuthComponents/AuthField.css';
  * @returns {JSX.Element} Reusable authentication input field
  */
 
-function AuthField({ label, type = 'text', placeholder, value, onChange, error, name }) {
+function AuthField({
+    label,
+    type = 'text',
+    placeholder,
+    value,
+    onChange,
+    error,
+    name
+}) {
     const inputClass = `form-control auth-input ${error ? 'is-invalid' : ''}`;
 
     function handleChange(e) {
@@ -29,7 +37,10 @@ function AuthField({ label, type = 'text', placeholder, value, onChange, error, 
 
     return (
         <div className="col-12">
-            <label htmlFor={name} className="form-label fw-semibold auth-label">
+            <label
+                htmlFor={name}
+                className="form-label fw-semibold auth-label"
+            >
                 {label}
             </label>
 
@@ -43,7 +54,11 @@ function AuthField({ label, type = 'text', placeholder, value, onChange, error, 
                 onChange={handleChange}
             />
 
-            {error && <div className="invalid-feedback">{error}</div>}
+            {error && (
+                <div className="invalid-feedback">
+                    {error}
+                </div>
+            )}
         </div>
     );
 }

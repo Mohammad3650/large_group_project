@@ -1,5 +1,8 @@
 /**
  * Displays global error messages.
+ * 
+ * @param {string[]} props.messages - Array of error messages to display
+ * @returns {JSX.Element} - Alert box with error messages or null if no messages exist
  */
 
 function AuthErrorAlert({ messages }) {

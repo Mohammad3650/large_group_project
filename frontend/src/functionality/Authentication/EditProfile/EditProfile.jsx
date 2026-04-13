@@ -1,6 +1,6 @@
 import AuthCard from '../AuthComponents/AuthCard.jsx';
 import EditProfileForm from './EditProfileForm.jsx';
-import ProfileStatusAlerts from './ProfileStatusAlerts.jsx';
+import StatusAlerts from '../AuthComponents/StatusAlert.jsx';
 import useEditProfileForm from '../utils/Hooks/useEditProfileForm.js';
 
 function EditProfile() {
@@ -25,7 +25,9 @@ function EditProfile() {
                 footerLinkText="Dashboard"
                 footerLinkTo="/dashboard"
             >
-                <p className="text-center mb-0">Loading profile...</p>
+                <p className="text-center mb-0">
+                    Loading profile...
+                </p>
             </AuthCard>
         );
     }
@@ -38,7 +40,10 @@ function EditProfile() {
             footerLinkText="Settings"
             footerLinkTo="/settings"
         >
-            <ProfileStatusAlerts errors={errors} successMessage={successMessage} />
+            <StatusAlerts
+                errors={errors}
+                successMessage={successMessage}
+            />
 
             <EditProfileForm
                 formData={formData}
