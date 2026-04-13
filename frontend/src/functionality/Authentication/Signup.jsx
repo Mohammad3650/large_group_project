@@ -1,12 +1,8 @@
-import { useNavigate } from 'react-router-dom';
 import useAuthRedirect from './utils/useAuthRedirect';
 import AuthCard from '../../components/AuthCard';
-import AuthField from '../../components/AuthField';
-import AuthSubmitButton from '../../components/AuthSubmitButton';
 import useSignupForm from './utils/useSignupForm';
-import AuthErrorAlert from '../../components/AuthErrorAlert';
-import './stylesheets/AuthPages.css';
 import SignupForm from '../../components/SignupForm';
+import './stylesheets/AuthPages.css';
 
 /**
  * Signup page component.
@@ -20,16 +16,14 @@ import SignupForm from '../../components/SignupForm';
  * @returns {JSX.Element} Signup form UI
  */
 function Signup() {
-    const navigate = useNavigate();
-
-    useAuthRedirect(navigate);
+    useAuthRedirect();
 
     const {
         getFieldProps,
         errors,
         loading,
-        handleSubmit,
-    } = useSignupForm(navigate);
+        handleSubmit
+    } = useSignupForm();
 
     return (
         <div className="signup-page">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { validateSignupForm } from './validateSignupForm';
 import { signupUser } from './authService';
 import useAuthForm from './useAuthForm';
@@ -47,7 +48,8 @@ function updateSignupFormField(form, name, value) {
  * }}
  */
 
-function useSignupForm(navigate) {
+function useSignupForm() {
+    const navigate = useNavigate();
     const [form, setForm] = useState(createInitialSignupForm());
 
     function updateField(name, value) {
@@ -67,7 +69,7 @@ function useSignupForm(navigate) {
         return {
             value: form[name],
             onChange: (value) => updateField(name, value)
-        }
+        };
     }
 
     const authForm = useAuthForm(validateForm, submitSignup);

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from './authService';
 import useAuthForm from './useAuthForm';
 import validateLoginForm from './validateLoginForm';
@@ -6,7 +7,6 @@ import validateLoginForm from './validateLoginForm';
 /**
  * Hook that manages login form state, validation and submission.
  * 
- * @param {function} nav - Navigation function from react-router 
  * @returns {Object} {{ 
  *      email: string, 
  *      setEmail: function, 
@@ -18,26 +18,29 @@ import validateLoginForm from './validateLoginForm';
  * }}
  */
 
-function useLoginForm(navigate) {
+
+function useLoginForm() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    function validateForm() {
+        return validateLoginForm({ email, password });
+    }
 
     async function submitLogin() {
         await loginUser(email, password);
         navigate('/dashboard');
     }
 
-    const form = useAuthForm(
-        () => validateLoginForm({ email, password }),
-        submitLogin);
+    const authForm = useAuthForm(validateForm, submitLogin);
 
     return {
         email,
         setEmail,
         password,
         setPassword,
-        ...form
+        ...authForm
     };
 }
 

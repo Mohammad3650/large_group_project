@@ -1,10 +1,8 @@
-import { useNavigate } from 'react-router-dom';
 import useAuthRedirect from './utils/useAuthRedirect';
 import AuthCard from '../../components/AuthCard';
-import './stylesheets/AuthPages.css';
 import useLoginForm from './utils/useLoginForm';
-import AuthErrorAlert from '../../components/AuthErrorAlert';
 import LoginForm from '../../components/LoginForm';
+import './stylesheets/AuthPages.css';
 
 /**
  * Login page component.
@@ -18,9 +16,7 @@ import LoginForm from '../../components/LoginForm';
  * @returns {JSX.Element} The login page UI
  */
 function Login() {
-    const navigate = useNavigate();
-
-    useAuthRedirect(navigate);
+    useAuthRedirect();
 
     const {
         email,
@@ -30,8 +26,7 @@ function Login() {
         errors,
         loading,
         handleSubmit
-    } = useLoginForm(navigate);
-
+    } = useLoginForm();
 
     return (
         <div className="login-page">
@@ -43,7 +38,6 @@ function Login() {
                     footerLinkText="Sign up"
                     footerLinkTo="/signup"
                 >
-
                     <LoginForm
                         email={email}
                         onEmailChange={setEmail}
