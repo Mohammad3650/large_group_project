@@ -17,18 +17,27 @@ import getUserTimezone from "../Helpers/getUserTimezone";
 describe("saveGeneratedSchedule", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        
+        const createPlainDate = (isoString) => ({
+            toString: () => isoString.split("T")[0],
+        });
+        
+        const createPlainTime = (isoString) => ({
+            toString: () => isoString.split("T")[1].replace("[UTC]", ""),
+        });
+        
+        const createWithTimeZone = (isoString) => ({
+            toPlainDate: vi.fn(() => createPlainDate(isoString)),
+            toPlainTime: vi.fn(() => createPlainTime(isoString)),
+        });
+        
+        const createFrom = (isoString) => ({
+            withTimeZone: vi.fn(() => createWithTimeZone(isoString)),
+        });
+        
         global.Temporal = {
             ZonedDateTime: {
-                from: vi.fn((isoString) => ({
-                    withTimeZone: vi.fn(() => ({
-                        toPlainDate: vi.fn(() => ({
-                            toString: () => isoString.split("T")[0],
-                        })),
-                        toPlainTime: vi.fn(() => ({
-                            toString: () => isoString.split("T")[1].replace("[UTC]", ""),
-                        })),
-                    })),
-                })),
+                from: vi.fn(createFrom),
             },
         };
     });
