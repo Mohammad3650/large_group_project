@@ -12,7 +12,7 @@ describe('Tests for CreateScheduleButton', () => {
                     <Route path="/" element={<CreateScheduleButton />} />
                     <Route
                         path="/create-schedule"
-                        element={<h2>Create Time Block</h2>}
+                        element={<h2>Create Task</h2>}
                     />
                 </Routes>
             </MemoryRouter>
@@ -24,7 +24,7 @@ describe('Tests for CreateScheduleButton', () => {
 
         fireEvent.click(button);
 
-        expect(screen.getByText('Create Time Block')).toBeInTheDocument();
+        expect(screen.getByText('Create Task')).toBeInTheDocument();
     });
 
     it('does not navigate before clicking the button', () => {
@@ -34,13 +34,13 @@ describe('Tests for CreateScheduleButton', () => {
                     <Route path="/" element={<CreateScheduleButton />} />
                     <Route
                         path="/create-schedule"
-                        element={<h2>Create Time Block</h2>}
+                        element={<h2>Create Task</h2>}
                     />
                 </Routes>
             </MemoryRouter>
         );
         expect(
-            screen.queryByText('Create Time Block')
+            screen.queryByText('Create Task')
         ).not.toBeInTheDocument();
     });
 });

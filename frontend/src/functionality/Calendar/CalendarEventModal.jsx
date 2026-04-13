@@ -1,35 +1,7 @@
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTag, FaAlignLeft } from 'react-icons/fa';
 import './stylesheets/CalendarEventModal.css';
-
-/**
- * Converts a date from ISO format (YYYY-MM-DD)
- * into British format (DD/MM/YYYY).
- *
- * @param {string} date - Date in ISO format
- * @returns {string} Date in DD/MM/YYYY format
- */
-const formatDate = (date) => {
-    const [year, month, day] = date.split('-');
-    return `${day}/${month}/${year}`;
-};
-
-/**
- * Renders a single event detail row with an icon and value.
- *
- * @param {Object} props
- * @param {JSX.Element} props.icon - Icon shown next to the detail
- * @param {string} props.value - Text value of the detail
- * @returns {JSX.Element}
- */
-
-function EventDetail({ icon, value }) {
-    return (
-        <div className="event-detail">
-            <span className="event-detail-icon">{icon}</span>
-            <span>{value}</span>
-        </div>
-    );
-}
+import EventDetail from './EventDetail.jsx';
+import formatDate from './utils/Helpers/formatDate.js';
 
 /**
  * Displays the custom event modal content for a calendar event.
@@ -40,7 +12,6 @@ function EventDetail({ icon, value }) {
  * @param {Function} props.handleDelete - Function for deleting an event
  * @returns {JSX.Element} Event modal UI
  */
-
 function CalendarEventModal({ calendarEvent, eventButtons, handleDelete }) {
     const { title, date, startTime, endTime, location, blockType, description } = calendarEvent;
 

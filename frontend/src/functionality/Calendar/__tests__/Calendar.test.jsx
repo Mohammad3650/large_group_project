@@ -1,15 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const { mockNavigate, mockUseTimeBlocks, mockUseUsername, mockHandleDelete } = vi.hoisted(() => ({
-    mockNavigate: vi.fn(),
+const { mockUseTimeBlocks, mockUseUsername, mockRenderEventActions } = vi.hoisted(() => ({
     mockUseTimeBlocks: vi.fn(),
     mockUseUsername: vi.fn(),
-    mockHandleDelete: vi.fn()
-}));
-
-vi.mock('react-router-dom', () => ({
-    useNavigate: () => mockNavigate
+    mockRenderEventActions: vi.fn()
 }));
 
 vi.mock('../../../utils/Hooks/useTimeBlocks.js', () => ({
@@ -28,36 +23,45 @@ vi.mock('../CalendarPlaceholder.jsx', () => ({
     default: () => <div>Mock Calendar Placeholder</div>
 }));
 
-vi.mock('../CalendarView.jsx', () => ({
-    default: ({ blocks, setBlocks, title, headerButtons, eventButtons }) => (
+vi.mock('../CalendarEmptyState.jsx', () => ({
+    default: ({ username }) => (
         <div>
-            <div>Mock Calendar View</div>
-            <div>{title}</div>
-            <div data-testid="blocks-length">{blocks.length}</div>
-            <button onClick={() => setBlocks(['updated'])}>Trigger Set Blocks</button>
-            <div>{headerButtons}</div>
-            <div>{eventButtons({ id: 42 }, mockHandleDelete)}</div>
+            <div>{`Welcome to your calendar, ${username}!`}</div>
+            <div>No events yet.</div>
         </div>
     )
 }));
 
-import Calendar from '../Calendar';
+vi.mock('../renderEventActions.jsx', () => ({
+    default: (...args) => mockRenderEventActions(...args)
+}));
 
-const mockedUsername = {
-    username: 'Mohammad',
-    toString: () => 'Mohammad'
-};
+vi.mock('../CalendarView.jsx', () => ({
+    default: ({ blocks, setBlocks, username, headerButtons, eventButtons }) => (
+        <div>
+            <div>Mock Calendar View</div>
+            <div data-testid="blocks-length">{blocks.length}</div>
+            <div data-testid="username">{username}</div>
+            <button onClick={() => setBlocks(['updated'])}>Trigger Set Blocks</button>
+            <div>{headerButtons}</div>
+            <button onClick={() => eventButtons({ id: 42 }, 'mock-delete-handler')}>
+                Trigger Event Buttons
+            </button>
+        </div>
+    )
+}));
 
-function renderCalendar({
-    blocks = [{ id: 1 }],
-    setBlocks = vi.fn(),
-    username = mockedUsername
-} = {}) {
+import Calendar from '../Calendar.jsx';
+
+function renderCalendar({ blocks = [{ id: 1 }], setBlocks = vi.fn(), username = 'Mohammad' } = {}) {
     mockUseTimeBlocks.mockReturnValue({
         blocks,
         setBlocks
     });
-    mockUseUsername.mockReturnValue(username);
+
+    mockUseUsername.mockReturnValue({
+        username
+    });
 
     return {
         setBlocks,
@@ -65,7 +69,7 @@ function renderCalendar({
     };
 }
 
-describe('Tests for Calendar', () => {
+describe('Calendar', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -76,11 +80,19 @@ describe('Tests for Calendar', () => {
         expect(screen.getByText('Mock Calendar Placeholder')).toBeInTheDocument();
     });
 
+    it('renders the calendar view when there are no events', () => {
+        renderCalendar({ blocks: [] });
+
+        expect(screen.getByText('Mock Calendar View')).toBeInTheDocument();
+        expect(screen.getByTestId('blocks-length')).toHaveTextContent('0');
+    });
+
     it('renders the calendar view with the correct props', () => {
         renderCalendar({ blocks: [{ id: 1 }, { id: 2 }] });
 
         expect(screen.getByText('Mock Calendar View')).toBeInTheDocument();
         expect(screen.getByTestId('blocks-length')).toHaveTextContent('2');
+        expect(screen.getByTestId('username')).toHaveTextContent('Mohammad');
         expect(screen.getByText('Mock Add Task Button')).toBeInTheDocument();
     });
 
@@ -90,22 +102,6 @@ describe('Tests for Calendar', () => {
         expect(mockUseUsername).toHaveBeenCalledWith(true);
     });
 
-    it('navigates to the edit page when edit is clicked', () => {
-        renderCalendar();
-
-        fireEvent.click(screen.getByRole('button', { name: 'Edit event' }));
-
-        expect(mockNavigate).toHaveBeenCalledWith('/timeblocks/42/edit');
-    });
-
-    it('calls delete when delete is clicked', () => {
-        renderCalendar();
-
-        fireEvent.click(screen.getByRole('button', { name: 'Delete event' }));
-
-        expect(mockHandleDelete).toHaveBeenCalledWith(42);
-    });
-
     it('passes setBlocks through to CalendarView', () => {
         const { setBlocks } = renderCalendar();
 
@@ -113,11 +109,13 @@ describe('Tests for Calendar', () => {
 
         expect(setBlocks).toHaveBeenCalledWith(['updated']);
     });
-});
 
-it('renders the empty state when there are no events', () => {
-    renderCalendar({ blocks: [] });
+    it('passes renderEventActions to CalendarView and calls it', () => {
+        renderCalendar();
 
-    expect(screen.getByText('Welcome to your calendar, Mohammad!')).toBeInTheDocument();
-    expect(screen.getByText('No events yet.')).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Trigger Event Buttons' }));
+
+        expect(mockRenderEventActions).toHaveBeenCalledTimes(1);
+        expect(mockRenderEventActions).toHaveBeenCalledWith({ id: 42 }, 'mock-delete-handler');
+    });
 });

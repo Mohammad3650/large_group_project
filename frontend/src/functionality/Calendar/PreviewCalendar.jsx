@@ -41,14 +41,18 @@ function PreviewCalendar() {
     async function save() {
         const timezone = getUserTimezone();
         const events = schedule.events.map((event) => {
-            const startZdt = Temporal.ZonedDateTime.from(`${event.date}T${event.start_time}[UTC]`).withTimeZone(timezone);
-            const endZdt = Temporal.ZonedDateTime.from(`${event.date}T${event.end_time}[UTC]`).withTimeZone(timezone);
+            const startZdt = Temporal.ZonedDateTime.from(
+                `${event.date}T${event.start_time}[UTC]`
+            ).withTimeZone(timezone);
+            const endZdt = Temporal.ZonedDateTime.from(
+                `${event.date}T${event.end_time}[UTC]`
+            ).withTimeZone(timezone);
             return {
                 ...event,
                 date: startZdt.toPlainDate().toString(),
                 start_time: startZdt.toPlainTime().toString().slice(0, 8),
                 end_time: endZdt.toPlainTime().toString().slice(0, 8),
-                timezone,
+                timezone
             };
         });
         const data = { week_start: schedule.week_start, events };
