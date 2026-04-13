@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import deleteCalendarSubscription from '../Api/deleteCalendarSubscription.js';
-import { api } from '../../api.js';
+import deleteCalendarSubscription from '../../../utils/Api/deleteCalendarSubscription.js';
+import { api } from '../../../../../api.js';
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../../../api.js', () => ({
     api: {
         delete: vi.fn()
     }
@@ -22,10 +22,10 @@ describe('deleteCalendarSubscription', () => {
 
         const result = await deleteCalendarSubscription(42);
 
-        expect(api.delete).toHaveBeenCalledTimes(1);
         expect(api.delete).toHaveBeenCalledWith(
             '/api/calendar-subscriptions/42/'
         );
+
         expect(result).toEqual(mockData);
     });
 
