@@ -6,7 +6,7 @@ import GeneratorForm from '../../components/GeneratorForm.jsx';
 import generateSchedule from '../../utils/Api/generateSchedule.js';
 
 const TABS = [
-    { id: 'timeblock', label: 'Time Block' },
+    { id: 'time-block', label: 'Time Block' },
     { id: 'generate', label: 'Generate' }
 ];
 
@@ -19,7 +19,7 @@ function CreateSchedule() {
     const [serverErrors, setServerErrors] = useState({});
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState('timeblock');
+    const [activeTab, setActiveTab] = useState('time-block');
 
     async function handleCreate(dataList) {
         if (loading) return;
@@ -124,7 +124,7 @@ function CreateSchedule() {
                     {/* Tab Content */}
                     {success && <p>{success}</p>}
 
-                    {activeTab === 'timeblock' && (
+                    {activeTab === 'time-block' && (
                         <TimeBlockForm
                             onSubmit={handleCreate}
                             loading={loading}

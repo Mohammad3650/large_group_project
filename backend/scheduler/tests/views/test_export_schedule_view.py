@@ -145,7 +145,7 @@ class ExportScheduleViewTest(TestCase):
 
         self.assertNotIn("Other User Event", content)
 
-    def test_export_ics_skips_timeblocks_without_start_or_end_time(self):
+    def test_export_ics_skips_time_blocks_without_start_or_end_time(self):
         """It should skip time blocks that do not have both start and end times."""
         self.create_time_block(
             self.day_plan,

@@ -34,8 +34,7 @@ class SaveWeeklyPlanView(APIView):
             dayplan = get_or_create_dayplan(user, date)
             created.append(create_time_block(dayplan, event, str(date)))
 
-
         return Response(
-            { "message": "Weekly plan saved", "events_saved": len(created) },
+            {"message": "Weekly plan saved", "events_saved": len(created)},
             status=status.HTTP_201_CREATED,
         )

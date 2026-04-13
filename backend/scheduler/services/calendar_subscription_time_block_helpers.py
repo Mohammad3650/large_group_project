@@ -31,7 +31,7 @@ def build_external_event_uid(event):
     )
 
 
-def build_timeblock_data(event):
+def build_time_block_data(event):
     """
     Convert a parsed ICS event into TimeBlock creation data.
 
