@@ -29,7 +29,7 @@ function AuthField({
     error,
     name
 }) {
-    // Adds Bootstrap invalid styling when an error is present
+    
     const inputClass = `form-control auth-input ${error ? 'is-invalid' : ''}`;
 
     function handleChange(e) {
@@ -52,7 +52,6 @@ function AuthField({
                 onChange={handleChange}
             />
 
-            {/* Inline validation message shown only when an error exists */}
             {error && <div className="invalid-feedback">{error}</div>}
         </div>
     );
