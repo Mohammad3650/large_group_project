@@ -10,6 +10,7 @@ import './stylesheets/CalendarView.css';
 import './stylesheets/CalendarThemeOverrides.css';
 import deleteTimeBlock from '../../utils/Api/deleteTimeBlock.js';
 import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
+import WelcomeMessage from '../../components/WelcomeMessage.jsx';
 
 /**
  * Renders the Schedule-X calendar with configured views, plugins,
@@ -101,13 +102,13 @@ function createDeleteHandler(eventsService, setBlocks, setCalendarKey) {
  * @param {Object} props
  * @param {Array<Object>} props.blocks - Array of calendar event objects
  * @param {Function} props.setBlocks - State setter for updating calendar events
- * @param {string} props.title - Title displayed above the calendar
+ * @param {string} props.username - Current user's username
  * @param {JSX.Element} props.headerButtons - Elements rendered above the calendar (e.g. action buttons)
  * @param {Function} props.eventButtons - Function used to render event action buttons
  * @returns {JSX.Element} Complete calendar view component
  */
 
-function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons }) {
+function CalendarView({ blocks, setBlocks, username, headerButtons, eventButtons }) {
     const [eventsService] = useState(() => createEventsServicePlugin());
     const [calendarKey, setCalendarKey] = useState(0);
     const calendarTimezone = getUserTimezone();
@@ -116,7 +117,7 @@ function CalendarView({ blocks, setBlocks, title, headerButtons, eventButtons })
 
     return (
         <div className="calendar-content">
-            <h1 className="welcome-message">{title}</h1>
+            <WelcomeMessage page="calendar" username={username} />
             {headerButtons}
             <div className="actual-calendar">
                 <CalendarRenderer

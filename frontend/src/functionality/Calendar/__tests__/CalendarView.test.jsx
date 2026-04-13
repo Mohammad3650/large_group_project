@@ -96,7 +96,7 @@ function renderCalendarView(overrides = {}) {
     const defaultProps = {
         blocks,
         setBlocks: vi.fn(),
-        title: 'Calendar',
+        username: 'Mohammad',
         headerButtons: undefined,
         eventButtons: undefined
     };
@@ -118,7 +118,7 @@ describe('CalendarView', () => {
 
     it('renders title, header buttons, and calendar', () => {
         renderCalendarView({
-            title: 'Welcome to your calendar, Mohammad!',
+            username: 'Mohammad',
             headerButtons: <button>Add Task</button>
         });
 
@@ -130,7 +130,7 @@ describe('CalendarView', () => {
     it('renders without header buttons', () => {
         renderCalendarView();
 
-        expect(screen.getByText('Calendar')).toBeInTheDocument();
+        expect(screen.getByText('Welcome to your calendar, Mohammad!')).toBeInTheDocument();
         expect(screen.getByText('Mock ScheduleXCalendar')).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Add Task' })).not.toBeInTheDocument();
     });
