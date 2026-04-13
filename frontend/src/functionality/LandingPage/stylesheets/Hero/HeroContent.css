@@ -1,0 +1,36 @@
+.hero-left {
+    flex: 1;
+}
+
+.hero-quote {
+    padding-left: var(--space-hero-quote-left);
+}
+
+.hero-text-top,
+.hero-text-bottom {
+    font-size: var(--font-size-hero-text);
+    font-family: var(--font-main);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-main);
+}
+
+@media (max-width: 768px) {
+    .hero-left {
+        width: 100%;
+        flex: none;
+        min-width: 0;
+    }
+
+    .hero-quote {
+        padding-left: 0;
+        text-align: left;
+    }
+
+    .hero-text-top,
+    .hero-text-bottom {
+        display: block;
+        font-size: clamp(3rem, 12vw, 4.5rem);
+        line-height: var(--line-height-hero-tight);
+        word-break: break-word;
+    }
+}

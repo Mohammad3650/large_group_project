@@ -1,0 +1,28 @@
+.hero-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: var(--hero-image-max-width);
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .hero-right {
+        width: 100%;
+        flex: none;
+        min-width: 0;
+        justify-content: center;
+    }
+
+    .hero-image {
+        display: block;
+        width: 100%;
+        max-width: 420px;
+        height: auto;
+        margin: 0 auto;
+    }
+}

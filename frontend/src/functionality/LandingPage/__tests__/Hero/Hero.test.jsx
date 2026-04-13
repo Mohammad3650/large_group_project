@@ -1,124 +1,86 @@
-import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import Hero from '../Hero/Hero.jsx';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
-const mockNavigate = vi.fn();
-const mockUseAuthStatus = vi.fn();
-
-vi.mock('react-router-dom', () => ({
-    useNavigate: () => mockNavigate,
+vi.mock('../../../../utils/Auth/authStatus.js', () => ({
+    default: vi.fn(() => false),
 }));
 
-vi.mock('../../../utils/Auth/authStatus', () => ({
-    default: () => mockUseAuthStatus(),
+vi.mock('../../utils/Helpers/getHeroImage.js', () => ({
+    default: vi.fn(() => 'test-image.png'),
 }));
 
-describe('Tests for Hero', () => {
+vi.mock('../../utils/Helpers/getHeroButtons.js', () => ({
+    default: vi.fn(() => [
+        { label: 'Sign Up', path: '/signup', style: 'black' },
+        { label: 'Login', path: '/login', style: 'white' },
+    ]),
+}));
+
+vi.mock('../../Hero/HeroContent.jsx', () => ({
+    default: ({ buttons, onNavigate }) => (
+        <div data-testid="hero-content">
+            {buttons.map((button) => (
+                <button key={button.label} onClick={() => onNavigate(button.path)}>
+                    {button.label}
+                </button>
+            ))}
+        </div>
+    ),
+}));
+
+vi.mock('../../Hero/HeroImage.jsx', () => ({
+    default: ({ heroImage }) => <img data-testid="hero-image" src={heroImage} alt="hero" />,
+}));
+
+vi.mock('../../stylesheets/Hero/Hero.css', () => ({}));
+
+import Hero from '../../Hero/Hero.jsx';
+import * as getHeroImageModule from '../../utils/Helpers/getHeroImage.js';
+import * as getHeroButtonsModule from '../../utils/Helpers/getHeroButtons.js';
+import * as authStatusModule from '../../../../utils/Auth/authStatus.js';
+
+const renderHero = (theme = 'light') =>
+    render(
+        <MemoryRouter>
+            <Hero theme={theme} />
+        </MemoryRouter>
+    );
+
+describe('Hero', () => {
     beforeEach(() => {
-        mockNavigate.mockClear();
-        mockUseAuthStatus.mockReset();
-        document.body.className = '';
+        vi.clearAllMocks();
+        authStatusModule.default.mockReturnValue(false);
+        getHeroImageModule.default.mockReturnValue('test-image.png');
+        getHeroButtonsModule.default.mockReturnValue([
+            { label: 'Sign Up', path: '/signup', style: 'black' },
+            { label: 'Login', path: '/login', style: 'white' },
+        ]);
     });
 
-    it('renders the main text', () => {
-        mockUseAuthStatus.mockReturnValue(false);
-
-        render(<Hero />);
-
-        expect(screen.getByText('Plan your study.')).toBeInTheDocument();
-        expect(screen.getByText('Live your life.')).toBeInTheDocument();
-    });
-
-    it('renders signup and login buttons when logged out', () => {
-        mockUseAuthStatus.mockReturnValue(false);
-
-        render(<Hero />);
-
-        expect(screen.getByRole('button', { name: 'Sign Up' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
-    });
-
-    it('navigates to signup when Sign Up is clicked', () => {
-        mockUseAuthStatus.mockReturnValue(false);
-
-        render(<Hero />);
-
-        fireEvent.click(screen.getByRole('button', { name: 'Sign Up' }));
-
-        expect(mockNavigate).toHaveBeenCalledWith('/signup');
-    });
-
-    it('navigates to login when Login is clicked', () => {
-        mockUseAuthStatus.mockReturnValue(false);
-
-        render(<Hero />);
-
-        fireEvent.click(screen.getByRole('button', { name: 'Login' }));
-
-        expect(mockNavigate).toHaveBeenCalledWith('/login');
-    });
-
-    it('renders calendar and dashboard buttons when logged in', () => {
-        mockUseAuthStatus.mockReturnValue(true);
-
-        render(<Hero />);
-
-        expect(screen.getByRole('button', { name: 'Calendar' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument();
-    });
-
-    it('navigates to calendar when Calendar is clicked', () => {
-        mockUseAuthStatus.mockReturnValue(true);
-
-        render(<Hero />);
-
-        fireEvent.click(screen.getByRole('button', { name: 'Calendar' }));
-
-        expect(mockNavigate).toHaveBeenCalledWith('/calendar');
-    });
-
-    it('navigates to dashboard when Dashboard is clicked', () => {
-        mockUseAuthStatus.mockReturnValue(true);
-
-        render(<Hero />);
-
-        fireEvent.click(screen.getByRole('button', { name: 'Dashboard' }));
-
-        expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
+    it('renders the hero content', () => {
+        renderHero();
+        expect(screen.getByTestId('hero-content')).toBeInTheDocument();
     });
 
     it('renders the hero image', () => {
-        mockUseAuthStatus.mockReturnValue(false);
-
-        render(<Hero />);
-
-        expect(screen.getByAltText('StudySync hero')).toBeInTheDocument();
+        renderHero();
+        expect(screen.getByTestId('hero-image')).toBeInTheDocument();
     });
 
-    it('renders the dark theme hero image when dark theme is active', () => {
-        mockUseAuthStatus.mockReturnValue(false);
-        document.body.classList.add('dark-theme');
-
-        render(<Hero />);
-
-        expect(screen.getByAltText('StudySync hero')).toBeInTheDocument();
+    it('calls getHeroImage with the correct theme', () => {
+        renderHero('dark');
+        expect(getHeroImageModule.default).toHaveBeenCalledWith('dark');
     });
 
-    it('applies the expected layout classes', () => {
-        mockUseAuthStatus.mockReturnValue(false);
+    it('calls getHeroButtons with the logged in state', () => {
+        authStatusModule.default.mockReturnValue(true);
+        renderHero();
+        expect(getHeroButtonsModule.default).toHaveBeenCalledWith(true);
+    });
 
-        const { container } = render(<Hero />);
-
-        expect(container.querySelector('.hero')).toBeInTheDocument();
-        expect(container.querySelector('.hero-content')).toBeInTheDocument();
-        expect(container.querySelector('.hero-left')).toBeInTheDocument();
-        expect(container.querySelector('.hero-right')).toBeInTheDocument();
-        expect(container.querySelector('.hero-quote')).toBeInTheDocument();
-        expect(container.querySelector('.hero-text-top')).toBeInTheDocument();
-        expect(container.querySelector('.hero-text-bottom')).toBeInTheDocument();
-        expect(container.querySelector('.hero-buttons')).toBeInTheDocument();
-        expect(container.querySelector('.hero-button.black')).toBeInTheDocument();
-        expect(container.querySelector('.hero-button.white')).toBeInTheDocument();
-        expect(container.querySelector('.hero-image')).toBeInTheDocument();
+    it('passes the hero image to HeroImage', () => {
+        renderHero();
+        expect(screen.getByTestId('hero-image')).toHaveAttribute('src', 'test-image.png');
     });
 });

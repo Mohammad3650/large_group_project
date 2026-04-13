@@ -1,4 +1,5 @@
 import HeroButtons from './HeroButtons.jsx';
+import '../stylesheets/Hero/HeroContent.css';
 
 /**
  * Renders the text content shown on the left side of the hero section.

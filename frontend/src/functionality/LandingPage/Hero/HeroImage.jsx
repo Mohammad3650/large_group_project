@@ -1,3 +1,5 @@
+import '../stylesheets/Hero/HeroImage.css';
+
 /**
  * Renders the image shown on the right side of the hero section.
  *
