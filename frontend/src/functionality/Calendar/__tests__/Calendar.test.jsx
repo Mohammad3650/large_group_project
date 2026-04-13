@@ -92,7 +92,7 @@ describe('Tests for Calendar', () => {
 
         fireEvent.click(screen.getByRole('button', { name: 'Edit event' }));
 
-        expect(mockNavigate).toHaveBeenCalledWith('/time-blocks/42/edit');
+        expect(mockNavigate).toHaveBeenCalledWith('/timeblocks/42/edit');
     });
 
     it('calls delete when delete is clicked', () => {

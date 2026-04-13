@@ -117,7 +117,6 @@ function useGeneratorForm(onSubmit, loading, serverErrors, clearErrors) {
             windows: [windows],
             unscheduled: blocks
         };
-        console.log(k);
         onSubmit(k);
     }
 

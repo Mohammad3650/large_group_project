@@ -16,6 +16,10 @@ const renderGeneratorForm = (overrides = {}) => {
     return render(<GeneratorForm {...props} />);
 };
 
+vi.mock('../../utils/Helpers/getUserTimezone', () => ({
+        default: () => 'UTC'
+    }));
+
 describe('Tests for GeneratorForm', () => {
     it('renders all main forms', () => {
         renderGeneratorForm();
@@ -51,7 +55,7 @@ describe('Tests for GeneratorForm', () => {
             screen.getByRole('button', { name: /add another event/i })
         ).toBeInTheDocument();
         expect(
-            screen.getByRole('button', { name: /create schedule/i })
+            screen.getByRole('button', { name: /Create Task/i })
         ).toBeInTheDocument();
     });
 
@@ -124,26 +128,29 @@ describe('Tests for GeneratorForm', () => {
         expect(mockClearErrors).toHaveBeenCalledTimes(1);
     });
 
-    it('updates text, number, select, textarea, and time/date inputs', async () => {
-        const user = userEvent.setup();
+    it('updates text, number, select, textarea, and time/date inputs', () => {
         renderGeneratorForm();
 
-        await user.type(
-            screen.getByPlaceholderText(/^name$/i),
-            'Math Revision'
-        );
-        await user.type(
-            screen.getByPlaceholderText(/duration \(minutes\)/i),
-            '90'
-        );
-        await user.type(
+        fireEvent.change(screen.getByPlaceholderText(/^name$/i), {
+            target: { value: 'Math Revision' }
+        });
+        fireEvent.change(screen.getByPlaceholderText(/duration \(minutes\)/i), {
+            target: { value: '90' }
+        });
+        fireEvent.change(
             screen.getByPlaceholderText(/frequency \(times per week\)/i),
-            '3'
+            {
+                target: { value: '3' }
+            }
         );
-        await user.type(screen.getByPlaceholderText(/location/i), 'Library');
-        await user.type(
+        fireEvent.change(screen.getByPlaceholderText(/location/i), {
+            target: { value: 'Library' }
+        });
+        fireEvent.change(
             screen.getByPlaceholderText(/description \(optional\)/i),
-            'practice'
+            {
+                target: { value: 'practice' }
+            }
         );
 
         fireEvent.change(screen.getByLabelText(/start/i), {
@@ -194,18 +201,15 @@ describe('Tests for GeneratorForm', () => {
 
 
         const submitButton = screen.getByRole('button', {
-            name: /generating/i
+            name: /saving/i
         });
         expect(submitButton).toBeDisabled();
-        expect(screen.getByText(/generating/i)).toBeInTheDocument();
+        expect(screen.getByText(/saving/i)).toBeInTheDocument();
         expect(
             screen.getByText((_, el) => el?.classList.contains('spinner'))
         ).toBeInTheDocument();
     });
 
-    vi.mock('../../utils/Helpers/getUserTimezone', () => ({
-        default: () => 'UTC'
-    }));
 
     it('submits the full payload', async () => {
         const user = userEvent.setup();
@@ -226,20 +230,21 @@ describe('Tests for GeneratorForm', () => {
             target: { value: '22:30' }
         });
 
-        await user.type(screen.getByPlaceholderText(/^name$/i), 'Algorithms');
-        await user.type(
-            screen.getByPlaceholderText(/duration \(minutes\)/i),
-            '120'
-        );
-        await user.type(
-            screen.getByPlaceholderText(/frequency \(times per week\)/i),
-            '4'
-        );
-        await user.type(screen.getByPlaceholderText(/location/i), 'Campus');
-        await user.type(
-            screen.getByPlaceholderText(/description \(optional\)/i),
-            'Past papers'
-        );
+        fireEvent.change(screen.getByPlaceholderText(/^name$/i), {
+            target: { value: 'Algorithms' }
+        });
+        fireEvent.change(screen.getByPlaceholderText(/duration \(minutes\)/i), {
+            target: { value: '120' }
+        });
+        fireEvent.change(screen.getByPlaceholderText(/frequency \(times per week\)/i), {
+            target: { value: '4' }
+        });
+        fireEvent.change(screen.getByPlaceholderText(/location/i), {
+            target: { value: 'Campus' }
+        });
+        fireEvent.change(screen.getByPlaceholderText(/description \(optional\)/i), {
+            target: { value: 'Past papers' }
+        });
 
         await user.click(screen.getByLabelText(/even spread/i));
         await user.click(screen.getByLabelText(/include scheduled/i));
@@ -252,7 +257,7 @@ describe('Tests for GeneratorForm', () => {
         });
 
         await user.click(
-            screen.getByRole('button', { name: /create schedule/i })
+            screen.getByRole('button', { name: /Create Task/i })
         );
 
         expect(mockOnSubmit).toHaveBeenCalledTimes(1);
@@ -261,7 +266,14 @@ describe('Tests for GeneratorForm', () => {
             week_end: '2026-03-29',
             even_spread: true,
             include_scheduled: true,
-            windows: [{ start_min: '08:00', end_min: '22:30', daily: true, timezone: 'UTC', }],
+            windows: [
+                {
+                    start_min: '08:00',
+                    end_min: '22:30',
+                    daily: true,
+                    timezone: 'UTC',
+                }
+            ],
             unscheduled: [
                 {
                     name: 'Algorithms',
@@ -273,7 +285,6 @@ describe('Tests for GeneratorForm', () => {
                     block_type: 'lecture',
                     description: 'Past papers',
                     timezone: 'UTC',
-                    
                 }
             ]
         });

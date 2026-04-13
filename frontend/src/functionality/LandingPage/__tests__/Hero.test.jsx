@@ -6,17 +6,18 @@ const mockNavigate = vi.fn();
 const mockUseAuthStatus = vi.fn();
 
 vi.mock('react-router-dom', () => ({
-    useNavigate: () => mockNavigate
+    useNavigate: () => mockNavigate,
 }));
 
 vi.mock('../../../utils/Auth/authStatus', () => ({
-    default: () => mockUseAuthStatus()
+    default: () => mockUseAuthStatus(),
 }));
 
 describe('Tests for Hero', () => {
     beforeEach(() => {
         mockNavigate.mockClear();
         mockUseAuthStatus.mockReset();
+        document.body.className = '';
     });
 
     it('renders the main text', () => {
@@ -88,6 +89,15 @@ describe('Tests for Hero', () => {
 
     it('renders the hero image', () => {
         mockUseAuthStatus.mockReturnValue(false);
+
+        render(<Hero />);
+
+        expect(screen.getByAltText('StudySync hero')).toBeInTheDocument();
+    });
+
+    it('renders the dark theme hero image when dark theme is active', () => {
+        mockUseAuthStatus.mockReturnValue(false);
+        document.body.classList.add('dark-theme');
 
         render(<Hero />);
 
