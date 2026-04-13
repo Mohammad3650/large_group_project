@@ -16,7 +16,6 @@ def get_or_create_day_plan(user, date):
     day_plan, _ = DayPlan.objects.get_or_create(user=user, date=date)
     return day_plan
 
-
 def prepare_time_block_data(day_plan, data, original_date):
     """
     Prepare shared TimeBlock values and resolve the correct DayPlan.
@@ -70,7 +69,9 @@ def create_time_block(day_plan, data, original_date):
     Returns:
         TimeBlock: The created TimeBlock instance.
     """
-    day_plan, prepared_fields = prepare_time_block_data(day_plan, data, original_date)
+    day_plan, prepared_fields = prepare_time_block_data(
+        day_plan, data, original_date
+    )
 
     return TimeBlock.objects.create(
         day=day_plan,
@@ -92,14 +93,18 @@ def update_time_block(time_block, day_plan, data, original_date):
         TimeBlock: The updated TimeBlock instance.
     """
 
-    day_plan, prepared_fields = prepare_time_block_data(day_plan, data, original_date)
+    day_plan, prepared_fields = prepare_time_block_data(
+        day_plan, data, original_date
+    )
 
     time_block.day = day_plan
     time_block.name = prepared_fields["name"] or time_block.name
     time_block.start_time = prepared_fields["start_time"]
     time_block.end_time = prepared_fields["end_time"]
     time_block.location = prepared_fields["location"]
-    time_block.block_type = prepared_fields["block_type"] or time_block.block_type
+    time_block.block_type = (
+        prepared_fields["block_type"] or time_block.block_type
+    )
     time_block.description = prepared_fields["description"]
     time_block.timezone = prepared_fields["timezone"]
     time_block.save()

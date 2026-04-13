@@ -16,7 +16,7 @@ from scheduler.utils.to_utc import to_utc
 class TimeblockServiceTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="timeblockuser",
+            username="time_blockuser",
             password="password123",
         )
         self.day_plan = DayPlan.objects.create(
@@ -109,17 +109,15 @@ class TimeblockServiceTest(TestCase):
         Test that a TimeBlock is moved to a different DayPlan if UTC conversion changes the date.
         """
         data = self.base_data.copy()
-        data.update(
-            {
-                "name": "Late Study",
-                "start_time": "23:30",
-                "end_time": "23:59",
-                "location": "Home",
-                "block_type": "study",
-                "description": "Late revision",
-                "timezone": "America/New_York",
-            }
-        )
+        data.update({
+            "name": "Late Study",
+            "start_time": "23:30",
+            "end_time": "23:59",
+            "location": "Home",
+            "block_type": "study",
+            "description": "Late revision",
+            "timezone": "America/New_York",
+        })
 
         block = create_time_block(self.day_plan, data, "2026-01-15")
 
@@ -205,17 +203,15 @@ class TimeblockServiceTest(TestCase):
         )
 
         data = self.base_update_data.copy()
-        data.update(
-            {
-                "name": "Late Event Updated",
-                "start_time": "23:30",
-                "end_time": "23:59",
-                "location": "Home",
-                "block_type": "study",
-                "description": "Late update",
-                "timezone": "America/New_York",
-            }
-        )
+        data.update({
+            "name": "Late Event Updated",
+            "start_time": "23:30",
+            "end_time": "23:59",
+            "location": "Home",
+            "block_type": "study",
+            "description": "Late update",
+            "timezone": "America/New_York",
+        })
 
         updated_block = update_time_block(
             block,
