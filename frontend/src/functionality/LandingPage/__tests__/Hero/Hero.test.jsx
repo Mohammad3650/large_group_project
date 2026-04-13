@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import Hero from '../Hero';
+import Hero from '../Hero/Hero.jsx';
 
 const mockNavigate = vi.fn();
 const mockUseAuthStatus = vi.fn();
