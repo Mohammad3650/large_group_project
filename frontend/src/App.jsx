@@ -14,7 +14,7 @@ import Settings from './functionality/Settings/Settings.jsx';
 import { setAuthToken } from './api';
 import SuccessfulTimeBlock from './components/SuccessfulTimeBlock.jsx';
 import EditTimeBlock from './components/EditTimeBlock';
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar/Navbar.jsx';
 import { ACCESS_KEY } from './constants/authKeys.js';
 import './styles/variables.css';
 

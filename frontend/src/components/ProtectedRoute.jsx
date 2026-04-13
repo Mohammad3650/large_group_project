@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import RouteLoadingScreen from './RouteLoadingScreen';
-import useProtectedRouteAccess from '../hooks/useProtectedRouteAccess';
+import useProtectedRouteAccess from '../functionality/Authentication/utils/useProtectedRouteAccess';
 
 /**
  * Restricts access to authenticated users only.

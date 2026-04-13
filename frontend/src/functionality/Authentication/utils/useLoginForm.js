@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { loginUser } from './authService';
 import useAuthForm from './useAuthForm';
-import validateLoginForm from '../Validation/validateLoginForm';
+import validateLoginForm from './validateLoginForm';
 
 /**
  * Hook that manages login form state, validation and submission.

@@ -1,5 +1,5 @@
-import { setAuthToken } from '../../api';
-import { ACCESS_KEY, REFRESH_KEY } from '../../constants/authKeys';
+import { setAuthToken } from '../../../api';
+import { ACCESS_KEY, REFRESH_KEY } from '../../../constants/authKeys';
 
 /**
  * Retrieves the stored access token from localStorage.
