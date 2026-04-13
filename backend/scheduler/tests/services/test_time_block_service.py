@@ -5,9 +5,9 @@ from django.test import TestCase
 from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
 from scheduler.models.User import User
-from scheduler.services.timeblock_service import (
+from scheduler.services.time_block_service import (
     create_time_block,
-    get_or_create_dayplan,
+    get_or_create_day_plan,
     update_time_block,
 )
 from scheduler.utils.to_utc import to_utc
@@ -16,7 +16,7 @@ from scheduler.utils.to_utc import to_utc
 class TimeblockServiceTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="timeblockuser",
+            username="time_blockuser",
             password="password123",
         )
         self.day_plan = DayPlan.objects.create(
@@ -44,23 +44,23 @@ class TimeblockServiceTest(TestCase):
             "timezone": "UTC",
         }
 
-    def test_get_or_create_dayplan_returns_existing_dayplan(self):
+    def test_get_or_create_day_plan_returns_existing_day_plan(self):
         """
         Test that an existing DayPlan is returned and no duplicate is created.
         """
-        dayplan = get_or_create_dayplan(self.user, date(2026, 1, 15))
+        day_plan = get_or_create_day_plan(self.user, date(2026, 1, 15))
 
-        self.assertEqual(dayplan.id, self.day_plan.id)
+        self.assertEqual(day_plan.id, self.day_plan.id)
         self.assertEqual(DayPlan.objects.filter(user=self.user).count(), 1)
 
-    def test_get_or_create_dayplan_creates_new_dayplan(self):
+    def test_get_or_create_day_plan_creates_new_day_plan(self):
         """
         Test that a new DayPlan is created when one does not exist.
         """
-        dayplan = get_or_create_dayplan(self.user, date(2026, 1, 16))
+        day_plan = get_or_create_day_plan(self.user, date(2026, 1, 16))
 
-        self.assertEqual(dayplan.user, self.user)
-        self.assertEqual(dayplan.date, date(2026, 1, 16))
+        self.assertEqual(day_plan.user, self.user)
+        self.assertEqual(day_plan.date, date(2026, 1, 16))
         self.assertEqual(DayPlan.objects.filter(user=self.user).count(), 2)
 
     def test_create_time_block_stores_timezone_and_converts_to_utc(self):
@@ -104,22 +104,20 @@ class TimeblockServiceTest(TestCase):
         self.assertEqual(block.location, "Campus")
         self.assertEqual(block.description, "Attend class")
 
-    def test_create_time_block_moves_to_different_dayplan_when_utc_date_changes(self):
+    def test_create_time_block_moves_to_different_day_plan_when_utc_date_changes(self):
         """
         Test that a TimeBlock is moved to a different DayPlan if UTC conversion changes the date.
         """
         data = self.base_data.copy()
-        data.update(
-            {
-                "name": "Late Study",
-                "start_time": "23:30",
-                "end_time": "23:59",
-                "location": "Home",
-                "block_type": "study",
-                "description": "Late revision",
-                "timezone": "America/New_York",
-            }
-        )
+        data.update({
+            "name": "Late Study",
+            "start_time": "23:30",
+            "end_time": "23:59",
+            "location": "Home",
+            "block_type": "study",
+            "description": "Late revision",
+            "timezone": "America/New_York",
+        })
 
         block = create_time_block(self.day_plan, data, "2026-01-15")
 
@@ -189,7 +187,7 @@ class TimeblockServiceTest(TestCase):
         self.assertEqual(updated_block.description, "Updated description")
         self.assertEqual(updated_block.timezone, "Europe/London")
 
-    def test_update_time_block_moves_dayplan_when_utc_date_changes(self):
+    def test_update_time_block_moves_day_plan_when_utc_date_changes(self):
         """
         Test that updating a TimeBlock moves it to a new DayPlan when UTC conversion changes the date.
         """
@@ -205,17 +203,15 @@ class TimeblockServiceTest(TestCase):
         )
 
         data = self.base_update_data.copy()
-        data.update(
-            {
-                "name": "Late Event Updated",
-                "start_time": "23:30",
-                "end_time": "23:59",
-                "location": "Home",
-                "block_type": "study",
-                "description": "Late update",
-                "timezone": "America/New_York",
-            }
-        )
+        data.update({
+            "name": "Late Event Updated",
+            "start_time": "23:30",
+            "end_time": "23:59",
+            "location": "Home",
+            "block_type": "study",
+            "description": "Late update",
+            "timezone": "America/New_York",
+        })
 
         updated_block = update_time_block(
             block,

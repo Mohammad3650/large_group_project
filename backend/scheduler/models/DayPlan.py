@@ -15,6 +15,6 @@ class DayPlan(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "date"],
-                name="unique_dayplan_per_user_date",
+                name="unique_day_plan_per_user_date",
             )
         ]
