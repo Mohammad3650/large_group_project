@@ -31,20 +31,6 @@
             coverage==7.13.4
             icalendar==5.0.11
             Faker==40.11.1
-
-            # Django – core backend framework
-
-            # djangorestframework – clean API for React
-
-            # simplejwt – token-based auth (easy with React)
-
-            # cors-headers – required for frontend → backend calls
-
-            # python-dotenv – keep secrets out of git
-
-            # psycopg2-binary – safe if you later move to Postgres
-
-            # pytz – timezone handling (important for schedules)
             '';
 
         runtimeInputs = with pkgs; [
@@ -213,6 +199,7 @@
             wait -n "$BACKEND_PID" "$FRONTEND_PID"
           '';
         };
+
 
         testsScript = pkgs.writeShellApplication {
           name = "studysync-tests";
