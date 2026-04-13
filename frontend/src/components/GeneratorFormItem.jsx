@@ -2,8 +2,11 @@
  * GeneratorFormItem renders a single unscheduled time block form row
  * with fields for name, duration, daily/frequency, start time,
  * location, block type, and optional description.
+ * @param {{block:object, index:number, serverErrors:object, updateBlock:function, deleteBlock:function, blocksLength:number}} props
+ * @returns {JSX.Element}
  */
 import { BLOCK_TYPES } from '../constants/blockTypes';
+import Capitalise from '../utils/Formatters/capitalise';
 
 function GeneratorFormItem({
     block,
@@ -127,7 +130,7 @@ function GeneratorFormItem({
             >
                 {BLOCK_TYPES.map((type) => (
                 <option key={type} value={type}>
-                {type.charAt(0).toUpperCase() + type.slice(1)}
+                {Capitalise(type)}
                 </option>
                 ))}
             </select>
