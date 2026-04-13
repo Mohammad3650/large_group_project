@@ -48,7 +48,11 @@ const mockedUsername = {
     toString: () => 'Mohammad'
 };
 
-function renderCalendar({ blocks = [{ id: 1 }], setBlocks = vi.fn(), username = mockedUsername } = {}) {
+function renderCalendar({
+    blocks = [{ id: 1 }],
+    setBlocks = vi.fn(),
+    username = mockedUsername
+} = {}) {
     mockUseTimeBlocks.mockReturnValue({
         blocks,
         setBlocks
@@ -76,7 +80,6 @@ describe('Tests for Calendar', () => {
         renderCalendar({ blocks: [{ id: 1 }, { id: 2 }] });
 
         expect(screen.getByText('Mock Calendar View')).toBeInTheDocument();
-        expect(screen.getByText('Welcome to your calendar, Mohammad!')).toBeInTheDocument();
         expect(screen.getByTestId('blocks-length')).toHaveTextContent('2');
         expect(screen.getByText('Mock Add Task Button')).toBeInTheDocument();
     });

@@ -19,7 +19,6 @@
     min-height: 0;
 }
 
-
 @media (max-width: 768px) {
     .actual-calendar {
         height: var(--calendar-height-mobile);

@@ -8,19 +8,6 @@
     color: var(--text-main);
 }
 
-.actual-calendar {
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-    padding: var(--space-md);
-    box-sizing: border-box;
-    border-radius: var(--radius-lg);
-    background: var(--bg-soft);
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-md);
-    overflow: hidden;
-}
-
 @media (max-width: 768px) {
     .calendar-content {
         padding: 0 var(--space-calendar-mobile) var(--space-calendar-mobile)
@@ -34,17 +21,5 @@
         margin-bottom: var(--space-calendar-mobile);
     }
 
-    .actual-calendar {
-        height: var(--calendar-height-mobile);
-        padding: var(--space-sm);
-        border-radius: var(--radius-md);
-        overflow: visible;
-    }
-}
-
-@media (max-width: var(--breakpoint-sm)) {
-    .actual-calendar {
-        height: var(--calendar-height-mobile-sm);
-        padding: var(--space-calendar-mobile-sm);
-    }
+    
 }
