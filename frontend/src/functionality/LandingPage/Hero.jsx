@@ -11,9 +11,8 @@ import heroPicDark from '../../assets/LandingPage/heropicture_dark.png';
  * @returns {string} Hero image path
  */
 
-function getHeroImage() {
-    const isDarkTheme = document.body.classList.contains('dark-theme');
-    return isDarkTheme ? heroPicLight  : heroPicDark;
+function getHeroImage(theme) {
+    return theme === 'dark' ? heroPicDark : heroPicLight;
 }
 
 /**
@@ -39,11 +38,11 @@ function getHeroButtons(isLoggedIn) {
  *
  * @returns {JSX.Element} Hero section
  */
-function Hero() {
+function Hero({ theme }) {
     const isLoggedIn = useAuthStatus();
     const navigate = useNavigate();
 
-    const heroImage = getHeroImage();
+    const heroImage = getHeroImage(theme);
     const buttons = getHeroButtons(isLoggedIn);
 
     return (

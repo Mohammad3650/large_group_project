@@ -14,7 +14,7 @@ function CalendarEventActions({ calendarEvent: { id }, handleDelete }) {
     const navigate = useNavigate();
 
     const handleEdit = () => {
-        navigate(`/timeblocks/${id}/edit`);
+        navigate(`/time-blocks/${id}/edit`);
     };
 
     const handleDeleteClick = () => {

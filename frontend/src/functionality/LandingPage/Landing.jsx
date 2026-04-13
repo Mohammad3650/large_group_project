@@ -47,10 +47,10 @@ const TESTIMONIALS = [
  *
  * @returns {JSX.Element} Landing page
  */
-function Landing() {
+function Landing({ theme }) {
     return (
         <div className="landing">
-            <Hero />
+            <Hero theme={theme}/>
             <Features />
 
             <div className="landing-testimonials-wrapper">
