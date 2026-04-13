@@ -45,9 +45,9 @@ function FormActions({ initialData, onCancel, loading, addBlock }) {
                 {loading ? (
                     <><span className="spinner" /> Saving...</>
                 ) : initialData ? (
-                    'Edit Time Block'
+                    'Edit Task'
                 ) : (
-                    'Create Time Block'
+                    'Create Task'
                 )}
             </button>
         </div>
