@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { validateSignupForm } from '../Validation/signupValidation';
-import { signupUser } from '../Auth/authService';
+import { validateSignupForm } from './validateSignupForm';
+import { signupUser } from './authService';
 import useAuthForm from './useAuthForm';
 
 /**

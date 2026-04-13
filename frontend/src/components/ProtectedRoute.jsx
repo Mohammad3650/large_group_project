@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { isTokenValid } from '../utils/Auth/authToken';
+import { isTokenValid } from '../functionality/Authentication/utils/authToken';
 
 /**
  * A route guard component that restricts access to pages to authenticated users only.
