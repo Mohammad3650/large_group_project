@@ -5,15 +5,20 @@ import CalendarEventModal from './CalendarEventModal.jsx';
  *
  * @param {Function} eventButtons - Renders action buttons for a calendar event
  * @param {Function} handleDelete - Deletes a calendar event by id
- * @returns {Object} Schedule-X custom component configuration
+ * @returns {Object} Configuration object that injects custom components
+into the Schedule-X calendar, including the event modal renderer.
  */
 
-export const createCalendarCustomComponents = (eventButtons, handleDelete) => ({
-    eventModal: ({ calendarEvent }) => (
-        <CalendarEventModal
-            calendarEvent={calendarEvent}
-            eventButtons={eventButtons}
-            handleDelete={handleDelete}
-        />
-    )
-});
+function CreateCalendarCustomComponents(eventButtons, handleDelete) {
+    return {
+        eventModal: ({ calendarEvent }) => (
+            <CalendarEventModal
+                calendarEvent={calendarEvent}
+                eventButtons={eventButtons}
+                handleDelete={handleDelete}
+            />
+        )
+    };
+}
+
+export default CreateCalendarCustomComponents;
