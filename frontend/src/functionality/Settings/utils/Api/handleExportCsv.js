@@ -1,6 +1,6 @@
-import { api } from '../../api.js';
-import downloadFile from '../Helpers/downloadFile.js';
+import { api } from '../../../../api.js';
 
+import downloadFile from '../Helpers/downloadFile.js';
 
 
 const EXPORT_CSV_ENDPOINT = '/api/time-blocks/export/csv/';

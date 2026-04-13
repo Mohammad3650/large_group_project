@@ -3,19 +3,26 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import ExportSection from '../ExportSection.jsx';
 
 vi.mock('../stylesheets/ExportSection.css', () => ({}));
-vi.mock('../../../components/ExportCsvButton.jsx', () => ({
+vi.mock('../ExportCsvButton.jsx', () => ({
     default: ({ setError }) => (
-        <button data-testid="export-csv-button" onClick={() => setError('csv error')}>
+        <button
+            data-testid="export-csv-button"
+            onClick={() => setError('csv error')}
+        >
             Export CSV
         </button>
-    ),
+    )
 }));
-vi.mock('../../../components/ExportIcsButton.jsx', () => ({
+
+vi.mock('../ExportIcsButton.jsx', () => ({
     default: ({ setError }) => (
-        <button data-testid="export-ics-button" onClick={() => setError('ics error')}>
+        <button
+            data-testid="export-ics-button"
+            onClick={() => setError('ics error')}
+        >
             Export ICS
         </button>
-    ),
+    )
 }));
 
 const renderExportSection = (props = {}) =>

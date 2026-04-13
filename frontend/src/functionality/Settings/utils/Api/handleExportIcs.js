@@ -1,4 +1,4 @@
-import { api } from '../../api.js';
+import { api } from '../../../../api.js';
 import downloadFile from '../Helpers/downloadFile.js';
 
 const EXPORT_ICS_ENDPOINT = '/api/time-blocks/export/ics/';

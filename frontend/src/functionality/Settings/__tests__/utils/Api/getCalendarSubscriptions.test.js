@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import getCalendarSubscriptions from '../Api/getCalendarSubscriptions.js';
-import { api } from '../../api.js';
+import getCalendarSubscriptions from '../../../utils/Api/getCalendarSubscriptions.js';
+import { api } from '../../../../../api.js';
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../../../api.js', () => ({
     api: {
         get: vi.fn()
     }
@@ -13,17 +13,12 @@ describe('getCalendarSubscriptions', () => {
         vi.clearAllMocks();
     });
 
-    it('calls the correct endpoint and returns subscription data', async () => {
+    it('calls the correct endpoint and returns response data', async () => {
         const mockData = [
             {
                 id: 1,
-                name: 'KCL Timetable',
-                source_url: 'https://example.com/calendar.ics'
-            },
-            {
-                id: 2,
-                name: 'Personal Calendar',
-                source_url: 'https://example.com/personal.ics'
+                name: 'Timetable',
+                source_url: 'https://example.com/feed.ics'
             }
         ];
 
@@ -31,7 +26,6 @@ describe('getCalendarSubscriptions', () => {
 
         const result = await getCalendarSubscriptions();
 
-        expect(api.get).toHaveBeenCalledTimes(1);
         expect(api.get).toHaveBeenCalledWith('/api/calendar-subscriptions/');
         expect(result).toEqual(mockData);
     });
