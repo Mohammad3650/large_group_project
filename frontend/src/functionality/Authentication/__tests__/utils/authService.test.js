@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { loginUser, signupUser } from '../Auth/authService';
-import { publicApi } from '../../api';
-import { saveTokens } from '../Auth/authStorage';
+import { loginUser, signupUser } from '../../utils/authService';
+import { publicApi } from '../../../../api';
+import { saveTokens } from '../../utils/authStorage';
 
-vi.mock('../../api', () => ({
+vi.mock('../../../../api', () => ({
     publicApi: {
         post: vi.fn()
     }
 }));
 
-vi.mock('../Auth/authStorage', () => ({
+vi.mock('../../utils/authStorage', () => ({
     saveTokens: vi.fn()
 }));
 
@@ -21,7 +21,11 @@ describe('authService', () => {
     describe('loginUser', () => {
         it('posts email and password to the token endpoint', async () => {
             publicApi.post.mockResolvedValue({
-                data: { access: 'A', refresh: 'R' }
+                data: {
+                    access: 'access-token',
+                    refresh: 'refresh-token',
+                    user: { email: 'test@example.com' }
+                }
             });
 
             await loginUser('test@example.com', 'Password123!');
@@ -34,19 +38,26 @@ describe('authService', () => {
 
         it('stores returned tokens after successful login', async () => {
             publicApi.post.mockResolvedValue({
-                data: { access: 'A', refresh: 'R' }
+                data: {
+                    access: 'access-token',
+                    refresh: 'refresh-token',
+                    user: { email: 'test@example.com' }
+                }
             });
 
             await loginUser('test@example.com', 'Password123!');
 
-            expect(saveTokens).toHaveBeenCalledWith('A', 'R');
+            expect(saveTokens).toHaveBeenCalledWith(
+                'access-token',
+                'refresh-token'
+            );
         });
 
         it('returns access, refresh and user data after login', async () => {
             publicApi.post.mockResolvedValue({
                 data: {
-                    access: 'A',
-                    refresh: 'R',
+                    access: 'access-token',
+                    refresh: 'refresh-token',
                     user: { email: 'test@example.com' }
                 }
             });
@@ -54,19 +65,19 @@ describe('authService', () => {
             const result = await loginUser('test@example.com', 'Password123!');
 
             expect(result).toEqual({
-                access: 'A',
-                refresh: 'R',
+                access: 'access-token',
+                refresh: 'refresh-token',
                 user: { email: 'test@example.com' }
             });
         });
 
-        it('throws the error if the login request fails', async () => {
+        it('throws the original error when the login request fails', async () => {
             const error = new Error('Login failed');
             publicApi.post.mockRejectedValue(error);
 
-            await expect(loginUser('test@example.com', 'Password123!')).rejects.toThrow(
-                'Login failed'
-            );
+            await expect(
+                loginUser('test@example.com', 'Password123!')
+            ).rejects.toThrow('Login failed');
 
             expect(saveTokens).not.toHaveBeenCalled();
         });
@@ -84,7 +95,11 @@ describe('authService', () => {
 
         it('maps form data to the backend payload and posts it', async () => {
             publicApi.post.mockResolvedValue({
-                data: { access: 'A', refresh: 'R' }
+                data: {
+                    access: 'access-token',
+                    refresh: 'refresh-token',
+                    user: { email: 'test@example.com' }
+                }
             });
 
             await signupUser(formData);
@@ -101,19 +116,23 @@ describe('authService', () => {
 
         it('stores returned tokens after successful signup', async () => {
             publicApi.post.mockResolvedValue({
-                data: { access: 'A', refresh: 'R' }
+                data: {
+                    access: 'access-token',
+                    refresh: 'refresh-token',
+                    user: { email: 'test@example.com' }
+                }
             });
 
             await signupUser(formData);
 
-            expect(saveTokens).toHaveBeenCalledWith('A', 'R');
+            expect(saveTokens).toHaveBeenCalledWith('access-token', 'refresh-token');
         });
 
         it('returns access, refresh and user data after signup', async () => {
             publicApi.post.mockResolvedValue({
                 data: {
-                    access: 'A',
-                    refresh: 'R',
+                    access: 'access-token',
+                    refresh: 'refresh-token',
                     user: { email: 'test@example.com' }
                 }
             });
@@ -121,8 +140,8 @@ describe('authService', () => {
             const result = await signupUser(formData);
 
             expect(result).toEqual({
-                access: 'A',
-                refresh: 'R',
+                access: 'access-token',
+                refresh: 'refresh-token',
                 user: { email: 'test@example.com' }
             });
         });

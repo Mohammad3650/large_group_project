@@ -1,86 +1,107 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { isTokenValid } from "../Auth/authToken";
-import * as apiModule from "../../api";
-import * as storageModule from "../Auth/authStorage";
+import { isTokenValid } from "../../utils/authToken";
+import { publicApi } from "../../../../api";
+import { getAccessToken, logout } from "../../utils/authStorage";
 
-vi.mock("../../api", () => ({
-  publicApi: {
-    post: vi.fn(),
-  },
+vi.mock("../../../../api", () => ({
+    publicApi: {
+        post: vi.fn(),
+    },
 }));
 
-vi.mock("../Auth/authStorage", () => ({
-  getAccessToken: vi.fn(),
-  logout: vi.fn(),
+vi.mock("../../utils/authStorage", () => ({
+    getAccessToken: vi.fn(),
+    logout: vi.fn(),
 }));
 
-describe("Tests for isTokenValid", () => {
+describe('isTokenValid', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    it("returns false if no token is stored", async () => {
-        storageModule.getAccessToken.mockReturnValue(null);
+    it('returns false immediately when no access token is stored', async () => {
+        getAccessToken.mockReturnValue(null);
 
         const result = await isTokenValid();
 
         expect(result).toBe(false);
-        expect(apiModule.publicApi.post).not.toHaveBeenCalled();
+        expect(publicApi.post).not.toHaveBeenCalled();
+        expect(logout).not.toHaveBeenCalled();
     });
 
-    it("returns true when token verification succeeds", async () => {
-        storageModule.getAccessToken.mockReturnValue("valid-token");
-        apiModule.publicApi.post.mockResolvedValue({});
+    it('returns true when token verification succeeds', async () => {
+        getAccessToken.mockReturnValue('valid-token');
+        publicApi.post.mockResolvedValue({});
 
         const result = await isTokenValid();
 
-        expect(apiModule.publicApi.post).toHaveBeenCalledWith(
-            "/api/token/verify/",
-            { token: "valid-token" }
+        expect(publicApi.post).toHaveBeenCalledWith(
+            '/api/token/verify/',
+            { token: 'valid-token' }
         );
         expect(result).toBe(true);
-        expect(storageModule.logout).not.toHaveBeenCalled();
+        expect(logout).not.toHaveBeenCalled();
     });
 
-    it("logs out and returns false when token verification fails", async () => {
-        storageModule.getAccessToken.mockReturnValue("invalid-token");
-        apiModule.publicApi.post.mockRejectedValue({
-            response: { status: 401 },
+    it('logs out and returns false when verification fails with 401', async () => {
+        getAccessToken.mockReturnValue('expired-token');
+        publicApi.post.mockRejectedValue({
+            response: { status: 401 }
         });
 
         const result = await isTokenValid();
 
-        expect(apiModule.publicApi.post).toHaveBeenCalledWith(
-            "/api/token/verify/",
-            { token: "invalid-token" }
+        expect(publicApi.post).toHaveBeenCalledWith(
+            '/api/token/verify/',
+            { token: 'expired-token' }
         );
-        expect(storageModule.logout).toHaveBeenCalled();
+        expect(logout).toHaveBeenCalledTimes(1);
         expect(result).toBe(false);
     });
 
-    it("returns false without logging out on network/server errors", async () => {
-        storageModule.getAccessToken.mockReturnValue("some-token");
-        apiModule.publicApi.post.mockRejectedValue(new Error("Network error"));
+    it('logs out and returns false when verification fails with 403', async () => {
+        getAccessToken.mockReturnValue('forbidden-token');
+        publicApi.post.mockRejectedValue({
+            response: { status: 403 }
+        });
 
         const result = await isTokenValid();
 
-        expect(apiModule.publicApi.post).toHaveBeenCalledWith(
-            "/api/token/verify/",
-            { token: "some-token" }
+        expect(publicApi.post).toHaveBeenCalledWith(
+            '/api/token/verify/',
+            { token: 'forbidden-token' }
         );
-        expect(storageModule.logout).not.toHaveBeenCalled();
+        expect(logout).toHaveBeenCalledTimes(1);
         expect(result).toBe(false);
     });
 
-    it("calls the verify endpoint with the correct token", async () => {
-        storageModule.getAccessToken.mockReturnValue("test-token");
-        apiModule.publicApi.post.mockResolvedValue({});
+    it('returns false without logging out on non-auth server errors', async () => {
+        getAccessToken.mockReturnValue('server-error-token');
+        publicApi.post.mockRejectedValue({
+            response: { status: 500 }
+        });
 
-        await isTokenValid();
+        const result = await isTokenValid();
 
-        expect(apiModule.publicApi.post).toHaveBeenCalledWith(
-            "/api/token/verify/",
-            { token: "test-token" }
+        expect(publicApi.post).toHaveBeenCalledWith(
+            '/api/token/verify/',
+            { token: 'server-error-token' }
         );
+        expect(logout).not.toHaveBeenCalled();
+        expect(result).toBe(false);
+    });
+
+    it('returns false without logging out on network errors', async () => {
+        getAccessToken.mockReturnValue('network-error-token');
+        publicApi.post.mockRejectedValue(new Error('Network error'));
+
+        const result = await isTokenValid();
+
+        expect(publicApi.post).toHaveBeenCalledWith(
+            '/api/token/verify/',
+            { token: 'network-error-token' }
+        );
+        expect(logout).not.toHaveBeenCalled();
+        expect(result).toBe(false);
     });
 });
