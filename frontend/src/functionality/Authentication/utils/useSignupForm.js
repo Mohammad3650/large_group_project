@@ -6,15 +6,24 @@ import useAuthForm from './useAuthForm';
 /**
  * Initial field values for the signup form
  */
-const INITIAL_FORM = {
-    email: '',
-    username: '',
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    password: '',
-    confirmPassword: ''
-};
+function createInitialSignupForm() {
+    return {
+        email: '',
+        username: '',
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        password: '',
+        confirmPassword: ''
+    };
+}
+
+function updateSignupFormField(form, name, value) {
+    return {
+        ...form,
+        [name]: value
+    };
+}
 
 /**
  * Hook that manages signup form state, validation and submission.
@@ -38,11 +47,11 @@ const INITIAL_FORM = {
  * }}
  */
 
-function useSignupForm(nav) {
-    const [form, setForm] = useState(INITIAL_FORM);
+function useSignupForm(navigate) {
+    const [form, setForm] = useState(createInitialSignupForm());
 
     function updateField(name, value) {
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setForm((previousForm) => updateSignupFormField(previousForm, name, value));
     }
 
     function validateForm() {
@@ -51,7 +60,7 @@ function useSignupForm(nav) {
 
     async function submitSignup() {
         await signupUser(form);
-        nav('/dashboard');
+        navigate('/dashboard');
     }
 
     function getFieldProps(name) {

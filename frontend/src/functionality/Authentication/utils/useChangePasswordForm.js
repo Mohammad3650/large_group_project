@@ -1,17 +1,33 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { api } from "../../../api.js";
 import {
-    CHANGE_PASSWORD_INITIAL_ERRORS,
     CHANGE_PASSWORD_MESSAGES,
     PASSWORD_CHANGE_REDIRECT_DELAY_MS
 } from "../../../constants/changePasswordConstants.js";
 import { validateChangePasswordForm } from "./validateChangePasswordForm.js";
 
+/**
+ * Manages change password form state, validation, submission and redirect behaviour
+ * @param {*} navigate 
+ * @returns {{
+ *  currentPassword: string,
+ *  newPassword: string,
+ *  setCurrentPassword: function,
+ *  setNewPassword: function,
+ *  message: string,
+ *  errors: { fieldErrors: Object<string, string>, global: string[] },
+ *  loading: boolean,
+ *  handleSubmit: function
+ * }}
+ */
 function useChangePasswordForm(navigate) {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [message, setMessage] = useState('');
-    const [errors, setErrors] = useState(CHANGE_PASSWORD_INITIAL_ERRORS);
+    const [errors, setErrors] = useState({
+        fieldErrors: {},
+        global: []
+    });
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -34,7 +50,7 @@ function useChangePasswordForm(navigate) {
             newPassword,
         });
 
-        if (Object.keys(fieldErrors).length) {
+        if (Object.keys(fieldErrors).length > 0) {
             setErrors({
                 fieldErrors,
                 global: []
@@ -42,13 +58,13 @@ function useChangePasswordForm(navigate) {
             return;
         }
 
-        resetFeedback();
-        await submitPasswordChange();
-    }
-
-    function resetFeedback() {
-        setErrors(CHANGE_PASSWORD_INITIAL_ERRORS);
+        setErrors({
+            fieldErrors: {},
+            global: []
+        });
         setMessage('');
+
+        await submitPasswordChange();
     }
 
     async function submitPasswordChange() {

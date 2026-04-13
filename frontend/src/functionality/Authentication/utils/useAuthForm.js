@@ -56,7 +56,6 @@ function useAuthForm(validateForm, submitForm) {
         errors,
         loading,
         handleSubmit,
-        setErrors // do we need this in the components or just for testing?
     };
 }
 

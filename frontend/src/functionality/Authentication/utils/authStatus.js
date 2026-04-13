@@ -23,7 +23,7 @@ function unsubscribeFromAuthEvents(listener) {
  * Custom hook to determine whether an access token is currently stored
  *
  * Responsibilities:
- * - intilialises login state from auth storage
+ * - initialises login state from auth storage
  * - updates login state when auth-related storage changes
  * - provides reusable auth status across components
  *

@@ -24,7 +24,7 @@ export function getRefreshToken() {
 }
 
 /**
- * Notifes the app that authentication state has changed
+ * Notifies the app that authentication state has changed
  */
 function notifyAuthChange() {
     window.dispatchEvent(new Event(AUTH_CHANGE_EVENT));

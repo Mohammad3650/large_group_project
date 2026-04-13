@@ -2,6 +2,7 @@ import { publicApi } from '../../../api';
 import { getAccessToken, logout } from './authStorage';
 
 const VERIFY_ENDPOINT = '/api/token/verify/';
+const INVALID_TOKEN_STATUSES = [401, 403];
 
 /**
  * Verifies the token with the backend.
@@ -13,6 +14,15 @@ async function verifyToken(token) {
     await publicApi.post(VERIFY_ENDPOINT, { token });
 }
 
+/**
+ * Checks whether the token stored is valid
+ * 
+ * @param {number} status - HTTP status code from token verification error
+ * @return {boolean} True if the status indicates an invalid/expired token, false otherwise
+ */
+function isInvalidTokenStatus(status) {
+    return INVALID_TOKEN_STATUSES.includes(status);
+}
 /**
  * Checks whether the currently stored access token is still valid.
  *
@@ -42,13 +52,9 @@ export async function isTokenValid() {
     } catch (error) {
         const status = error?.response?.status;
 
-        if (status === 401 || status === 403) {
+        if (isInvalidTokenStatus(status)) {
             logout();
         }
-
-        // For network/server errors:
-        // - do NOT log out automatically
-        // - but still return false so UI behaves safely
 
         return false;
     }
