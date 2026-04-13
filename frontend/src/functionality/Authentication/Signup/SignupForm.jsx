@@ -1,7 +1,7 @@
-import AuthErrorAlert from "./AuthErrorAlert";
-import AuthField from "./AuthField";
-import AuthSubmitButton from "./AuthSubmitButton";
-import signupFormFields from "../functionality/Authentication/utils/signupFormFields";
+import AuthErrorAlert from "../AuthComponents/AuthErrorAlert";
+import AuthField from "../AuthComponents/AuthField";
+import AuthSubmitButton from "../AuthComponents/AuthSubmitButton";
+import signupFormFields from "../utils/FormFields/signupFormFields";
 
 /**
  * Presentational signup form

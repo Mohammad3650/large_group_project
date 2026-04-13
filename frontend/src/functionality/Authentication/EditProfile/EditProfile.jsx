@@ -1,7 +1,7 @@
-import AuthCard from '../../../../components/AuthCard.jsx';
+import AuthCard from '../AuthComponents/AuthCard.jsx';
 import EditProfileForm from './EditProfileForm.jsx';
 import ProfileStatusAlerts from './ProfileStatusAlerts.jsx';
-import useEditProfileForm from '../../utils/useEditProfileForm.js';
+import useEditProfileForm from '../utils/Hooks/useEditProfileForm.js';
 
 function EditProfile() {
     const {
@@ -38,10 +38,7 @@ function EditProfile() {
             footerLinkText="Settings"
             footerLinkTo="/settings"
         >
-            <ProfileStatusAlerts
-                errors={errors}
-                successMessage={successMessage}
-            />
+            <ProfileStatusAlerts errors={errors} successMessage={successMessage} />
 
             <EditProfileForm
                 formData={formData}

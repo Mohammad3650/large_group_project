@@ -1,5 +1,5 @@
-import AuthField from '../../../../components/AuthField.jsx';
-import profileFormFields from '../../utils/profileFormFields.js';
+import AuthField from '../AuthComponents/AuthField.jsx';
+import profileFormFields from '../utils/FormFields/profileFormFields.js';
 
 function EditProfileForm({
     formData,
@@ -29,19 +29,11 @@ function EditProfileForm({
             </div>
 
             <div className="d-grid gap-2 mt-4">
-                <button
-                    type="submit"
-                    className="btn btn-dark rounded-3"
-                    disabled={isSaving}
-                >
+                <button type="submit" className="btn btn-dark rounded-3" disabled={isSaving}>
                     {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
 
-                <button
-                    type="button"
-                    className="btn btn-dark rounded-3"
-                    onClick={onChangePassword}
-                >
+                <button type="button" className="btn btn-dark rounded-3" onClick={onChangePassword}>
                     Change Password
                 </button>
 

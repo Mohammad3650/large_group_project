@@ -1,4 +1,4 @@
-import { CHANGE_PASSWORD_MESSAGES } from "../../../constants/changePasswordConstants";
+import { CHANGE_PASSWORD_MESSAGES } from "../../../../constants/changePasswordConstants";
 
 export function validateChangePasswordForm({ currentPassword, newPassword }) {
     const fieldErrors = {};

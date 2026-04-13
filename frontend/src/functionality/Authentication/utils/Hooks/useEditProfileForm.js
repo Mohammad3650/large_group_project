@@ -4,13 +4,13 @@ import {
     createEmptyProfileErrors,
     buildGlobalProfileError,
     mapProfileFieldErrors
-} from './profileErrorState';
+} from '../profileErrorState';
 import {
     createEmptyProfileFormData,
     fetchProfileFormData,
     saveProfileFormData,
     deleteProfileAccount
-} from './profileService';
+} from '../profileService';
 
 const MESSAGES = {
     loadFailed: 'Failed to load profile details.',

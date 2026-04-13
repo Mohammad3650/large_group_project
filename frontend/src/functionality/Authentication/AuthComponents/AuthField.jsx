@@ -1,4 +1,4 @@
-import './stylesheets/AuthField.css';
+import '../stylesheets/AuthComponents/AuthField.css';
 
 /**
  * Reusable input field component for authentication forms.
@@ -20,16 +20,7 @@ import './stylesheets/AuthField.css';
  * @returns {JSX.Element} Reusable authentication input field
  */
 
-function AuthField({
-    label,
-    type = 'text',
-    placeholder,
-    value,
-    onChange,
-    error,
-    name
-}) {
-    
+function AuthField({ label, type = 'text', placeholder, value, onChange, error, name }) {
     const inputClass = `form-control auth-input ${error ? 'is-invalid' : ''}`;
 
     function handleChange(e) {

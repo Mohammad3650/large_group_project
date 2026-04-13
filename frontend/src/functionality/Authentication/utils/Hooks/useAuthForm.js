@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { formatApiError } from './errors';
+import { formatApiError } from '../errors.js';
 
 function createInitialErrors() {
     return {

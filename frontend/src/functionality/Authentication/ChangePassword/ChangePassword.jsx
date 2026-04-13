@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import AuthCard from '../../../components/AuthCard.jsx';
-import AuthField from '../../../components/AuthField.jsx';
-import AuthErrorAlert from '../../../components/AuthErrorAlert.jsx';
-import AuthSuccessAlert from '../../../components/AuthSuccessAlert.jsx';
-import useChangePasswordForm from '../utils/useChangePasswordForm.js';
+import AuthCard from '../AuthComponents/AuthCard.jsx';
+import AuthField from '../AuthComponents/AuthField.jsx';
+import AuthErrorAlert from '../AuthComponents/AuthErrorAlert.jsx';
+import AuthSuccessAlert from '../AuthComponents/AuthSuccessAlert.jsx';
+import useChangePasswordForm from '../utils/Hooks/useChangePasswordForm.js';
 
 function ChangePassword() {
     const navigate = useNavigate();

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { api } from "../../../api.js";
+import { api } from "../../../../api.js";
 import {
     CHANGE_PASSWORD_MESSAGES,
     PASSWORD_CHANGE_REDIRECT_DELAY_MS
-} from "../../../constants/changePasswordConstants.js";
-import { validateChangePasswordForm } from "./validateChangePasswordForm.js";
+} from "../../../../constants/changePasswordConstants.js";
+import { validateChangePasswordForm } from "../Validation/validateChangePasswordForm.js";
 
 /**
  * Manages change password form state, validation, submission and redirect behaviour

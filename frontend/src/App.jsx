@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Login from './functionality/Authentication/Login';
-import Signup from './functionality/Authentication/Signup';
-import EditProfile from './functionality/Authentication/UserProfile/EditProfile/EditProfile.jsx';
-import ProtectedRoute from './components/ProtectedRoute';
+import Login from './functionality/Authentication/Login/Login.jsx';
+import Signup from './functionality/Authentication/Signup/Signup.jsx';
+import EditProfile from './functionality/Authentication/EditProfile/EditProfile.jsx';
+import ProtectedRoute from './functionality/Authentication/AuthComponents/ProtectedRoute.jsx';
 import Dashboard from './functionality/Dashboard/Dashboard.jsx';
 import Landing from './functionality/LandingPage/Landing.jsx';
 import Calendar from './functionality/Calendar/Calendar.jsx';
 import PreviewCalendar from './functionality/Calendar/PreviewCalendar.jsx';
-import ChangePassword from './functionality/Authentication/UserProfile/ChangePassword.jsx';
-import CreateSchedule from './functionality/Authentication/CreateSchedule';
+import ChangePassword from './functionality/Authentication/ChangePassword/ChangePassword.jsx';
+import CreateSchedule from './functionality/Calendar/CreateSchedule.jsx';
 import Settings from './functionality/Settings/Settings.jsx';
 import { setAuthToken } from './api';
 import SuccessfulTimeBlock from './components/SuccessfulTimeBlock.jsx';
@@ -45,7 +45,7 @@ function App() {
             <Navbar theme={theme} toggleTheme={toggleTheme} />
 
             <Routes>
-                <Route path="/" element={<Landing theme={theme}/>} />
+                <Route path="/" element={<Landing theme={theme} />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
 

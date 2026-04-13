@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from './authService';
+import { loginUser } from '../authService';
 import useAuthForm from './useAuthForm';
-import validateLoginForm from './validateLoginForm';
+import validateLoginForm from '../Validation/validateLoginForm';
 
 /**
  * Hook that manages login form state, validation and submission.

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import './stylesheets/AuthCard.css';
+import '../stylesheets/AuthComponents/AuthCard.css';
 
 /**
  * Reusable layout component for authentication pages.

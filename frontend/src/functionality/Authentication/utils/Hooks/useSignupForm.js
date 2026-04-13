@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { validateSignupForm } from './validateSignupForm';
-import { signupUser } from './authService';
+import { validateSignupForm } from '../Validation/validateSignupForm';
+import { signupUser } from '../authService';
 import useAuthForm from './useAuthForm';
 
 /**

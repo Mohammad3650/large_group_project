@@ -1,8 +1,8 @@
-import useAuthRedirect from './utils/useAuthRedirect';
-import AuthCard from '../../components/AuthCard';
-import useLoginForm from './utils/useLoginForm';
-import LoginForm from '../../components/LoginForm';
-import './stylesheets/AuthPages.css';
+import useAuthRedirect from '../utils/Hooks/useAuthRedirect';
+import AuthCard from '../AuthComponents/AuthCard';
+import useLoginForm from '../utils/Hooks/useLoginForm';
+import LoginForm from './LoginForm';
+import '../stylesheets/AuthPages.css';
 
 /**
  * Login page component.
