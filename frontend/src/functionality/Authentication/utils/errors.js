@@ -3,13 +3,25 @@ import axios from 'axios';
 const FALLBACK_MESSAGE = 'Request failed.';
 
 /**
+ * Returns an empty error state with no field errors and no global messages.
+ * @returns {{ fieldErrors: Record<string, string[]>, global: string[] }} Initial error state
+ * 
+ */
+export function createInitialErrors() {
+    return {
+        fieldErrors: {},
+        global: []
+    };
+}
+
+/**
  * Returns the standard frontend error shape with a single global message.
  *
  * @param {string} message - Global error message to display
  * @returns {{ fieldErrors: Record<string, string[]>, global: string[] }}
  */
 
-function buildGlobalError(message) {
+export function buildGlobalError(message) {
     return {
         fieldErrors: {},
         global: [message]

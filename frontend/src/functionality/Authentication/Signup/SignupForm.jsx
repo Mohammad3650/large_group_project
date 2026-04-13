@@ -1,7 +1,7 @@
-import AuthErrorAlert from "../AuthComponents/AuthErrorAlert";
-import AuthField from "../AuthComponents/AuthField";
-import AuthSubmitButton from "../AuthComponents/AuthSubmitButton";
-import signupFormFields from "../utils/FormFields/signupFormFields";
+import AuthErrorAlert from "../AuthComponents/AuthErrorAlert.jsx";
+import AuthField from "../AuthComponents/AuthField.jsx";
+import AuthSubmitButton from "../AuthComponents/AuthSubmitButton.jsx";
+import signupFormFields from "../utils/FormFields/signupFormFields.js";
 
 /**
  * Presentational signup form

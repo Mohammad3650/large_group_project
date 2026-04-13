@@ -1,5 +1,5 @@
-import { publicApi } from '../../../api';
-import { getAccessToken, logout } from './authStorage';
+import { publicApi } from '../../../api.js';
+import { getAccessToken, logout } from './authStorage.js';
 
 const VERIFY_ENDPOINT = '/api/token/verify/';
 const INVALID_TOKEN_STATUSES = [401, 403];

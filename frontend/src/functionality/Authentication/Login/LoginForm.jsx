@@ -1,6 +1,6 @@
-import AuthErrorAlert from '../AuthComponents/AuthErrorAlert';
-import AuthField from '../AuthComponents/AuthField';
-import AuthSubmitButton from '../AuthComponents/AuthSubmitButton';
+import AuthErrorAlert from '../AuthComponents/AuthErrorAlert.jsx';
+import AuthField from '../AuthComponents/AuthField.jsx';
+import AuthSubmitButton from '../AuthComponents/AuthSubmitButton.jsx';
 
 /**
  * Presentational login form

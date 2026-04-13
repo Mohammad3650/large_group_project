@@ -1,7 +1,7 @@
-import useAuthRedirect from '../utils/Hooks/useAuthRedirect';
-import AuthCard from '../AuthComponents/AuthCard';
-import useSignupForm from '../utils/Hooks/useSignupForm';
-import SignupForm from './SignupForm';
+import useAuthRedirect from '../utils/Hooks/useAuthRedirect.js';
+import AuthCard from '../AuthComponents/AuthCard.jsx';
+import useSignupForm from '../utils/Hooks/useSignupForm.js';
+import SignupForm from './SignupForm.jsx';
 import '../stylesheets/AuthPages.css';
 
 /**

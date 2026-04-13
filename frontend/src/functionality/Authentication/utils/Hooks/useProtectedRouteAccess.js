@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { isTokenValid } from '../authToken';
+import { isTokenValid } from '../authToken.js';
 
 /**
  * Determines whether the current user can access a protected route.
@@ -30,7 +30,7 @@ function useProtectedRouteAccess() {
         return () => {
             isMounted = false;
         };
-        
+
     }, []);
 
     return isAllowed;

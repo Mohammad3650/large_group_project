@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { api } from '../../../../api.js';
 import {
     CHANGE_PASSWORD_MESSAGES,
     PASSWORD_CHANGE_REDIRECT_DELAY_MS
-} from '../../../../constants/changePasswordConstants.js';
+} from '../../constants/changePasswordConstants.js';
 import { validateChangePasswordForm } from '../Validation/validateChangePasswordForm.js';
+import useDelayedRedirect from './useDelayedRedirect.js';
+import { createInitialErrors } from '../errors.js';
 
 /**
  * Manages change password form state, validation, submission and redirect behaviour
@@ -21,26 +22,17 @@ import { validateChangePasswordForm } from '../Validation/validateChangePassword
  * }}
  */
 function useChangePasswordForm() {
-    const navigate = useNavigate();
-
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [message, setMessage] = useState('');
-    const [errors, setErrors] = useState({
-        fieldErrors: {},
-        global: []
-    });
+    const [errors, setErrors] = useState(createInitialErrors);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (!message) return;
-
-        const timer = setTimeout(() => {
-            navigate('/profile');
-        }, PASSWORD_CHANGE_REDIRECT_DELAY_MS);
-
-        return () => clearTimeout(timer);
-    }, [message, navigate]);
+    useDelayedRedirect(
+        message,
+        '/profile',
+        PASSWORD_CHANGE_REDIRECT_DELAY_MS
+    );
 
     async function handleSubmit(event) {
         event.preventDefault();

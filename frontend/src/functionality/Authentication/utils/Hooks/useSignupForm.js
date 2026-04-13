@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { validateSignupForm } from '../Validation/validateSignupForm';
-import { signupUser } from '../authService';
-import useAuthForm from './useAuthForm';
+import { validateSignupForm } from '../Validation/validateSignupForm.js';
+import { signupUser } from '../authService.js';
+import useAuthForm from './useAuthForm.js';
 
 /**
  * Initial field values for the signup form

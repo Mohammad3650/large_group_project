@@ -1,15 +1,7 @@
-export function createEmptyProfileErrors() {
-    return {
-        fieldErrors: {},
-        global: []
-    };
-}
+import { buildGlobalError } from "./errors.js";
 
 export function buildGlobalProfileError(message) {
-    return {
-        fieldErrors: {},
-        global: [message]
-    };
+    return buildGlobalError(message);
 }
 
 export function mapProfileFieldErrors(data) {

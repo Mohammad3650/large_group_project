@@ -1,33 +1,44 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    createEmptyProfileErrors,
-    buildGlobalProfileError,
-    mapProfileFieldErrors
-} from '../profileErrorState';
+import { mapProfileFieldErrors } from '../profileErrorState';
 import {
     createEmptyProfileFormData,
     fetchProfileFormData,
     saveProfileFormData,
     deleteProfileAccount
 } from '../profileService';
+import { EDIT_PROFILE_MESSAGES as MESSAGES } from '../../constants/editProfileConstants.js';
+import { createInitialErrors, buildGlobalError } from '../errors.js';
 
-const MESSAGES = {
-    loadFailed: 'Failed to load profile details.',
-    saveFailed: 'Failed to update profile.',
-    saveSuccess: 'Profile updated successfully.',
-    deleteFailed: 'Failed to delete account.',
-    deleteConfirmation: 'Are you sure you want to delete your account?'
-};
-
+/**
+ * isUnauthorizedError checks if an error is an unauthorized error (401)
+ * @param {Object} error 
+ * @returns {boolean} - true if error is an unauthorized error, false otherwise
+ */
 function isUnauthorizedError(error) {
     return error?.response?.status === 401;
 }
 
+/**
+ * Custom hook to manage the state and logic of the Edit Profile form, 
+ * including loading existing data, handling form updates, submission, and account deletion.
+ * 
+ * @returns {Object} {{
+ *  formData: Object,
+ *  errors: { fieldErrors: Object<string, string[]>, global: string[] },
+ *  successMessage: string,
+ *  isLoading: boolean,
+ *  isSaving: boolean,
+ *  updateField: function(name: string, value: string): void,
+ *  handleSubmit: function(event: React.FormEvent<HTMLFormElement>): Promise<void>,
+ *  handleDeleteAccount: function(): Promise<void>,
+ *  goToChangePassword: function(): void
+ * }}
+*/
 function useEditProfileForm() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState(createEmptyProfileFormData);
-    const [errors, setErrors] = useState(createEmptyProfileErrors);
+    const [errors, setErrors] = useState(createInitialErrors);
     const [successMessage, setSuccessMessage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -43,7 +54,7 @@ function useEditProfileForm() {
                     return;
                 }
 
-                setErrors(buildGlobalProfileError(MESSAGES.loadFailed));
+                setErrors(buildGlobalError(MESSAGES.loadFailed));
             } finally {
                 setIsLoading(false);
             }
@@ -52,6 +63,11 @@ function useEditProfileForm() {
         loadProfile();
     }, [navigate]);
 
+    /**
+     * Updates a field in the profile form data
+     * @param {string} name - Field name
+     * @param {string} value - New field value
+     */
     function updateField(name, value) {
         setFormData((prev) => ({
             ...prev,
@@ -59,15 +75,26 @@ function useEditProfileForm() {
         }));
     }
 
+    /**
+     * Clears success and error feedback
+     */
     function clearFeedback() {
-        setErrors(createEmptyProfileErrors());
+        setErrors(createInitialErrors());
         setSuccessMessage('');
     }
 
+    /**
+     * Navigates to the change password page
+     */
     function goToChangePassword() {
         navigate('/change-password');
     }
 
+    /**
+     * Handles errors that occur during profile saving
+     * @param {Object} error - The error object
+     * @returns {void}
+     */
     function handleSaveError(error) {
         if (isUnauthorizedError(error)) {
             navigate('/login');
@@ -81,9 +108,14 @@ function useEditProfileForm() {
             return;
         }
 
-        setErrors(buildGlobalProfileError(MESSAGES.saveFailed));
+        setErrors(buildGlobalError(MESSAGES.saveFailed));
     }
 
+    /**
+     * Submits updated profile data
+     * @param {Object} event 
+     * @returns {Promise<void>}
+     */
     async function handleSubmit(event) {
         event.preventDefault();
 
@@ -105,6 +137,20 @@ function useEditProfileForm() {
         }
     }
 
+    /**
+     * Clears local auth/session data and redirects to homepage
+     * on successful account deletion
+     * @returns {Promise<void>}
+     */
+    function handleDeleteSuccess() {
+        localStorage.clear();
+        window.location.href = '/';
+    }
+
+    /**
+     * Deletes the user's account after confirmation
+     * @returns {Promise<void>}
+     */
     async function handleDeleteAccount() {
         const confirmed = window.confirm(MESSAGES.deleteConfirmation);
 
@@ -114,8 +160,7 @@ function useEditProfileForm() {
 
         try {
             await deleteProfileAccount();
-            localStorage.clear();
-            window.location.href = '/';
+            handleDeleteSuccess();
         } catch {
             setErrors(buildGlobalProfileError(MESSAGES.deleteFailed));
         }

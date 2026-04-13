@@ -1,5 +1,5 @@
-import AuthErrorAlert from './AuthErrorAlert';
-import AuthSuccessAlert from './AuthSuccessAlert';
+import AuthErrorAlert from './AuthErrorAlert.jsx';
+import AuthSuccessAlert from './AuthSuccessAlert.jsx';
 
 function StatusAlerts({ errors, successMessage }) {
     return (

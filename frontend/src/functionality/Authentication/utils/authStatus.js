@@ -3,16 +3,28 @@ import { getAccessToken } from './authStorage';
 
 const AUTH_STATUS_EVENTS = ['auth-change', 'storage'];
 
+/**
+ * Gets the current logged in status
+ * @returns {boolean} - Whether the user is logged in
+ */
 function getLoggedInStatus() {
     return Boolean(getAccessToken());
 }
 
+/**
+ * Subscribes to authentication status events
+ * @param {Function} listener - The function to call when an event occurs
+ */
 function subscribeToAuthEvents(listener) {
     AUTH_STATUS_EVENTS.forEach((event) => {
         window.addEventListener(event, listener);
     });
 }
 
+/**
+ * Unsubscribes from authentication status events
+ * @param {Function} listener - The function to stop calling when an event occurs
+ */
 function unsubscribeFromAuthEvents(listener) {
     AUTH_STATUS_EVENTS.forEach((event) => {
         window.removeEventListener(event, listener);

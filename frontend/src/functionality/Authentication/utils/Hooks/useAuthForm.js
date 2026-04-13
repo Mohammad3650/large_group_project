@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import { formatApiError } from '../errors.js';
-
-function createInitialErrors() {
-    return {
-        fieldErrors: {},
-        global: []
-    };
-}
+import { createInitialErrors } from '../errors.js';
 
 /**
  * Reusable hook for async form submission.
@@ -30,10 +24,17 @@ function useAuthForm(validateForm, submitForm) {
     const [errors, setErrors] = useState(createInitialErrors);
     const [loading, setLoading] = useState(false);
 
+    /**
+     * Clears all errors from the form, resetting to the initial states
+     */
     function clearErrors() {
         setErrors(createInitialErrors());
     }
 
+    /**
+     * Sets validation errors for the form fields
+     * @param {Object} fieldErrors - Object containing field-specific errors
+     */
     function setValidationErrors(fieldErrors) {
         setErrors({
             fieldErrors,
@@ -41,6 +42,11 @@ function useAuthForm(validateForm, submitForm) {
         });
     }
 
+    /**
+     * Handles the form submission
+     * @param {event} event - The form submission event
+     * @returns {Promise<void>}
+     */
     async function handleSubmit(event) {
         event.preventDefault();
 
