@@ -65,31 +65,44 @@ function TimeBlockItem({
             ))}
             </select>
 
-            {serverErrors[index]?.start_time && (
-            <p className="error-text">
-                {serverErrors[index].start_time[0]}
-            </p>
-            )}
-            <input
-            type="time"
-            value={block.start_time}
-            onChange={(e) =>
-                updateBlock(index, 'start_time', e.target.value)
-            }
-            />
+            <div className='time-row'>
+                <label>
+                    Start
+                </label>
 
-            {serverErrors[index]?.end_time && (
-            <p className="error-text">
-                {serverErrors[index].end_time[0]}
-            </p>
-            )}
-            <input
-            type="time"
-            value={block.end_time}
-            onChange={(e) =>
-                updateBlock(index, 'end_time', e.target.value)
-            }
-            />
+                {serverErrors[index]?.start_time && (
+                <p className="error-text">
+                    {serverErrors[index].start_time[0]}
+                </p>
+                )}
+                <input
+                type="time"
+                value={block.start_time}
+                onChange={(e) =>
+                    updateBlock(index, 'start_time', e.target.value)
+                }
+                />
+            </div>
+            
+            <div className='time-row'>
+                <label>
+                    End
+                </label>
+                
+                {serverErrors[index]?.end_time && (
+                <p className="error-text">
+                    {serverErrors[index].end_time[0]}
+                </p>
+                )}
+                <input
+                type="time"
+                value={block.end_time}
+                onChange={(e) =>
+                    updateBlock(index, 'end_time', e.target.value)
+                }
+                />
+            </div>
+            
 
             <textarea
             placeholder="Description (optional)"
