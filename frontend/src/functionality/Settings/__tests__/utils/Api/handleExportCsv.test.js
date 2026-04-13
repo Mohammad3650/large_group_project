@@ -1,18 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { api } from '../../api.js';
-import downloadFile from '../Helpers/downloadFile.js';
-import handleExportCsv from '../Api/handleExportCsv.js';
-import { api } from '../../api.js';
-import downloadFile from '../Helpers/downloadFile.js';
-import handleExportCsv from '../Api/handleExportCsv.js';
+import handleExportCsv from '../../../utils/Api/handleExportCsv.js';
+import { api } from '../../../../../api.js';
+import downloadFile from '../../../utils/Helpers/downloadFile.js';
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../../../api.js', () => ({
     api: {
         get: vi.fn()
     }
 }));
 
-vi.mock('../Helpers/downloadFile.js', () => ({
+vi.mock('../../../utils/Helpers/downloadFile.js', () => ({
     default: vi.fn()
 }));
 
@@ -21,26 +18,29 @@ describe('handleExportCsv', () => {
         vi.clearAllMocks();
     });
 
-    it('requests the CSV export endpoint and downloads the file', async () => {
+    it('downloads the CSV file when the request succeeds', async () => {
         const setError = vi.fn();
-        api.get.mockResolvedValue({
-            data: 'csv-content'
-        });
+        const mockBlob = new Blob(['csv content'], { type: 'text/csv' });
+
+        api.get.mockResolvedValue({ data: mockBlob });
 
         await handleExportCsv(setError);
 
         expect(api.get).toHaveBeenCalledWith('/api/time-blocks/export/csv/', {
             responseType: 'blob'
         });
+
         expect(downloadFile).toHaveBeenCalledWith(
-            'csv-content',
+            mockBlob,
             'studysync_schedule.csv'
         );
+
         expect(setError).not.toHaveBeenCalled();
     });
 
-    it('sets an error when the export fails', async () => {
+    it('sets an error when the request fails', async () => {
         const setError = vi.fn();
+
         api.get.mockRejectedValue(new Error('Export failed'));
 
         await handleExportCsv(setError);

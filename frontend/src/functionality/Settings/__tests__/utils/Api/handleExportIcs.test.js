@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { api } from '../../api.js';
-import downloadFile from '../Helpers/downloadFile.js';
-import handleExportIcs from '../Api/handleExportIcs.js';
+import handleExportIcs from '../../../utils/Api/handleExportIcs.js';
+import { api } from '../../../../../api.js';
+import downloadFile from '../../../utils/Helpers/downloadFile.js';
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../../../api.js', () => ({
     api: {
         get: vi.fn()
     }
 }));
 
-vi.mock('../Helpers/downloadFile.js', () => ({
+vi.mock('../../../utils/Helpers/downloadFile.js', () => ({
     default: vi.fn()
 }));
 
@@ -18,26 +18,29 @@ describe('handleExportIcs', () => {
         vi.clearAllMocks();
     });
 
-    it('requests the ICS export endpoint and downloads the file', async () => {
+    it('downloads the ICS file when the request succeeds', async () => {
         const setError = vi.fn();
-        api.get.mockResolvedValue({
-            data: 'ics-content'
-        });
+        const mockBlob = new Blob(['ics content'], { type: 'text/calendar' });
+
+        api.get.mockResolvedValue({ data: mockBlob });
 
         await handleExportIcs(setError);
 
         expect(api.get).toHaveBeenCalledWith('/api/time-blocks/export/ics/', {
             responseType: 'blob'
         });
+
         expect(downloadFile).toHaveBeenCalledWith(
-            'ics-content',
+            mockBlob,
             'studysync_schedule.ics'
         );
+
         expect(setError).not.toHaveBeenCalled();
     });
 
-    it('sets an error when the export fails', async () => {
+    it('sets an error when the request fails', async () => {
         const setError = vi.fn();
+
         api.get.mockRejectedValue(new Error('Export failed'));
 
         await handleExportIcs(setError);

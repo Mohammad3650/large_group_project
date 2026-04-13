@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import createCalendarSubscription from '../Api/createCalendarSubscription.js';
-import { api } from '../../api.js';
+import createCalendarSubscription from '../../../utils/Api/createCalendarSubscription.js';
+import { api } from '../../../../../api.js';
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../../../api.js', () => ({
     api: {
         post: vi.fn()
     }
@@ -17,27 +17,23 @@ describe('createCalendarSubscription', () => {
         const mockData = {
             subscription: {
                 id: 1,
-                name: 'KCL Timetable',
-                source_url: 'https://example.com/calendar.ics'
-            },
-            message: 'Calendar subscription imported successfully.'
+                name: 'My Timetable',
+                source_url: 'https://example.com/feed.ics'
+            }
         };
 
         api.post.mockResolvedValue({ data: mockData });
 
         const result = await createCalendarSubscription({
-            name: 'KCL Timetable',
-            sourceUrl: 'https://example.com/calendar.ics'
+            name: 'My Timetable',
+            sourceUrl: 'https://example.com/feed.ics'
         });
 
-        expect(api.post).toHaveBeenCalledTimes(1);
-        expect(api.post).toHaveBeenCalledWith(
-            '/api/calendar-subscriptions/',
-            {
-                name: 'KCL Timetable',
-                source_url: 'https://example.com/calendar.ics'
-            }
-        );
+        expect(api.post).toHaveBeenCalledWith('/api/calendar-subscriptions/', {
+            name: 'My Timetable',
+            source_url: 'https://example.com/feed.ics'
+        });
+
         expect(result).toEqual(mockData);
     });
 
@@ -47,8 +43,8 @@ describe('createCalendarSubscription', () => {
 
         await expect(
             createCalendarSubscription({
-                name: 'KCL Timetable',
-                sourceUrl: 'https://example.com/calendar.ics'
+                name: 'My Timetable',
+                sourceUrl: 'https://example.com/feed.ics'
             })
         ).rejects.toThrow('Request failed');
     });

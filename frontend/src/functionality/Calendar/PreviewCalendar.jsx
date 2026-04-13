@@ -1,69 +1,40 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../api.js';
 import '@schedule-x/theme-default/dist/index.css';
 import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 import CalendarView from './CalendarView.jsx';
-import mapTimeBlocks from '../../utils/Helpers/mapTimeBlocks.js';
-import savePlan from '../../utils/Api/savePlan.js';
-import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
+import CalendarPlaceholder from './CalendarPlaceholder.jsx';
+import fetchGeneratedSchedule from '../../utils/Api/fetchGeneratedSchedule.js';
+import saveGeneratedSchedule from '../../utils/Api/saveGeneratedSchedule.js';
+import discardSchedule from '../../utils/Helpers/discardSchedule.js';
 
-// Component for previewing a generated schedule before saving
+/**
+ * Component for previewing a generated schedule before saving.
+ * Allows users to review the schedule and choose to save it or cancel.
+ *
+ * @returns {JSX.Element} The rendered preview calendar component or a placeholder if loading.
+ */
 function PreviewCalendar() {
     const [blocks, setBlocks] = useState(null);
     const [schedule, setSchedule] = useState(null);
-    const nav = useNavigate();
+    const navigate = useNavigate();
 
-    // Fetch and process the generated schedule from sessionStorage
     useEffect(() => {
-        async function fetchTimeBlocks() {
-            try {
-                const stored = sessionStorage.getItem('generatedSchedule');
-
-                const schedule = JSON.parse(stored);
-                if (!schedule) return;
-                setSchedule(schedule);
-
-                const events = schedule['events'];
-                const scheduled = schedule['scheduled'];
-                const combined = [...events, ...scheduled];
-                setBlocks(mapTimeBlocks(combined));
-            } catch (err) {
-                console.error('Failed to load time blocks', err);
-            }
+        const result = fetchGeneratedSchedule();
+        if (result) {
+            setBlocks(result.blocks);
+            setSchedule(result.schedule);
         }
-        fetchTimeBlocks();
     }, []);
 
-    // Save the schedule to the backend and navigate to dashboard
-    async function save() {
-        const timezone = getUserTimezone();
-        const events = schedule.events.map((event) => {
-            const startZdt = Temporal.ZonedDateTime.from(
-                `${event.date}T${event.start_time}[UTC]`
-            ).withTimeZone(timezone);
-            const endZdt = Temporal.ZonedDateTime.from(
-                `${event.date}T${event.end_time}[UTC]`
-            ).withTimeZone(timezone);
-            return {
-                ...event,
-                date: startZdt.toPlainDate().toString(),
-                start_time: startZdt.toPlainTime().toString().slice(0, 8),
-                end_time: endZdt.toPlainTime().toString().slice(0, 8),
-                timezone
-            };
-        });
-        const data = { week_start: schedule.week_start, events };
-        await savePlan(data);
-        nav('/dashboard');
-    }
+    const handleSave = async () => {
+        await saveGeneratedSchedule(schedule, navigate);
+    };
 
-    // Discard the schedule and return to dashboard
-    function leave() {
-        sessionStorage.removeItem('generatedSchedule');
-        nav('/dashboard');
-    }
+    const handleLeave = () => {
+        discardSchedule(navigate);
+    };
 
     if (blocks === null) return null;
 
@@ -74,8 +45,8 @@ function PreviewCalendar() {
             title="Preview generated schedule"
             headerButtons={
                 <>
-                    <button onClick={save}>Save Schedule</button>
-                    <button onClick={leave}>Cancel</button>
+                    <button onClick={handleSave}>Save Schedule</button>
+                    <button onClick={handleLeave}>Cancel</button>
                 </>
             }
             eventButtons={null}
