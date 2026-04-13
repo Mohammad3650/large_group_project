@@ -1,86 +1,23 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../../api.js';
 import AuthCard from '../../../components/AuthCard.jsx';
 import AuthField from '../../../components/AuthField.jsx';
-
-const initialErrors = {
-    fieldErrors: {},
-    global: []
-};
-
-const PASSWORD_CHANGE_REDIRECT_DELAY_MS = 1200;
-
-const MESSAGES = {
-    currentPasswordRequired: 'Current password is required.',
-    newPasswordRequired: 'New password is required.',
-    passwordChangeFailed: 'Password change failed.',
-    passwordChangeSuccess: 'Password updated successfully.'
-};
+import AuthErrorAlert from '../../../components/AuthErrorAlert.jsx';
+import AuthSuccessAlert from '../../../components/AuthSuccessAlert.jsx';
+import useChangePasswordForm from '../utils/useChangePasswordForm.js';
 
 function ChangePassword() {
     const navigate = useNavigate();
 
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [message, setMessage] = useState('');
-    const [errors, setErrors] = useState(initialErrors);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (!message) return;
-
-        const timer = setTimeout(() => {
-            navigate('/profile');
-        }, PASSWORD_CHANGE_REDIRECT_DELAY_MS);
-
-        return () => clearTimeout(timer);
-    }, [message, navigate]);
-
-    function validateForm() {
-        const fieldErrors = {};
-
-        if (!currentPassword) {
-            fieldErrors.currentPassword = MESSAGES.currentPasswordRequired;
-        }
-
-        if (!newPassword) {
-            fieldErrors.newPassword = MESSAGES.newPasswordRequired;
-        }
-
-        return fieldErrors;
-    }
-
-    async function handleSubmit(event) {
-        event.preventDefault();
-        if (loading) return;
-
-        const fieldErrors = validateForm();
-        if (Object.keys(fieldErrors).length) {
-            setErrors({ fieldErrors, global: [] });
-            return;
-        }
-
-        setErrors(initialErrors);
-        setMessage('');
-        setLoading(true);
-
-        try {
-            const res = await api.post('/api/user/change-password/', {
-                current_password: currentPassword,
-                new_password: newPassword
-            });
-
-            setMessage(res.data.message || MESSAGES.passwordChangeSuccess);
-        } catch {
-            setErrors({
-                fieldErrors: {},
-                global: [MESSAGES.passwordChangeFailed]
-            });
-        } finally {
-            setLoading(false);
-        }
-    }
+    const {
+        currentPassword,
+        setCurrentPassword,
+        newPassword,
+        setNewPassword,
+        message,
+        errors,
+        loading,
+        handleSubmit
+    } = useChangePasswordForm(navigate);
 
     return (
         <AuthCard
@@ -90,15 +27,8 @@ function ChangePassword() {
             footerLinkText="Settings"
             footerLinkTo="/settings"
         >
-            {errors.global.length > 0 && (
-                <div className="alert alert-danger text-center">
-                    {errors.global.map((error) => (
-                        <div key={error}>{error}</div>
-                    ))}
-                </div>
-            )}
-
-            {message && <div className="alert alert-success text-center">{message}</div>}
+            <AuthErrorAlert messages={errors.global} />
+            <AuthSuccessAlert message={message} />
 
             <form onSubmit={handleSubmit} noValidate>
                 <div className="row g-3">

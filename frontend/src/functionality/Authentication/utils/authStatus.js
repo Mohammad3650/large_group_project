@@ -1,8 +1,22 @@
 import { useEffect, useState } from 'react';
 import { getAccessToken } from './authStorage';
 
+const AUTH_STATUS_EVENTS = ['auth-change', 'storage'];
+
 function getLoggedInStatus() {
     return Boolean(getAccessToken());
+}
+
+function subscribeToAuthEvents(listener) {
+    AUTH_STATUS_EVENTS.forEach((event) => {
+        window.addEventListener(event, listener);
+    });
+}
+
+function unsubscribeFromAuthEvents(listener) {
+    AUTH_STATUS_EVENTS.forEach((event) => {
+        window.removeEventListener(event, listener);
+    });
 }
 
 /**
@@ -24,12 +38,10 @@ function useAuthStatus() {
             setIsLoggedIn(getLoggedInStatus());
         }
 
-        window.addEventListener('auth-change', syncAuthStatus);
-        window.addEventListener('storage', syncAuthStatus);
+        subscribeToAuthEvents(syncAuthStatus);
 
         return () => {
-            window.removeEventListener('auth-change', syncAuthStatus);
-            window.removeEventListener('storage', syncAuthStatus);
+            unsubscribeFromAuthEvents(syncAuthStatus);
         };
     }, []);
 

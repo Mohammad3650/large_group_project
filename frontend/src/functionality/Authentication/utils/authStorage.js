@@ -1,6 +1,8 @@
 import { setAuthToken } from '../../api';
 import { ACCESS_KEY, REFRESH_KEY } from '../../constants/authKeys';
 
+const AUTH_CHANGE_EVENT = 'auth-change';
+
 /**
  * Retrieves the stored access token from localStorage.
  *
@@ -22,13 +24,20 @@ export function getRefreshToken() {
 }
 
 /**
- * Removes sotred authentication tokens and clears auth header.
+ * Notifes the app that authentication state has changed
+ */
+function notifyAuthChange() {
+    window.dispatchEvent(new Event(AUTH_CHANGE_EVENT));
+}
+
+/**
+ * Removes stored authentication tokens and clears auth header.
  */
 export function clearTokens() {
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(REFRESH_KEY);
     setAuthToken(null);
-    window.dispatchEvent(new Event('auth-change'));
+    notifyAuthChange();
 }
 
 /**
@@ -53,5 +62,5 @@ export function saveTokens(access, refresh) {
     localStorage.setItem(ACCESS_KEY, access);
     localStorage.setItem(REFRESH_KEY, refresh);
     setAuthToken(access);
-    window.dispatchEvent(new Event('auth-change'));
+    notifyAuthChange();
 }
