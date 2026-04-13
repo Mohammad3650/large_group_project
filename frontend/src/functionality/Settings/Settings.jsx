@@ -7,34 +7,45 @@ import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useAutoResetError from '../../utils/Hooks/useAutoResetError.js';
 import './stylesheets/Settings.css';
 
+function noop() {}
+
 /**
  * Settings page with sidebar navigation for managing profile details,
  * calendar subscriptions, and data export options.
- * Automatically resets error messages after a short delay.
  *
  * @returns {React.JSX.Element} The settings page
  */
 function Settings() {
     const [activeSection, setActiveSection] = useState('profile');
     const [error, setError] = useState('');
+
     const { subscriptions, setSubscriptions } = useSubscriptions(setError);
-    const { onImport, onRefresh, onDelete } = useSubscriptionActions({ setSubscriptions, setError, refetchBlocks: () => {} });
+
+    const subscriptionActions = useSubscriptionActions({
+        setSubscriptions,
+        setError,
+        refetchBlocks: noop
+    });
 
     useBodyClass('settings-page');
     useAutoResetError(error, setError);
 
     return (
         <div className="settings-layout">
-            <SettingsSidebar activeSection={activeSection} setActiveSection={setActiveSection} />
+            <SettingsSidebar
+                activeSection={activeSection}
+                setActiveSection={setActiveSection}
+            />
+
             <div className="settings-main">
                 <SettingsContent
                     activeSection={activeSection}
                     subscriptions={subscriptions}
                     error={error}
                     setError={setError}
-                    onImport={onImport}
-                    onRefresh={onRefresh}
-                    onDelete={onDelete}
+                    onImport={subscriptionActions.onImport}
+                    onRefresh={subscriptionActions.onRefresh}
+                    onDelete={subscriptionActions.onDelete}
                 />
             </div>
         </div>

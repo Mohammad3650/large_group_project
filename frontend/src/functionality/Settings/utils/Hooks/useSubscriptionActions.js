@@ -2,19 +2,35 @@ import handleImportSubscription from '../Helpers/handleImportSubscription.js';
 import handleRefreshSubscription from '../Helpers/handleRefreshSubscription.js';
 import handleDeleteSubscription from '../Helpers/handleDeleteSubscription.js';
 
+function buildSubscriptionActionContext({
+    setSubscriptions,
+    setError,
+    refetchBlocks
+}) {
+    return {
+        setSubscriptions,
+        setError,
+        refetchBlocks
+    };
+}
+
 /**
  * Returns handlers for importing, refreshing, and deleting calendar subscriptions.
  *
- * @param {Object} context - Shared context passed to each handler
- * @param {Function} context.setSubscriptions - Setter for the subscriptions list
- * @param {Function} context.setError - Setter for the error message state
- * @param {Function} context.refetchBlocks - Callback to re-fetch time blocks
+ * @param {Object} context
  * @returns {{ onImport: Function, onRefresh: Function, onDelete: Function }}
  */
-function useSubscriptionActions({ setSubscriptions, setError, refetchBlocks }) {
-    const onImport = (payload) => handleImportSubscription(payload, { setSubscriptions, setError, refetchBlocks });
-    const onRefresh = (id) => handleRefreshSubscription(id, { setSubscriptions, setError, refetchBlocks });
-    const onDelete = (id) => handleDeleteSubscription(id, { setSubscriptions, setError, refetchBlocks });
+function useSubscriptionActions(context) {
+    const actionContext = buildSubscriptionActionContext(context);
+
+    const onImport = (payload) =>
+        handleImportSubscription(payload, actionContext);
+
+    const onRefresh = (subscriptionId) =>
+        handleRefreshSubscription(subscriptionId, actionContext);
+
+    const onDelete = (subscriptionId) =>
+        handleDeleteSubscription(subscriptionId, actionContext);
 
     return { onImport, onRefresh, onDelete };
 }

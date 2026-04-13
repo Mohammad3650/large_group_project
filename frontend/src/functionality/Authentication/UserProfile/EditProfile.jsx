@@ -9,17 +9,56 @@ const initialErrors = {
     global: []
 };
 
+const defaultProfileForm = {
+    email: '',
+    username: '',
+    first_name: '',
+    last_name: '',
+    phone_number: ''
+};
+
+function buildProfileForm(data) {
+    return {
+        email: data.email || '',
+        username: data.username || '',
+        first_name: data.first_name || '',
+        last_name: data.last_name || '',
+        phone_number: data.phone_number || ''
+    };
+}
+
+function buildGlobalErrorState(message) {
+    return {
+        fieldErrors: {},
+        global: [message]
+    };
+}
+
+function buildFieldErrorState(data) {
+    const fieldErrors = {};
+
+    Object.entries(data).forEach(([field, value]) => {
+        fieldErrors[field] = Array.isArray(value) ? value[0] : String(value);
+    });
+
+    return {
+        fieldErrors,
+        global: []
+    };
+}
+
+function isUnauthorisedError(error) {
+    return error?.response?.status === 401;
+}
+
+function hasObjectErrorData(error) {
+    return Boolean(error?.response?.data && typeof error.response.data === 'object');
+}
+
 function EditProfile() {
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        email: '',
-        username: '',
-        first_name: '',
-        last_name: '',
-        phone_number: ''
-    });
-
+    const [formData, setFormData] = useState(defaultProfileForm);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
@@ -28,23 +67,15 @@ function EditProfile() {
     useEffect(() => {
         async function fetchUserDetails() {
             try {
-                const res = await api.get('/api/user/');
-                setFormData({
-                    email: res.data.email || '',
-                    username: res.data.username || '',
-                    first_name: res.data.first_name || '',
-                    last_name: res.data.last_name || '',
-                    phone_number: res.data.phone_number || ''
-                });
-            } catch (err) {
-                if (err?.response?.status === 401) {
+                const response = await api.get('/api/user/');
+                setFormData(buildProfileForm(response.data));
+            } catch (error) {
+                if (isUnauthorisedError(error)) {
                     navigate('/login');
-                } else {
-                    setErrors({
-                        fieldErrors: {},
-                        global: ['Failed to load profile details.']
-                    });
+                    return;
                 }
+
+                setErrors(buildGlobalErrorState('Failed to load profile details.'));
             } finally {
                 setLoading(false);
             }
@@ -54,65 +85,55 @@ function EditProfile() {
     }, [navigate]);
 
     function updateField(name, value) {
-        setFormData((prev) => ({
-            ...prev,
+        setFormData((previousFormData) => ({
+            ...previousFormData,
             [name]: value
         }));
     }
 
     async function deleteAccount() {
-        const confirmDelete = window.confirm('Are you sure you want to delete your account?');
+        const confirmDelete = window.confirm(
+            'Are you sure you want to delete your account?'
+        );
 
-        if (!confirmDelete) return;
+        if (!confirmDelete) {
+            return;
+        }
 
         try {
             await api.delete('/api/user/delete/');
             localStorage.clear();
             window.location.href = '/';
         } catch {
-            setErrors({
-                fieldErrors: {},
-                global: ['Failed to delete account.']
-            });
+            setErrors(buildGlobalErrorState('Failed to delete account.'));
         }
     }
 
     async function handleSubmit(event) {
         event.preventDefault();
-        if (saving) return;
+
+        if (saving) {
+            return;
+        }
 
         setSaving(true);
         setSuccessMessage('');
         setErrors(initialErrors);
 
         try {
-            const res = await api.put('/api/user/', formData);
-            setFormData({
-                email: res.data.email || '',
-                username: res.data.username || '',
-                first_name: res.data.first_name || '',
-                last_name: res.data.last_name || '',
-                phone_number: res.data.phone_number || ''
-            });
+            const response = await api.put('/api/user/', formData);
+            setFormData(buildProfileForm(response.data));
             setSuccessMessage('Profile updated successfully.');
-        } catch (err) {
-            const data = err?.response?.data;
-
-            if (err?.response?.status === 401) {
+        } catch (error) {
+            if (isUnauthorisedError(error)) {
                 navigate('/login');
-            } else if (data && typeof data === 'object') {
-                const fieldErrors = {};
+                return;
+            }
 
-                for (const [field, value] of Object.entries(data)) {
-                    fieldErrors[field] = Array.isArray(value) ? value[0] : String(value);
-                }
-
-                setErrors({ fieldErrors, global: [] });
+            if (hasObjectErrorData(error)) {
+                setErrors(buildFieldErrorState(error.response.data));
             } else {
-                setErrors({
-                    fieldErrors: {},
-                    global: ['Failed to update profile.']
-                });
+                setErrors(buildGlobalErrorState('Failed to update profile.'));
             }
         } finally {
             setSaving(false);
@@ -142,7 +163,9 @@ function EditProfile() {
             footerLinkTo="/settings"
         >
             {successMessage && (
-                <div className="alert alert-success text-center">{successMessage}</div>
+                <div className="alert alert-success text-center">
+                    {successMessage}
+                </div>
             )}
 
             {errors.global.length > 0 && (
@@ -207,7 +230,11 @@ function EditProfile() {
                 </div>
 
                 <div className="d-grid gap-2 mt-4">
-                    <button type="submit" className="btn btn-dark rounded-3" disabled={saving}>
+                    <button
+                        type="submit"
+                        className="btn btn-dark rounded-3"
+                        disabled={saving}
+                    >
                         {saving ? 'Saving...' : 'Save Changes'}
                     </button>
 
