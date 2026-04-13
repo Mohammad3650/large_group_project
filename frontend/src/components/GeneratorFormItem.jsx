@@ -51,6 +51,7 @@ function GeneratorFormItem({
             )}
             <label className="checkbox-label">
                 <input
+                    className="checkbox-label-input"
                     type="checkbox"
                     checked={block.daily}
                     onChange={(e) =>

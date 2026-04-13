@@ -12,6 +12,7 @@ function GlobalOptions({ evenSpread, handleEvenSpreadChange, includeScheduled, s
         <div className="global-options">
             <label className="checkbox-label">
                 <input
+                    className="checkbox-label-input"
                     type="checkbox"
                     checked={evenSpread}
                     onChange={(e) =>
@@ -25,6 +26,7 @@ function GlobalOptions({ evenSpread, handleEvenSpreadChange, includeScheduled, s
                 className={`checkbox-label ${!evenSpread ? 'checkbox-label--disabled' : ''}`}
             >
                 <input
+                    className="checkbox-label-input"
                     type="checkbox"
                     checked={includeScheduled}
                     disabled={!evenSpread}
