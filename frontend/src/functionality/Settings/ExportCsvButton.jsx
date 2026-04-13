@@ -1,5 +1,5 @@
 import { FaFileCsv } from 'react-icons/fa';
-import handleExportCsv from '../utils/Api/handleExportCsv.js';
+import handleExportCsv from './utils/Api/handleExportCsv.js';
 import './stylesheets/ExportButton.css';
 
 /**

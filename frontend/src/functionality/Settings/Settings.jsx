@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import SettingsSidebar from './SettingsSidebar.jsx';
 import SettingsContent from './SettingsContent.jsx';
-import useSubscriptions from '../../utils/Hooks/useSubscriptions.js';
-import useSubscriptionActions from '../../utils/Hooks/useSubscriptionActions.js';
+import useSubscriptions from './utils/Hooks/useSubscriptions.js';
+import useSubscriptionActions from './utils/Hooks/useSubscriptionActions.js';
 import useBodyClass from '../../utils/Hooks/useBodyClass.js';
 import useAutoResetError from '../../utils/Hooks/useAutoResetError.js';
 import './stylesheets/Settings.css';

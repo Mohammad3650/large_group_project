@@ -1,5 +1,5 @@
 import './stylesheets/SubscriptionList.css';
-
+import formatSubscriptionLastSyncedAt from './utils/Helpers/formatSubscriptionLastSyncedAt.js';
 /**
  * Reusable action button for subscription actions.
  *
@@ -63,11 +63,7 @@ function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
                         </p>
                         <p className="subscription-meta">
                             Last synced:
-                            {subscription.last_synced_at
-                                ? new Date(
-                                      subscription.last_synced_at
-                                  ).toLocaleString()
-                                : 'Never'}
+                            {formatSubscriptionLastSyncedAt(subscription.last_synced_at)}
                         </p>
                         {subscription.last_error && (
                             <p className="subscription-error-text">

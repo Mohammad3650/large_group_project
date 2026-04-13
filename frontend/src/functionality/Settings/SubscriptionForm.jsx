@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaCloudDownloadAlt } from 'react-icons/fa';
 import './stylesheets/SubscriptionForm.css';
-
+import getSubscriptionFeedbackMessage from './utils/Helpers/getSubscriptionFeedbackMessage.js';
 
 /**
  * Reusable input field for the subscription form.

@@ -1,5 +1,5 @@
-import ExportCsvButton from '../../components/ExportCsvButton.jsx';
-import ExportIcsButton from '../../components/ExportIcsButton.jsx';
+import ExportCsvButton from './ExportCsvButton.jsx';
+import ExportIcsButton from './ExportIcsButton.jsx';
 import './stylesheets/ExportSection.css';
 
 /**
