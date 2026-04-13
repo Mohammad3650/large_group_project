@@ -34,10 +34,14 @@ function AuthCard({
                 <div className="auth-card card border-0">
                     <div className="card-body py-4 px-5">
                         <div className="text-center mb-4 mt-2">
-                            <h3 className="fw-bold mb-1">{title}</h3>
+                            <h3 className="fw-bold mb-1">
+                                {title}
+                            </h3>
 
                             {subtitle && (
-                                <p className="auth-subtitle mb-0">{subtitle}</p>
+                                <p className="auth-subtitle mb-0">
+                                    {subtitle}
+                                </p>
                             )}
                         </div>
 

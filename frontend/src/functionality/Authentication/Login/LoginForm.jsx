@@ -1,10 +1,10 @@
-import AuthErrorAlert from "../AuthComponents/AuthErrorAlert";
-import AuthField from "../AuthComponents/AuthField";
-import AuthSubmitButton from "../AuthComponents/AuthSubmitButton";
+import AuthErrorAlert from '../AuthComponents/AuthErrorAlert';
+import AuthField from '../AuthComponents/AuthField';
+import AuthSubmitButton from '../AuthComponents/AuthSubmitButton';
 
 /**
  * Presentational login form
- * 
+ *
  * Responsibilities:
  * - renders login field inputs
  * - displays field and global validation errors

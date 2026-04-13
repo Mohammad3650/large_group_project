@@ -16,7 +16,9 @@ function ProtectedRoute({ children }) {
     const isAllowed = useProtectedRouteAccess();
 
     if (isAllowed === null) {
-        return <RouteLoadingScreen message="Checking authentication..." />;
+        return (
+            <RouteLoadingScreen message="Checking authentication..." />
+        );
     }
 
     if (!isAllowed) {

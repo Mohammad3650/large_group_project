@@ -1,13 +1,10 @@
-import { useNavigate } from 'react-router-dom';
 import AuthCard from '../AuthComponents/AuthCard.jsx';
 import AuthField from '../AuthComponents/AuthField.jsx';
-import AuthErrorAlert from '../AuthComponents/AuthErrorAlert.jsx';
-import AuthSuccessAlert from '../AuthComponents/AuthSuccessAlert.jsx';
 import useChangePasswordForm from '../utils/Hooks/useChangePasswordForm.js';
+import AuthSubmitButton from '../AuthComponents/AuthSubmitButton.jsx';
+import StatusAlerts from '../AuthComponents/StatusAlert.jsx';
 
 function ChangePassword() {
-    const navigate = useNavigate();
-
     const {
         currentPassword,
         setCurrentPassword,
@@ -17,7 +14,7 @@ function ChangePassword() {
         errors,
         loading,
         handleSubmit
-    } = useChangePasswordForm(navigate);
+    } = useChangePasswordForm();
 
     return (
         <AuthCard
@@ -27,8 +24,10 @@ function ChangePassword() {
             footerLinkText="Settings"
             footerLinkTo="/settings"
         >
-            <AuthErrorAlert messages={errors.global} />
-            <AuthSuccessAlert message={message} />
+            <StatusAlerts
+                errors={errors}
+                successMessage={successMessage}
+            />
 
             <form onSubmit={handleSubmit} noValidate>
                 <div className="row g-3">
@@ -39,7 +38,10 @@ function ChangePassword() {
                         placeholder="Current password"
                         value={currentPassword}
                         onChange={setCurrentPassword}
-                        error={errors.fieldErrors.currentPassword}
+                        error={
+                            errors.fieldErrors
+                                .currentPassword
+                        }
                     />
 
                     <AuthField
@@ -49,14 +51,18 @@ function ChangePassword() {
                         placeholder="New password"
                         value={newPassword}
                         onChange={setNewPassword}
-                        error={errors.fieldErrors.newPassword}
+                        error={
+                            errors.fieldErrors.newPassword
+                        }
                     />
                 </div>
 
                 <div className="d-grid mt-4">
-                    <button type="submit" className="btn btn-dark rounded-3" disabled={loading}>
-                        {loading ? 'Updating...' : 'Update Password'}
-                    </button>
+                    <AuthSubmitButton
+                        loading={loading}
+                        text="Update Password"
+                        loadingText="Updating..."
+                    />
                 </div>
             </form>
         </AuthCard>

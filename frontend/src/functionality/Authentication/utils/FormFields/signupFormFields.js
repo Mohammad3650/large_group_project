@@ -1,8 +1,6 @@
 const signupFormFields = [
     {
         name: 'email',
-        propName: 'email',
-        errorKey: 'email',
         label: 'Email',
         type: 'email',
         placeholder: 'you@example.com',
@@ -10,8 +8,6 @@ const signupFormFields = [
     },
     {
         name: 'username',
-        propName: 'username',
-        errorKey: 'username',
         label: 'Username',
         type: 'text',
         placeholder: 'Choose a username',
@@ -19,8 +15,6 @@ const signupFormFields = [
     },
     {
         name: 'firstName',
-        propName: 'firstName',
-        errorKey: 'first_name',
         label: 'First name',
         type: 'text',
         placeholder: 'First name',
@@ -28,8 +22,6 @@ const signupFormFields = [
     },
     {
         name: 'lastName',
-        propName: 'lastName',
-        errorKey: 'last_name',
         label: 'Last name',
         type: 'text',
         placeholder: 'Last name',
@@ -37,8 +29,6 @@ const signupFormFields = [
     },
     {
         name: 'phoneNumber',
-        propName: 'phoneNumber',
-        errorKey: 'phone_number',
         label: 'Phone number',
         type: 'text',
         placeholder: 'e.g. 07123 456 789',
@@ -46,8 +36,6 @@ const signupFormFields = [
     },
     {
         name: 'password',
-        propName: 'password',
-        errorKey: 'password',
         label: 'Password',
         type: 'password',
         placeholder: 'Create a password',
@@ -55,8 +43,6 @@ const signupFormFields = [
     },
     {
         name: 'confirmPassword',
-        propName: 'confirmPassword',
-        errorKey: 'confirmPassword',
         label: 'Confirm password',
         type: 'password',
         placeholder: 'Confirm password',
