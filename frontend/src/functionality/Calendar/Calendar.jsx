@@ -7,7 +7,6 @@ import CalendarView from './CalendarView.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import useUsername from '../../utils/Hooks/useUsername.js';
 import CalendarPlaceholder from './CalendarPlaceholder.jsx';
-import CalendarEmptyState from './CalendarEmptyState.jsx';
 import renderEventActions from './RenderEventActions.jsx';
 
 /**
