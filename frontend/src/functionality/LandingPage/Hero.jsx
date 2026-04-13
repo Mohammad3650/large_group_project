@@ -97,13 +97,15 @@ function HeroImage({ heroImage }) {
 /**
  * Displays the hero section of the landing page.
  *
+ * @param {Object} props
+ * @param {string} props.theme - The current theme mode ('light' or 'dark')
  * @returns {JSX.Element} Hero section
  */
-function Hero() {
+function Hero({ theme }) {
     const isLoggedIn = useAuthStatus();
     const navigate = useNavigate();
 
-    const heroImage = getHeroImage();
+    const heroImage = getHeroImage(theme);
     const buttons = getHeroButtons(isLoggedIn);
 
     return (
