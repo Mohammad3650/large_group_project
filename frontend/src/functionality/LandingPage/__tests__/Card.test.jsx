@@ -7,7 +7,7 @@ function renderCard(overrides = {}) {
         avatar: 'A',
         stars: '★★★★★',
         review: 'This made planning much easier.',
-        name: 'Mohammad'
+        name: 'Mohammad',
     };
 
     return render(<Card {...defaultProps} {...overrides} />);
@@ -28,7 +28,7 @@ describe('Tests for Card', () => {
             avatar: 'B',
             stars: '★★★★☆',
             review: 'Very clean and easy to use.',
-            name: 'Aisha'
+            name: 'Aisha',
         });
 
         expect(container.querySelector('.testimonial-card')).toBeInTheDocument();
@@ -45,10 +45,19 @@ describe('Tests for Card', () => {
             avatar: 'C',
             stars: '★★★☆☆',
             review: 'Helpful overall.',
-            name: 'Zaynab'
+            name: 'Zaynab',
         });
 
-        const title = screen.getByText('Zaynab');
-        expect(title.tagName).toBe('I');
+        const nameText = screen.getByText('Zaynab');
+        expect(nameText.tagName).toBe('I');
+    });
+
+    it('renders default empty values when no props are provided', () => {
+        const { container } = render(<Card />);
+
+        expect(container.querySelector('.card-avatar')).toHaveTextContent('');
+        expect(container.querySelector('.card-stars')).toHaveTextContent('');
+        expect(container.querySelector('.card-text')).toHaveTextContent('');
+        expect(container.querySelector('.card-title')).toHaveTextContent('');
     });
 });

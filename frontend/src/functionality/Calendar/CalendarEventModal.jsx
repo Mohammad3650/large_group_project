@@ -1,4 +1,5 @@
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTag, FaAlignLeft } from 'react-icons/fa';
+import './stylesheets/CalendarEventModal.css';
 
 /**
  * Converts a date from ISO format (YYYY-MM-DD)
@@ -13,46 +14,54 @@ const formatDate = (date) => {
 };
 
 /**
+ * Renders a single event detail row with an icon and value.
+ *
+ * @param {Object} props
+ * @param {JSX.Element} props.icon - Icon shown next to the detail
+ * @param {string} props.value - Text value of the detail
+ * @returns {JSX.Element}
+ */
+
+function EventDetail({ icon, value }) {
+    return (
+        <div className="event-detail">
+            <span className="event-detail-icon">{icon}</span>
+            <span>{value}</span>
+        </div>
+    );
+}
+
+/**
  * Displays the custom event modal content for a calendar event.
  *
+ * @param {Object} props
  * @param {Object} props.calendarEvent - The selected event data
  * @param {Function} props.eventButtons - Function that renders action buttons
  * @param {Function} props.handleDelete - Function for deleting an event
  * @returns {JSX.Element} Event modal UI
  */
+
 function CalendarEventModal({ calendarEvent, eventButtons, handleDelete }) {
+    const { title, date, startTime, endTime, location, blockType, description } = calendarEvent;
+
+    const formattedDate = date ? formatDate(date) : 'No date';
+    const timeRange = startTime && endTime ? `${startTime} - ${endTime}` : 'No time';
+
     return (
         <div className="event-modal-container">
-            <div className="sx__event-modal__title">{calendarEvent.title}</div>
+            <div className="sx__event-modal__title">{title}</div>
 
             <div className="sx__event-modal__description">
-                <div className="event-detail">
-                    <FaCalendarAlt className="event-detail-icon" />
-                    <span>{formatDate(calendarEvent.date)}</span>
-                </div>
-
-                <div className="event-detail">
-                    <FaClock className="event-detail-icon" />
-                    <span>{calendarEvent.startTime} - {calendarEvent.endTime}</span>
-                </div>
-
-                <div className="event-detail">
-                    <FaMapMarkerAlt className="event-detail-icon" />
-                    <span>{calendarEvent.location}</span>
-                </div>
-
-                <div className="event-detail">
-                    <FaTag className="event-detail-icon" />
-                    <span>{calendarEvent.blockType}</span>
-                </div>
-
-                <div className="event-detail">
-                    <FaAlignLeft className="event-detail-icon" />
-                    <span>{calendarEvent.description}</span>
-                </div>
+                <EventDetail icon={<FaCalendarAlt />} value={formattedDate} />
+                <EventDetail icon={<FaClock />} value={timeRange} />
+                <EventDetail icon={<FaMapMarkerAlt />} value={location || 'No location'} />
+                <EventDetail icon={<FaTag />} value={blockType || 'No category'} />
+                <EventDetail icon={<FaAlignLeft />} value={description || 'No description'} />
             </div>
 
-            <div className="buttons">{eventButtons ? eventButtons(calendarEvent, handleDelete) : null}</div>
+            <div className="buttons">
+                {eventButtons ? eventButtons(calendarEvent, handleDelete) : null}
+            </div>
         </div>
     );
 }
