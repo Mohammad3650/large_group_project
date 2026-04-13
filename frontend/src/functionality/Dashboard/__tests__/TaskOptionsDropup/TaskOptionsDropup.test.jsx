@@ -95,7 +95,7 @@ describe('TaskOptionsDropup component', () => {
         const setDropdownOpen = vi.fn();
         renderDropup({ setDropdownOpen });
         fireEvent.click(screen.getByText('Edit'));
-        expect(mockNavigate).toHaveBeenCalledWith('/timeblocks/1/edit');
+        expect(mockNavigate).toHaveBeenCalledWith('/time-blocks/1/edit');
         expect(setDropdownOpen).toHaveBeenCalledWith(false);
     });
 
