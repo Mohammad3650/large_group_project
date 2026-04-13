@@ -32,7 +32,6 @@ function SignupForm({
             <form noValidate onSubmit={onSubmit}>
                 <div className="row g-3">
                     {signupFormFields.map((field) => {
-                        const errorKey = field.errorKey || field.name;
                         return (
                             <div key={field.name} className={field.wrapperClassName}>
                                 <AuthField
@@ -40,7 +39,7 @@ function SignupForm({
                                     label={field.label}
                                     type={field.type}
                                     placeholder={field.placeholder}
-                                    error={errors.fieldErrors[errorKey]}
+                                    error={errors.fieldErrors[field.name]}
                                     {...getFieldProps(field.name)}
                                 />
                             </div>
