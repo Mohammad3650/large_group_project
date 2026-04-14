@@ -1,8 +1,8 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useTimeBlockForm } from '../Hooks/useTimeBlockForm.js';
+import { useTimeBlockForm } from '../../../utils/Hooks/useTimeBlockForm.js';
 
-vi.mock('../Helpers/getUserTimezone', () => ({
+vi.mock('../../../../../utils/Helpers/getUserTimezone', () => ({
     default: vi.fn(() => 'UTC'),
 }));
 

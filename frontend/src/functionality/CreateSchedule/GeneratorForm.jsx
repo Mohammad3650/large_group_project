@@ -3,7 +3,7 @@ import DateRangeInput from './DateRangeInput.jsx';
 import TimeWindowInput from './TimeWindowInput.jsx';
 import GlobalOptions from './GlobalOptions.jsx';
 import FormActions from './FormActions.jsx';
-import useGeneratorForm from '../../utils/Hooks/useGeneratorForm.js';
+import useGeneratorForm from './utils/Hooks/useGeneratorForm.js';
 import './stylesheets/GeneratorForm.css';
 
 
