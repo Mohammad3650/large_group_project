@@ -336,3 +336,41 @@ class SchedulerGeneratorTest(SimpleTestCase):
         self.assertEqual(len(output), 1)
         self.assertIsInstance(output[0][2], datetime.date)
 
+    def test_abs_mins_to_time_method(self):
+        """Test the _abs_mins_to_time method"""
+        from scheduler.services.schedule_generator import Event
+        event = Event(True, 0, 0, "test")
+        result = event._abs_mins_to_time(90)
+        self.assertEqual(result, "1:30")
+
+    def test_place_event_in_latest_slot_returns_false_when_no_slot(self):
+        """Test _place_event_in_latest_slot_on_day returns False when no slot found"""
+        from scheduler.services.schedule_generator import Scheduler, UnscheduledEvent, Day
+        request = self.make_request(days=1, windows=[])
+        scheduler = Scheduler(request, [])
+        
+        day = Day(0)
+        event = UnscheduledEvent(True, "blocker", 1440, 1, True, "None", "test", "test", "test", 0, 1440)
+        day.add_event(event)
+
+        unsched_event = UnscheduledEvent(False, "test", 60, 1, False, "None", "test", "test", "test")
+        result = scheduler._place_event_in_latest_slot_on_day(unsched_event, day)
+        self.assertFalse(result)
+
+    def test_try_find_all_slots_handles_overlapping_events(self):
+        """Test _try_find_all_slots_for_event handles overlapping events."""
+        from scheduler.services.schedule_generator import Scheduler, UnscheduledEvent
+        request = self.make_request(days=1, windows=[])
+        scheduler = Scheduler(request, [])
+        
+        events_list = [
+            (0, UnscheduledEvent(True, "event1", 60, 1, True, "None", "test", "test", "test", 0, 60)),
+            (30, UnscheduledEvent(True, "event2", 60, 1, True, "None", "test", "test", "test", 30, 90))
+        ]
+        
+        unsched_event = UnscheduledEvent(False, "test", 30, 1, False, "None", "test", "test", "test")
+        slots = scheduler._try_find_all_slots_for_event(unsched_event, events_list)
+        
+        self.assertTrue(len(slots) > 0)
+        self.assertGreaterEqual(slots[0][0], 90)
+

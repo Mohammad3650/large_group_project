@@ -157,3 +157,13 @@ class GenerateScheduleRequestSerializerTest(TestCase):
             serializer.errors["windows"][0],
             "At least one scheduling window must be provided.",
         )
+
+    def test_empty_windows_list(self):
+        """Test that validation fails when windows is an empty list."""
+        data = {**self.data, "windows": []}
+        serializer = GenerateScheduleRequestSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors["windows"][0],
+            "At least one scheduling window must be provided.",
+        )
