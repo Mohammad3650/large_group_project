@@ -4,7 +4,6 @@ import useEditTimeBlock from '../../utils/Hooks/useEditTimeBlock';
 import useEditTimeBlockNavigation from '../../utils/Hooks/useEditTimeBlockNavigation';
 
 const FETCH_ERROR = 'Unable to load this time block.';
-const UPDATE_ERROR = 'Failed to update time block.';
 
  /**
  * EditTimeBlock component
@@ -31,6 +30,13 @@ function EditTimeBlock() {
     clearErrors
     } = useEditTimeBlock(id);
 
+    /**
+     * Handles updating the time block.
+     * Calls the update hook and navigates on success.
+     *
+     * @param {Array<object>} dataList - List containing updated time block data
+     * @returns {Promise<void>}
+     */
     async function handleUpdate(dataList) {
         try {
         const success = await update(dataList[0]);
@@ -43,6 +49,12 @@ function EditTimeBlock() {
         }
     }
 
+    /**
+     * Handles cancelling the edit action.
+     * Clears any server errors and navigates away.
+     *
+     * @returns {void}
+     */
     function handleCancel(){
         clearErrors();
         goCancel();

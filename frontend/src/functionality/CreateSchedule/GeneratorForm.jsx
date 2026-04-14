@@ -1,4 +1,3 @@
-import { BLOCK_TYPES } from '../../constants/blockTypes.js';
 import GeneratorFormItem from './GeneratorFormItem.jsx';
 import DateRangeInput from './DateRangeInput.jsx';
 import TimeWindowInput from './TimeWindowInput.jsx';
