@@ -307,6 +307,11 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
         flex: 0 0 auto !important;
     }
 
+    .sx__week-grid__date-axis {
+        padding-left: 0 !important;
+        justify-content: center !important;
+    }
+
     .sx__time-grid-event-title {
         font-size: var(--font-size-calendar-sm);
         padding-bottom: var(--space-event-mobile-bottom);
