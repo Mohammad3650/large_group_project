@@ -13,8 +13,10 @@ import { createInitialErrors } from '../errors.js';
  * @returns {{
  *  currentPassword: string,
  *  newPassword: string,
+ *  confirmNewPassword: string,
  *  setCurrentPassword: function,
  *  setNewPassword: function,
+ *  setConfirmNewPassword: function,
  *  message: string,
  *  errors: { fieldErrors: Object<string, string>, global: string[] },
  *  loading: boolean,
@@ -24,6 +26,7 @@ import { createInitialErrors } from '../errors.js';
 function useChangePasswordForm() {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [message, setMessage] = useState('');
     const [errors, setErrors] = useState(createInitialErrors);
     const [loading, setLoading] = useState(false);
@@ -41,7 +44,8 @@ function useChangePasswordForm() {
 
         const fieldErrors = validateChangePasswordForm({
             currentPassword,
-            newPassword
+            newPassword,
+            confirmNewPassword
         });
 
         if (Object.keys(fieldErrors).length > 0) {
@@ -86,6 +90,8 @@ function useChangePasswordForm() {
         setCurrentPassword,
         newPassword,
         setNewPassword,
+        confirmNewPassword,
+        setConfirmNewPassword,
         message,
         errors,
         loading,
