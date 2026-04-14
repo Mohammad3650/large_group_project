@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
-import deleteTimeBlock from "../Api/deleteTimeBlock.js";
-import * as apiModule from "../../api.js";
+import deleteTimeBlock from "../../Api/deleteTimeBlock.js";
+import * as apiModule from "../../../api.js";
 
-vi.mock("../../api.js", () => ({
+vi.mock("../../../api.js", () => ({
     api: {
         delete: vi.fn(),
     },

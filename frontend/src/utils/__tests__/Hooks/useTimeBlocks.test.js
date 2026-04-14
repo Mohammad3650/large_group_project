@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import useTimeBlocks from '../Hooks/useTimeBlocks.js';
+import useTimeBlocks from '../../Hooks/useTimeBlocks.js';
 
-vi.mock('../Api/getTimeBlocks.js', () => ({ default: vi.fn() }));
-vi.mock('../Helpers/mapTimeBlocks.js', () => ({ default: vi.fn((blocks) => blocks) }));
+vi.mock('../../Api/getTimeBlocks.js', () => ({ default: vi.fn() }));
+vi.mock('../../Helpers/mapTimeBlocks.js', () => ({ default: vi.fn((blocks) => blocks) }));
 
-import * as getTimeBlocksModule from '../Api/getTimeBlocks.js';
-import * as mapTimeBlocksModule from '../Helpers/mapTimeBlocks.js';
+import * as getTimeBlocksModule from '../../Api/getTimeBlocks.js';
+import * as mapTimeBlocksModule from '../../Helpers/mapTimeBlocks.js';
 
 const mockBlocks = [{ id: 1, name: 'Lecture' }, { id: 2, name: 'Seminar' }];
 

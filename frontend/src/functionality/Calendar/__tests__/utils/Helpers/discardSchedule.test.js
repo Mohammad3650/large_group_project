@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import discardSchedule from "../Helpers/discardSchedule";
+import discardSchedule from "../../../utils/Helpers/discardSchedule.js";
 
 describe("discardSchedule", () => {
     const mockNavigate = vi.fn();

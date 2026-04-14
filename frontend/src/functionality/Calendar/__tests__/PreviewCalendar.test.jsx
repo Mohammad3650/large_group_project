@@ -12,10 +12,6 @@ vi.mock('react-router-dom', () => ({
     useNavigate: () => mockNavigate
 }));
 
-vi.mock('../CalendarPlaceholder.jsx', () => ({
-    default: () => <div>Mock Calendar Placeholder</div>
-}));
-
 vi.mock('../../../utils/Helpers/mapTimeBlocks.js', () => ({
     default: mockMapTimeBlocks
 }));
@@ -33,7 +29,7 @@ vi.mock('../CalendarView.jsx', () => ({
     )
 }));
 
-vi.mock('../../../utils/Api/savePlan.js', () => ({
+vi.mock('../utils/Api/savePlan.js', () => ({
     default: mockSavePlan
 }));
 

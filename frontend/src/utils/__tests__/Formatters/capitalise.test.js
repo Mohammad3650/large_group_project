@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import capitalise from "../Formatters/capitalise.js";
+import capitalise from "../../Formatters/capitalise.js";
 
 describe("capitalise", () => {
     it("capitalises the first letter of a lowercase string", () => {

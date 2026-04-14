@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import useDropdown from "../Hooks/useDropdown";
+import useDropdown from "../../Hooks/useDropdown.js";
 
 describe("useDropdown", () => {
     beforeEach(() => {

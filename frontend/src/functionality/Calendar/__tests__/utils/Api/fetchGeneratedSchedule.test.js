@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import fetchGeneratedSchedule from "../Api/fetchGeneratedSchedule";
+import fetchGeneratedSchedule from "../../../utils/Api/fetchGeneratedSchedule";
 
-vi.mock("../Helpers/mapTimeBlocks.js", () => ({
+vi.mock("../../../../../utils/Helpers/mapTimeBlocks.js", () => ({
     default: vi.fn((items) => items.map((item) => ({ ...item, mapped: true }))),
 }));
 
-import mapTimeBlocks from "../Helpers/mapTimeBlocks.js";
+import mapTimeBlocks from "../../../../../utils/Helpers/mapTimeBlocks.js";
 
 describe("fetchGeneratedSchedule", () => {
     beforeEach(() => {

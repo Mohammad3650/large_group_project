@@ -1,7 +1,7 @@
 import NavbarBrand from './NavbarBrand.jsx';
 import NavbarLinks from './NavbarLinks.jsx';
 import NavbarUserButton from './NavbarUserButton.jsx';
-import ToggleDarkMode from '../ToggleDarkMode.jsx';
+import ToggleDarkMode from './ToggleDarkMode.jsx';
 import useAuthStatus from '../../functionality/Authentication/utils/authStatus.js';
 import useUsername from '../../utils/Hooks/useUsername.js';
 import '../stylesheets/Navbar/Navbar.css';

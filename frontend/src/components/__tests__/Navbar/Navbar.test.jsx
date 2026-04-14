@@ -11,7 +11,7 @@ vi.mock('../../Navbar/NavbarLinks.jsx', () => ({
 vi.mock('../../Navbar/NavbarUserButton.jsx', () => ({
     default: () => <div data-testid="navbar-user-button" />,
 }));
-vi.mock('../../ToggleDarkMode.jsx', () => ({
+vi.mock('../../Navbar/ToggleDarkMode.jsx', () => ({
     default: () => <div data-testid="toggle-dark-mode" />,
 }));
 vi.mock('../../../functionality/Authentication/utils/authStatus.js', () => ({ default: vi.fn() }));

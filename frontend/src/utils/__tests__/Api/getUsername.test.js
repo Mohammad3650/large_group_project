@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import getUsername from '../Api/getUsername.js';
+import getUsername from '../../Api/getUsername.js';
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../api.js', () => ({
     api: { get: vi.fn() },
 }));
 
-import * as apiModule from '../../api.js';
+import * as apiModule from '../../../api.js';
 
 describe('getUsername', () => {
     beforeEach(() => {
