@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useGenerateSchedule } from '../../../utils/Hooks/useGenerateSchedule.js';
-import generateSchedule from '../../../../../utils/Api/generateSchedule.js';
+import generateSchedule from '../../../utils/Api/generateSchedule.js';
 
 const mockNavigate = vi.fn();
 
@@ -13,7 +13,7 @@ vi.mock('react-router-dom', async () => {
     };
 });
 
-vi.mock('../../../../../utils/Api/generateSchedule.js', () => ({
+vi.mock('../../../utils/Api/generateSchedule.js', () => ({
     default: vi.fn()
 }));
 

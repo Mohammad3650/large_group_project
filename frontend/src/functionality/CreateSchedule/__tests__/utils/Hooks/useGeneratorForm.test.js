@@ -1,8 +1,8 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useGeneratorForm from '../Hooks/useGeneratorForm.js';
+import useGeneratorForm from '../../../utils/Hooks/useGeneratorForm.js';
 
-vi.mock('../Helpers/getUserTimezone.js', () => ({
+vi.mock('../../../../../utils/Helpers/getUserTimezone.js', () => ({
     default: vi.fn(() => 'UTC'),
 }));
 

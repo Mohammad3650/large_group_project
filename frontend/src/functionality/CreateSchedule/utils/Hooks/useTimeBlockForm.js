@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import getUserTimezone from '../Helpers/getUserTimezone';
+import getUserTimezone from '../../../../utils/Helpers/getUserTimezone';
 
 /**
  * Encapsulates all state and logic for the TimeBlockForm.

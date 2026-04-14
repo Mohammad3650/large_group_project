@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import generateSchedule from "../Api/generateSchedule";
-import { api } from "../../api";
+import generateSchedule from "../../../utils/Api/generateSchedule";
+import { api } from "../../../../../api";
 
-vi.mock("../../api", () => ({
+vi.mock("../../../../../api", () => ({
     api: {
         post: vi.fn()
     }

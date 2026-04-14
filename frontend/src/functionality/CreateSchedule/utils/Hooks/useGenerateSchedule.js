@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import generateSchedule from '../../../../utils/Api/generateSchedule.js';
+import generateSchedule from '../Api/generateSchedule.js';
 
 
 /**
@@ -20,6 +20,53 @@ export function useGenerateSchedule() {
     const [serverErrors, setServerErrors] = useState({});
 
     /**
+     * Determines whether the API response contains no events.
+     * @param {object} response - API response object.
+     * @returns {boolean} True if no events are present, otherwise false.
+     */
+    function hasNoEvents(response) {
+        return !response?.data?.events || response.data.events.length === 0;
+    }
+
+    /**
+     * Sets a general error message when no schedule can be generated.
+     * @returns {void}
+     */
+    function handleEmptyEvents() {
+        setServerErrors({
+            general: [
+                'Unable to generate a schedule. Try changing your inputs and try again.'
+            ]
+        });
+    }
+
+    /**
+     * Handles successful schedule generation:
+     * - clears errors
+     * - stores result in session storage
+     * - navigates to preview page
+     * @param {object} data - The generated schedule data.
+     * @returns {void}
+     */
+    function handleSuccess(data) {
+        setServerErrors({});
+        sessionStorage.setItem(
+            'generatedSchedule',
+            JSON.stringify(data)
+        );
+        navigate('/preview-calendar');
+    }
+
+    /**
+     * Handles API errors by updating server error state.
+     * @param {object} err - Error object from API call.
+     * @returns {void}
+     */
+    function handleError(err) {
+        setServerErrors(err.response?.data || {});
+    }
+
+    /**
      * Generate schedule via API, store result in session, and navigate to preview.
      * @param {object} data - Schedule generation form data.
      * @returns {Promise<void>}
@@ -30,30 +77,18 @@ export function useGenerateSchedule() {
         setServerErrors({});
         setLoading(true);
 
-        let allSuccess = true;
-        let response = null;
-
         try {
-            response = await generateSchedule(data);
+            const response = await generateSchedule(data);
 
-            const events = response.data?.events || [];
-
-            if (events.length === 0) {
-                setServerErrors( { general: [ 'Unable to generate a schedule. Try changing your inputs and try again.']} );
+            if (hasNoEvents(response)) {
+                handleEmptyEvents();
                 return;
             }
-            setServerErrors({});
-            sessionStorage.setItem(
-                'generatedSchedule',
-                JSON.stringify(response.data)
-            );
-            navigate('/preview-calendar');
-        }
-        catch(err){
-            setServerErrors(err.response?.data || {});
-            allSuccess = false;
-        }
-        finally{
+
+            handleSuccess(response.data);
+        } catch (err) {
+            handleError(err);
+        } finally {
             setLoading(false);
         }
     }
