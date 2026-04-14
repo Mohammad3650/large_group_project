@@ -279,6 +279,11 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
 }
 
 @media (max-width: 768px) {
+    .sx__calendar {
+        overflow: visible !important;
+        height: auto !important;
+    }
+
     .sx__calendar-header {
         gap: var(--space-calendar-header-gap-mobile-sm) !important;
         display: flex !important;
@@ -289,8 +294,7 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
         padding: var(--space-calendar-header) !important;
     }
 
-    .sx__view-container,
-    .sx__week-grid {
+    .sx__view-container {
         overflow: visible !important;
         height: auto !important;
     }

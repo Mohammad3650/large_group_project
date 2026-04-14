@@ -256,9 +256,6 @@
     --space-button-y: 12px;
     --space-modal: 40px;
 
-    --calendar-height-mobile: 72vh;
-    --calendar-height-mobile-sm: 68vh;
-
     --calendar-event-modal-parent-max-width: 90vw;
     --calendar-event-modal-width: 82vw;
     --calendar-event-modal-max-width: 280px;
