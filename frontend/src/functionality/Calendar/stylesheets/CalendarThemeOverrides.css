@@ -331,8 +331,16 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
     }
 
     .sx__date-picker-popup {
-        max-width: var(--date-picker-popup-max-width-mobile) !important;
+        position: fixed !important;
+        left: 50% !important;
+        top: 45% !important;
+        transform: translateX(-50%) !important;
+        width: 90vw !important;
+        max-width: 90vw !important;
+        max-height: 50vh !important;
+        overflow-y: auto !important;
         box-sizing: border-box !important;
+        z-index: 9999 !important;
     }
 
     .sx__date-picker__month-year {
@@ -377,6 +385,10 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
     .sx__range-heading {
         font-size: var(--font-size-range-heading-mobile) !important;
         white-space: nowrap !important;
+    }
+
+    .sx__date-input {
+        font-size: var(--font-size-body) !important;
     }
 
     .sx__today-button,
