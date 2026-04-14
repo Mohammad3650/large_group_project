@@ -43,11 +43,11 @@ vi.mock('../TimeBlockForm.jsx', () => ({
     }
 }));
 
-vi.mock('../../utils/Hooks/useEditTimeBlock', () => ({
+vi.mock('../utils/Hooks/useEditTimeBlock', () => ({
     default: () => mockHookState
 }));
 
-vi.mock('../../utils/Hooks/useEditTimeBlockNavigation', () => ({
+vi.mock('../utils/Hooks/useEditTimeBlockNavigation', () => ({
     default: () => ({
         goSuccess: mockGoSuccess,
         goCancel: mockGoCancel

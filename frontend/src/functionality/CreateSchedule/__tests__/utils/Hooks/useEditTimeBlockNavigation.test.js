@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useEditTimeBlockNavigation from '../Hooks/useEditTimeBlockNavigation';
+import useEditTimeBlockNavigation from '../../../utils/Hooks/useEditTimeBlockNavigation';
 import { useNavigate } from 'react-router-dom';
 
 vi.mock('react-router-dom', async () => {

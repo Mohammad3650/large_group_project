@@ -52,10 +52,8 @@ class CalendarSubscriptionValidationHelpersTest(TestCase):
 
     def test_validate_unique_subscription_allows_same_url_for_different_user(self):
         """It should allow the same source URL for a different user."""
-        try:
-            validate_unique_subscription(
-                self.other_user,
-                "https://example.com/main.ics",
-            )
-        except serializers.ValidationError:
-            self.fail("validate_unique_subscription raised unexpectedly.")
+        result = validate_unique_subscription(
+            self.other_user,
+            "https://example.com/main.ics",
+        )
+        self.assertIsNone(result)

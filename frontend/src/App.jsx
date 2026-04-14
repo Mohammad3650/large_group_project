@@ -12,8 +12,8 @@ import ChangePassword from './functionality/Authentication/ChangePassword/Change
 import CreateSchedule from './functionality/CreateSchedule/CreateSchedule.jsx';
 import Settings from './functionality/Settings/Settings.jsx';
 import { setAuthToken } from './api';
-import SuccessfulTimeBlock from './components/SuccessfulTimeBlock.jsx';
-import EditTimeBlock from './components/EditTimeBlock';
+import SuccessfulTimeBlock from './functionality/CreateSchedule/SuccessfulTimeBlock.jsx';
+import EditTimeBlock from './functionality/CreateSchedule/EditTimeBlock.jsx';
 import Navbar from './components/Navbar/Navbar.jsx';
 import { ACCESS_KEY } from './constants/authKeys.js';
 import './styles/variables.css';
@@ -45,7 +45,7 @@ function App() {
             <Navbar theme={theme} toggleTheme={toggleTheme} />
 
             <Routes>
-                <Route path="/" element={<Landing theme={theme} />} />
+                <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
 

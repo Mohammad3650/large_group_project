@@ -7,16 +7,14 @@ import './stylesheets/Landing.css';
 /**
  * Displays the landing page for StudySync.
  *
- * @param {Object} props
- * @param {string} props.theme - The current theme mode
  * @returns {JSX.Element} The landing page
  */
-function Landing({ theme }) {
+function Landing() {
     const testimonials = getTestimonials();
 
     return (
         <div className="landing">
-            <Hero theme={theme} />
+            <Hero />
             <Features />
 
             <div className="landing-testimonials-wrapper">

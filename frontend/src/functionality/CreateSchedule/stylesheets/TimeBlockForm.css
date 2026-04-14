@@ -1,0 +1,64 @@
+body{
+    overflow-x: hidden;
+}
+
+.error-text-date {
+    color: var(--danger);
+    font-size: var(--font-size-sm);
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.error-text {
+    color: var(--danger);
+    font-size: var(--font-size-sm);
+    margin-top: 2px;
+    margin-bottom: 2px;
+    text-align: left;
+}
+
+.time-block-form-card input,
+.time-block-form-card select,
+.time-block-form-card textarea {
+    padding: var(--space-sm) 14px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-input);
+    background-color: var(--bg-main);
+    font-size: var(--font-size-sm);
+    color: var(--text-main);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.time-block-form-card input::placeholder,
+.time-block-form-card textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+}
+
+.time-block-form-card input:focus,
+.time-block-form-card select:focus,
+.time-block-form-card textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: var(--shadow-focus);
+}
+
+.date-row label,
+.time-row label {
+    min-width: var(--space-3xl);
+}
+
+.time-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    width: 100%;
+}
+
+.time-row input[type="time"] {
+    flex: 1;
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-lg);
+}

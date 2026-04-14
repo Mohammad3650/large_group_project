@@ -4,6 +4,7 @@ from scheduler.services.calendar_subscription_event_text_helpers import (
     classify_block_type,
     clean_event_description,
     get_event_summary,
+    should_keep_description_line,
 )
 
 
@@ -48,3 +49,7 @@ class CalendarSubscriptionEventTextHelpersTest(TestCase):
         """It should return the default summary when the event summary is empty."""
         event = {"summary": ""}
         self.assertEqual(get_event_summary(event), "Imported Event")
+
+    def test_should_keep_description_line_returns_false_for_blank_line(self):
+        """It should return false for a blank description line."""
+        self.assertFalse(should_keep_description_line(""))
