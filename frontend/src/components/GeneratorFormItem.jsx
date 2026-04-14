@@ -6,7 +6,7 @@
  * @returns {JSX.Element}
  */
 import { BLOCK_TYPES } from '../constants/blockTypes';
-import Capitalise from '../utils/Formatters/capitalise';
+import capitalise from '../utils/Formatters/capitalise';
 
 function GeneratorFormItem({
     block,
@@ -130,7 +130,7 @@ function GeneratorFormItem({
             >
                 {BLOCK_TYPES.map((type) => (
                 <option key={type} value={type}>
-                {Capitalise(type)}
+                {capitalise(type)}
                 </option>
                 ))}
             </select>

@@ -1,5 +1,5 @@
 import toLocalDateTime from '../Formatters/toLocalDateTime.js';
-import Capitalise from '../Formatters/capitalise.js';
+import capitalise from '../Formatters/capitalise.js';
 
 /**
  * Maps raw time block data into the standard format used by the calendar and dashboard.
@@ -57,7 +57,7 @@ function mapTimeBlocks(blocks) {
             start,
             end,
             location: block.location,
-            blockType: block.block_type ? Capitalise(block.block_type) : 'N/A',
+            blockType: block.block_type ? capitalise(block.block_type) : 'N/A',
             description: block.description || 'N/A',
             completed_at: block.completed_at ?? null,
             pinned: block.pinned ?? false,
