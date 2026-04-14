@@ -4,7 +4,6 @@ import '@schedule-x/theme-default/dist/index.css';
 import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 import CalendarView from './CalendarView.jsx';
-import CalendarPlaceholder from './CalendarPlaceholder.jsx';
 import fetchGeneratedSchedule from '../../utils/Api/fetchGeneratedSchedule.js';
 import saveGeneratedSchedule from '../../utils/Api/saveGeneratedSchedule.js';
 import discardSchedule from '../../utils/Helpers/discardSchedule.js';
@@ -36,7 +35,7 @@ function PreviewCalendar() {
         discardSchedule(navigate);
     };
 
-    if (blocks === null) return <CalendarPlaceholder />;
+    if (blocks === null) return null;
 
     return (
         <CalendarView

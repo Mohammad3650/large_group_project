@@ -1,69 +1,69 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { createCalendarCustomComponents } from '../createCalendarCustomComponents.jsx';
+import CreateCalendarCustomComponents from '../CreateCalendarCustomComponents.jsx';
 
-describe('Tests for createCalendarCustomComponents', () => {
+vi.mock('../CalendarEventModal.jsx', () => ({
+    default: ({ calendarEvent, eventButtons, handleDelete }) => (
+        <div>
+            <h2>{calendarEvent.title}</h2>
+            <p>{calendarEvent.location}</p>
+            <p>{calendarEvent.blockType}</p>
+            <p>{calendarEvent.description}</p>
+            <div className="buttons">
+                {eventButtons ? eventButtons(calendarEvent, handleDelete) : null}
+            </div>
+        </div>
+    )
+}));
+
+describe('Tests for CreateCalendarCustomComponents', () => {
     it('returns an eventModal component that renders CalendarEventModal', () => {
-        const mockEventButtons = vi.fn(() => <button>Delete</button>);
+        const mockEventButtons = vi.fn((calendarEvent) => <button>Edit {calendarEvent.id}</button>);
         const mockHandleDelete = vi.fn();
 
-        const components = createCalendarCustomComponents(
-            mockEventButtons,
-            mockHandleDelete
-        );
+        const components = CreateCalendarCustomComponents(mockEventButtons, mockHandleDelete);
 
         const calendarEvent = {
-            id: 1,
-            title: 'Test Event',
-            date: '2026-04-10',
-            startTime: '09:00',
-            endTime: '10:00',
-            location: 'Room A',
-            blockType: 'lecture',
-            description: 'Test description',
+            id: 7,
+            title: 'Algorithms Lecture',
+            location: 'Bush House',
+            blockType: 'Lecture',
+            description: 'Graphs and shortest paths'
         };
 
-        const EventModal = components.eventModal;
+        render(<components.eventModal calendarEvent={calendarEvent} />);
 
-        render(<EventModal calendarEvent={calendarEvent} />);
+        expect(screen.getByText('Algorithms Lecture')).toBeInTheDocument();
+        expect(screen.getByText('Bush House')).toBeInTheDocument();
+        expect(screen.getByText('Lecture')).toBeInTheDocument();
+        expect(screen.getByText('Graphs and shortest paths')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Edit 7' })).toBeInTheDocument();
 
-        expect(screen.getByText('Test Event')).toBeInTheDocument();
-        expect(screen.getByText('10/04/2026')).toBeInTheDocument();
-        expect(screen.getByText('09:00 - 10:00')).toBeInTheDocument();
-        expect(screen.getByText('Room A')).toBeInTheDocument();
-        expect(screen.getByText('lecture')).toBeInTheDocument();
-        expect(screen.getByText('Test description')).toBeInTheDocument();
-
-        expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
         expect(mockEventButtons).toHaveBeenCalledWith(calendarEvent, mockHandleDelete);
     });
 
     it('passes undefined eventButtons through and renders no action buttons', () => {
         const mockHandleDelete = vi.fn();
 
-        const components = createCalendarCustomComponents(undefined, mockHandleDelete);
+        const components = CreateCalendarCustomComponents(undefined, mockHandleDelete);
 
         const calendarEvent = {
-            id: 2,
-            title: 'Event Without Buttons',
-            date: '2026-04-12',
-            startTime: '12:00',
-            endTime: '13:00',
-            location: 'Room B',
-            blockType: 'study',
-            description: 'Independent study',
+            id: 7,
+            title: 'Algorithms Lecture',
+            location: 'Bush House',
+            blockType: 'Lecture',
+            description: 'Graphs and shortest paths'
         };
 
-        const EventModal = components.eventModal;
+        const { container } = render(<components.eventModal calendarEvent={calendarEvent} />);
 
-        render(<EventModal calendarEvent={calendarEvent} />);
-
-        expect(screen.getByText('Event Without Buttons')).toBeInTheDocument();
+        expect(screen.getByText('Algorithms Lecture')).toBeInTheDocument();
+        expect(container.querySelector('.buttons')).toBeInTheDocument();
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 
     it('returns an object with an eventModal function', () => {
-        const components = createCalendarCustomComponents(vi.fn(), vi.fn());
+        const components = CreateCalendarCustomComponents(vi.fn(), vi.fn());
 
         expect(components).toHaveProperty('eventModal');
         expect(typeof components.eventModal).toBe('function');

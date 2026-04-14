@@ -1,0 +1,25 @@
+.hero {
+    margin-top: 0;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--space-hero-bottom);
+    background: var(--bg-main);
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: var(--space-xl) var(--space-md) var(--space-2xl);
+    }
+
+    .hero-content {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        gap: var(--space-xl);
+    }
+}

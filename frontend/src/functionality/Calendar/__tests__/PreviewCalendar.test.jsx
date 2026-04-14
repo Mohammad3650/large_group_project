@@ -74,10 +74,10 @@ describe('Tests for PreviewCalendar', () => {
         sessionStorage.clear();
     });
 
-    it('renders the placeholder when blocks are null', () => {
-        render(<PreviewCalendar />);
+    it('renders nothing when blocks are null', () => {
+        const { container } = render(<PreviewCalendar />);
 
-        expect(screen.getByText('Mock Calendar Placeholder')).toBeInTheDocument();
+        expect(container).toBeEmptyDOMElement();
     });
 
     it('renders save and cancel buttons once CalendarView is shown', async () => {
@@ -102,7 +102,10 @@ describe('Tests for PreviewCalendar', () => {
             expect(screen.getByText('Preview generated schedule')).toBeInTheDocument();
         });
 
-        expect(mockMapTimeBlocks).toHaveBeenCalledWith([...mockSchedule.events, ...mockSchedule.scheduled]);
+        expect(mockMapTimeBlocks).toHaveBeenCalledWith([
+            ...mockSchedule.events,
+            ...mockSchedule.scheduled
+        ]);
 
         expect(screen.getByTestId('blocks-length')).toHaveTextContent(String(mappedBlocks.length));
     });
@@ -123,7 +126,7 @@ describe('Tests for PreviewCalendar', () => {
         await waitFor(() => {
             expect(mockSavePlan).toHaveBeenCalledWith({
                 week_start: mockSchedule.week_start,
-                events: mockSchedule.events,
+                events: mockSchedule.events
             });
         });
 

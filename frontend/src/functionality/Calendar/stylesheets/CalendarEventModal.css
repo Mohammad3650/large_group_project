@@ -37,27 +37,6 @@
     border-radius: 0 !important;
 }
 
-.event-detail {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-event-detail-bottom);
-    font-size: var(--font-size-calendar-md);
-    font-weight: normal;
-    color: var(--text-main) !important;
-}
-
-.event-detail span {
-    line-height: var(--line-height-event-detail);
-    color: var(--text-main) !important;
-}
-
-.event-detail-icon {
-    font-size: var(--font-size-calendar-md);
-    flex-shrink: 0;
-    color: var(--text-muted);
-}
-
 .title-date {
     font-size: var(--font-size-calendar-lg);
     color: var(--text-main);
