@@ -1,4 +1,4 @@
-from scheduler.utils.utc_to_local_datetime import utc_to_local_date_time
+from scheduler.utils.utc_to_local_date_time import utc_to_local_date_time
 
 ICS_CALENDAR_HEADER_LINES = [
     "BEGIN:VCALENDAR",

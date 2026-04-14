@@ -1,7 +1,7 @@
 import csv
 from io import StringIO
 
-from scheduler.utils.utc_to_local_datetime import utc_to_local_date_time
+from scheduler.utils.utc_to_local_date_time import utc_to_local_date_time
 
 CSV_HEADERS = [
     "date",
