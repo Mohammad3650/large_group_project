@@ -1,17 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { isTokenValid } from "../../utils/authToken";
-import { publicApi } from "../../../../api";
-import { getAccessToken, logout } from "../../utils/authStorage";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { isTokenValid } from '../../utils/authToken.js';
+import { publicApi } from '../../../../api.js';
+import { getAccessToken, logout } from '../../utils/authStorage.js';
 
-vi.mock("../../../../api", () => ({
+vi.mock('../../../../api.js', () => ({
     publicApi: {
-        post: vi.fn(),
-    },
+        post: vi.fn()
+    }
 }));
 
-vi.mock("../../utils/authStorage", () => ({
+vi.mock('../../utils/authStorage.js', () => ({
     getAccessToken: vi.fn(),
-    logout: vi.fn(),
+    logout: vi.fn()
 }));
 
 describe('isTokenValid', () => {
@@ -29,12 +29,23 @@ describe('isTokenValid', () => {
         expect(logout).not.toHaveBeenCalled();
     });
 
+    it('returns false immediately when the access token is an empty string', async () => {
+        getAccessToken.mockReturnValue('');
+
+        const result = await isTokenValid();
+
+        expect(result).toBe(false);
+        expect(publicApi.post).not.toHaveBeenCalled();
+        expect(logout).not.toHaveBeenCalled();
+    });
+
     it('returns true when token verification succeeds', async () => {
         getAccessToken.mockReturnValue('valid-token');
         publicApi.post.mockResolvedValue({});
 
         const result = await isTokenValid();
 
+        expect(publicApi.post).toHaveBeenCalledTimes(1);
         expect(publicApi.post).toHaveBeenCalledWith(
             '/api/token/verify/',
             { token: 'valid-token' }
@@ -86,6 +97,20 @@ describe('isTokenValid', () => {
         expect(publicApi.post).toHaveBeenCalledWith(
             '/api/token/verify/',
             { token: 'server-error-token' }
+        );
+        expect(logout).not.toHaveBeenCalled();
+        expect(result).toBe(false);
+    });
+
+    it('returns false without logging out when the error has no response', async () => {
+        getAccessToken.mockReturnValue('no-response-token');
+        publicApi.post.mockRejectedValue({});
+
+        const result = await isTokenValid();
+
+        expect(publicApi.post).toHaveBeenCalledWith(
+            '/api/token/verify/',
+            { token: 'no-response-token' }
         );
         expect(logout).not.toHaveBeenCalled();
         expect(result).toBe(false);

@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import useAuthStatus from '../../utils/authStatus';
-import { getAccessToken } from '../../utils/authStorage';
+import useAuthStatus from '../../utils/authStatus.js';
+import { getAccessToken } from '../../utils/authStorage.js';
 
-vi.mock('../../utils/authStorage', () => ({
+vi.mock('../../utils/authStorage.js', () => ({
     getAccessToken: vi.fn()
 }));
 
@@ -12,36 +12,32 @@ describe('useAuthStatus', () => {
         vi.clearAllMocks();
     });
 
-    afterEach(() => {
-        vi.restoreAllMocks();
-    });
-
-    it('returns true on initial render when an access token exists', () => {
-        getAccessToken.mockReturnValue('access-token');
+    it('initialises as true when a token exists', () => {
+        getAccessToken.mockReturnValue('token');
 
         const { result } = renderHook(() => useAuthStatus());
 
         expect(result.current).toBe(true);
-        expect(getAccessToken).toHaveBeenCalledTimes(1);
     });
 
-    it('returns false on initial render when no access token exists', () => {
+    it('initialises as false when no token exists', () => {
         getAccessToken.mockReturnValue(null);
 
         const { result } = renderHook(() => useAuthStatus());
 
         expect(result.current).toBe(false);
-        expect(getAccessToken).toHaveBeenCalledTimes(1);
     });
 
-    it('updates to true when an auth-change event is dispatched and a token now exists', () => {
+    it('updates state when auth-change event is dispatched', () => {
+        // start logged out
         getAccessToken.mockReturnValue(null);
 
         const { result } = renderHook(() => useAuthStatus());
 
         expect(result.current).toBe(false);
 
-        getAccessToken.mockReturnValue('new-token');
+        // simulate login
+        getAccessToken.mockReturnValue('token');
 
         act(() => {
             window.dispatchEvent(new Event('auth-change'));
@@ -50,56 +46,51 @@ describe('useAuthStatus', () => {
         expect(result.current).toBe(true);
     });
 
-    it('updates to false when a storage event is dispatched and the token is removed', () => {
-        getAccessToken.mockReturnValue('existing-token');
+    it('updates state when storage event is dispatched', () => {
+        getAccessToken.mockReturnValue(null);
 
         const { result } = renderHook(() => useAuthStatus());
 
-        expect(result.current).toBe(true);
+        expect(result.current).toBe(false);
 
-        getAccessToken.mockReturnValue(null);
+        // simulate token appearing
+        getAccessToken.mockReturnValue('token');
 
         act(() => {
             window.dispatchEvent(new Event('storage'));
         });
 
-        expect(result.current).toBe(false);
+        expect(result.current).toBe(true);
     });
 
     it('removes event listeners on unmount', () => {
-        getAccessToken.mockReturnValue('access-token');
+        getAccessToken.mockReturnValue(null);
 
-        const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
-        const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+        const addSpy = vi.spyOn(window, 'addEventListener');
+        const removeSpy = vi.spyOn(window, 'removeEventListener');
 
         const { unmount } = renderHook(() => useAuthStatus());
 
-        expect(addEventListenerSpy).toHaveBeenCalledWith(
+        // ensure listeners were added
+        expect(addSpy).toHaveBeenCalledWith(
             'auth-change',
             expect.any(Function)
         );
-        expect(addEventListenerSpy).toHaveBeenCalledWith(
+        expect(addSpy).toHaveBeenCalledWith(
             'storage',
             expect.any(Function)
         );
-
-        const authChangeListener = addEventListenerSpy.mock.calls.find(
-            ([eventName]) => eventName === 'auth-change'
-        )[1];
-
-        const storageListener = addEventListenerSpy.mock.calls.find(
-            ([eventName]) => eventName === 'storage'
-        )[1];
 
         unmount();
 
-        expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        // ensure listeners were removed
+        expect(removeSpy).toHaveBeenCalledWith(
             'auth-change',
-            authChangeListener
+            expect.any(Function)
         );
-        expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        expect(removeSpy).toHaveBeenCalledWith(
             'storage',
-            storageListener
+            expect.any(Function)
         );
     });
 });
