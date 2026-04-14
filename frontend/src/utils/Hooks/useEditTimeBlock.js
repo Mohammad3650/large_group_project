@@ -33,6 +33,11 @@ export default function useEditTimeBlock(id) {
     const [serverErrors, setServerErrors] = useState([]);
 
     useEffect(() => {
+        /**
+         * Fetches the time block from the API and maps it to form-ready data.
+         * Sets a fetch error in state if the request fails.
+         * @returns {Promise<void>}
+         */
         async function load() {
             try {
                 const res = await api.get(`/api/time-blocks/${id}/edit`);
@@ -47,6 +52,11 @@ export default function useEditTimeBlock(id) {
         load();
     }, [id]);
 
+    /**
+     * Builds and sends a PATCH request to update the time block.
+     * @param {object} block - The updated time block form data.
+     * @returns {Promise<boolean>} True if the update succeeded, false if it failed.
+     */
     async function update(block) {
         try {
             const payload = buildUpdatePayload(block);
@@ -60,6 +70,10 @@ export default function useEditTimeBlock(id) {
         }
     }
 
+    /**
+     * Clears all current server errors from state.
+     * @returns {void}
+     */
     function clearErrors() {
         setServerErrors([]);
     }

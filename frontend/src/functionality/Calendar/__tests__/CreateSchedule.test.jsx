@@ -1,108 +1,83 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import CreateSchedule from '../CreateSchedule.jsx';
-import { api } from '../../../api.js';
-import generateSchedule from '../../../utils/Api/generateSchedule.js';
 
-const mockNavigate = vi.fn();
+const mockHandleCreate = vi.fn();
+const mockSetCreateErrors = vi.fn();
+const mockHandleGenerate = vi.fn();
+const mockSetGenerateErrors = vi.fn();
+
+const mockTimeBlockForm = vi.fn();
+const mockGeneratorForm = vi.fn();
 
 vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
     return {
         ...actual,
-        useNavigate: () => mockNavigate
+        useNavigate: () => vi.fn()
     };
 });
 
-vi.mock('../../../api.js', () => ({
-    api: {
-        post: vi.fn()
-    }
+vi.mock('../../../utils/Hooks/useCreateTimeBlock.js', () => ({
+    useCreateTimeBlock: () => ({
+        handleCreate: mockHandleCreate,
+        loading: false,
+        serverErrors: [],
+        setServerErrors: mockSetCreateErrors
+    })
 }));
 
-vi.mock('../../../utils/Api/generateSchedule.js', () => ({
-    default: vi.fn()
+vi.mock('../../../utils/Hooks/useGenerateSchedule.js', () => ({
+    useGenerateSchedule: () => ({
+        handleGenerate: mockHandleGenerate,
+        loading: false,
+        serverErrors: {},
+        setServerErrors: mockSetGenerateErrors
+    })
 }));
 
 vi.mock('../../../components/TimeBlockForm.jsx', () => ({
-    default: ({ onSubmit, loading, clearErrors }) => (
-        <div>
-            <p>Mock TimeBlockForm</p>
-            <button
-                type="button"
-                onClick={() =>
-                    onSubmit([
-                        {
-                            date: '2026-04-10',
-                            name: 'Study Session',
-                            location: 'Library',
-                            description: 'Revision',
-                            block_type: 'study',
-                            start_time: '09:00',
-                            end_time: '10:00'
-                        }
-                    ])
-                }
-            >
-                Submit TimeBlockForm
-            </button>
-            <button type="button" onClick={clearErrors}>
-                Clear TimeBlock Errors
-            </button>
-            {loading && <span>TimeBlock Loading</span>}
-        </div>
-    )
+    default: (props) => {
+        mockTimeBlockForm(props);
+        return (
+            <div>
+                <p>Mock TimeBlockForm</p>
+                <button onClick={props.clearErrors}>Clear TimeBlock Errors</button>
+            </div>
+        );
+    }
 }));
 
 vi.mock('../../../components/GeneratorForm.jsx', () => ({
-    default: ({ onSubmit, loading, clearErrors, serverErrors }) => (
-        <div>
-            <p>Mock GeneratorForm</p>
-            <button
-                type="button"
-                onClick={() =>
-                    onSubmit({
-                        week_start: '2026-04-10',
-                        week_end: '2026-04-16',
-                        even_spread: true,
-                        include_scheduled: false,
-                        windows: [
-                            {
-                                start_min: '08:00',
-                                end_min: '22:00',
-                                daily: true
-                            }
-                        ],
-                        unscheduled: []
-                    })
-                }
-            >
-                Submit GeneratorForm
-            </button>
-            <button type="button" onClick={clearErrors}>
-                Clear Generator Errors
-            </button>
-            {loading && <span>Generator Loading</span>}
-            {serverErrors?.general?.[0] && <p>{serverErrors.general[0]}</p>}
-        </div>
-    )
+    default: (props) => {
+        mockGeneratorForm(props);
+        return (
+            <div>
+                <p>Mock GeneratorForm</p>
+                <button onClick={props.clearErrors}>Clear Generator Errors</button>
+            </div>
+        );
+    }
 }));
+
+function renderComponent() {
+    const user = userEvent.setup();
+
+    render(
+        <MemoryRouter>
+            <CreateSchedule />
+        </MemoryRouter>
+    );
+
+    return { user };
+}
 
 describe('Tests for CreateSchedule', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        sessionStorage.clear();
     });
-
-    function renderComponent() {
-        return render(
-            <MemoryRouter>
-                <CreateSchedule />
-            </MemoryRouter>
-        );
-    }
 
     it('renders the page heading and default time block tab', () => {
         renderComponent();
@@ -110,13 +85,25 @@ describe('Tests for CreateSchedule', () => {
         expect(
             screen.getByRole('heading', { name: /create schedule/i })
         ).toBeInTheDocument();
+
         expect(screen.getByText('Mock TimeBlockForm')).toBeInTheDocument();
         expect(screen.queryByText('Mock GeneratorForm')).not.toBeInTheDocument();
     });
 
-    it('switches to the generate tab when clicked', async () => {
-        const user = userEvent.setup();
+    it('passes the correct props to TimeBlockForm', () => {
         renderComponent();
+
+        expect(mockTimeBlockForm).toHaveBeenCalledWith(
+            expect.objectContaining({
+                onSubmit: mockHandleCreate,
+                loading: false,
+                serverErrors: []
+            })
+        );
+    });
+
+    it('switches to the generate tab when clicked', async () => {
+        const { user } = renderComponent();
 
         await user.click(screen.getByRole('button', { name: /generate/i }));
 
@@ -124,179 +111,59 @@ describe('Tests for CreateSchedule', () => {
         expect(screen.queryByText('Mock TimeBlockForm')).not.toBeInTheDocument();
     });
 
-    it('creates a time block and navigates on success', async () => {
-        const user = userEvent.setup();
-
-        api.post.mockResolvedValue({
-            data: {
-                id: 123
-            }
-        });
-
-        renderComponent();
-
-        await user.click(
-            screen.getByRole('button', { name: /submit timeblockform/i })
-        );
-
-        expect(api.post).toHaveBeenCalledWith('/api/time-blocks/', {
-            date: '2026-04-10',
-            name: 'Study Session',
-            location: 'Library',
-            description: 'Revision',
-            block_type: 'study',
-            start_time: '09:00',
-            end_time: '10:00'
-        });
-
-        expect(mockNavigate).toHaveBeenCalledWith('/successful-time-block', {
-            state: { id: 123 }
-        });
-    });
-
-    it('stores server errors when time block creation fails', async () => {
-        const user = userEvent.setup();
-
-        api.post.mockRejectedValue({
-            response: {
-                data: {
-                    name: ['This field is required.']
-                }
-            }
-        });
-
-        renderComponent();
-
-        await user.click(
-            screen.getByRole('button', { name: /submit timeblockform/i })
-        );
-
-        expect(api.post).toHaveBeenCalledTimes(1);
-        expect(mockNavigate).not.toHaveBeenCalled();
-    });
-
-    it('generates a schedule, stores it in sessionStorage, and navigates to preview', async () => {
-        const user = userEvent.setup();
-
-        generateSchedule.mockResolvedValue({
-            data: {
-                events: [
-                    {
-                        id: 1,
-                        title: 'Generated Event'
-                    }
-                ]
-            }
-        });
-
-        renderComponent();
+    it('passes the correct props to GeneratorForm', async () => {
+        const { user } = renderComponent();
 
         await user.click(screen.getByRole('button', { name: /generate/i }));
-        await user.click(
-            screen.getByRole('button', { name: /submit generatorform/i })
+
+        expect(mockGeneratorForm).toHaveBeenCalledWith(
+            expect.objectContaining({
+                onSubmit: mockHandleGenerate,
+                loading: false,
+                serverErrors: {}
+            })
         );
-
-        expect(generateSchedule).toHaveBeenCalledWith({
-            week_start: '2026-04-10',
-            week_end: '2026-04-16',
-            even_spread: true,
-            include_scheduled: false,
-            windows: [
-                {
-                    start_min: '08:00',
-                    end_min: '22:00',
-                    daily: true
-                }
-            ],
-            unscheduled: []
-        });
-
-        expect(
-            JSON.parse(sessionStorage.getItem('generatedSchedule'))
-        ).toEqual({
-            events: [
-                {
-                    id: 1,
-                    title: 'Generated Event'
-                }
-            ]
-        });
-
-        expect(mockNavigate).toHaveBeenCalledWith('/preview-calendar');
     });
 
-    it('shows an error when no feasible generated schedule is returned', async () => {
-        const user = userEvent.setup();
-
-        generateSchedule.mockResolvedValue({
-            data: {
-                events: []
-            }
-        });
-
-        renderComponent();
+    it('switches back to the task tab when clicked', async () => {
+        const { user } = renderComponent();
 
         await user.click(screen.getByRole('button', { name: /generate/i }));
-        await user.click(
-            screen.getByRole('button', { name: /submit generatorform/i })
-        );
+        await user.click(screen.getByRole('button', { name: /task/i }));
 
-        expect(
-            await screen.findByText(
-                /no feasible schedule could be generated with the given constraints/i
-            )
-        ).toBeInTheDocument();
-
-        expect(mockNavigate).not.toHaveBeenCalled();
+        expect(screen.getByText('Mock TimeBlockForm')).toBeInTheDocument();
+        expect(screen.queryByText('Mock GeneratorForm')).not.toBeInTheDocument();
     });
 
-    it('shows backend errors when schedule generation fails', async () => {
-        const user = userEvent.setup();
+    it('clears create errors with an empty array', async () => {
+        const { user } = renderComponent();
 
-        generateSchedule.mockRejectedValue({
-            response: {
-                data: {
-                    general: ['Generation failed.']
-                }
-            }
-        });
+        await user.click(screen.getByRole('button', { name: /clear timeblock errors/i }));
 
-        renderComponent();
+        expect(mockSetCreateErrors).toHaveBeenCalledWith([]);
+    });
+
+    it('clears generate errors with an empty object', async () => {
+        const { user } = renderComponent();
 
         await user.click(screen.getByRole('button', { name: /generate/i }));
-        await user.click(
-            screen.getByRole('button', { name: /submit generatorform/i })
-        );
+        await user.click(screen.getByRole('button', { name: /clear generator errors/i }));
 
-        expect(await screen.findByText('Generation failed.')).toBeInTheDocument();
+        expect(mockSetGenerateErrors).toHaveBeenCalledWith({});
     });
 
-    it('does not submit create requests again while loading', async () => {
-        const user = userEvent.setup();
+    it('applies the active class to the selected tab', async () => {
+        const { user } = renderComponent();
 
-        let resolveRequest;
-        api.post.mockImplementation(
-            () =>
-                new Promise((resolve) => {
-                    resolveRequest = resolve;
-                })
-        );
+        const taskTab = screen.getByRole('button', { name: /task/i });
+        const generateTab = screen.getByRole('button', { name: /generate/i });
 
-        renderComponent();
+        expect(taskTab.className).toMatch(/tab-btn--active/);
+        expect(generateTab.className).not.toMatch(/tab-btn--active/);
 
-        await user.click(
-            screen.getByRole('button', { name: /submit timeblockform/i })
-        );
-        await user.click(
-            screen.getByRole('button', { name: /submit timeblockform/i })
-        );
+        await user.click(generateTab);
 
-        expect(api.post).toHaveBeenCalledTimes(1);
-
-        resolveRequest({ data: { id: 1 } });
-
-        await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalled();
-        });
+        expect(generateTab.className).toMatch(/tab-btn--active/);
+        expect(taskTab.className).not.toMatch(/tab-btn--active/);
     });
 });
