@@ -10,7 +10,7 @@ const TABS = [
 ];
 
 /**
- * CreateSchedule component with tabs for manual task creation or schedule generation.
+ * CreateSchedule component with tabs for the manual task creation or schedule generation.
  * @returns {JSX.Element} The create schedule page.
  */
 function CreateSchedule() {
