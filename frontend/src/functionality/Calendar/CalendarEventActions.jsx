@@ -7,7 +7,6 @@ import './stylesheets/CalendarEventActions.css';
  *
  * @param {Object} props - Component props
  * @param {Object} props.calendarEvent - The selected calendar event object
- * @param {string|number} props.calendarEvent.id - Unique identifier of the selected event
  * @param {Function} props.handleDelete - Function used to delete the event
  * @returns {JSX.Element} Buttons that allow the user to edit or delete the selected event
  */

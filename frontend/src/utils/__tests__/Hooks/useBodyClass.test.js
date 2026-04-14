@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import useBodyClass from '../Hooks/useBodyClass.js';
+import useBodyClass from '../../Hooks/useBodyClass.js';
 
 describe('useBodyClass', () => {
     beforeEach(() => {

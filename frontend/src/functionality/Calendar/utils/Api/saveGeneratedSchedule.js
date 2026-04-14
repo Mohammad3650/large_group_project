@@ -1,10 +1,10 @@
 import savePlan from './savePlan.js';
-import getUserTimezone from '../Helpers/getUserTimezone.js';
+import getUserTimezone from '../../../../utils/Helpers/getUserTimezone.js';
 
 /**
  * Saves the generated schedule to the backend and navigates to dashboard.
  * @param {Object} schedule - The schedule object with events and week_start.
- * @param {Function} nav - The navigation function.
+ * @param {Function} navigate - The navigation function.
  */
 async function saveGeneratedSchedule(schedule, navigate) {
     const timezone = getUserTimezone();
