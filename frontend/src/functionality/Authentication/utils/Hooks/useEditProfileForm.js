@@ -162,7 +162,7 @@ function useEditProfileForm() {
             await deleteProfileAccount();
             handleDeleteSuccess();
         } catch {
-            setErrors(buildGlobalProfileError(MESSAGES.deleteFailed));
+            setErrors(buildGlobalError(MESSAGES.deleteFailed));
         }
     }
 
