@@ -116,9 +116,34 @@ Run tests using:
 ## External Resources
 
 The project relies on several external resources, frameworks and libraries:
+
+### Frontend Libraries & Frameworks
 - React - https://react.dev/
+- React Router - https://reactrouter.com/
+- Axios - https://axios-http.com/
+- React Icons – https://react-icons.github.io/react-icons/
+- jwt-decode – https://www.npmjs.com/package/jwt-decode
+- Schedule-X – https://schedule-x.dev/ (used for interactive calendar and scheduling features)
+- Temporal Polyfill – https://github.com/tc39/proposal-temporal
+- Bootstrap - https://getbootstrap.com/
+
+ ### Backend Libraries & Frameworks
 - Django - https://www.djangoproject.com/
 - Django REST Framework - https://www.django-rest-framework.org/
-- Bootstrap - https://getbootstrap.com/
-- PythonAnywhere (backend deployment) - https://www.pythonanywhere.com/
-- Netlify (frontend deployment) - https://www.netlify.com/
+- djangorestframework-simplejwt – https://django-rest-framework-simplejwt.readthedocs.io/
+- django-cors-headers – https://pypi.org/project/django-cors-headers/
+- psycopg2 – https://www.psycopg.org/
+- python-dotenv – https://pypi.org/project/python-dotenv/
+- Faker – https://faker.readthedocs.io/
+- icalendar – https://pypi.org/project/icalendar/
+
+ ### Tools & Development
+- Vite – https://vitejs.dev/
+- Vitest – https://vitest.dev/
+- React Testing Library – https://testing-library.com/
+- ESLint – https://eslint.org/
+- Prettier – https://prettier.io/
+- Git & GitHub – version control & collaboration
+- npm – frontend dependency management
+- PythonAnywhere (backend deployment) – https://www.pythonanywhere.com/
+- Netlify (frontend deployment) – https://www.netlify.com/
