@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import isClickOutside from '../Helpers/isClickOutside.js';
+import isClickOutside from '../../Helpers/isClickOutside.js';
 
 describe('isClickOutside', () => {
     it('returns false when ref.current is null', () => {

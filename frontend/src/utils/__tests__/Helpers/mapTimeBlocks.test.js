@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import mapTimeBlocks from '../Helpers/mapTimeBlocks';
+import mapTimeBlocks from '../../Helpers/mapTimeBlocks.js';
 
-vi.mock('../Formatters/toLocalDateTime.js', () => ({
+vi.mock('../../Formatters/toLocalDateTime.js', () => ({
     default: vi.fn((date, time) => {
         const localTime = time.slice(0, 5);
         const zonedDateTime = `${date}T${localTime}[Europe/London]`;
@@ -9,7 +9,7 @@ vi.mock('../Formatters/toLocalDateTime.js', () => ({
     }),
 }));
 
-import toLocalDateTime from '../Formatters/toLocalDateTime.js';
+import toLocalDateTime from '../../Formatters/toLocalDateTime.js';
 
 const baseBlock = {
     id: 1,

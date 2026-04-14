@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import useUsername from '../Hooks/useUsername.js';
+import useUsername from '../../Hooks/useUsername.js';
 
-vi.mock('../Api/getUsername.js', () => ({ default: vi.fn() }));
+vi.mock('../../Api/getUsername.js', () => ({ default: vi.fn() }));
 
-import * as getUsernameModule from '../Api/getUsername.js';
+import * as getUsernameModule from '../../Api/getUsername.js';
 
 describe('Tests for useUsername', () => {
     beforeEach(() => {

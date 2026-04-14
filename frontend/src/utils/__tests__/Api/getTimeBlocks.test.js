@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import getTimeBlocks from '../Api/getTimeBlocks.js';
+import getTimeBlocks from '../../Api/getTimeBlocks.js';
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../api.js', () => ({
     api: { get: vi.fn() },
 }));
 
-import * as apiModule from '../../api.js';
+import * as apiModule from '../../../api.js';
 
 describe('getTimeBlocks', () => {
     beforeEach(() => {
