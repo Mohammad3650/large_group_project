@@ -24,7 +24,10 @@ Live URL: https://razas-crew.netlify.app/
 ## Demo Accounts 
 
 Email: seeded_johndoe@example.net
+
 Password: password123
+
+Note: On the deployed version, on the pre-configured demo subscription (KCL Timetable) is fully functional
 
 ## Features
 
@@ -52,17 +55,32 @@ Password: password123
 - npm - frontend dependency management
 - Python virtual environment (venv) - backend dependency isolation
 
-## Setup Instructions (Quick Start)
+## Setup Instructions 
 
-### 1. Clone the repository
+### Recommended: Nix Setup (One-Step)
+
+This project uses Nix to provide a fully reproducible development environment. All dependencies are handled automatically
+
+The initial Nix flake configuration was generated with the assistance of AI
+
+```bash
+nix run .#init     - to initialise the project
+nix run .#tests    - to execute the test suite
+nix run .#run      - to start the frontend and backend servers
+```
+For detailed setup, Nix configuration and troubleshooting, please see the Developer Manual
+
+### Manual Setup 
+
+#### 1. Clone the repository
 ```
 git clone https://github.com/Mohammad3650/large_group_project.git
 ```
-### 2. Local setup
+#### 2. Local setup
 
 To run the project on your own machine, you need to set up the backend and frontend separately. The backend uses Python and Django, and the frontend uses React + JavaScript. Start from the project root and follow the steps below.
 
-#### 2.1 Backend setup
+##### 2.1 Backend setup
 
 Move into backend folder first
 ```
@@ -91,7 +109,7 @@ Start the backend server:
 python manage.py runserver
 ```
 
-#### 2.2 Frontend setup
+##### 2.2 Frontend setup
 
 Open a new terminal and go to the frontend folder:
 ```
