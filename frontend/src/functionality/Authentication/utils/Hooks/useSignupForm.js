@@ -29,7 +29,6 @@ function updateSignupFormField(form, name, value) {
 /**
  * Hook that manages signup form state, validation and submission.
  * 
- * @param {function} nav - React router navigate function
  * @return {{
  *   form: {
  *      email: string, 

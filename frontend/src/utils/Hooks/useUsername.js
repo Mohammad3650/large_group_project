@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import getUsername from '../Api/getUsername.js';
+import fetchUsername from '../Helpers/fetchUsername.js';
 
 /**
  * Custom hook to fetch and return the current user's username from the API.
@@ -15,21 +15,7 @@ function useUsername(isLoggedIn) {
 
     useEffect(() => {
         if (!isLoggedIn) return;
-
-        async function fetchUsername() {
-            try {
-                const username = await getUsername();
-                if (!username) {
-                    setError('Invalid response from server');
-                    return;
-                }
-                setUsername(username);
-            } catch (err) {
-                if (err.name === 'CanceledError') return;
-                setError('Failed to load user');
-            }
-        }
-        fetchUsername();
+        fetchUsername({ setUsername, setError });
     }, [isLoggedIn]);
 
     return { username, error };

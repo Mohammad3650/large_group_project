@@ -5,7 +5,6 @@ from datetime import date, time
 from scheduler.models.User import User
 from scheduler.models.DayPlan import DayPlan
 from scheduler.models.TimeBlock import TimeBlock
-from scheduler.views.edit_schedule_view import serialize_time_block_with_date
 from scheduler.views.edit_schedule_view import (
     get_user_time_block,
     apply_utc_time_updates,

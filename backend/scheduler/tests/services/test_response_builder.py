@@ -1,6 +1,6 @@
 from django.test import TestCase
 from scheduler.services.response_builder import ScheduleResponseBuilder
-from datetime import datetime, date, time
+from datetime import date, time
 
 class ScheduleResponseBuilderTest(TestCase):
 
