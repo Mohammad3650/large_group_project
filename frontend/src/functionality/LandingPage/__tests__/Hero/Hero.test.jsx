@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-vi.mock('../../../../utils/Auth/authStatus.js', () => ({
+vi.mock('../../../Authentication/utils/authStatus.js', () => ({
     default: vi.fn(() => false),
 }));
 
@@ -38,7 +38,7 @@ vi.mock('../../stylesheets/Hero/Hero.css', () => ({}));
 import Hero from '../../Hero/Hero.jsx';
 import * as getHeroImageModule from '../../utils/Helpers/getHeroImage.js';
 import * as getHeroButtonsModule from '../../utils/Helpers/getHeroButtons.js';
-import * as authStatusModule from '../../../../utils/Auth/authStatus.js';
+import * as authStatusModule from '../../../Authentication/utils/authStatus.js';
 
 const renderHero = (theme = 'light') =>
     render(
