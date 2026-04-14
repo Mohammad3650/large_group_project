@@ -20,7 +20,7 @@ vi.mock('react-router-dom', async () => {
     };
 });
 
-vi.mock('../../../utils/Hooks/useCreateTimeBlock.js', () => ({
+vi.mock('../utils/Hooks/useCreateTimeBlock.js', () => ({
     useCreateTimeBlock: () => ({
         handleCreate: mockHandleCreate,
         loading: false,
@@ -29,7 +29,7 @@ vi.mock('../../../utils/Hooks/useCreateTimeBlock.js', () => ({
     })
 }));
 
-vi.mock('../../../utils/Hooks/useGenerateSchedule.js', () => ({
+vi.mock('../utils/Hooks/useGenerateSchedule.js', () => ({
     useGenerateSchedule: () => ({
         handleGenerate: mockHandleGenerate,
         loading: false,
