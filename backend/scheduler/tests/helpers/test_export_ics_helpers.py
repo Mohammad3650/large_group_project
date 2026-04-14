@@ -83,7 +83,7 @@ class ExportIcsHelpersTest(TestCase):
         self.assertIsNone(build_ics_event_lines(untimed_block))
 
     def test_build_ics_event_lines_returns_expected_lines_for_timed_block(self):
-        """It should return ICS VEVENT lines for a timed block."""
+        """It should return ICS VEVENT lines with local time and TZID for a timed block."""
         event_lines = build_ics_event_lines(self.time_block)
 
         self.assertEqual(
@@ -91,8 +91,8 @@ class ExportIcsHelpersTest(TestCase):
             [
                 "BEGIN:VEVENT",
                 "SUMMARY:SEG Lecture",
-                "DTSTART:20260410T090000",
-                "DTEND:20260410T100000",
+                "DTSTART;TZID=Europe/London:20260410T100000",
+                "DTEND;TZID=Europe/London:20260410T110000",
                 "LOCATION:Bush House",
                 "DESCRIPTION:Bring laptop",
                 "END:VEVENT",
