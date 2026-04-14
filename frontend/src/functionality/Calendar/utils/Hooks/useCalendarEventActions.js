@@ -16,7 +16,7 @@ function useCalendarEventActions({calendarEvent: {id}, handleDelete }) {
     
     function handleDeleteEvent(){
         handleDelete(id);   
-    };
+    }
     return{
             handleEdit,
             handleDeleteEvent

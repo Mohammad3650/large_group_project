@@ -151,7 +151,6 @@ describe('Tests for PreviewCalendar', () => {
 });
 
 it('logs an error when loading the generated schedule fails', async () => {
-    const error = new Error('Bad session data');
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     sessionStorage.setItem('generatedSchedule', '{invalid json');
