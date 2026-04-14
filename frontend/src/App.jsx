@@ -9,7 +9,7 @@ import Landing from './functionality/LandingPage/Landing.jsx';
 import Calendar from './functionality/Calendar/Calendar.jsx';
 import PreviewCalendar from './functionality/Calendar/PreviewCalendar.jsx';
 import ChangePassword from './functionality/Authentication/ChangePassword/ChangePassword.jsx';
-import CreateSchedule from './functionality/Calendar/CreateSchedule.jsx';
+import CreateSchedule from './functionality/CreateSchedule/CreateSchedule.jsx';
 import Settings from './functionality/Settings/Settings.jsx';
 import { setAuthToken } from './api';
 import SuccessfulTimeBlock from './components/SuccessfulTimeBlock.jsx';

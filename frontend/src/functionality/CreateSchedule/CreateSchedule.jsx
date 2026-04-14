@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import TimeBlockForm from '../../components/TimeBlockForm.jsx';
 import GeneratorForm from '../../components/GeneratorForm.jsx';
-import { useCreateTimeBlock } from '../../utils/Hooks/useCreateTimeBlock.js';
-import { useGenerateSchedule } from '../../utils/Hooks/useGenerateSchedule.js';
+import { useCreateTimeBlock } from './utils/Hooks/useCreateTimeBlock.js';
+import { useGenerateSchedule } from './utils/Hooks/useGenerateSchedule.js';
 
 const TABS = [
     { id: 'time-block', label: 'Task' },
