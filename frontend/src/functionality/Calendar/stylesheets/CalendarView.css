@@ -22,7 +22,7 @@
 
 @media (max-width: 768px) {
     .actual-calendar {
-        height: var(--calendar-height-mobile);
+        height: auto;
         padding: var(--space-sm);
         border-radius: var(--radius-md);
         overflow: visible;
@@ -31,7 +31,7 @@
 
 @media (max-width: var(--breakpoint-sm)) {
     .actual-calendar {
-        height: var(--calendar-height-mobile-sm);
+        height: auto;
         padding: var(--space-calendar-mobile-sm);
     }
 }
