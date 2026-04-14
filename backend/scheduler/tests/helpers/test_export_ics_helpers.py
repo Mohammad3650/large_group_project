@@ -117,3 +117,7 @@ class ExportIcsHelpersTest(TestCase):
         self.assertIn("BEGIN:VCALENDAR\r\nVERSION:2.0", content)
         self.assertIn("SUMMARY:SEG Lecture", content)
         self.assertIn("END:VCALENDAR", content)
+
+    def test_escape_ics_text_returns_empty_string_for_blank_value(self):
+        """It should return an empty string for a blank value."""
+        self.assertEqual(escape_ics_text(""), "")
