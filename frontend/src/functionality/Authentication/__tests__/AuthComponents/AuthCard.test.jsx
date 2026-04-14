@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/vitest';
-import AuthCard from '../AuthCard';
+import AuthCard from '../../AuthComponents/AuthCard';
 
-const renderAuthCard = (props, children) => {
+function renderAuthCard(props, children) {
     return render(
         <MemoryRouter>
             <AuthCard {...props}>
@@ -12,17 +12,17 @@ const renderAuthCard = (props, children) => {
             </AuthCard>
         </MemoryRouter>
     );
-};
+}
 
-describe('Tests for AuthCard', () => {
+describe('AuthCard', () => {
     it('renders the title, subtitle, children, and footer link', () => {
         renderAuthCard(
             {
-                title: "Welcome Back",
-                subtitle: "Log in to continue",
-                footerText: "No account?",
-                footerLinkText: "Sign up",
-                footerLinkTo: "/signup",
+                title: 'Welcome Back',
+                subtitle: 'Log in to continue',
+                footerText: 'No account?',
+                footerLinkText: 'Sign up',
+                footerLinkTo: '/signup'
             },
             <form>Login form content</form>
         );
@@ -40,18 +40,16 @@ describe('Tests for AuthCard', () => {
     it('does not render the subtitle when it is not provided', () => {
         renderAuthCard(
             {
-                title: "Create your account",
-                footerText: "Already have an account?",
-                footerLinkText: "Log in",
-                footerLinkTo: "/login",
+                title: 'Create your account',
+                footerText: 'Already have an account?',
+                footerLinkText: 'Log in',
+                footerLinkTo: '/login'
             },
             <div>Signup content</div>
         );
 
         expect(screen.getByText('Create your account')).toBeInTheDocument();
         expect(screen.getByText('Signup content')).toBeInTheDocument();
-        expect(
-            screen.queryByText('Log in to continue')
-        ).not.toBeInTheDocument();
+        expect(screen.queryByText('Log in to continue')).not.toBeInTheDocument();
     });
 });

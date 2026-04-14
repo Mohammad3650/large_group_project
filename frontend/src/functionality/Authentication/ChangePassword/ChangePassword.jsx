@@ -25,7 +25,7 @@ function ChangePassword() {
             footerLinkTo="/settings"
         >
             <StatusAlerts
-                errors={errors.global}
+                errors={errors}
                 successMessage={message}
             />
 
@@ -38,10 +38,7 @@ function ChangePassword() {
                         placeholder="Current password"
                         value={currentPassword}
                         onChange={setCurrentPassword}
-                        error={
-                            errors.fieldErrors
-                                .currentPassword
-                        }
+                        error={errors.fieldErrors.currentPassword}
                     />
 
                     <AuthField
@@ -51,9 +48,7 @@ function ChangePassword() {
                         placeholder="New password"
                         value={newPassword}
                         onChange={setNewPassword}
-                        error={
-                            errors.fieldErrors.newPassword
-                        }
+                        error={errors.fieldErrors.newPassword}
                     />
                 </div>
 

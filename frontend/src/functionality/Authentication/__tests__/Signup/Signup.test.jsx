@@ -1,32 +1,48 @@
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/vitest';
-import userEvent from '@testing-library/user-event';
+import Signup from '../../Signup/Signup.jsx';
+import useAuthRedirect from '../../utils/Hooks/useAuthRedirect.js';
+import useSignupForm from '../../utils/Hooks/useSignupForm.js';
 
-import Signup from '../Signup';
-import { signupUser } from '../../../utils/Auth/authService';
-import { isTokenValid } from '../../../utils/Auth/authToken';
+vi.mock('../../utils/Hooks/useAuthRedirect.js', () => ({
+    default: vi.fn()
+}));
 
-const mockNavigate = vi.fn();
+vi.mock('../../utils/Hooks/useSignupForm.js', () => ({
+    default: vi.fn()
+}));
 
-vi.mock('react-router-dom', async () => {
-    const actual = await vi.importActual('react-router-dom');
+function createHookState(overrides = {}) {
     return {
-        ...actual,
-        useNavigate: () => mockNavigate
+        getFieldProps: vi.fn((name) => {
+            const values = {
+                email: 'test@example.com',
+                username: 'testuser',
+                firstName: 'Test',
+                lastName: 'User',
+                phoneNumber: '07123456789',
+                password: 'password123',
+                confirmPassword: 'password123'
+            };
+
+            return {
+                value: values[name] ?? '',
+                onChange: vi.fn()
+            };
+        }),
+        errors: {
+            fieldErrors: {},
+            global: []
+        },
+        loading: false,
+        handleSubmit: vi.fn((event) => event.preventDefault()),
+        ...overrides
     };
-});
+}
 
-vi.mock('../../../utils/Auth/authService', () => ({
-    signupUser: vi.fn()
-}));
-
-vi.mock('../../../utils/Auth/authToken', () => ({
-    isTokenValid: vi.fn()
-}));
-
-function renderSignup() {
+function renderComponent() {
     return render(
         <MemoryRouter>
             <Signup />
@@ -34,168 +50,143 @@ function renderSignup() {
     );
 }
 
-async function fillSignupForm(overrides = {}) {
-    const values = {
-        email: 'test@example.com',
-        username: 'testuser',
-        firstName: 'Test',
-        lastName: 'User',
-        phoneNumber: '07123456789',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        ...overrides
-    };
-
-    fireEvent.change(screen.getByPlaceholderText('you@example.com'), {
-        target: { value: values.email }
-    });
-    fireEvent.change(screen.getByPlaceholderText('Choose a username'), {
-        target: { value: values.username }
-    });
-    fireEvent.change(screen.getByPlaceholderText('First name'), {
-        target: { value: values.firstName }
-    });
-    fireEvent.change(screen.getByPlaceholderText('Last name'), {
-        target: { value: values.lastName }
-    });
-    fireEvent.change(screen.getByPlaceholderText('e.g. 07123 456 789'), {
-        target: { value: values.phoneNumber }
-    });
-    fireEvent.change(screen.getByPlaceholderText('Create a password'), {
-        target: { value: values.password }
-    });
-    fireEvent.change(screen.getByPlaceholderText('Confirm password'), {
-        target: { value: values.confirmPassword }
-    });
-}
-
-describe('Tests for Signup', () => {
+describe('Signup', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        isTokenValid.mockResolvedValue(false);
     });
 
-    it('renders the signup form', () => {
-        renderSignup();
+    it('calls the auth redirect hook when rendered', () => {
+        useSignupForm.mockReturnValue(createHookState());
 
-        expect(screen.getByText('Create your account')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument();
+        renderComponent();
+
+        expect(useAuthRedirect).toHaveBeenCalledTimes(1);
     });
 
-    it('redirects to the dashboard when the user already has a valid token', async () => {
-        isTokenValid.mockResolvedValue(true);
+    it('renders the signup page content', () => {
+        useSignupForm.mockReturnValue(createHookState());
 
-        renderSignup();
+        renderComponent();
 
-        await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
-        });
+        expect(
+            screen.getByRole('heading', { name: /create your account/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(/sign up to get started with studysync/i)
+        ).toBeInTheDocument();
+
+        expect(screen.getByLabelText(/email/i)).toHaveValue('test@example.com');
+        expect(screen.getByLabelText(/username/i)).toHaveValue('testuser');
+        expect(screen.getByLabelText(/first name/i)).toHaveValue('Test');
+        expect(screen.getByLabelText(/last name/i)).toHaveValue('User');
+        expect(screen.getByLabelText(/phone number/i)).toHaveValue('07123456789');
+        expect(screen.getByLabelText(/^password$/i)).toHaveValue('password123');
+        expect(screen.getByLabelText(/confirm password/i)).toHaveValue('password123');
+
+        expect(
+            screen.getByRole('button', { name: /sign up/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('link', { name: /log in/i })
+        ).toBeInTheDocument();
     });
 
-    it('submits valid signup data and redirects on success', async () => {
-        const user = userEvent.setup();
+    it('passes field changes through the getFieldProps onChange handler', () => {
+        const emailOnChange = vi.fn();
 
-        signupUser.mockResolvedValue({
-            access: 'mock-access',
-            refresh: 'mock-refresh'
-        });
+        const getFieldProps = vi.fn((name) => {
+            if (name === 'email') {
+                return {
+                    value: '',
+                    onChange: emailOnChange
+                };
+            }
 
-        renderSignup();
-        await fillSignupForm();
-
-        await user.click(screen.getByRole('button', { name: /sign up/i }));
-
-        expect(signupUser).toHaveBeenCalledWith({
-            email: 'test@example.com',
-            username: 'testuser',
-            firstName: 'Test',
-            lastName: 'User',
-            phoneNumber: '07123456789',
-            password: 'Password123!',
-            confirmPassword: 'Password123!'
-        });
-
-        expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
-    });
-
-    it('shows required field errors and does not submit an empty form', async () => {
-        const user = userEvent.setup();
-
-        renderSignup();
-        await user.click(screen.getByRole('button', { name: /sign up/i }));
-
-        expect(await screen.findByText('Email is required.')).toBeInTheDocument();
-        expect(screen.getByText('Username is required.')).toBeInTheDocument();
-        expect(screen.getByText('First name is required.')).toBeInTheDocument();
-        expect(screen.getByText('Last name is required.')).toBeInTheDocument();
-        expect(screen.getByText('Phone number is required.')).toBeInTheDocument();
-        expect(screen.getByText('Password is required.')).toBeInTheDocument();
-        expect(screen.getByText('Please confirm your password.')).toBeInTheDocument();
-
-        expect(signupUser).not.toHaveBeenCalled();
-    });
-
-    it('shows an error when passwords do not match', async () => {
-        const user = userEvent.setup();
-
-        renderSignup();
-        await fillSignupForm({
-            confirmPassword: 'Different123!'
+            return {
+                value: '',
+                onChange: vi.fn()
+            };
         });
 
-        await user.click(screen.getByRole('button', { name: /sign up/i }));
+        useSignupForm.mockReturnValue(
+            createHookState({
+                getFieldProps
+            })
+        );
 
-        expect(await screen.findByText('Passwords do not match.')).toBeInTheDocument();
+        renderComponent();
 
-        expect(signupUser).not.toHaveBeenCalled();
+        fireEvent.change(screen.getByLabelText(/email/i), {
+            target: { value: 'new@example.com' }
+        });
+
+        expect(emailOnChange).toHaveBeenCalledTimes(1);
+        expect(emailOnChange).toHaveBeenCalledWith('new@example.com');
     });
 
-    it('shows API global errors when signup fails', async () => {
-        const user = userEvent.setup();
-        signupUser.mockRejectedValue(new Error('API error'));
+    it('submits the form using the hook submit handler', () => {
+        const handleSubmit = vi.fn((event) => event.preventDefault());
 
-        renderSignup();
-        await fillSignupForm();
+        useSignupForm.mockReturnValue(
+            createHookState({
+                handleSubmit
+            })
+        );
 
-        await user.click(screen.getByRole('button', { name: /sign up/i }));
+        renderComponent();
 
-        expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
+        expect(handleSubmit).toHaveBeenCalledTimes(1);
     });
 
-    it('renders backend field errors under the matching input', async () => {
-        const user = userEvent.setup();
-
-        const error = {
-            response: {
-                data: {
-                    email: ['Email is already in use.']
+    it('renders field validation errors from hook state', () => {
+        useSignupForm.mockReturnValue(
+            createHookState({
+                errors: {
+                    fieldErrors: {
+                        email: 'Email is required.',
+                        password: 'Password is required.',
+                        confirmPassword: 'Passwords must match.'
+                    },
+                    global: []
                 }
-            },
-            isAxiosError: true
-        };
+            })
+        );
 
-        signupUser.mockRejectedValue(error);
+        renderComponent();
 
-        renderSignup();
-        await fillSignupForm();
-
-        await user.click(screen.getByRole('button', { name: /sign up/i }));
-
-        expect(await screen.findByText('Email is already in use.')).toBeInTheDocument();
+        expect(screen.getByText(/email is required/i)).toBeInTheDocument();
+        expect(screen.getByText(/password is required/i)).toBeInTheDocument();
+        expect(screen.getByText(/passwords must match/i)).toBeInTheDocument();
     });
 
-    it('does not submit again while a signup request is in progress', async () => {
-        signupUser.mockImplementation(() => new Promise(() => {}));
+    it('renders global errors from hook state', () => {
+        useSignupForm.mockReturnValue(
+            createHookState({
+                errors: {
+                    fieldErrors: {},
+                    global: ['Signup failed.']
+                }
+            })
+        );
 
-        renderSignup();
-        await fillSignupForm();
+        renderComponent();
 
-        const form = screen.getByRole('button', { name: /sign up/i }).closest('form');
+        expect(screen.getByText(/signup failed/i)).toBeInTheDocument();
+    });
 
-        fireEvent.submit(form);
-        fireEvent.submit(form);
+    it('shows the loading state from hook state', () => {
+        useSignupForm.mockReturnValue(
+            createHookState({
+                loading: true
+            })
+        );
 
-        expect(signupUser).toHaveBeenCalledTimes(1);
+        renderComponent();
+
+        expect(
+            screen.getByRole('button', { name: /signing up/i })
+        ).toBeDisabled();
     });
 });
