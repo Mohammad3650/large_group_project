@@ -279,6 +279,10 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
 }
 
 @media (max-width: 768px) {
+    .actual-calendar * {
+        touch-action: manipulation;
+    }
+
     .sx__calendar {
         overflow: visible !important;
         height: auto !important;
