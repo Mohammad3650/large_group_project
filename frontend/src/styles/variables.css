@@ -259,6 +259,7 @@
     --calendar-event-modal-max-width: 280px;
     --calendar-event-modal-width-mobile: 40vw;
     --calendar-event-modal-max-width-mobile: 240px;
+    --date-picker-popup-width-mobile: 310px;
 
     --event-text-soft: rgba(255, 255, 255, 0.85);
     --shadow-event-hover: 0 9px 10px rgba(0, 0, 0, 0.5);
