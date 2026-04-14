@@ -1,4 +1,4 @@
-import getUserTimezone from './getUserTimezone';
+import getUserTimezone from '../../../../utils/Helpers/getUserTimezone';
 
 /**
  * Converts empty time values into null

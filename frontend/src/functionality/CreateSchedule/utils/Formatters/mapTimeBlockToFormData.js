@@ -1,4 +1,4 @@
-import toLocalDateTime from './toLocalDateTime';
+import toLocalDateTime from '../../../../utils/Formatters/toLocalDateTime.js';
 
 /**
  * Maps API time block data into the format expected by the form.

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import buildUpdatePayload from '../Helpers/buildUpdatePayload';
-import getUserTimezone from '../Helpers/getUserTimezone';
+import buildUpdatePayload from '../../../utils/Helpers/buildUpdatePayload';
+import getUserTimezone from '../../../../../utils/Helpers/getUserTimezone';
 
-vi.mock('../Helpers/getUserTimezone', () => ({
+vi.mock('../../../../../utils/Helpers/getUserTimezone', () => ({
     default: vi.fn()
 }));
 

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import mapTimeBlockToFormData from '../Formatters/mapTimeBlockToFormData';
-import toLocalDateTime from '../Formatters/toLocalDateTime';
+import mapTimeBlockToFormData from '../../../utils/Formatters/mapTimeBlockToFormData.js';
+import toLocalDateTime from '../../../../../utils/Formatters/toLocalDateTime.js';
 
 // mock dependency
-vi.mock('../Formatters/toLocalDateTime', () => ({
+vi.mock('../../../../../utils/Formatters/toLocalDateTime.js', () => ({
     default: vi.fn()
 }));
 

@@ -1,0 +1,58 @@
+.page-center {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: var(--space-3xl) var(--space-lg);
+    overflow-y: auto;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.time-block-form-card {
+    border: 1px solid var(--border-soft);
+    width: min(900px, 95vw);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-xl);
+    margin: var(--space-md);
+    text-align: center;
+    background: var(--bg-soft);
+    color: var(--text-main);
+}
+
+.tab-bar {
+    display: flex;
+    border-bottom: 2px solid var(--border-light);
+    margin-bottom: var(--space-2xl);
+    gap: 0;
+}
+
+.tab-btn {
+    padding: 0.6rem 1.25rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    transition:
+        color 0.15s,
+        border-color 0.15s;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+}
+
+.tab-btn--active {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+    font-weight: 600;
+}
+
+.tab-panel {
+    padding: var(--space-xs) 0;
+}
