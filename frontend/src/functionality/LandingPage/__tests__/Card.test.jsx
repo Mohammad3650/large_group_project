@@ -7,7 +7,7 @@ function renderCard(overrides = {}) {
         avatar: 'A',
         stars: '★★★★★',
         review: 'This made planning much easier.',
-        name: 'Mohammad',
+        name: 'Mohammad'
     };
 
     return render(<Card {...defaultProps} {...overrides} />);
@@ -28,7 +28,7 @@ describe('Tests for Card', () => {
             avatar: 'B',
             stars: '★★★★☆',
             review: 'Very clean and easy to use.',
-            name: 'Aisha',
+            name: 'Aisha'
         });
 
         expect(container.querySelector('.testimonial-card')).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe('Tests for Card', () => {
             avatar: 'C',
             stars: '★★★☆☆',
             review: 'Helpful overall.',
-            name: 'Zaynab',
+            name: 'Zaynab'
         });
 
         const nameText = screen.getByText('Zaynab');
