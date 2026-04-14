@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import createCalendarCustomComponents from '../CreateCalendarCustomComponents.jsx';
+import CreateCalendarCustomComponents from '../CreateCalendarCustomComponents.jsx';
 
 vi.mock('../CalendarEventModal.jsx', () => ({
     default: ({ calendarEvent, eventButtons, handleDelete }) => (
