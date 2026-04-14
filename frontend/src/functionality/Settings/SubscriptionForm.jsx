@@ -122,7 +122,7 @@ function SubscriptionForm({
 
     return (
         <form className="subscription-form" onSubmit={handleSubmit}>
-            <h2 className="subscription-title">Subscribe to timetable</h2>
+            <h2 className="subscription-title">Subscribe to Timetable</h2>
 
             {!hasParentFeedback && <SubscriptionFeedback feedback={localFeedback} />}
 
