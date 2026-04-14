@@ -6,23 +6,40 @@ vi.mock('../Helpers/getUserTimezone', () => ({
     default: vi.fn(() => 'UTC'),
 }));
 
+const EMPTY_BLOCK = {
+    name: '',
+    location: '',
+    block_type: 'study',
+    description: '',
+    start_time: '',
+    end_time: '',
+};
+
+function createInitialData(overrides = {}) {
+    return {
+        id: 1,
+        date: '2026-04-10',
+        name: 'Lecture',
+        location: 'Room A',
+        block_type: 'study',
+        description: 'Attend lecture',
+        start_time: '09:00',
+        end_time: '10:00',
+        ...overrides,
+    };
+}
+
+function createMockEvent() {
+    return { preventDefault: vi.fn() };
+}
+
+function expectSubmitData(mockFn, expectedData) {
+    expect(mockFn).toHaveBeenCalledWith([expectedData]);
+}
+
 describe('useTimeBlockForm', () => {
     let mockOnSubmit;
     let mockClearErrors;
-
-    function createInitialData(overrides = {}) {
-        return {
-            id: 1,
-            date: '2026-04-10',
-            name: 'Lecture',
-            location: 'Room A',
-            block_type: 'study',
-            description: 'Attend lecture',
-            start_time: '09:00',
-            end_time: '10:00',
-            ...overrides,
-        };
-    }
 
     function renderTimeBlockForm(props = {}) {
         return renderHook(
@@ -49,14 +66,7 @@ describe('useTimeBlockForm', () => {
 
         expect(result.current.date).toBe('');
         expect(result.current.blocks).toHaveLength(1);
-        expect(result.current.blocks[0]).toEqual({
-            name: '',
-            location: '',
-            block_type: 'study',
-            description: '',
-            start_time: '',
-            end_time: '',
-        });
+        expect(result.current.blocks[0]).toEqual(EMPTY_BLOCK);
     });
 
     it('initialises with initialData when provided', () => {
@@ -113,6 +123,26 @@ describe('useTimeBlockForm', () => {
         });
     });
 
+    it('does not reset state when initialData becomes null on rerender', () => {
+        const initialData = createInitialData();
+
+        const { result, rerender } = renderTimeBlockForm({ initialData });
+
+        act(() => {
+            result.current.setDate('2026-04-20');
+            result.current.updateBlock(0, 'name', 'Changed Title');
+        });
+
+        rerender({
+            initialData: null,
+            onSubmit: mockOnSubmit,
+            clearErrors: mockClearErrors,
+        });
+
+        expect(result.current.date).toBe('2026-04-20');
+        expect(result.current.blocks[0].name).toBe('Changed Title');
+    });
+
     it('sets empty string for missing start_time and end_time in initialData', () => {
         const initialData = createInitialData({
             start_time: undefined,
@@ -125,6 +155,18 @@ describe('useTimeBlockForm', () => {
         expect(result.current.blocks[0].end_time).toBe('');
     });
 
+    it('sets empty string only for the missing time field in initialData', () => {
+        const initialData = createInitialData({
+            start_time: '09:00',
+            end_time: undefined,
+        });
+
+        const { result } = renderTimeBlockForm({ initialData });
+
+        expect(result.current.blocks[0].start_time).toBe('09:00');
+        expect(result.current.blocks[0].end_time).toBe('');
+    });
+
     it('addBlock adds a new empty block and calls clearErrors', () => {
         const { result } = renderTimeBlockForm();
 
@@ -133,14 +175,7 @@ describe('useTimeBlockForm', () => {
         });
 
         expect(result.current.blocks).toHaveLength(2);
-        expect(result.current.blocks[1]).toEqual({
-            name: '',
-            location: '',
-            block_type: 'study',
-            description: '',
-            start_time: '',
-            end_time: '',
-        });
+        expect(result.current.blocks[1]).toEqual(EMPTY_BLOCK);
         expect(mockClearErrors).toHaveBeenCalledTimes(1);
     });
 
@@ -174,7 +209,7 @@ describe('useTimeBlockForm', () => {
 
     it('handleSubmit prevents default and calls onSubmit with formatted data', () => {
         const { result } = renderTimeBlockForm();
-        const mockEvent = { preventDefault: vi.fn() };
+        const mockEvent = createMockEvent();
 
         act(() => {
             result.current.setDate('2026-04-15');
@@ -191,43 +226,40 @@ describe('useTimeBlockForm', () => {
         });
 
         expect(mockEvent.preventDefault).toHaveBeenCalled();
-        expect(mockOnSubmit).toHaveBeenCalledWith([
-            {
-                id: undefined,
-                date: '2026-04-15',
-                name: 'Revision',
-                location: 'Library',
-                description: 'Study for exam',
-                block_type: 'study',
-                start_time: '14:00',
-                end_time: '16:00',
-                timezone: 'UTC',
-            },
-        ]);
+
+        expectSubmitData(mockOnSubmit, {
+            id: undefined,
+            date: '2026-04-15',
+            name: 'Revision',
+            location: 'Library',
+            description: 'Study for exam',
+            block_type: 'study',
+            start_time: '14:00',
+            end_time: '16:00',
+            timezone: 'UTC',
+        });
     });
 
     it('handleSubmit includes existing id when submitting edited data', () => {
         const initialData = createInitialData();
         const { result } = renderTimeBlockForm({ initialData });
-        const mockEvent = { preventDefault: vi.fn() };
+        const mockEvent = createMockEvent();
 
         act(() => {
             result.current.handleSubmit(mockEvent);
         });
 
-        expect(mockOnSubmit).toHaveBeenCalledWith([
-            {
-                id: 1,
-                date: '2026-04-10',
-                name: 'Lecture',
-                location: 'Room A',
-                description: 'Attend lecture',
-                block_type: 'study',
-                start_time: '09:00',
-                end_time: '10:00',
-                timezone: 'UTC',
-            },
-        ]);
+        expectSubmitData(mockOnSubmit, {
+            id: 1,
+            date: '2026-04-10',
+            name: 'Lecture',
+            location: 'Room A',
+            description: 'Attend lecture',
+            block_type: 'study',
+            start_time: '09:00',
+            end_time: '10:00',
+            timezone: 'UTC',
+        });
     });
 
     it('returns all expected values and functions', () => {
@@ -240,5 +272,33 @@ describe('useTimeBlockForm', () => {
         expect(result.current).toHaveProperty('updateBlock');
         expect(result.current).toHaveProperty('deleteBlock');
         expect(result.current).toHaveProperty('handleSubmit');
+    });
+
+    it('sets date to an empty string when initialData has no date on rerender', () => {
+        const firstData = createInitialData();
+        const updatedData = createInitialData({
+            date: undefined,
+        });
+
+        const { result, rerender } = renderTimeBlockForm({ initialData: firstData });
+
+        expect(result.current.date).toBe('2026-04-10');
+
+        rerender({
+            initialData: updatedData,
+            onSubmit: mockOnSubmit,
+            clearErrors: mockClearErrors,
+        });
+
+        expect(result.current.date).toBe('');
+        expect(result.current.blocks[0]).toEqual({
+            id: 1,
+            name: 'Lecture',
+            location: 'Room A',
+            block_type: 'study',
+            description: 'Attend lecture',
+            start_time: '09:00',
+            end_time: '10:00',
+        });
     });
 });

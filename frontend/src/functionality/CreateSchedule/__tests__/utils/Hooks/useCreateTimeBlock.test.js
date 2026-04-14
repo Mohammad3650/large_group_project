@@ -185,4 +185,15 @@ describe('Tests for useCreateTimeBlock', () => {
             { end_time: ['End time is required.'] }
         ]);
     });
+
+    it('stores an empty error object when the request fails without response data', async () => {
+        api.post.mockRejectedValue(new Error('Network Error'));
+
+        const { result } = renderCreateHook();
+
+        await submitBlocks(result, [makeBlock()]);
+
+        expect(mockNavigate).not.toHaveBeenCalled();
+        expect(result.current.serverErrors).toEqual([{}]);
+    });
 });

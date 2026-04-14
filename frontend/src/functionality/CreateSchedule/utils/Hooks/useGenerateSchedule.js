@@ -39,7 +39,7 @@ export function useGenerateSchedule() {
             const events = response.data?.events || [];
 
             if (events.length === 0) {
-                setServerErrors( { general: [ 'No feasible schedule could be generated with the given constraints.']} );
+                setServerErrors( { general: [ 'Unable to generate a schedule. Try changing your inputs and try again.']} );
                 return;
             }
             setServerErrors({});

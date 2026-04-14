@@ -79,7 +79,7 @@ describe('Tests for useGenerateSchedule', () => {
         await submitGenerate(result);
 
         expect(result.current.serverErrors).toEqual({
-            general: ['No feasible schedule could be generated with the given constraints.']
+            general: ['Unable to generate a schedule. Try changing your inputs and try again.']
         });
 
         expect(sessionStorage.getItem('generatedSchedule')).toBeNull();
@@ -155,5 +155,36 @@ describe('Tests for useGenerateSchedule', () => {
         });
 
         expect(result.current.loading).toBe(false);
+    });
+
+    it('sets the general error when the API response has no events property', async () => {
+        generateSchedule.mockResolvedValue({
+            data: {}
+        });
+
+        const { result } = renderGenerateHook();
+
+        await submitGenerate(result);
+
+        expect(result.current.serverErrors).toEqual({
+            general: ['Unable to generate a schedule. Try changing your inputs and try again.']
+        });
+
+        expect(sessionStorage.getItem('generatedSchedule')).toBeNull();
+        expect(result.current.loading).toBe(false);
+        expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('sets empty server errors when generation fails without response data', async () => {
+        generateSchedule.mockRejectedValue(new Error('Network Error'));
+
+        const { result } = renderGenerateHook();
+
+        await submitGenerate(result);
+
+        expect(result.current.serverErrors).toEqual({});
+        expect(sessionStorage.getItem('generatedSchedule')).toBeNull();
+        expect(result.current.loading).toBe(false);
+        expect(mockNavigate).not.toHaveBeenCalled();
     });
 });
