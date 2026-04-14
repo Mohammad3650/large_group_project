@@ -1,7 +1,6 @@
 from django.test import TestCase
-from scheduler.services.request_parser import ScheduleRequestParser, ParsedScheduleRequest
-from dataclasses import FrozenInstanceError
-from datetime import datetime, date, time
+from scheduler.services.request_parser import ScheduleRequestParser
+from datetime import date, time
 
 
 class TestScheduleRequestParser(TestCase):

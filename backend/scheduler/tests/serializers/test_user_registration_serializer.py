@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from rest_framework.exceptions import ValidationError
 
 from scheduler.serializers.user_registration_serializer import (
     UserRegistrationSerializer,
