@@ -1,5 +1,5 @@
 import './stylesheets/TimeBlockForm.css';
-import { useTimeBlockForm } from '../../utils/Hooks/useTimeBlockForm';
+import { useTimeBlockForm } from './utils/Hooks/useTimeBlockForm';
 import TimeBlockItem from './TimeBlockItem';
 import FormActions from './FormActions';
 
