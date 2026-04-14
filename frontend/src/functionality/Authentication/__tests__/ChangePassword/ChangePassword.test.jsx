@@ -1,210 +1,180 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import userEvent from '@testing-library/user-event';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
-import ChangePassword from '../ChangePassword.jsx';
-import { api } from '../../../../api.js';
-const mockNavigate = vi.fn();
+import '@testing-library/jest-dom/vitest';
+import ChangePassword from '../../ChangePassword/ChangePassword.jsx';
+import useChangePasswordForm from '../../utils/Hooks/useChangePasswordForm.js';
 
-vi.mock('react-router-dom', async () => {
-    const actual = await vi.importActual('react-router-dom');
-    return {
-        ...actual,
-        useNavigate: () => mockNavigate
-    };
-});
-
-vi.mock('../../../../api.js', () => ({
-    api: {
-        post: vi.fn()
-    }
+vi.mock('../../utils/Hooks/useChangePasswordForm.js', () => ({
+    default: vi.fn()
 }));
+
+function createHookState(overrides = {}) {
+    return {
+        currentPassword: '',
+        setCurrentPassword: vi.fn(),
+        newPassword: '',
+        setNewPassword: vi.fn(),
+        message: '',
+        errors: {
+            fieldErrors: {},
+            global: []
+        },
+        loading: false,
+        handleSubmit: vi.fn((event) => event.preventDefault()),
+        ...overrides
+    };
+}
+
+function renderComponent() {
+    return render(
+        <MemoryRouter>
+            <ChangePassword />
+        </MemoryRouter>
+    );
+}
 
 describe('ChangePassword', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    afterEach(() => {
-        vi.useRealTimers();
-    });
-
-    function renderComponent() {
-        return render(
-            <MemoryRouter>
-                <ChangePassword />
-            </MemoryRouter>
-        );
-    }
-
-    it('renders the form fields and buttons', () => {
-        renderComponent();
-
-        expect(screen.getByRole('heading', { name: /change password/i })).toBeInTheDocument();
-        expect(screen.getByText(/update your account password/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/current password/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/new password/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /update password/i })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: /settings/i })).toBeInTheDocument();
-    });
-
-    it('shows validation errors when both fields are empty', async () => {
-        const user = userEvent.setup();
+    it('renders the form fields, button, and settings link', () => {
+        useChangePasswordForm.mockReturnValue(createHookState());
 
         renderComponent();
 
-        await user.click(screen.getByRole('button', { name: /update password/i }));
-
-        expect(screen.getByText(/current password is required/i)).toBeInTheDocument();
-        expect(screen.getByText(/new password is required/i)).toBeInTheDocument();
-        expect(api.post).not.toHaveBeenCalled();
+        expect(
+            screen.getByRole('heading', { name: /change password/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(/update your account password/i)
+        ).toBeInTheDocument();
+        expect(
+            screen.getByLabelText(/current password/i)
+        ).toBeInTheDocument();
+        expect(
+            screen.getByLabelText(/new password/i)
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /update password/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('link', { name: /settings/i })
+        ).toBeInTheDocument();
     });
 
-    it('shows only current password validation error when current password is missing', async () => {
-        const user = userEvent.setup();
+    it('passes the new current password value to the hook setter', () => {
+        const setCurrentPassword = vi.fn();
 
-        renderComponent();
-
-        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
-
-        await user.click(screen.getByRole('button', { name: /update password/i }));
-
-        expect(screen.getByText(/current password is required/i)).toBeInTheDocument();
-        expect(screen.queryByText(/new password is required/i)).not.toBeInTheDocument();
-        expect(api.post).not.toHaveBeenCalled();
-    });
-
-    it('shows only new password validation error when new password is missing', async () => {
-        const user = userEvent.setup();
-
-        renderComponent();
-
-        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
-
-        await user.click(screen.getByRole('button', { name: /update password/i }));
-
-        expect(screen.getByText(/new password is required/i)).toBeInTheDocument();
-        expect(screen.queryByText(/current password is required/i)).not.toBeInTheDocument();
-        expect(api.post).not.toHaveBeenCalled();
-    });
-
-    it('submits the correct payload and shows a success message', async () => {
-        const user = userEvent.setup();
-        api.post.mockResolvedValue({
-            data: {
-                message: 'Password updated successfully'
-            }
-        });
-
-        renderComponent();
-
-        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
-        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
-
-        await user.click(screen.getByRole('button', { name: /update password/i }));
-
-        expect(api.post).toHaveBeenCalledTimes(1);
-        expect(api.post).toHaveBeenCalledWith('/api/user/change-password/', {
-            current_password: 'oldpassword123',
-            new_password: 'newpassword123'
-        });
-
-        expect(await screen.findByText(/password updated successfully/i)).toBeInTheDocument();
-    });
-
-    it('shows loading state while the request is in progress', async () => {
-        const user = userEvent.setup();
-
-        let resolveRequest;
-        api.post.mockImplementation(
-            () =>
-                new Promise((resolve) => {
-                    resolveRequest = resolve;
-                })
+        useChangePasswordForm.mockReturnValue(
+            createHookState({ setCurrentPassword })
         );
 
         renderComponent();
 
-        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
-        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
-
-        await user.click(screen.getByRole('button', { name: /update password/i }));
-
-        expect(screen.getByRole('button', { name: /updating/i })).toBeDisabled();
-
-        resolveRequest({
-            data: {
-                message: 'Password updated successfully'
-            }
+        fireEvent.change(screen.getByLabelText(/current password/i), {
+            target: { value: 'oldpassword123' }
         });
 
-        await screen.findByText(/password updated successfully/i);
+        expect(setCurrentPassword).toHaveBeenCalledWith('oldpassword123');
     });
 
-    it('shows a global error when the API request fails', async () => {
-        const user = userEvent.setup();
-        api.post.mockRejectedValue(new Error('Request failed'));
+    it('passes the new password value to the hook setter', () => {
+        const setNewPassword = vi.fn();
 
-        renderComponent();
-
-        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
-        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
-
-        await user.click(screen.getByRole('button', { name: /update password/i }));
-
-        expect(await screen.findByText(/password change failed/i)).toBeInTheDocument();
-    });
-
-    it('schedules navigation to profile after a successful password change', async () => {
-        const user = userEvent.setup();
-        const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
-
-        api.post.mockResolvedValue({
-            data: {
-                message: 'Password updated successfully'
-            }
-        });
-
-        renderComponent();
-
-        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
-        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
-
-        await user.click(screen.getByRole('button', { name: /update password/i }));
-
-        expect(await screen.findByText(/password updated successfully/i)).toBeInTheDocument();
-
-        expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1200);
-
-        const navigationTimeoutCall = setTimeoutSpy.mock.calls.find(
-            ([callback, delay]) => typeof callback === 'function' && delay === 1200
+        useChangePasswordForm.mockReturnValue(
+            createHookState({ setNewPassword })
         );
 
-        expect(navigationTimeoutCall).toBeDefined();
+        renderComponent();
 
-        const scheduledCallback = navigationTimeoutCall[0];
-        scheduledCallback();
+        fireEvent.change(screen.getByLabelText(/new password/i), {
+            target: { value: 'newpassword123' }
+        });
 
-        expect(mockNavigate).toHaveBeenCalledWith('/profile');
-
-        setTimeoutSpy.mockRestore();
+        expect(setNewPassword).toHaveBeenCalledWith('newpassword123');
     });
 
-    it('returns early if submit happens while loading is true', async () => {
-        const user = userEvent.setup();
+    it('submits the form through the hook submit handler', () => {
+        const handleSubmit = vi.fn((event) => event.preventDefault());
 
-        api.post.mockImplementation(() => new Promise(() => {}));
+        useChangePasswordForm.mockReturnValue(
+            createHookState({ handleSubmit })
+        );
 
         renderComponent();
 
-        await user.type(screen.getByLabelText(/current password/i), 'oldpassword123');
-        await user.type(screen.getByLabelText(/new password/i), 'newpassword123');
+        fireEvent.click(screen.getByRole('button', { name: /update password/i }));
 
-        const form = screen.getByRole('button', { name: /update password/i }).closest('form');
+        expect(handleSubmit).toHaveBeenCalledTimes(1);
+    });
 
-        fireEvent.submit(form);
-        fireEvent.submit(form);
+    it('renders field validation errors from hook state', () => {
+        useChangePasswordForm.mockReturnValue(
+            createHookState({
+                errors: {
+                    fieldErrors: {
+                        currentPassword: 'Current password is required.',
+                        newPassword: 'New password is required.'
+                    },
+                    global: []
+                }
+            })
+        );
 
-        expect(api.post).toHaveBeenCalledTimes(1);
+        renderComponent();
+
+        expect(
+            screen.getByText(/current password is required/i)
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(/new password is required/i)
+        ).toBeInTheDocument();
+    });
+
+    it('renders a success message from hook state', () => {
+        useChangePasswordForm.mockReturnValue(
+            createHookState({
+                message: 'Password updated successfully.'
+            })
+        );
+
+        renderComponent();
+
+        expect(
+            screen.getByText(/password updated successfully/i)
+        ).toBeInTheDocument();
+    });
+
+    it('renders a global error message from hook state', () => {
+        useChangePasswordForm.mockReturnValue(
+            createHookState({
+                errors: {
+                    fieldErrors: {},
+                    global: ['Password change failed.']
+                }
+            })
+        );
+
+        renderComponent();
+
+        expect(
+            screen.getByText(/password change failed/i)
+        ).toBeInTheDocument();
+    });
+
+    it('shows the loading state from hook state', () => {
+        useChangePasswordForm.mockReturnValue(
+            createHookState({
+                loading: true
+            })
+        );
+
+        renderComponent();
+
+        expect(
+            screen.getByRole('button', { name: /updating/i })
+        ).toBeDisabled();
     });
 });

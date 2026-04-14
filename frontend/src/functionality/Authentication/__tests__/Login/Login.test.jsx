@@ -1,122 +1,180 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/vitest';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import Login from '../../Login/Login.jsx';
+import useAuthRedirect from '../../utils/Hooks/useAuthRedirect.js';
+import useLoginForm from '../../utils/Hooks/useLoginForm.js';
 
-import Login from '../Login';
-import { loginUser } from '../../../utils/Auth/authService';
-import { isTokenValid } from '../../../utils/Auth/authToken';
-
-vi.mock('../../../utils/Auth/authService', () => ({
-    loginUser: vi.fn()
+vi.mock('../../utils/Hooks/useAuthRedirect.js', () => ({
+    default: vi.fn()
 }));
 
-vi.mock('../../../utils/Auth/authToken', () => ({
-    isTokenValid: vi.fn()
+vi.mock('../../utils/Hooks/useLoginForm.js', () => ({
+    default: vi.fn()
 }));
 
-function renderLoginWithRoutes() {
+function createHookState(overrides = {}) {
+    return {
+        email: 'test@example.com',
+        setEmail: vi.fn(),
+        password: 'password123',
+        setPassword: vi.fn(),
+        errors: {
+            fieldErrors: {},
+            global: []
+        },
+        loading: false,
+        handleSubmit: vi.fn((event) => event.preventDefault()),
+        ...overrides
+    };
+}
+
+function renderComponent() {
     return render(
-        <MemoryRouter initialEntries={['/login']}>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/dashboard" element={<h2>Dashboard Page</h2>} />
-            </Routes>
+        <MemoryRouter>
+            <Login />
         </MemoryRouter>
     );
 }
 
-async function fillLoginForm(user, overrides = {}) {
-    const values = {
-        email: 'test@gmail.com',
-        password: 'password123',
-        ...overrides
-    };
-
-    await user.type(screen.getByPlaceholderText('you@example.com'), values.email);
-    await user.type(screen.getByPlaceholderText('Enter your password...'), values.password);
-}
-
-describe('Tests for Login', () => {
+describe('Login', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        isTokenValid.mockResolvedValue(false);
     });
 
-    it('renders the login form fields and submit button', () => {
-        renderLoginWithRoutes();
+    it('calls the auth redirect hook when rendered', () => {
+        useLoginForm.mockReturnValue(createHookState());
 
-        expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Enter your password...')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
+        renderComponent();
+
+        expect(useAuthRedirect).toHaveBeenCalledTimes(1);
     });
 
-    it('redirects authenticated users to the dashboard', async () => {
-        isTokenValid.mockResolvedValue(true);
+    it('renders the login page content', () => {
+        useLoginForm.mockReturnValue(createHookState());
 
-        renderLoginWithRoutes();
+        renderComponent();
 
-        await waitFor(() => {
-            expect(screen.getByText('Dashboard Page')).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: /welcome back/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(/log in to continue to studysync/i)
+        ).toBeInTheDocument();
+        expect(screen.getByLabelText(/email/i)).toHaveValue('test@example.com');
+        expect(screen.getByLabelText(/password/i)).toHaveValue('password123');
+        expect(
+            screen.getByRole('button', { name: /log in/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('link', { name: /sign up/i })
+        ).toBeInTheDocument();
+    });
+
+    it('passes email changes to the hook setter', () => {
+        const setEmail = vi.fn();
+
+        useLoginForm.mockReturnValue(
+            createHookState({
+                email: '',
+                setEmail
+            })
+        );
+
+        renderComponent();
+
+        fireEvent.change(screen.getByLabelText(/email/i), {
+            target: { value: 'new@example.com' }
         });
+
+        expect(setEmail).toHaveBeenCalledTimes(1);
+        expect(setEmail).toHaveBeenCalledWith('new@example.com');
     });
 
-    it('submits login credentials and redirects on success', async () => {
-        const user = userEvent.setup();
-        loginUser.mockResolvedValue({
-            access: 'A',
-            refresh: 'R'
+    it('passes password changes to the hook setter', () => {
+        const setPassword = vi.fn();
+
+        useLoginForm.mockReturnValue(
+            createHookState({
+                password: '',
+                setPassword
+            })
+        );
+
+        renderComponent();
+
+        fireEvent.change(screen.getByLabelText(/password/i), {
+            target: { value: 'newpassword123' }
         });
 
-        renderLoginWithRoutes();
-        await fillLoginForm(user);
-
-        await user.click(screen.getByRole('button', { name: /log in/i }));
-
-        await waitFor(() => {
-            expect(loginUser).toHaveBeenCalledWith('test@gmail.com', 'password123');
-        });
-
-        expect(await screen.findByText('Dashboard Page')).toBeInTheDocument();
+        expect(setPassword).toHaveBeenCalledTimes(1);
+        expect(setPassword).toHaveBeenCalledWith('newpassword123');
     });
 
-    it('shows validation errors and does not submit when fields are empty', async () => {
-        const user = userEvent.setup();
+    it('submits the form using the hook submit handler', () => {
+        const handleSubmit = vi.fn((event) => event.preventDefault());
 
-        renderLoginWithRoutes();
+        useLoginForm.mockReturnValue(
+            createHookState({
+                handleSubmit
+            })
+        );
 
-        await user.click(screen.getByRole('button', { name: /log in/i }));
+        renderComponent();
 
-        expect(await screen.findByText('Email is required.')).toBeInTheDocument();
-        expect(screen.getByText('Password is required.')).toBeInTheDocument();
-        expect(loginUser).not.toHaveBeenCalled();
+        fireEvent.click(screen.getByRole('button', { name: /log in/i }));
+
+        expect(handleSubmit).toHaveBeenCalledTimes(1);
     });
 
-    it('shows a global error message when login fails', async () => {
-        const user = userEvent.setup();
-        loginUser.mockRejectedValue(new Error('login failed'));
+    it('renders field validation errors from hook state', () => {
+        useLoginForm.mockReturnValue(
+            createHookState({
+                errors: {
+                    fieldErrors: {
+                        email: 'Email is required.',
+                        password: 'Password is required.'
+                    },
+                    global: []
+                }
+            })
+        );
 
-        renderLoginWithRoutes();
-        await fillLoginForm(user);
+        renderComponent();
 
-        await user.click(screen.getByRole('button', { name: /log in/i }));
-
-        expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
+        expect(screen.getByText(/email is required/i)).toBeInTheDocument();
+        expect(screen.getByText(/password is required/i)).toBeInTheDocument();
     });
 
-    it('does not submit the form again while the request is loading', async () => {
-        const user = userEvent.setup();
-        loginUser.mockImplementation(() => new Promise(() => {}));
+    it('renders global errors from hook state', () => {
+        useLoginForm.mockReturnValue(
+            createHookState({
+                errors: {
+                    fieldErrors: {},
+                    global: ['Invalid email or password.']
+                }
+            })
+        );
 
-        renderLoginWithRoutes();
-        await fillLoginForm(user);
+        renderComponent();
 
-        const form = screen.getByRole('button', { name: /log in/i }).closest('form');
+        expect(
+            screen.getByText(/invalid email or password/i)
+        ).toBeInTheDocument();
+    });
 
-        fireEvent.submit(form);
-        fireEvent.submit(form);
+    it('shows the loading state from hook state', () => {
+        useLoginForm.mockReturnValue(
+            createHookState({
+                loading: true
+            })
+        );
 
-        expect(loginUser).toHaveBeenCalledTimes(1);
+        renderComponent();
+
+        expect(
+            screen.getByRole('button', { name: /logging in/i })
+        ).toBeDisabled();
     });
 });

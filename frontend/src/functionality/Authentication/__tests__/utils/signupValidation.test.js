@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateSignupForm } from "../Validation/signupValidation";
+import { validateSignupForm } from "../../utils/Validation/validateSignupForm.js";
 
 const validForm = {
     email: "test@example.com",

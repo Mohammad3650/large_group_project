@@ -1,22 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import ProtectedRoute from '../ProtectedRoute.jsx';
-import { isTokenValid } from '../../utils/Auth/authToken.js';
+import '@testing-library/jest-dom/vitest';
+import ProtectedRoute from '../../AuthComponents/ProtectedRoute.jsx';
+import useProtectedRouteAccess from '../../utils/Hooks/useProtectedRouteAccess.js';
 
-/**
- * Mock the authToken utility to control authentication behaviour in tests.
- */
-vi.mock('../../utils/Auth/authToken.js', () => ({
-    isTokenValid: vi.fn()
+vi.mock('../../utils/Hooks/useProtectedRouteAccess.js', () => ({
+    default: vi.fn()
 }));
 
-/**
- * Test for ProtectedRoute component
- * Ensures users are either allowed access or redirected to Login page based on token validity
- */
-
-describe('Tests for ProtectedRoute', () => {
+describe('ProtectedRoute', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -39,24 +32,24 @@ describe('Tests for ProtectedRoute', () => {
         );
     }
 
-    it('renders page when token is valid', async () => {
-        isTokenValid.mockResolvedValue(true);
+    it('renders protected content when access is allowed', () => {
+        useProtectedRouteAccess.mockReturnValue(true);
 
         renderProtectedRoute();
 
-        expect(await screen.findByText('Dashboard Page')).toBeInTheDocument();
+        expect(screen.getByText('Dashboard Page')).toBeInTheDocument();
     });
 
-    it('redirects to login when token is invalid', async () => {
-        isTokenValid.mockResolvedValue(false);
+    it('redirects to login when access is denied', () => {
+        useProtectedRouteAccess.mockReturnValue(false);
 
         renderProtectedRoute();
 
-        expect(await screen.findByText('Login Page')).toBeInTheDocument();
+        expect(screen.getByText('Login Page')).toBeInTheDocument();
     });
 
-    it('shows loading indicator while checking authentication', () => {
-        isTokenValid.mockResolvedValue(new Promise(() => {})); // never resolves
+    it('shows the loading screen while access is being checked', () => {
+        useProtectedRouteAccess.mockReturnValue(null);
 
         renderProtectedRoute();
 
