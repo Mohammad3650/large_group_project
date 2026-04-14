@@ -157,23 +157,23 @@ describe('EditTimeBlock', () => {
     });
 
     it('does not navigate when update throws an error', async () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    try {
-        mockUpdate.mockRejectedValue(new Error('Network error'));
+        try {
+            mockUpdate.mockRejectedValue(new Error('Network error'));
 
-        renderComponent();
+            renderComponent();
 
-        fireEvent.click(screen.getByText(/submit/i));
+            fireEvent.click(screen.getByText(/submit/i));
 
-        await waitFor(() => {
-            expect(mockUpdate).toHaveBeenCalled();
-        });
+            await waitFor(() => {
+                expect(mockUpdate).toHaveBeenCalled();
+            });
 
-        expect(mockGoSuccess).not.toHaveBeenCalled();
-    } finally {
-        consoleSpy.mockRestore();
-    }
+            expect(mockGoSuccess).not.toHaveBeenCalled();
+        } finally {
+            consoleSpy.mockRestore();
+        }
     });
 
     it('handles empty submit payload safely', async () => {
