@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import getUserTimezone from '../Helpers/getUserTimezone.js';
+import getUserTimezone from '../../../../utils/Helpers/getUserTimezone.js';
 
 /**
  * Custom hook for managing GeneratorForm state and logic.
