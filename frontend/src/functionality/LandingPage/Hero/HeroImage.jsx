@@ -1,16 +1,15 @@
 import '../stylesheets/Hero/HeroImage.css';
+import heroPic from '../../../assets/LandingPage/hero.png';
 
 /**
  * Renders the image shown on the right side of the hero section.
  *
- * @param {Object} props
- * @param {string} props.heroImage - Hero image source
  * @returns {JSX.Element} Hero image section
  */
-function HeroImage({ heroImage }) {
+function HeroImage() {
     return (
         <div className="hero-right">
-            <img className="hero-image" src={heroImage} alt="StudySync hero" />
+            <img className="hero-image" src={heroPic} alt="StudySync hero" />
         </div>
     );
 }

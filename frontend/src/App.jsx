@@ -45,7 +45,7 @@ function App() {
             <Navbar theme={theme} toggleTheme={toggleTheme} />
 
             <Routes>
-                <Route path="/" element={<Landing theme={theme} />} />
+                <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
 

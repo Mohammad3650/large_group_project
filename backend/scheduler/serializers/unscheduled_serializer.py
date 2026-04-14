@@ -96,9 +96,6 @@ class UnscheduledSerializer(serializers.Serializer):
         if daily and frequency != 1:
             errors["frequency"] = ["Frequency must be 1 when daily=true."]
 
-        if not daily and frequency is None:
-            errors["frequency"] = ["Frequency must be provided when daily=false."]
-
         if errors:
             raise serializers.ValidationError(errors)
 

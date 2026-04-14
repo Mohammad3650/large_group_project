@@ -61,5 +61,27 @@ describe('TimeWindowInput', () => {
         expect(
             screen.getByText(/wake up must be before sleep/i)
         ).toBeInTheDocument();
+        expect(screen.getByText(/wake up must be before sleep/i)).toHaveClass(
+            'error-text-date'
+        );
+    });
+
+    it('displays sleep window error message when serverErrors end_min is present', () => {
+        const serverErrors = {
+            windows: [
+                {
+                    end_min: ['Sleep time must be after wake up']
+                }
+            ]
+        };
+
+        renderTimeWindowInput({ serverErrors });
+
+        expect(
+            screen.getByText(/sleep time must be after wake up/i)
+        ).toBeInTheDocument();
+        expect(screen.getByText(/sleep time must be after wake up/i)).toHaveClass(
+            'error-text-date'
+        );
     });
 });
