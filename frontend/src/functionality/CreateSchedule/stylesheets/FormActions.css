@@ -1,0 +1,50 @@
+.time-block-form-btn {
+    display: flex;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+}
+
+.btn:hover {
+    box-shadow: var(--shadow-xl);
+    border-color: var(--border-soft);
+}
+
+.btn.cancel-btn {
+    background-color: var(--blue);
+    color: var(--text-white);
+    border: 1px solid var(--blue);
+}
+
+.btn.cancel-btn:hover {
+    background-color: var(--blue);
+    color: var(--text-white);
+}
+
+.btn.edit-btn {
+    background-color: var(--edit);
+    color: var(--text-white);
+    border: 1px solid var(--edit);
+}
+
+.btn.edit-btn:hover {
+    background-color: var(--edit-soft);
+    color: var(--text-main);
+}
+
+.spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: var(--space-sm);
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

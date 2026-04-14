@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import './stylesheets/SuccessfulTimeBlock.css';
-import tickImage from '../assets/TimeBlock/tick.png';
+import tickImage from '../../assets/TimeBlock/tick.png';
 
 /**
  * Displays a success page after creating or editing a time block.

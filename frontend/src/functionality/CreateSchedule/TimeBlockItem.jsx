@@ -1,4 +1,5 @@
-import { BLOCK_TYPES } from '../constants/blockTypes';
+import { BLOCK_TYPES } from '../../constants/blockTypes';
+import './stylesheets/TimeBlockItem.css';
 
 /**
  * Renders a single time block form section.

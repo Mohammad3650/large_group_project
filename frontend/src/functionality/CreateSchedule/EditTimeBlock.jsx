@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import TimeBlockForm from './TimeBlockForm';
-import useEditTimeBlock from '../utils/Hooks/useEditTimeBlock';
-import useEditTimeBlockNavigation from '../utils/Hooks/useEditTimeBlockNavigation';
+import useEditTimeBlock from '../../utils/Hooks/useEditTimeBlock';
+import useEditTimeBlockNavigation from '../../utils/Hooks/useEditTimeBlockNavigation';
 
 const FETCH_ERROR = 'Unable to load this time block.';
 const UPDATE_ERROR = 'Failed to update time block.';
