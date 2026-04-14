@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import SubscriptionForm from '../SubscriptionForm.jsx';
@@ -57,6 +57,10 @@ describe('Tests for SubscriptionForm', () => {
         expect(onImport).toHaveBeenCalledTimes(1);
 
         resolveImport();
+
+        await act(async () => {
+            resolveImport();
+        });
 
         await waitFor(() => {
             expect(
