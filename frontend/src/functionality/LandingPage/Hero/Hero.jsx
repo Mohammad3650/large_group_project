@@ -1,6 +1,6 @@
 import '../stylesheets/Hero/Hero.css';
 import { useNavigate } from 'react-router-dom';
-import useAuthStatus from '../../../utils/Auth/authStatus.js';
+import useAuthStatus from '../../Authentication/utils/authStatus.js';
 import getHeroImage from '../utils/Helpers/getHeroImage.js';
 import getHeroButtons from '../utils/Helpers/getHeroButtons.js';
 import HeroContent from './HeroContent.jsx';
