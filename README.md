@@ -2,7 +2,7 @@
  
 ## Description
 
-StudySync is a productivity web application designed to help students manage their time more effectively. The system generates personalised weekly study schedules by taking into account lectures, labs, personal commitments and individual preferences, ultimately promoting a sustainable balance between academic and personal life
+StudySync is a productivity web application designed to help students manage their time more effectively. The system generates personalised weekly study schedules by taking into account lectures, labs, personal commitments and individual preferences, ultimately promoting a sustainable balance between academic and personal life.
 
 ## Team Members
 
@@ -51,7 +51,7 @@ Note: On the deployed version, only the pre-configured demo subscription (KCL Ti
 - Django REST Framework
 
 ### Tooling & Development Environment
-- Git & Github - version control & collaboration
+- Git & GitHub - version control & collaboration
 - npm - frontend dependency management
 - Python virtual environment (venv) - backend dependency isolation
 
@@ -59,16 +59,16 @@ Note: On the deployed version, only the pre-configured demo subscription (KCL Ti
 
 ### Recommended: Nix Setup (One-Step)
 
-This project uses Nix to provide a fully reproducible development environment. All dependencies are handled automatically
+This project uses Nix to provide a fully reproducible development environment. All dependencies are handled automatically.
 
-The initial Nix flake configuration was generated with the assistance of AI
+The initial Nix flake configuration was generated with the assistance of AI.
 
 ```bash
 nix run .#init     - to initialise the project
 nix run .#tests    - to execute the test suite
 nix run .#run      - to start the frontend and backend servers
 ```
-For detailed setup, Nix configuration and troubleshooting, please see the Developer Manual
+For detailed setup, Nix configuration and troubleshooting, please see the Developer Manual.
 
 ### Manual Setup 
 
@@ -82,7 +82,7 @@ To run the project on your own machine, you need to set up the backend and front
 
 ##### 2.1 Backend setup
 
-Move into backend folder first
+Move into the backend folder first
 ```
 cd backend
 ```
@@ -126,7 +126,7 @@ npm run dev
 
 ## Testing
 
-Run tests using:
+Run tests using the following commands:
 
 - For backend: `python manage.py test`
 - For frontend: `npm test`
