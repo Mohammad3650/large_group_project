@@ -5,15 +5,18 @@ import { CHANGE_PASSWORD_MESSAGES } from '../../../constants/changePasswordConst
 vi.mock('../../../constants/changePasswordConstants.js', () => ({
     CHANGE_PASSWORD_MESSAGES: {
         currentPasswordRequired: 'Current password is required.',
-        newPasswordRequired: 'New password is required.'
+        newPasswordRequired: 'New password is required.',
+        confirmNewPasswordRequired: 'Please confirm your new password.',
+        newPasswordMismatch: 'New passwords do not match.'
     }
 }));
 
 describe('validateChangePasswordForm', () => {
-    it('returns no errors when both fields are provided', () => {
+    it('returns no errors when all fields are provided and passwords match', () => {
         const result = validateChangePasswordForm({
             currentPassword: 'oldPassword123',
-            newPassword: 'newPassword123'
+            newPassword: 'newPassword123',
+            confirmNewPassword: 'newPassword123'
         });
 
         expect(result).toEqual({});
@@ -22,7 +25,8 @@ describe('validateChangePasswordForm', () => {
     it('returns an error when currentPassword is missing', () => {
         const result = validateChangePasswordForm({
             currentPassword: '',
-            newPassword: 'newPassword123'
+            newPassword: 'newPassword123',
+            confirmNewPassword: 'newPassword123'
         });
 
         expect(result).toEqual({
@@ -33,7 +37,8 @@ describe('validateChangePasswordForm', () => {
     it('returns an error when newPassword is missing', () => {
         const result = validateChangePasswordForm({
             currentPassword: 'oldPassword123',
-            newPassword: ''
+            newPassword: '',
+            confirmNewPassword: 'newPassword123'
         });
 
         expect(result).toEqual({
@@ -41,27 +46,59 @@ describe('validateChangePasswordForm', () => {
         });
     });
 
-    it('returns errors when both fields are missing', () => {
+    it('returns an error when confirmNewPassword is missing', () => {
+        const result = validateChangePasswordForm({
+            currentPassword: 'oldPassword123',
+            newPassword: 'newPassword123',
+            confirmNewPassword: ''
+        });
+
+        expect(result).toEqual({
+            confirmNewPassword:
+                CHANGE_PASSWORD_MESSAGES.confirmNewPasswordRequired
+        });
+    });
+
+    it('returns mismatch errors when newPassword and confirmNewPassword do not match', () => {
+        const result = validateChangePasswordForm({
+            currentPassword: 'oldPassword123',
+            newPassword: 'newPassword123',
+            confirmNewPassword: 'differentPassword123'
+        });
+
+        expect(result).toEqual({
+            newPassword: CHANGE_PASSWORD_MESSAGES.newPasswordMismatch,
+            confirmNewPassword: CHANGE_PASSWORD_MESSAGES.newPasswordMismatch
+        });
+    });
+
+    it('returns errors when all fields are missing', () => {
         const result = validateChangePasswordForm({
             currentPassword: '',
-            newPassword: ''
+            newPassword: '',
+            confirmNewPassword: ''
         });
 
         expect(result).toEqual({
             currentPassword: CHANGE_PASSWORD_MESSAGES.currentPasswordRequired,
-            newPassword: CHANGE_PASSWORD_MESSAGES.newPasswordRequired
+            newPassword: CHANGE_PASSWORD_MESSAGES.newPasswordRequired,
+            confirmNewPassword:
+                CHANGE_PASSWORD_MESSAGES.confirmNewPasswordRequired
         });
     });
 
     it('treats undefined values as missing fields', () => {
         const result = validateChangePasswordForm({
             currentPassword: undefined,
-            newPassword: undefined
+            newPassword: undefined,
+            confirmNewPassword: undefined
         });
 
         expect(result).toEqual({
             currentPassword: CHANGE_PASSWORD_MESSAGES.currentPasswordRequired,
-            newPassword: CHANGE_PASSWORD_MESSAGES.newPasswordRequired
+            newPassword: CHANGE_PASSWORD_MESSAGES.newPasswordRequired,
+            confirmNewPassword:
+                CHANGE_PASSWORD_MESSAGES.confirmNewPasswordRequired
         });
     });
 });
