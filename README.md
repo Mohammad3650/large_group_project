@@ -27,7 +27,7 @@ Email: seeded_johndoe@example.net
 
 Password: password123
 
-Note: On the deployed version, on the pre-configured demo subscription (KCL Timetable) is fully functional
+Note: On the deployed version, only the pre-configured demo subscription (KCL Timetable) is fully functional. This is due to PythonAnywhere blocking external HTTP request on their free plan.
 
 ## Features
 
