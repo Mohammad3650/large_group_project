@@ -54,13 +54,11 @@ function SubscriptionFeedback({ feedback }) {
  * @param {Object} props
  * @param {Function} props.onImport
  * @param {string} [props.feedbackMessage]
- * @param {string} [props.feedbackType]
  * @returns {JSX.Element}
  */
 function SubscriptionForm({
     onImport,
     feedbackMessage = '',
-    feedbackType = ''
 }) {
     const [name, setName] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
