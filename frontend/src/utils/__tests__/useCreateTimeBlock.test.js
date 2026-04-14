@@ -19,6 +19,29 @@ vi.mock('../../api.js', () => ({
     }
 }));
 
+function makeBlock(overrides = {}) {
+    return {
+        date: '2026-04-10',
+        name: 'Study Session',
+        location: '',
+        description: '',
+        block_type: 'study',
+        start_time: null,
+        end_time: null,
+        ...overrides
+    };
+}
+
+function renderCreateHook() {
+    return renderHook(() => useCreateTimeBlock());
+}
+
+async function submitBlocks(result, blocks) {
+    await act(async () => {
+        await result.current.handleCreate(blocks);
+    });
+}
+
 describe('Tests for useCreateTimeBlock', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -27,21 +50,16 @@ describe('Tests for useCreateTimeBlock', () => {
     it('posts cleaned data and navigates to success page on success', async () => {
         api.post.mockResolvedValue({ data: { id: 123 } });
 
-        const { result } = renderHook(() => useCreateTimeBlock());
+        const { result } = renderCreateHook();
 
-        await act(async () => {
-            await result.current.handleCreate([
-                {
-                    date: '2026-04-10',
-                    name: 'Study Session',
-                    location: 'Library',
-                    description: 'Revision',
-                    block_type: 'study',
-                    start_time: '09:00',
-                    end_time: '10:00'
-                }
-            ]);
-        });
+        await submitBlocks(result, [
+            makeBlock({
+                location: 'Library',
+                description: 'Revision',
+                start_time: '09:00',
+                end_time: '10:00'
+            })
+        ]);
 
         expect(api.post).toHaveBeenCalledWith('/api/time-blocks/', {
             date: '2026-04-10',
@@ -61,21 +79,14 @@ describe('Tests for useCreateTimeBlock', () => {
     it('cleans empty start_time and end_time strings to null before posting', async () => {
         api.post.mockResolvedValue({ data: { id: 1 } });
 
-        const { result } = renderHook(() => useCreateTimeBlock());
+        const { result } = renderCreateHook();
 
-        await act(async () => {
-            await result.current.handleCreate([
-                {
-                    date: '2026-04-10',
-                    name: 'Study Session',
-                    location: '',
-                    description: '',
-                    block_type: 'study',
-                    start_time: '',
-                    end_time: ''
-                }
-            ]);
-        });
+        await submitBlocks(result, [
+            makeBlock({
+                start_time: '',
+                end_time: ''
+            })
+        ]);
 
         expect(api.post).toHaveBeenCalledWith('/api/time-blocks/', {
             date: '2026-04-10',
@@ -95,21 +106,13 @@ describe('Tests for useCreateTimeBlock', () => {
             }
         });
 
-        const { result } = renderHook(() => useCreateTimeBlock());
+        const { result } = renderCreateHook();
 
-        await act(async () => {
-            await result.current.handleCreate([
-                {
-                    date: '2026-04-10',
-                    name: '',
-                    location: '',
-                    description: '',
-                    block_type: 'study',
-                    start_time: null,
-                    end_time: null
-                }
-            ]);
-        });
+        await submitBlocks(result, [
+            makeBlock({
+                name: ''
+            })
+        ]);
 
         expect(mockNavigate).not.toHaveBeenCalled();
         expect(result.current.serverErrors).toEqual([
@@ -123,40 +126,63 @@ describe('Tests for useCreateTimeBlock', () => {
             () => new Promise((resolve) => { resolveRequest = resolve; })
         );
 
-        const { result } = renderHook(() => useCreateTimeBlock());
+        const { result } = renderCreateHook();
+        const blocks = [makeBlock()];
 
         act(() => {
-            result.current.handleCreate([
-                {
-                    date: '2026-04-10',
-                    name: 'Study Session',
-                    location: '',
-                    description: '',
-                    block_type: 'study',
-                    start_time: null,
-                    end_time: null
-                }
-            ]);
+            result.current.handleCreate(blocks);
         });
 
-        await act(async () => {
-            await result.current.handleCreate([
-                {
-                    date: '2026-04-10',
-                    name: 'Study Session',
-                    location: '',
-                    description: '',
-                    block_type: 'study',
-                    start_time: null,
-                    end_time: null
-                }
-            ]);
-        });
+        await submitBlocks(result, blocks);
 
         expect(api.post).toHaveBeenCalledTimes(1);
 
         await act(async () => {
             resolveRequest({ data: { id: 1 } });
         });
+    });
+
+    it('submits multiple blocks and navigates with the first created id when all succeed', async () => {
+        api.post
+            .mockResolvedValueOnce({ data: { id: 123 } })
+            .mockResolvedValueOnce({ data: { id: 456 } });
+
+        const { result } = renderCreateHook();
+
+        await submitBlocks(result, [
+            makeBlock({ name: 'Block 1' }),
+            makeBlock({ name: 'Block 2' })
+        ]);
+
+        expect(api.post).toHaveBeenCalledTimes(2);
+        expect(result.current.serverErrors).toEqual([{}, {}]);
+
+        expect(mockNavigate).toHaveBeenCalledWith('/successful-time-block', {
+            state: { id: 123 }
+        });
+    });
+
+    it('does not navigate when at least one block fails in a multi-block submission', async () => {
+        api.post
+            .mockResolvedValueOnce({ data: { id: 123 } })
+            .mockRejectedValueOnce({
+                response: {
+                    data: { end_time: ['End time is required.'] }
+                }
+            });
+
+        const { result } = renderCreateHook();
+
+        await submitBlocks(result, [
+            makeBlock({ name: 'Block 1' }),
+            makeBlock({ name: 'Block 2' })
+        ]);
+
+        expect(api.post).toHaveBeenCalledTimes(2);
+        expect(mockNavigate).not.toHaveBeenCalled();
+        expect(result.current.serverErrors).toEqual([
+            {},
+            { end_time: ['End time is required.'] }
+        ]);
     });
 });

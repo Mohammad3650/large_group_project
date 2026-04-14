@@ -17,14 +17,27 @@ vi.mock('../../utils/Api/generateSchedule.js', () => ({
     default: vi.fn()
 }));
 
-const mockGenerateData = {
-    week_start: '2026-04-10',
-    week_end: '2026-04-16',
-    even_spread: true,
-    include_scheduled: false,
-    windows: [{ start_min: '08:00', end_min: '22:00', daily: true }],
-    unscheduled: []
-};
+function makeGenerateData(overrides = {}) {
+    return {
+        week_start: '2026-04-10',
+        week_end: '2026-04-16',
+        even_spread: true,
+        include_scheduled: false,
+        windows: [{ start_min: '08:00', end_min: '22:00', daily: true }],
+        unscheduled: [],
+        ...overrides
+    };
+}
+
+function renderGenerateHook() {
+    return renderHook(() => useGenerateSchedule());
+}
+
+async function submitGenerate(result, data = makeGenerateData()) {
+    await act(async () => {
+        await result.current.handleGenerate(data);
+    });
+}
 
 describe('Tests for useGenerateSchedule', () => {
     beforeEach(() => {
@@ -39,13 +52,11 @@ describe('Tests for useGenerateSchedule', () => {
             }
         });
 
-        const { result } = renderHook(() => useGenerateSchedule());
+        const { result } = renderGenerateHook();
 
-        await act(async () => {
-            await result.current.handleGenerate(mockGenerateData);
-        });
+        await submitGenerate(result);
 
-        expect(generateSchedule).toHaveBeenCalledWith(mockGenerateData);
+        expect(generateSchedule).toHaveBeenCalledWith(makeGenerateData());
 
         expect(
             JSON.parse(sessionStorage.getItem('generatedSchedule'))
@@ -53,6 +64,8 @@ describe('Tests for useGenerateSchedule', () => {
             events: [{ id: 1, title: 'Generated Event' }]
         });
 
+        expect(result.current.serverErrors).toEqual({});
+        expect(result.current.loading).toBe(false);
         expect(mockNavigate).toHaveBeenCalledWith('/preview-calendar');
     });
 
@@ -61,16 +74,16 @@ describe('Tests for useGenerateSchedule', () => {
             data: { events: [] }
         });
 
-        const { result } = renderHook(() => useGenerateSchedule());
+        const { result } = renderGenerateHook();
 
-        await act(async () => {
-            await result.current.handleGenerate(mockGenerateData);
-        });
+        await submitGenerate(result);
 
         expect(result.current.serverErrors).toEqual({
             general: ['No feasible schedule could be generated with the given constraints.']
         });
 
+        expect(sessionStorage.getItem('generatedSchedule')).toBeNull();
+        expect(result.current.loading).toBe(false);
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 
@@ -81,17 +94,43 @@ describe('Tests for useGenerateSchedule', () => {
             }
         });
 
-        const { result } = renderHook(() => useGenerateSchedule());
+        const { result } = renderGenerateHook();
 
-        await act(async () => {
-            await result.current.handleGenerate(mockGenerateData);
-        });
+        await submitGenerate(result);
 
         expect(result.current.serverErrors).toEqual({
             general: ['Generation failed.']
         });
 
+        expect(sessionStorage.getItem('generatedSchedule')).toBeNull();
+        expect(result.current.loading).toBe(false);
         expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('clears previous errors before a successful submission', async () => {
+        generateSchedule
+            .mockRejectedValueOnce({
+                response: {
+                    data: { general: ['Generation failed.'] }
+                }
+            })
+            .mockResolvedValueOnce({
+                data: {
+                    events: [{ id: 1, title: 'Generated Event' }]
+                }
+            });
+
+        const { result } = renderGenerateHook();
+
+        await submitGenerate(result);
+        expect(result.current.serverErrors).toEqual({
+            general: ['Generation failed.']
+        });
+
+        await submitGenerate(result);
+
+        expect(result.current.serverErrors).toEqual({});
+        expect(mockNavigate).toHaveBeenCalledWith('/preview-calendar');
     });
 
     it('does not submit if already loading', async () => {
@@ -100,20 +139,21 @@ describe('Tests for useGenerateSchedule', () => {
             () => new Promise((resolve) => { resolveRequest = resolve; })
         );
 
-        const { result } = renderHook(() => useGenerateSchedule());
+        const { result } = renderGenerateHook();
+        const data = makeGenerateData();
 
         act(() => {
-            result.current.handleGenerate(mockGenerateData);
+            result.current.handleGenerate(data);
         });
 
-        await act(async () => {
-            await result.current.handleGenerate(mockGenerateData);
-        });
+        await submitGenerate(result, data);
 
         expect(generateSchedule).toHaveBeenCalledTimes(1);
 
         await act(async () => {
             resolveRequest({ data: { events: [{ id: 1 }] } });
         });
+
+        expect(result.current.loading).toBe(false);
     });
 });
