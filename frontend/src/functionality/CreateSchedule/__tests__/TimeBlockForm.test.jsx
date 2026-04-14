@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
 import TimeBlockForm from '../TimeBlockForm.jsx';
-import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
+import getUserTimezone from '../../../utils/Helpers/getUserTimezone.js';
 
 const renderTimeBlockForm = (overrides = {}) => {
     const props = {
