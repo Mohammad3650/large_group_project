@@ -1,3 +1,6 @@
+import './stylesheets/GeneratorForm.css';
+import './stylesheets/TimeBlockItem.css';
+
 /**
  * GeneratorFormItem renders a single unscheduled time block form row
  * with fields for name, duration, daily/frequency, start time,
@@ -5,8 +8,8 @@
  * @param {{block:object, index:number, serverErrors:object, updateBlock:function, deleteBlock:function, blocksLength:number}} props
  * @returns {JSX.Element}
  */
-import { BLOCK_TYPES } from '../constants/blockTypes';
-import capitalise from '../utils/Formatters/capitalise';
+import { BLOCK_TYPES } from '../../constants/blockTypes';
+import capitalise from '../../utils/Formatters/capitalise';
 
 function GeneratorFormItem({
     block,

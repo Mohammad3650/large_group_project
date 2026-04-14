@@ -8,7 +8,7 @@ vi.mock("../../api.js", () => ({
     },
 }));
 
-describe("Tests for deletTimeBlock", () => {
+describe("Tests for deleteTimeBlock", () => {
     it("throws an error when id is not provided", () => {
         expect(() => deleteTimeBlock(null)).toThrow("Invalid id");
     });
