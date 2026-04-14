@@ -1,32 +1,32 @@
 import { describe, it, expect } from "vitest";
-import Capitalise from "../Formatters/capitalise.js";
+import capitalise from "../Formatters/capitalise.js";
 
 describe("Capitalise", () => {
     it("capitalises the first letter of a lowercase string", () => {
-        expect(Capitalise("lecture")).toBe("Lecture");
+        expect(capitalise("lecture")).toBe("Lecture");
     });
 
     it("leaves the rest of the string unchanged", () => {
-        expect(Capitalise("helloWorld")).toBe("HelloWorld");
+        expect(capitalise("helloWorld")).toBe("HelloWorld");
     });
 
     it("returns the same string if the first letter is already capitalised", () => {
-        expect(Capitalise("Lecture")).toBe("Lecture");
+        expect(capitalise("Lecture")).toBe("Lecture");
     });
 
     it("returns an empty string when given an empty string", () => {
-        expect(Capitalise("")).toBe("");
+        expect(capitalise("")).toBe("");
     });
 
     it("handles a single character string", () => {
-        expect(Capitalise("a")).toBe("A");
+        expect(capitalise("a")).toBe("A");
     });
 
     it("does not alter strings that start with a number", () => {
-        expect(Capitalise("1lecture")).toBe("1lecture");
+        expect(capitalise("1lecture")).toBe("1lecture");
     });
 
     it("does not alter strings that start with a special character", () => {
-        expect(Capitalise("_lecture")).toBe("_lecture");
+        expect(capitalise("_lecture")).toBe("_lecture");
     });
 });
