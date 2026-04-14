@@ -4,9 +4,9 @@ import '@schedule-x/theme-default/dist/index.css';
 import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
 import CalendarView from './CalendarView.jsx';
-import fetchGeneratedSchedule from '../../utils/Api/fetchGeneratedSchedule.js';
-import saveGeneratedSchedule from '../../utils/Api/saveGeneratedSchedule.js';
-import discardSchedule from '../../utils/Helpers/discardSchedule.js';
+import fetchGeneratedSchedule from './utils/Api/fetchGeneratedSchedule.js';
+import saveGeneratedSchedule from './utils/Api/saveGeneratedSchedule.js';
+import discardSchedule from './utils/Helpers/discardSchedule.js';
 
 /**
  * Component for previewing a generated schedule before saving.

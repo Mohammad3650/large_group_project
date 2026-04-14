@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
-import savePlan from "../Api/savePlan";
-import { api } from "../../api";
+import savePlan from "../../../utils/Api/savePlan.js";
+import { api } from "../../../../../api.js";
 
-vi.mock("../../api", () => ({
+vi.mock("../../../../../api", () => ({
     api: {
         post: vi.fn()
     }

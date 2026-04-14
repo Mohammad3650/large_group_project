@@ -1,4 +1,4 @@
-import mapTimeBlocks from '../Helpers/mapTimeBlocks.js';
+import mapTimeBlocks from '../../../../utils/Helpers/mapTimeBlocks.js';
 
 /**
  * Fetches and processes the generated schedule from sessionStorage.

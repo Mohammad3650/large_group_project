@@ -2,17 +2,17 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const mockTimezone = "America/New_York";
 
-vi.mock("../Api/savePlan", () => ({
+vi.mock("../../../utils/Api/savePlan", () => ({
     default: vi.fn(),
 }));
 
-vi.mock("../Helpers/getUserTimezone", () => ({
+vi.mock("../../../../../utils/Helpers/getUserTimezone", () => ({
     default: vi.fn(() => mockTimezone),
 }));
 
-import saveGeneratedSchedule from "../Api/saveGeneratedSchedule";
-import savePlan from "../Api/savePlan";
-import getUserTimezone from "../Helpers/getUserTimezone";
+import saveGeneratedSchedule from "../../../utils/Api/saveGeneratedSchedule.js";
+import savePlan from "../../../utils/Api/savePlan.js";
+import getUserTimezone from "../../../../../utils/Helpers/getUserTimezone.js";
 
 describe("saveGeneratedSchedule", () => {
     beforeEach(() => {
