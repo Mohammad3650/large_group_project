@@ -193,4 +193,26 @@ describe('Tests for SuccessfulTimeBlock', () => {
 
         expect(screen.getByText('Calendar Page')).toBeInTheDocument();
     });
+
+    it('renders updated text when action is edited', () => {
+        render(
+            <MemoryRouter
+                initialEntries={[
+                    { pathname: '/success', state: { id: 123, action: 'edited' } }
+                ]}
+            >
+                <Routes>
+                    <Route path="/success" element={<SuccessfulTimeBlock />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        expect(
+            screen.getByText('Time Block Updated Successfully')
+        ).toBeInTheDocument();
+
+        expect(
+            screen.getByText(/your time block was updated successfully\./i)
+        ).toBeInTheDocument();
+    });
 });
