@@ -1,5 +1,5 @@
 import { FaCalendarAlt } from 'react-icons/fa';
-import handleExportIcs from '../utils/Api/handleExportIcs.js';
+import handleExportIcs from './utils/Api/handleExportIcs.js';
 import './stylesheets/ExportButton.css';
 
 /**
