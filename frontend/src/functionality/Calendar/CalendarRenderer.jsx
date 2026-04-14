@@ -23,6 +23,7 @@ function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsSe
     const calendar = useCalendarApp({
         views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
         defaultView: isMobile ? 'day' : 'week',
+        locale: 'en-GB',
         plugins: [eventModalPlugin, eventsService],
         events: Array.isArray(blocks) ? blocks : [],
         timezone: calendarTimezone,

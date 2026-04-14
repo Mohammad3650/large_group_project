@@ -4,19 +4,19 @@
 
 .sx__time-grid-event.sx-type-study {
     background: linear-gradient(
-        90deg,
-        rgba(155, 85, 42, 0.3) 100%,
-        rgba(87, 199, 133, 0.3) 100%,
-        rgba(237, 221, 83, 0.3) 100%
+            90deg,
+            rgba(155, 85, 42, 0.3) 100%,
+            rgba(87, 199, 133, 0.3) 100%,
+            rgba(237, 221, 83, 0.3) 100%
     );
 }
 
 .sx__time-grid-event.sx-type-lecture {
     background: linear-gradient(
-        90deg,
-        rgba(42, 155, 144, 0.3) 100%,
-        rgba(87, 199, 133, 0.3) 100%,
-        rgba(237, 221, 83, 0.3) 100%
+            90deg,
+            rgba(42, 155, 144, 0.3) 100%,
+            rgba(87, 199, 133, 0.3) 100%,
+            rgba(237, 221, 83, 0.3) 100%
     );
 }
 
@@ -26,10 +26,10 @@
 
 .sx__time-grid-event.sx-type-tutorial {
     background: linear-gradient(
-        90deg,
-        rgba(42, 123, 155, 0.3) 100%,
-        rgba(87, 199, 133, 0.3) 100%,
-        rgba(237, 221, 83, 0.3) 100%
+            90deg,
+            rgba(42, 123, 155, 0.3) 100%,
+            rgba(87, 199, 133, 0.3) 100%,
+            rgba(237, 221, 83, 0.3) 100%
     );
 }
 
@@ -39,10 +39,10 @@
 
 .sx__time-grid-event.sx-type-exercise {
     background: linear-gradient(
-        90deg,
-        rgba(220, 38, 38, 0.3) 0%,
-        rgba(239, 68, 68, 0.3) 100%,
-        rgba(237, 221, 83, 0.3) 100%
+            90deg,
+            rgba(220, 38, 38, 0.3) 0%,
+            rgba(239, 68, 68, 0.3) 100%,
+            rgba(237, 221, 83, 0.3) 100%
     );
 }
 
@@ -52,19 +52,19 @@
 
 .sx__time-grid-event.sx-type-work {
     background: linear-gradient(
-        90deg,
-        rgba(155, 132, 42, 0.3) 100%,
-        rgba(87, 199, 133, 0.3) 100%,
-        rgba(237, 221, 83, 0.3) 100%
+            90deg,
+            rgba(155, 132, 42, 0.3) 100%,
+            rgba(87, 199, 133, 0.3) 100%,
+            rgba(237, 221, 83, 0.3) 100%
     );
 }
 
 .sx__time-grid-event.sx-type-extracurricular {
     background: linear-gradient(
-        90deg,
-        rgba(146, 42, 155, 0.3) 100%,
-        rgba(87, 199, 133, 0.3) 100%,
-        rgba(237, 221, 83, 0.3) 100%
+            90deg,
+            rgba(146, 42, 155, 0.3) 100%,
+            rgba(87, 199, 133, 0.3) 100%,
+            rgba(237, 221, 83, 0.3) 100%
     );
 }
 
@@ -252,12 +252,10 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
     color: #ffffff !important;
 }
 
-/* hide the original icon */
 .sx__forward-backward-navigation .sx__chevron-wrapper svg {
     opacity: 0 !important;
 }
 
-/* draw our own arrow */
 .sx__forward-backward-navigation .sx__chevron-wrapper::after {
     content: '';
     position: absolute;
@@ -279,23 +277,20 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
 }
 
 @media (max-width: 768px) {
+    /* Prevent double-tap zoom on calendar interactions */
     .actual-calendar * {
         touch-action: manipulation;
     }
 
+    /* Prevent iOS zoom on input focus — 16px is the minimum iOS requires */
+    .actual-calendar input {
+        font-size: var(--font-size-body) !important;
+    }
+
+    /* Calendar layout */
     .sx__calendar {
         overflow: visible !important;
         height: auto !important;
-    }
-
-    .sx__calendar-header {
-        gap: var(--space-calendar-header-gap-mobile-sm) !important;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: var(--space-md) !important;
-        padding: var(--space-calendar-header) !important;
     }
 
     .sx__view-container {
@@ -307,15 +302,45 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
         height: 100% !important;
     }
 
+    /* Calendar header */
+    .sx__calendar-header {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: var(--space-md) !important;
+        padding: var(--space-calendar-header) !important;
+    }
+
     .sx__calendar-header > * {
         flex: 0 0 auto !important;
     }
 
+    .sx__calendar-header-content {
+        gap: var(--space-calendar-header-gap-mobile-sm) !important;
+    }
+
+    .sx__range-heading {
+        font-size: var(--font-size-range-heading-mobile) !important;
+        white-space: nowrap !important;
+    }
+
+    /* Calendar controls */
+    .sx__today-button,
+    .sx__view-selection-selected-item,
+    .sx__date-input {
+        font-size: var(--font-size-calendar-sm) !important;
+        min-height: var(--calendar-control-min-height-mobile) !important;
+        padding: var(--space-calendar-control-y-mobile) var(--space-calendar-control-x-mobile) !important;
+    }
+
+    /* Day header centering */
     .sx__week-grid__date-axis {
         padding-left: 0 !important;
         justify-content: center !important;
     }
 
+    /* Event text */
     .sx__time-grid-event-title {
         font-size: var(--font-size-calendar-sm);
         padding-bottom: var(--space-event-mobile-bottom);
@@ -330,10 +355,11 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
         font-size: var(--font-size-event-location-mobile);
     }
 
+    /* Date picker popup */
     .sx__date-picker-popup {
         position: fixed !important;
         left: 50% !important;
-        top: 45% !important;
+        top: 35% !important;
         transform: translateX(-50%) !important;
         width: 90vw !important;
         max-width: 90vw !important;
@@ -359,6 +385,7 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
         text-align: center !important;
     }
 
+    /* Month grid */
     .sx__month-grid-day {
         min-height: var(--month-grid-day-min-height-mobile) !important;
         padding: var(--space-month-grid-day-padding-mobile) !important;
@@ -376,26 +403,5 @@ body.dark-theme .sx__forward-backward-navigation .sx__chevron-wrapper {
 
     .sx__month-agenda-day {
         font-size: var(--font-size-month-agenda-day-mobile) !important;
-    }
-
-    .sx__calendar-header-content {
-        gap: var(--space-calendar-header-gap-mobile-sm) !important;
-    }
-
-    .sx__range-heading {
-        font-size: var(--font-size-range-heading-mobile) !important;
-        white-space: nowrap !important;
-    }
-
-    .sx__date-input {
-        font-size: var(--font-size-body) !important;
-    }
-
-    .sx__today-button,
-    .sx__view-selection-selected-item,
-    .sx__date-input {
-        font-size: var(--font-size-calendar-sm) !important;
-        min-height: var(--calendar-control-min-height-mobile) !important;
-        padding: var(--space-calendar-control-y-mobile) var(--space-calendar-control-x-mobile) !important;
     }
 }
