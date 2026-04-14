@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import ToggleDarkMode from '../ToggleDarkMode';
+import ToggleDarkMode from '../../Navbar/ToggleDarkMode.jsx';
 
 describe('Tests for ToggleDarkMode', () => {
     test('renders Dark label when current theme is light', () => {
