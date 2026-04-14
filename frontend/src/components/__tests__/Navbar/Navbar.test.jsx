@@ -14,11 +14,11 @@ vi.mock('../../Navbar/NavbarUserButton.jsx', () => ({
 vi.mock('../../ToggleDarkMode.jsx', () => ({
     default: () => <div data-testid="toggle-dark-mode" />,
 }));
-vi.mock('../../../utils/Auth/authStatus.js', () => ({ default: vi.fn() }));
+vi.mock('../../../functionality/Authentication/utils/authStatus.js', () => ({ default: vi.fn() }));
 vi.mock('../../../utils/Hooks/useUsername.js', () => ({ default: vi.fn() }));
 vi.mock('../../stylesheets/Navbar/Navbar.css', () => ({}));
 
-import * as useAuthStatusModule from '../../../utils/Auth/authStatus.js';
+import * as useAuthStatusModule from '../../../functionality/Authentication/utils/authStatus.js';
 import * as useUsernameModule from '../../../utils/Hooks/useUsername.js';
 
 const renderNavbar = (props = {}) =>
