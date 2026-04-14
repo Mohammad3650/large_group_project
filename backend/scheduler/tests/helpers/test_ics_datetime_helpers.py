@@ -30,3 +30,8 @@ class IcsDatetimeHelpersTest(TestCase):
         """It should ignore date-only values."""
         result = normalise_ics_datetime(date(2026, 4, 10))
         self.assertIsNone(result)
+
+    def test_normalise_ics_datetime_returns_none_for_unsupported_type(self):
+        """It should return None for unsupported value types."""
+        result = normalise_ics_datetime("not a date")
+        self.assertIsNone(result)
