@@ -38,7 +38,7 @@ vi.mock('../utils/Hooks/useGenerateSchedule.js', () => ({
     })
 }));
 
-vi.mock('../../../components/TimeBlockForm.jsx', () => ({
+vi.mock('../TimeBlockForm.jsx', () => ({
     default: (props) => {
         mockTimeBlockForm(props);
         return (

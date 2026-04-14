@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TimeBlockItem from '../TimeBlockItem';
-import { BLOCK_TYPES } from '../../constants/blockTypes';
+import { BLOCK_TYPES } from '../../../constants/blockTypes';
 
 const mockBlock = {
     name: 'Study Session',
