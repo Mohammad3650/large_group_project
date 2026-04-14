@@ -130,26 +130,26 @@ describe('useEditTimeBlock', () => {
     });
 
     it('handles update error when no server response is provided', async () => {
-    buildUpdatePayload.mockReturnValue({ name: 'Broken' });
+        buildUpdatePayload.mockReturnValue({ name: 'Broken' });
 
-    mockApi.patch.mockRejectedValue(new Error('Network failure'));
+        mockApi.patch.mockRejectedValue(new Error('Network failure'));
 
-    const { result } = renderHook(() => useEditTimeBlock('1'));
+        const { result } = renderHook(() => useEditTimeBlock('1'));
 
-    await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-    });
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
 
-    let success;
+        let success;
 
-    await act(async () => {
-        success = await result.current.update({ name: 'Broken' });
-    });
+        await act(async () => {
+            success = await result.current.update({ name: 'Broken' });
+        });
 
-    expect(success).toBe(false);
+        expect(success).toBe(false);
 
-    expect(result.current.serverErrors).toEqual([
-        { detail: 'Failed to update time block.' }
-    ]);
+        expect(result.current.serverErrors).toEqual([
+            { detail: 'Failed to update time block.' }
+        ]);
     });
 });
