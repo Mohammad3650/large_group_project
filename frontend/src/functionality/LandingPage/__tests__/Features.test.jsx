@@ -12,7 +12,9 @@ describe('Tests for Features', () => {
 
         expect(screen.getByText('Why StudySync?')).toBeInTheDocument();
         expect(
-            screen.getByText(/StudySync is designed to help university students manage their time/i)
+            screen.getByText(
+                /StudySync is an all-in-one academic planner built for university students/i
+            )
         ).toBeInTheDocument();
     });
 
@@ -20,10 +22,10 @@ describe('Tests for Features', () => {
         renderFeatures();
 
         expect(screen.getByText('Constraint-Aware Weekly Calendar')).toBeInTheDocument();
-        expect(screen.getByText('Set-Up Preferences')).toBeInTheDocument();
+        expect(screen.getByText('Export Your Schedule')).toBeInTheDocument();
         expect(screen.getByText('Balanced Study Allocation')).toBeInTheDocument();
         expect(screen.getByText('Smart Replanning')).toBeInTheDocument();
-        expect(screen.getByText('Plan History by Week')).toBeInTheDocument();
+        expect(screen.getByText('Import Your University Timetable')).toBeInTheDocument();
     });
 
     it('renders all feature descriptions', () => {
@@ -31,14 +33,18 @@ describe('Tests for Features', () => {
 
         expect(screen.getByText(/Generates a realistic weekly timetable/i)).toBeInTheDocument();
         expect(
-            screen.getByText(/Add your sleep window, commute time, and max study hours/i)
+            screen.getByText(
+                /Download your generated schedule as a CSV file for use in spreadsheets, or as an ICS file/i
+            )
         ).toBeInTheDocument();
         expect(screen.getByText(/Distributes study sessions across the week/i)).toBeInTheDocument();
         expect(
             screen.getByText(/Updated your timetable or added a new commitment/i)
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/Keep track of how your week-to-week schedule evolves/i)
+            screen.getByText(
+                /Subscribe to your university's ICS or webcal feed to automatically pull your lectures and classes into StudySync/i
+            )
         ).toBeInTheDocument();
     });
 
@@ -46,10 +52,10 @@ describe('Tests for Features', () => {
         renderFeatures();
 
         expect(screen.getByAltText('Weekly calendar illustration')).toBeInTheDocument();
-        expect(screen.getByAltText('Preferences settings illustration')).toBeInTheDocument();
+        expect(screen.getByAltText('Export schedule')).toBeInTheDocument();
         expect(screen.getByAltText('Balanced Study illustration')).toBeInTheDocument();
         expect(screen.getByAltText('Checklist replanning illustration')).toBeInTheDocument();
-        expect(screen.getByAltText('Timeline history illustration')).toBeInTheDocument();
+        expect(screen.getByAltText('Import a timetable')).toBeInTheDocument();
     });
 
     it('renders all five feature cards', () => {
