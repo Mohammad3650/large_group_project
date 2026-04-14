@@ -1,13 +1,14 @@
+import formatSubscriptionLastSyncedAt from './utils/Helpers/formatSubscriptionLastSyncedAt.js';
 import './stylesheets/SubscriptionList.css';
 
 /**
  * Reusable action button for subscription actions.
  *
- * @param {Object} props - Component props
- * @param {string} props.className - Button CSS class
- * @param {Function} props.onClick - Click handler
- * @param {React.ReactNode} props.children - Button text/content
- * @returns {JSX.Element} Subscription action button
+ * @param {Object} props
+ * @param {string} props.className
+ * @param {Function} props.onClick
+ * @param {React.ReactNode} props.children
+ * @returns {JSX.Element}
  */
 function SubscriptionActionButton({ className, onClick, children }) {
     return (
@@ -17,31 +18,69 @@ function SubscriptionActionButton({ className, onClick, children }) {
     );
 }
 
+function confirmSubscriptionDeletion() {
+    return window.confirm(
+        'Are you sure you want to delete this calendar subscription?'
+    );
+}
+
+function SubscriptionCard({ subscription, onRefresh, onDelete }) {
+    function handleDeleteClick() {
+        if (!confirmSubscriptionDeletion()) {
+            return;
+        }
+
+        onDelete(subscription.id);
+    }
+
+    return (
+        <div className="subscription-card">
+            <div className="subscription-card-content">
+                <h3>{subscription.name}</h3>
+
+                <p className="subscription-url">{subscription.source_url}</p>
+
+                <p className="subscription-meta">
+                    Last synced:{' '}
+                    {formatSubscriptionLastSyncedAt(subscription.last_synced_at)}
+                </p>
+
+                {subscription.last_error && (
+                    <p className="subscription-error-text">
+                        {subscription.last_error}
+                    </p>
+                )}
+            </div>
+
+            <div className="subscription-actions">
+                <SubscriptionActionButton
+                    className="subscription-action-button"
+                    onClick={() => onRefresh(subscription.id)}
+                >
+                    Refresh
+                </SubscriptionActionButton>
+
+                <SubscriptionActionButton
+                    className="subscription-delete-button"
+                    onClick={handleDeleteClick}
+                >
+                    Delete
+                </SubscriptionActionButton>
+            </div>
+        </div>
+    );
+}
+
 /**
  * Render the saved calendar subscription list.
  *
- * @param {Object} props - Component props
- * @param {Array} props.subscriptions - Saved subscriptions
- * @param {Function} props.onRefresh - Refresh handler
- * @param {Function} props.onDelete - Delete handler
- * @returns {JSX.Element} The subscription list
+ * @param {Object} props
+ * @param {Array} props.subscriptions
+ * @param {Function} props.onRefresh
+ * @param {Function} props.onDelete
+ * @returns {JSX.Element}
  */
 function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
-    /**
-     * Confirm before deleting a saved calendar subscription.
-     *
-     * @param {number} subscriptionId - Subscription identifier
-     */
-    function handleDeleteClick(subscriptionId) {
-        const confirmed = window.confirm(
-            'Are you sure you want to delete this calendar subscription?'
-        );
-
-        if (!confirmed) return;
-
-        onDelete(subscriptionId);
-    }
-
     if (!subscriptions.length) {
         return (
             <div className="subscription-list">
@@ -55,43 +94,12 @@ function SubscriptionList({ subscriptions, onRefresh, onDelete }) {
     return (
         <div className="subscription-list">
             {subscriptions.map((subscription) => (
-                <div key={subscription.id} className="subscription-card">
-                    <div className="subscription-card-content">
-                        <h3>{subscription.name}</h3>
-                        <p className="subscription-url">
-                            {subscription.source_url}
-                        </p>
-                        <p className="subscription-meta">
-                            Last synced:
-                            {subscription.last_synced_at
-                                ? new Date(
-                                      subscription.last_synced_at
-                                  ).toLocaleString()
-                                : 'Never'}
-                        </p>
-                        {subscription.last_error && (
-                            <p className="subscription-error-text">
-                                {subscription.last_error}
-                            </p>
-                        )}
-                    </div>
-
-                    <div className="subscription-actions">
-                        <SubscriptionActionButton
-                            className="subscription-action-button"
-                            onClick={() => onRefresh(subscription.id)}
-                        >
-                            Refresh
-                        </SubscriptionActionButton>
-
-                        <SubscriptionActionButton
-                            className="subscription-delete-button"
-                            onClick={() => handleDeleteClick(subscription.id)}
-                        >
-                            Delete
-                        </SubscriptionActionButton>
-                    </div>
-                </div>
+                <SubscriptionCard
+                    key={subscription.id}
+                    subscription={subscription}
+                    onRefresh={onRefresh}
+                    onDelete={onDelete}
+                />
             ))}
         </div>
     );

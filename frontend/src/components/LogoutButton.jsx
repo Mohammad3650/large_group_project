@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { FaSignOutAlt } from 'react-icons/fa';
-import { logout } from '../utils/Auth/authStorage';
+import { logout } from '../functionality/Authentication/utils/authStorage.js';
 import './stylesheets/LogoutButton.css';
 
 /**

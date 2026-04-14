@@ -32,10 +32,14 @@ function EditTimeBlock() {
     } = useEditTimeBlock(id);
 
     async function handleUpdate(dataList) {
+        try {
         const success = await update(dataList[0]);
 
         if (success) {
             goSuccess();
+        }
+        } catch (error) {
+        console.error(error);
         }
     }
 
