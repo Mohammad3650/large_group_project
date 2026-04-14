@@ -337,6 +337,24 @@ describe('Tests for GeneratorForm', () => {
             expect(
                 screen.getByText('Week start is required')
             ).toBeInTheDocument();
+            expect(
+                screen.getByText('Week start is required')
+            ).toHaveClass('error-text-date');
+        }
+
+        {
+            const serverErrors = {
+                week_end: ['Week end is required']
+            };
+
+            renderGeneratorForm({ serverErrors });
+
+            expect(
+                screen.getByText('Week end is required')
+            ).toBeInTheDocument();
+            expect(
+                screen.getByText('Week end is required')
+            ).toHaveClass('error-text-date');
         }
     });
 });
