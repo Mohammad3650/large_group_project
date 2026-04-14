@@ -42,8 +42,11 @@ describe('Tests for SubscriptionForm', () => {
         });
 
         const form = container.querySelector('form');
+        expect(form).not.toBeNull();
 
-        fireEvent.submit(form);
+        await act(async () => {
+            fireEvent.submit(form);
+        });
 
         await waitFor(() => {
             expect(onImport).toHaveBeenCalledTimes(1);
@@ -52,11 +55,11 @@ describe('Tests for SubscriptionForm', () => {
             ).toBeDisabled();
         });
 
-        fireEvent.submit(form);
+        await act(async () => {
+            fireEvent.submit(form);
+        });
 
         expect(onImport).toHaveBeenCalledTimes(1);
-
-        resolveImport();
 
         await act(async () => {
             resolveImport();
@@ -259,7 +262,9 @@ describe('Tests for SubscriptionForm', () => {
             screen.getByRole('button', { name: /importing/i })
         ).toBeDisabled();
 
-        resolveImport(undefined);
+        await act(async () => {
+            resolveImport(undefined);
+        });
 
         await waitFor(() => {
             expect(
@@ -269,8 +274,6 @@ describe('Tests for SubscriptionForm', () => {
     });
 
     it('does not submit twice while loading', async () => {
-        const user = userEvent.setup();
-
         let resolveImport;
         const mockOnImport = vi.fn(
             () =>
@@ -279,26 +282,44 @@ describe('Tests for SubscriptionForm', () => {
                 })
         );
 
-        render(<SubscriptionForm onImport={mockOnImport} />);
+        const { container } = render(<SubscriptionForm onImport={mockOnImport} />);
 
-        await user.type(
-            screen.getByPlaceholderText(/subscription name/i),
-            'KCL Timetable'
-        );
-        await user.type(
-            screen.getByPlaceholderText(/ics or webcal url/i),
-            'https://example.com/calendar.ics'
-        );
-
-        const submitButton = screen.getByRole('button', {
-            name: /import timetable/i
+        fireEvent.change(screen.getByPlaceholderText(/subscription name/i), {
+            target: { value: 'KCL Timetable' }
         });
 
-        await user.click(submitButton);
-        await user.click(submitButton);
+        fireEvent.change(screen.getByPlaceholderText(/ics or webcal url/i), {
+            target: { value: 'https://example.com/calendar.ics' }
+        });
+
+        const form = container.querySelector('form');
+        expect(form).not.toBeNull();
+
+        await act(async () => {
+            fireEvent.submit(form);
+        });
+
+        await waitFor(() => {
+            expect(mockOnImport).toHaveBeenCalledTimes(1);
+            expect(
+                screen.getByRole('button', { name: /importing/i })
+            ).toBeDisabled();
+        });
+
+        await act(async () => {
+            fireEvent.submit(form);
+        });
 
         expect(mockOnImport).toHaveBeenCalledTimes(1);
 
-        resolveImport(undefined);
+        await act(async () => {
+            resolveImport(undefined);
+        });
+
+        await waitFor(() => {
+            expect(
+                screen.getByRole('button', { name: /import timetable/i })
+            ).toBeInTheDocument();
+        });
     });
 });
