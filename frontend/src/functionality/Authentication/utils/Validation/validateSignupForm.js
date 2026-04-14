@@ -46,6 +46,7 @@ function isBlank(value) {
  * Applies required field validation
  * 
  * @param {Object} form 
+ * @param {Object} errors
  * @returns {Object} errors
  */
 function applyRequiredFieldValidation(form, errors) {
@@ -60,6 +61,7 @@ function applyRequiredFieldValidation(form, errors) {
  * Applies password-specific validation rules
  * 
  * @param {Object} form 
+ * @param {Object} errors
  * @returns {Object} errors
  */
 function applyPasswordValidation(form, errors) {
