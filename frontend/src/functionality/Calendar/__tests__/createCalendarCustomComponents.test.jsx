@@ -16,12 +16,12 @@ vi.mock('../CalendarEventModal.jsx', () => ({
     )
 }));
 
-describe('Tests for createCalendarCustomComponents', () => {
+describe('Tests for CreateCalendarCustomComponents', () => {
     it('returns an eventModal component that renders CalendarEventModal', () => {
         const mockEventButtons = vi.fn((calendarEvent) => <button>Edit {calendarEvent.id}</button>);
         const mockHandleDelete = vi.fn();
 
-        const components = createCalendarCustomComponents(mockEventButtons, mockHandleDelete);
+        const components = CreateCalendarCustomComponents(mockEventButtons, mockHandleDelete);
 
         const calendarEvent = {
             id: 7,
@@ -45,7 +45,7 @@ describe('Tests for createCalendarCustomComponents', () => {
     it('passes undefined eventButtons through and renders no action buttons', () => {
         const mockHandleDelete = vi.fn();
 
-        const components = createCalendarCustomComponents(undefined, mockHandleDelete);
+        const components = CreateCalendarCustomComponents(undefined, mockHandleDelete);
 
         const calendarEvent = {
             id: 7,
@@ -63,7 +63,7 @@ describe('Tests for createCalendarCustomComponents', () => {
     });
 
     it('returns an object with an eventModal function', () => {
-        const components = createCalendarCustomComponents(vi.fn(), vi.fn());
+        const components = CreateCalendarCustomComponents(vi.fn(), vi.fn());
 
         expect(components).toHaveProperty('eventModal');
         expect(typeof components.eventModal).toBe('function');
