@@ -6,10 +6,6 @@ vi.mock('../../../Authentication/utils/authStatus.js', () => ({
     default: vi.fn(() => false),
 }));
 
-vi.mock('../../utils/Helpers/getHeroImage.js', () => ({
-    default: vi.fn(() => 'test-image.png'),
-}));
-
 vi.mock('../../utils/Helpers/getHeroButtons.js', () => ({
     default: vi.fn(() => [
         { label: 'Sign Up', path: '/signup', style: 'black' },
@@ -30,20 +26,19 @@ vi.mock('../../Hero/HeroContent.jsx', () => ({
 }));
 
 vi.mock('../../Hero/HeroImage.jsx', () => ({
-    default: ({ heroImage }) => <img data-testid="hero-image" src={heroImage} alt="hero" />,
+    default: () => <img data-testid="hero-image" alt="StudySync hero" />,
 }));
 
 vi.mock('../../stylesheets/Hero/Hero.css', () => ({}));
 
 import Hero from '../../Hero/Hero.jsx';
-import * as getHeroImageModule from '../../utils/Helpers/getHeroImage.js';
 import * as getHeroButtonsModule from '../../utils/Helpers/getHeroButtons.js';
 import * as authStatusModule from '../../../Authentication/utils/authStatus.js';
 
-const renderHero = (theme = 'light') =>
+const renderHero = () =>
     render(
         <MemoryRouter>
-            <Hero theme={theme} />
+            <Hero />
         </MemoryRouter>
     );
 
@@ -51,7 +46,6 @@ describe('Hero', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         authStatusModule.default.mockReturnValue(false);
-        getHeroImageModule.default.mockReturnValue('test-image.png');
         getHeroButtonsModule.default.mockReturnValue([
             { label: 'Sign Up', path: '/signup', style: 'black' },
             { label: 'Login', path: '/login', style: 'white' },
@@ -68,19 +62,9 @@ describe('Hero', () => {
         expect(screen.getByTestId('hero-image')).toBeInTheDocument();
     });
 
-    it('calls getHeroImage with the correct theme', () => {
-        renderHero('dark');
-        expect(getHeroImageModule.default).toHaveBeenCalledWith('dark');
-    });
-
     it('calls getHeroButtons with the logged in state', () => {
         authStatusModule.default.mockReturnValue(true);
         renderHero();
         expect(getHeroButtonsModule.default).toHaveBeenCalledWith(true);
-    });
-
-    it('passes the hero image to HeroImage', () => {
-        renderHero();
-        expect(screen.getByTestId('hero-image')).toHaveAttribute('src', 'test-image.png');
     });
 });
