@@ -1,22 +1,22 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import useEditTimeBlock from '../Hooks/useEditTimeBlock';
-import { api } from '../../api';
-import mapTimeBlockToFormData from '../Formatters/mapTimeBlockToFormData';
-import buildUpdatePayload from '../Helpers/buildUpdatePayload';
+import useEditTimeBlock from '../../../utils/Hooks/useEditTimeBlock.js';
+import { api } from '../../../../../api';
+import mapTimeBlockToFormData from '../../../utils/Formatters/mapTimeBlockToFormData.js';
+import buildUpdatePayload from '../../../utils/Helpers/buildUpdatePayload.js';
 
-vi.mock('../../api', () => ({
+vi.mock('../../../../../api', () => ({
     api: {
         get: vi.fn(),
         patch: vi.fn()
     }
 }));
 
-vi.mock('../Formatters/mapTimeBlockToFormData', () => ({
+vi.mock('../../../utils/Formatters/mapTimeBlockToFormData', () => ({
     default: vi.fn()
 }));
 
-vi.mock('../Helpers/buildUpdatePayload', () => ({
+vi.mock('../../../utils/Helpers/buildUpdatePayload', () => ({
     default: vi.fn()
 }));
 

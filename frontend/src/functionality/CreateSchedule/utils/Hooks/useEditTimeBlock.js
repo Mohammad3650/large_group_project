@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api } from '../../api';
+import { api } from '../../../../api.js';
 import mapTimeBlockToFormData from '../Formatters/mapTimeBlockToFormData';
 import buildUpdatePayload from '../Helpers/buildUpdatePayload';
 
