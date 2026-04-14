@@ -91,10 +91,7 @@ class UserModelTest(TestCase):
 
         Fails the test if any ValidationError is raised.
         """
-        try:
-            user.full_clean()
-        except ValidationError as e:
-            self.fail(f"Expected valid user, got errors: {e.message_dict}")
+        user.full_clean()
 
     def _assert_user_is_invalid(self, user, field=None):
         """
