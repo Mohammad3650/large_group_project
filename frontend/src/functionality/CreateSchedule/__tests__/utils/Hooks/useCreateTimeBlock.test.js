@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { useCreateTimeBlock } from '../../utils/Hooks/useCreateTimeBlock.js';
-import { api } from '../../api.js';
+import { useCreateTimeBlock } from '../../../utils/Hooks/useCreateTimeBlock.js';
+import { api } from '../../../../../api.test.js';
 
 const mockNavigate = vi.fn();
 
@@ -13,7 +13,7 @@ vi.mock('react-router-dom', async () => {
     };
 });
 
-vi.mock('../../api.js', () => ({
+vi.mock('../../../../../api.test.js', () => ({
     api: {
         post: vi.fn()
     }

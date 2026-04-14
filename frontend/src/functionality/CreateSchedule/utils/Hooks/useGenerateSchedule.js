@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import generateSchedule from '../../utils/Api/generateSchedule.js';
+import generateSchedule from '../../../../utils/Api/generateSchedule.js';
 
 
 /**
