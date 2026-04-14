@@ -50,7 +50,7 @@ vi.mock('../../../components/TimeBlockForm.jsx', () => ({
     }
 }));
 
-vi.mock('../../../components/GeneratorForm.jsx', () => ({
+vi.mock('../GeneratorForm.jsx', () => ({
     default: (props) => {
         mockGeneratorForm(props);
         return (

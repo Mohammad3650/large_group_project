@@ -16,7 +16,7 @@ const renderGeneratorForm = (overrides = {}) => {
     return render(<GeneratorForm {...props} />);
 };
 
-vi.mock('../../utils/Helpers/getUserTimezone', () => ({
+vi.mock('../../../utils/Helpers/getUserTimezone', () => ({
         default: () => 'UTC'
     }));
 

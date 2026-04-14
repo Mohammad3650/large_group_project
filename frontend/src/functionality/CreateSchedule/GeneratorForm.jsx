@@ -1,11 +1,11 @@
-import './stylesheets/TimeBlockForm.css';
-import { BLOCK_TYPES } from '../constants/blockTypes';
+import '../../components/stylesheets/TimeBlockForm.css';
+import { BLOCK_TYPES } from '../../constants/blockTypes.js';
 import GeneratorFormItem from './GeneratorFormItem.jsx';
 import DateRangeInput from './DateRangeInput.jsx';
 import TimeWindowInput from './TimeWindowInput.jsx';
 import GlobalOptions from './GlobalOptions.jsx';
-import FormActions from './FormActions.jsx';
-import useGeneratorForm from '../utils/Hooks/useGeneratorForm.js';
+import FormActions from '../../components/FormActions.jsx';
+import useGeneratorForm from '../../utils/Hooks/useGeneratorForm.js';
 
 /**
  * GeneratorForm renders schedule input fields and manages unscheduled block state.

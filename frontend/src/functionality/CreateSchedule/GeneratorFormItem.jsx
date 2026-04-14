@@ -5,8 +5,8 @@
  * @param {{block:object, index:number, serverErrors:object, updateBlock:function, deleteBlock:function, blocksLength:number}} props
  * @returns {JSX.Element}
  */
-import { BLOCK_TYPES } from '../constants/blockTypes';
-import Capitalise from '../utils/Formatters/capitalise';
+import { BLOCK_TYPES } from '../../constants/blockTypes';
+import Capitalise from '../../utils/Formatters/capitalise';
 
 function GeneratorFormItem({
     block,
