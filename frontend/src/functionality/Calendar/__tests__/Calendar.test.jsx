@@ -28,7 +28,7 @@ vi.mock('../CalendarEmptyState.jsx', () => ({
     )
 }));
 
-vi.mock('../renderEventActions.jsx', () => ({
+vi.mock('../RenderEventActions.jsx', () => ({
     default: (...args) => mockRenderEventActions(...args)
 }));
 
@@ -106,7 +106,7 @@ describe('Calendar', () => {
         expect(setBlocks).toHaveBeenCalledWith(['updated']);
     });
 
-    it('passes renderEventActions to CalendarView and calls it', () => {
+    it('passes RenderEventActions to CalendarView and calls it', () => {
         renderCalendar();
 
         fireEvent.click(screen.getByRole('button', { name: 'Trigger Event Buttons' }));

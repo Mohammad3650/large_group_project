@@ -8,8 +8,8 @@ import CalendarEventActions from './CalendarEventActions.jsx';
  * @returns {JSX.Element} Event action buttons
  */
 
-function renderEventActions(calendarEvent, handleDelete) {
+function RenderEventActions(calendarEvent, handleDelete) {
     return <CalendarEventActions calendarEvent={calendarEvent} handleDelete={handleDelete} />;
 }
 
-export default renderEventActions;
+export default RenderEventActions;

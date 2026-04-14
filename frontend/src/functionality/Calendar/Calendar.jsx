@@ -6,7 +6,7 @@ import useTimeBlocks from '../../utils/Hooks/useTimeBlocks.js';
 import CalendarView from './CalendarView.jsx';
 import AddTaskButton from '../../components/AddTaskButton.jsx';
 import useUsername from '../../utils/Hooks/useUsername.js';
-import renderEventActions from './RenderEventActions.jsx';
+import RenderEventActions from './RenderEventActions.jsx';
 
 /**
  * Displays the user's calendar page.
@@ -29,7 +29,7 @@ function Calendar() {
             setBlocks={setBlocks}
             username={username}
             headerButtons={<AddTaskButton />}
-            eventButtons={renderEventActions}
+            eventButtons={RenderEventActions}
         />
     );
 }

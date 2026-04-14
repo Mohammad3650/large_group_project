@@ -1,3 +1,4 @@
+import './stylesheets/EventDetail.css';
 /**
  * Renders a single event detail row with an icon and value.
  *
@@ -11,7 +12,7 @@ function EventDetail({ icon, value }) {
     return (
         <div className="event-detail">
             <span className="event-detail-icon">{icon}</span>
-            <span>{value}</span>
+            <span className="event-detail-value">{value}</span>
         </div>
     );
 }
