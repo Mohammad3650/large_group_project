@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import SubscriptionForm from '../SubscriptionForm.jsx';
@@ -19,6 +19,116 @@ describe('Tests for SubscriptionForm', () => {
         expect(
             screen.getByRole('button', { name: /import timetable/i })
         ).toBeInTheDocument();
+    });
+
+    it('returns early when submitted again while loading is true', async () => {
+        let resolveImport;
+
+        const onImport = vi.fn(
+            () =>
+                new Promise((resolve) => {
+                    resolveImport = resolve;
+                })
+        );
+
+        const { container } = render(<SubscriptionForm onImport={onImport} />);
+
+        fireEvent.change(screen.getByPlaceholderText('Subscription name'), {
+            target: { value: 'My Timetable' }
+        });
+
+        fireEvent.change(screen.getByPlaceholderText('ICS or webcal URL'), {
+            target: { value: 'https://example.com/feed.ics' }
+        });
+
+        const form = container.querySelector('form');
+
+        fireEvent.submit(form);
+
+        await waitFor(() => {
+            expect(onImport).toHaveBeenCalledTimes(1);
+            expect(
+                screen.getByRole('button', { name: /importing/i })
+            ).toBeDisabled();
+        });
+
+        fireEvent.submit(form);
+
+        expect(onImport).toHaveBeenCalledTimes(1);
+
+        resolveImport();
+
+        await waitFor(() => {
+            expect(
+                screen.getByRole('button', { name: /import timetable/i })
+            ).toBeEnabled();
+        });
+    });
+
+    it('does not show local success feedback when parent feedback is provided', async () => {
+        const onImport = vi.fn().mockResolvedValue(undefined);
+
+        render(
+            <SubscriptionForm
+                onImport={onImport}
+                feedbackMessage="Parent success message"
+                feedbackType="success"
+            />
+        );
+
+        fireEvent.change(screen.getByPlaceholderText('Subscription name'), {
+            target: { value: 'My Timetable' }
+        });
+
+        fireEvent.change(screen.getByPlaceholderText('ICS or webcal URL'), {
+            target: { value: 'https://example.com/feed.ics' }
+        });
+
+        fireEvent.click(
+            screen.getByRole('button', { name: /import timetable/i })
+        );
+
+        await waitFor(() => {
+            expect(onImport).toHaveBeenCalledTimes(1);
+        });
+
+        expect(
+            screen.queryByText('Timetable imported successfully.')
+        ).not.toBeInTheDocument();
+    });
+
+    it('does not show local error feedback when parent feedback is provided', async () => {
+        const onImport = vi.fn().mockRejectedValue(
+            new Error('Import failed')
+        );
+
+        render(
+            <SubscriptionForm
+                onImport={onImport}
+                feedbackMessage="Parent error message"
+                feedbackType="error"
+            />
+        );
+
+        fireEvent.change(screen.getByPlaceholderText('Subscription name'), {
+            target: { value: 'My Timetable' }
+        });
+
+        fireEvent.change(screen.getByPlaceholderText('ICS or webcal URL'), {
+            target: { value: 'https://example.com/feed.ics' }
+        });
+
+        fireEvent.click(
+            screen.getByRole('button', { name: /import timetable/i })
+        );
+
+        await waitFor(() => {
+            expect(onImport).toHaveBeenCalledTimes(1);
+        });
+
+        expect(
+            screen.queryByText('Failed to import timetable.')
+        ).not.toBeInTheDocument();
     });
 
     it('updates both inputs when the user types', async () => {
