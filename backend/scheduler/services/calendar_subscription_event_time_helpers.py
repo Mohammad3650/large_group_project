@@ -1,8 +1,6 @@
-from zoneinfo import ZoneInfo
-
 from django.utils import timezone
 
-LOCAL_TIMEZONE = ZoneInfo("Europe/London")
+from scheduler.services.constants import LOCAL_TIMEZONE
 
 
 def to_local_datetime(value):
