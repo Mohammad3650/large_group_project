@@ -53,10 +53,11 @@ class ExportCsvHelpersTest(TestCase):
                 self.day_plan.date,
                 "SEG Lecture",
                 "lecture",
-                "09:00:00",
                 "10:00:00",
+                "11:00:00",
                 "Bush House",
                 "Bring laptop",
+                "Europe/London",
             ],
         )
 
@@ -65,10 +66,10 @@ class ExportCsvHelpersTest(TestCase):
         content = build_csv_content([self.time_block])
 
         self.assertIn(
-            "date,name,block_type,start_time,end_time,location,description",
+            "date,name,block_type,start_time,end_time,location,description,timezone",
             content,
         )
         self.assertIn(
-            "2026-04-10,SEG Lecture,lecture,09:00:00,10:00:00,Bush House,Bring laptop",
+            "2026-04-10,SEG Lecture,lecture,10:00:00,11:00:00,Bush House,Bring laptop,Europe/London",
             content,
         )

@@ -18,9 +18,9 @@ const FEATURES = [
     },
     {
         image: settingsImg,
-        alt: 'Preferences settings illustration',
-        title: 'Set-Up Preferences',
-        text: 'Add your sleep window, commute time, and max study hours — these preferences are applied consistently each week.'
+        alt: 'Export schedule',
+        title: 'Export Your Schedule',
+        text: "Download your generated schedule as a CSV file for use in spreadsheets, or as an ICS file to import directly into Google Calendar, Outlook, or Apple Calendar."
     },
     {
         image: balancedStudyImg,
@@ -36,9 +36,9 @@ const FEATURES = [
     },
     {
         image: timelineImg,
-        alt: 'Timeline history illustration',
-        title: 'Plan History by Week',
-        text: 'Keep track of how your week-to-week schedule evolves as your workload changes. StudySync stores previous plans so you can look back and understand how your time was managed over the term.'
+        alt: 'Import a timetable',
+        title: 'Import Your University Timetable',
+        text: "Subscribe to your university's ICS or webcal feed to automatically pull your lectures and classes into StudySync. Refresh or remove subscriptions at any time from the settings page."
     }
 ];
 
@@ -54,11 +54,12 @@ function Features() {
                 <div className="features-header">
                     <h1>Why StudySync?</h1>
                     <p>
-                        StudySync is designed to help university students manage their time more
-                        effectively in courses with heavy coursework demands. By taking into account
-                        lectures, labs, personal commitments, and individual study preferences, it
-                        generates realistic weekly schedules. The system respects constraints such
-                        as sleep, travel time, and daily study limits.
+                        StudySync is an all-in-one academic planner built for university students.
+                        Automatically generate a realistic weekly study schedule that respects your
+                        lectures, sleep window, commute, and daily limits. Track your tasks on a
+                        personal dashboard, view your timetable on an interactive calendar, import
+                        your university timetable via a calendar subscription, and export your
+                        schedule whenever you need it.
                     </p>
                 </div>
 

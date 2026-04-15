@@ -10,6 +10,8 @@ function ChangePassword() {
         setCurrentPassword,
         newPassword,
         setNewPassword,
+        confirmNewPassword,
+        setConfirmNewPassword,
         message,
         errors,
         loading,
@@ -49,6 +51,16 @@ function ChangePassword() {
                         value={newPassword}
                         onChange={setNewPassword}
                         error={errors.fieldErrors.newPassword}
+                    />
+
+                    <AuthField
+                        name="confirmNewPassword"
+                        label="Confirm new password"
+                        type="password"
+                        placeholder="Confirm new password"
+                        value={confirmNewPassword}
+                        onChange={setConfirmNewPassword}
+                        error={errors.fieldErrors.confirmNewPassword}
                     />
                 </div>
 
