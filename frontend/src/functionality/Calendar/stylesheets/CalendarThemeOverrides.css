@@ -1,3 +1,4 @@
+/* ─── Event type backgrounds ─── */
 .sx__time-grid-event.sx-type-sleep {
     background: linear-gradient(90deg, rgba(234, 179, 8, 0.3) 0%, rgba(250, 204, 21, 0.668) 100%);
 }
@@ -68,6 +69,7 @@
     );
 }
 
+/* ─── Event text & interactions ─── */
 .sx__time-grid-event-title {
     font-size: var(--font-size-calendar-xl);
     padding-bottom: var(--space-event-title-bottom);
@@ -90,6 +92,7 @@
     box-shadow: var(--shadow-event-hover);
 }
 
+/* ─── Base calendar styles ─── */
 .sx__date-picker__day {
     display: flex;
     align-items: center;
@@ -103,6 +106,11 @@
 
 .sx__calendar-header button {
     border-radius: var(--space-calendar-header-radius) !important;
+}
+
+/* Allow the date picker popup to escape the calendar container on desktop */
+.sx__calendar {
+    overflow: visible !important;
 }
 
 /* ─── Dark theme: base wrappers ─── */
@@ -126,6 +134,7 @@ body.dark-theme .sx__date-input {
     border-color: var(--border-light) !important;
 }
 
+/* ─── Dark theme: text colours ─── */
 body.dark-theme .sx__month-header,
 body.dark-theme .sx__week-header,
 body.dark-theme .sx__date-grid-day,
@@ -137,6 +146,7 @@ body.dark-theme .sx__view-selection-item {
     color: var(--text-main) !important;
 }
 
+/* ─── Dark theme: borders ─── */
 body.dark-theme .sx__week-grid,
 body.dark-theme .sx__month-grid,
 body.dark-theme .sx__date-grid,
@@ -146,6 +156,7 @@ body.dark-theme .sx__calendar-header {
     border-color: var(--border-light) !important;
 }
 
+/* ─── Dark theme: week header ─── */
 body.dark-theme .sx__week-header {
     background: var(--bg-main) !important;
     color: var(--text-main) !important;
@@ -159,6 +170,7 @@ body.dark-theme .sx__week-header .sx__date-grid-day-number {
     background: transparent !important;
 }
 
+/* ─── Dark theme: date grid ─── */
 body.dark-theme .sx__date-grid-day {
     background: var(--bg-main) !important;
     color: var(--text-main) !important;
@@ -201,6 +213,7 @@ body.dark-theme .sx__view-selection-button {
     border: 1px solid var(--border-light) !important;
 }
 
+/* ─── Dark theme: day items ─── */
 body.dark-theme .sx__view-selection-item,
 body.dark-theme .sx__date-picker__day {
     background: transparent !important;
@@ -214,11 +227,22 @@ body.dark-theme .sx__date-picker__day:hover {
 }
 
 body.dark-theme .sx__view-selection-selected-item,
-body.dark-theme .sx__view-selection-item--selected,
-body.dark-theme .sx__date-picker__day--selected {
+body.dark-theme .sx__view-selection-item--selected {
     color: var(--text-main) !important;
 }
 
+/* Chained selectors required to override the transparent background above */
+body.dark-theme .sx__date-picker__day.sx__date-picker__day--today {
+    background-color: var(--sx-color-primary) !important;
+    color: var(--sx-color-on-primary) !important;
+}
+
+body.dark-theme .sx__date-picker__day.sx__date-picker__day--selected {
+    background-color: var(--sx-color-primary-container) !important;
+    color: var(--sx-color-on-primary-container) !important;
+}
+
+/* ─── Dark theme: calendar header buttons ─── */
 body.dark-theme .sx__calendar-header button,
 body.dark-theme .sx__calendar-header select {
     background: var(--bg-main) !important;
@@ -226,13 +250,20 @@ body.dark-theme .sx__calendar-header select {
     border: 1px solid var(--border-light) !important;
 }
 
+/* ─── Dark theme: SVGs ─── */
 body.dark-theme .sx__date-input svg,
 body.dark-theme .sx__view-selection-selected-item svg,
-body.dark-theme .sx__calendar-header svg {
+body.dark-theme .sx__calendar-header svg,
+body.dark-theme .sx__date-picker-popup svg {
     fill: var(--text-main) !important;
     color: var(--text-main) !important;
 }
 
+body.dark-theme .sx__date-picker-popup .sx__chevron {
+    border-color: var(--text-main) !important;
+}
+
+/* ─── Dark theme: time axis & grid ─── */
 body.dark-theme .sx__time-axis,
 body.dark-theme .sx__time-axis-time {
     color: var(--text-muted) !important;
