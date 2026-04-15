@@ -9,6 +9,7 @@ import './stylesheets/CalendarView.css';
 import './stylesheets/CalendarThemeOverrides.css';
 import getUserTimezone from '../../utils/Helpers/getUserTimezone.js';
 import WelcomeMessage from '../../components/WelcomeMessage.jsx';
+import useBodyClassRemount from './utils/Hooks/useBodyClassRemount.js';
 
 /**
  * Displays the calendar view and wires together calendar state,
@@ -29,6 +30,8 @@ function CalendarView({ blocks, setBlocks, username, headerButtons, eventButtons
     const calendarTimezone = getUserTimezone();
     const handleDelete = createCalendarDeleteHandler(eventsService, setBlocks, setCalendarKey);
     const customComponents = CreateCalendarCustomComponents(eventButtons, handleDelete);
+
+    useBodyClassRemount(setCalendarKey);
 
     return (
         <div className="calendar-content">
