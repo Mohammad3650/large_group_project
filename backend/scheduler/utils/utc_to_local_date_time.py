@@ -15,5 +15,5 @@ def utc_to_local_date_time(date_value, time_value, timezone_str):
     Returns:
         datetime: A timezone-aware datetime object in the target local timezone.
     """
-    utc_datetime = datetime.combine(date_value, time_value, tzinfo=ZoneInfo("UTC"))
-    return utc_datetime.astimezone(ZoneInfo(timezone_str or "UTC"))
+    utc_date_time = datetime.combine(date_value, time_value, tzinfo=ZoneInfo("UTC"))
+    return utc_date_time.astimezone(ZoneInfo(timezone_str or "UTC"))
