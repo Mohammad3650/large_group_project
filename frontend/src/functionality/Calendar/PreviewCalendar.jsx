@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import '@schedule-x/theme-default/dist/index.css';
 import 'temporal-polyfill/global';
 import './stylesheets/Calendar.css';
+import './stylesheets/CalendarEventActions.css';
 import CalendarView from './CalendarView.jsx';
-import fetchGeneratedSchedule from '../../utils/Api/fetchGeneratedSchedule.js';
-import saveGeneratedSchedule from '../../utils/Api/saveGeneratedSchedule.js';
-import discardSchedule from '../../utils/Helpers/discardSchedule.js';
+import fetchGeneratedSchedule from './utils/Api/fetchGeneratedSchedule.js';
+import saveGeneratedSchedule from './utils/Api/saveGeneratedSchedule.js';
+import discardSchedule from './utils/Helpers/discardSchedule.js';
+import useUsername from '../../utils/Hooks/useUsername.js';
 
 /**
  * Component for previewing a generated schedule before saving.
@@ -17,6 +19,7 @@ import discardSchedule from '../../utils/Helpers/discardSchedule.js';
 function PreviewCalendar() {
     const [blocks, setBlocks] = useState(null);
     const [schedule, setSchedule] = useState(null);
+    const { username } = useUsername(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -42,10 +45,11 @@ function PreviewCalendar() {
             blocks={blocks}
             setBlocks={setBlocks}
             title="Preview generated schedule"
+            username={username}
             headerButtons={
                 <>
-                    <button onClick={handleSave}>Save Schedule</button>
-                    <button onClick={handleLeave}>Cancel</button>
+                    <button className="button button--primary" onClick={handleSave}>Save Schedule</button>
+                    <button className="button" onClick={handleLeave}>Cancel</button>
                 </>
             }
             eventButtons={null}

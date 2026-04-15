@@ -15,6 +15,8 @@ function createHookState(overrides = {}) {
         setCurrentPassword: vi.fn(),
         newPassword: '',
         setNewPassword: vi.fn(),
+        confirmNewPassword: '',
+        setConfirmNewPassword: vi.fn(),
         message: '',
         errors: {
             fieldErrors: {},
@@ -54,7 +56,10 @@ describe('ChangePassword', () => {
             screen.getByLabelText(/current password/i)
         ).toBeInTheDocument();
         expect(
-            screen.getByLabelText(/new password/i)
+            screen.getByLabelText(/^new password$/i)
+        ).toBeInTheDocument();
+        expect(
+            screen.getByLabelText(/confirm new password/i)
         ).toBeInTheDocument();
         expect(
             screen.getByRole('button', { name: /update password/i })
@@ -89,11 +94,27 @@ describe('ChangePassword', () => {
 
         renderComponent();
 
-        fireEvent.change(screen.getByLabelText(/new password/i), {
+        fireEvent.change(screen.getByLabelText(/^new password$/i), {
             target: { value: 'newpassword123' }
         });
 
         expect(setNewPassword).toHaveBeenCalledWith('newpassword123');
+    });
+
+    it('passes the confirm new password value to the hook setter', () => {
+        const setConfirmNewPassword = vi.fn();
+
+        useChangePasswordForm.mockReturnValue(
+            createHookState({ setConfirmNewPassword })
+        );
+
+        renderComponent();
+
+        fireEvent.change(screen.getByLabelText(/confirm new password/i), {
+            target: { value: 'newpassword123' }
+        });
+
+        expect(setConfirmNewPassword).toHaveBeenCalledWith('newpassword123');
     });
 
     it('submits the form through the hook submit handler', () => {
@@ -116,7 +137,8 @@ describe('ChangePassword', () => {
                 errors: {
                     fieldErrors: {
                         currentPassword: 'Current password is required.',
-                        newPassword: 'New password is required.'
+                        newPassword: 'New password is required.',
+                        confirmNewPassword: 'Please confirm your new password.'
                     },
                     global: []
                 }
@@ -130,6 +152,9 @@ describe('ChangePassword', () => {
         ).toBeInTheDocument();
         expect(
             screen.getByText(/new password is required/i)
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(/please confirm your new password/i)
         ).toBeInTheDocument();
     });
 

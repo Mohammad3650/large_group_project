@@ -39,6 +39,7 @@ describe('useChangePasswordForm', () => {
 
         expect(result.current.currentPassword).toBe('');
         expect(result.current.newPassword).toBe('');
+        expect(result.current.confirmNewPassword).toBe('');
         expect(result.current.message).toBe('');
         expect(result.current.loading).toBe(false);
         expect(result.current.errors).toEqual({
@@ -53,22 +54,25 @@ describe('useChangePasswordForm', () => {
         );
     });
 
-    it('updates current and new password fields', () => {
+    it('updates current, new, and confirm new password fields', () => {
         const { result } = renderHook(() => useChangePasswordForm());
 
         act(() => {
             result.current.setCurrentPassword('oldpassword123');
             result.current.setNewPassword('newpassword123');
+            result.current.setConfirmNewPassword('newpassword123');
         });
 
         expect(result.current.currentPassword).toBe('oldpassword123');
         expect(result.current.newPassword).toBe('newpassword123');
+        expect(result.current.confirmNewPassword).toBe('newpassword123');
     });
 
     it('sets validation errors and does not submit when validation fails', async () => {
         validateChangePasswordForm.mockReturnValue({
             currentPassword: 'Current password is required.',
-            newPassword: 'New password is required.'
+            newPassword: 'New password is required.',
+            confirmNewPassword: 'Please confirm your new password.'
         });
 
         const event = createSubmitEvent();
@@ -82,13 +86,15 @@ describe('useChangePasswordForm', () => {
         expect(event.preventDefault).toHaveBeenCalledTimes(1);
         expect(validateChangePasswordForm).toHaveBeenCalledWith({
             currentPassword: '',
-            newPassword: ''
+            newPassword: '',
+            confirmNewPassword: ''
         });
         expect(api.post).not.toHaveBeenCalled();
         expect(result.current.errors).toEqual({
             fieldErrors: {
                 currentPassword: 'Current password is required.',
-                newPassword: 'New password is required.'
+                newPassword: 'New password is required.',
+                confirmNewPassword: 'Please confirm your new password.'
             },
             global: []
         });
@@ -109,6 +115,7 @@ describe('useChangePasswordForm', () => {
         act(() => {
             result.current.setCurrentPassword('oldpassword123');
             result.current.setNewPassword('newpassword123');
+            result.current.setConfirmNewPassword('newpassword123');
         });
 
         await act(async () => {
@@ -119,6 +126,12 @@ describe('useChangePasswordForm', () => {
         expect(api.post).toHaveBeenCalledWith('/api/user/change-password/', {
             current_password: 'oldpassword123',
             new_password: 'newpassword123'
+        });
+
+        expect(validateChangePasswordForm).toHaveBeenCalledWith({
+            currentPassword: 'oldpassword123',
+            newPassword: 'newpassword123',
+            confirmNewPassword: 'newpassword123'
         });
 
         expect(result.current.message).toBe('Password updated successfully.');
@@ -147,6 +160,7 @@ describe('useChangePasswordForm', () => {
         act(() => {
             result.current.setCurrentPassword('oldpassword123');
             result.current.setNewPassword('newpassword123');
+            result.current.setConfirmNewPassword('newpassword123');
         });
 
         await act(async () => {
@@ -169,6 +183,7 @@ describe('useChangePasswordForm', () => {
         act(() => {
             result.current.setCurrentPassword('oldpassword123');
             result.current.setNewPassword('newpassword123');
+            result.current.setConfirmNewPassword('newpassword123');
         });
 
         await act(async () => {
@@ -200,6 +215,7 @@ describe('useChangePasswordForm', () => {
         act(() => {
             result.current.setCurrentPassword('oldpassword123');
             result.current.setNewPassword('newpassword123');
+            result.current.setConfirmNewPassword('newpassword123');
         });
 
         act(() => {
@@ -242,6 +258,7 @@ describe('useChangePasswordForm', () => {
         act(() => {
             result.current.setCurrentPassword('oldpassword123');
             result.current.setNewPassword('newpassword123');
+            result.current.setConfirmNewPassword('newpassword123');
         });
 
         act(() => {

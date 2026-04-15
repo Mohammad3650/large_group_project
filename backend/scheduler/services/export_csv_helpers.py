@@ -1,6 +1,8 @@
 import csv
 from io import StringIO
 
+from scheduler.utils.utc_to_local_date_time import utc_to_local_date_time
+
 CSV_HEADERS = [
     "date",
     "name",
@@ -9,6 +11,7 @@ CSV_HEADERS = [
     "end_time",
     "location",
     "description",
+    "timezone",
 ]
 
 
@@ -35,14 +38,19 @@ def build_csv_row(block):
     Returns:
         list: CSV row values for the time block.
     """
+    timezone = block.timezone or "UTC"
+    start_local = utc_to_local_date_time(block.day.date, block.start_time, timezone) if block.start_time else None
+    end_local = utc_to_local_date_time(block.day.date, block.end_time, timezone) if block.end_time else None
+
     return [
         block.day.date,
         block.name,
         block.block_type,
-        format_optional_time(block.start_time),
-        format_optional_time(block.end_time),
+        start_local.strftime('%H:%M:%S') if start_local else "",
+        end_local.strftime('%H:%M:%S') if end_local else "",
         block.location,
         block.description,
+        timezone,
     ]
 
 

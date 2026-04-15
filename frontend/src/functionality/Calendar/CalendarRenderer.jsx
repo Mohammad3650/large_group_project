@@ -18,9 +18,12 @@ with the provided events, plugins, and custom components.
 
 function CalendarRenderer({ blocks, calendarTimezone, customComponents, eventsService }) {
     const eventModalPlugin = useMemo(() => createEventModalPlugin(), []);
+    const isMobile = window.innerWidth <= 768;
 
     const calendar = useCalendarApp({
         views: [createViewDay(), createViewWeek(), createViewMonthGrid()],
+        defaultView: isMobile ? 'day' : 'week',
+        locale: 'en-GB',
         plugins: [eventModalPlugin, eventsService],
         events: Array.isArray(blocks) ? blocks : [],
         timezone: calendarTimezone,

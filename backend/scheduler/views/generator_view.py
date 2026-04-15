@@ -9,14 +9,14 @@ from scheduler.services.schedule_service import ScheduleService
 
 class GenerateScheduleView(APIView):
     """
-    API endpoint for generating optimized schedules based on unscheduled events.
+    API endpoint for generating optimised schedules based on unscheduled events.
     """
 
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         """
-        Validate schedule request and generate optimized schedule.
+        Validate schedule request and generate optimised schedule.
         @param request: HTTP request with schedule generation parameters
         @return: Response with generated schedule events or validation errors
         """

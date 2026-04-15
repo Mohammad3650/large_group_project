@@ -1,5 +1,4 @@
 import bisect
-from dataclasses import dataclass
 import datetime
 from datetime import time
 from .constants import DAY_MINS, MINS_IN_HOUR

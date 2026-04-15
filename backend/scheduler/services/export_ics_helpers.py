@@ -1,3 +1,5 @@
+from scheduler.utils.utc_to_local_date_time import utc_to_local_date_time
+
 ICS_CALENDAR_HEADER_LINES = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -69,14 +71,18 @@ def build_ics_event_lines(block):
     if not has_timed_event_data(block):
         return None
 
-    start_dt = format_ics_datetime(block.day.date, block.start_time)
-    end_dt = format_ics_datetime(block.day.date, block.end_time)
+    timezone = block.timezone or "UTC"
+    start_local = utc_to_local_date_time(block.day.date, block.start_time, timezone)
+    end_local = utc_to_local_date_time(block.day.date, block.end_time, timezone)
+
+    start_str = start_local.strftime('%Y%m%dT%H%M%S')
+    end_str = end_local.strftime('%Y%m%dT%H%M%S')
 
     return [
         "BEGIN:VEVENT",
         f"SUMMARY:{escape_ics_text(block.name)}",
-        f"DTSTART:{start_dt}",
-        f"DTEND:{end_dt}",
+        f"DTSTART;TZID={timezone}:{start_str}",
+        f"DTEND;TZID={timezone}:{end_str}",
         f"LOCATION:{escape_ics_text(block.location)}",
         f"DESCRIPTION:{escape_ics_text(block.description)}",
         "END:VEVENT",
@@ -135,9 +141,9 @@ def build_ics_calendar_lines(time_blocks):
         list[str]: Full ICS file content split into lines.
     """
     return (
-        build_ics_calendar_header_lines()
-        + build_ics_calendar_event_lines(time_blocks)
-        + build_ics_calendar_footer_lines()
+            build_ics_calendar_header_lines()
+            + build_ics_calendar_event_lines(time_blocks)
+            + build_ics_calendar_footer_lines()
     )
 
 

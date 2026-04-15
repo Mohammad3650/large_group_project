@@ -1,5 +1,5 @@
 from datetime import date, time, timedelta
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 from django.test import TestCase, SimpleTestCase
 
 from scheduler.services.schedule_service import ScheduleService

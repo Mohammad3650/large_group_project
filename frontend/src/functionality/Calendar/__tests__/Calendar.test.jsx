@@ -19,15 +19,6 @@ vi.mock('../../../components/AddTaskButton.jsx', () => ({
     default: () => <div>Mock Add Task Button</div>
 }));
 
-vi.mock('../CalendarEmptyState.jsx', () => ({
-    default: ({ username }) => (
-        <div>
-            <div>{`Welcome to your calendar, ${username}!`}</div>
-            <div>No events yet.</div>
-        </div>
-    )
-}));
-
 vi.mock('../RenderEventActions.jsx', () => ({
     default: (...args) => mockRenderEventActions(...args)
 }));

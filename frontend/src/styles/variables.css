@@ -179,14 +179,12 @@
     --calendar-modal-size: 500px;
     --calendar-chevron-size: 44px;
     --card-min-height-lg: 270px;
-    --calendar-chevron-size: 44px;
     --calendar-chevron-icon-size: 12px;
 
     --space-chevron-border: 2px;
     --hero-button-min-width: 170px;
     --hero-button-black-max-width: 180px;
     --calendar-control-min-height-mobile: 36px;
-    --calendar-modal-size: 500px;
     --empty-state-max-width: 600px;
 
     --date-picker-popup-max-width-mobile: 90vw;
@@ -254,16 +252,14 @@
 
     --space-xxs: 4px;
     --space-button-y: 12px;
-    --space-modal: 40px;
-
-    --calendar-height-mobile: 72vh;
-    --calendar-height-mobile-sm: 68vh;
+    --space-modal: 24px;
 
     --calendar-event-modal-parent-max-width: 90vw;
     --calendar-event-modal-width: 82vw;
     --calendar-event-modal-max-width: 280px;
     --calendar-event-modal-width-mobile: 40vw;
     --calendar-event-modal-max-width-mobile: 240px;
+    --date-picker-popup-width-mobile: 310px;
 
     --event-text-soft: rgba(255, 255, 255, 0.85);
     --shadow-event-hover: 0 9px 10px rgba(0, 0, 0, 0.5);

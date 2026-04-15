@@ -97,11 +97,11 @@ class ExportScheduleViewTest(TestCase):
         content = response.content.decode()
 
         self.assertIn(
-            "date,name,block_type,start_time,end_time,location,description",
+            "date,name,block_type,start_time,end_time,location,description,timezone",
             content,
         )
         self.assertIn(
-            "2026-04-10,SEG Lecture,lecture,09:00:00,10:00:00,Bush House,Bring laptop",
+            "2026-04-10,SEG Lecture,lecture,10:00:00,11:00:00,Bush House,Bring laptop,Europe/London",
             content,
         )
         self.assertNotIn("Other User Event", content)
@@ -134,8 +134,8 @@ class ExportScheduleViewTest(TestCase):
             "PRODID:-//StudySync//Schedule Export//EN",
             "BEGIN:VEVENT",
             "SUMMARY:SEG Lecture",
-            "DTSTART:20260410T090000",
-            "DTEND:20260410T100000",
+            "DTSTART;TZID=Europe/London:20260410T100000",
+            "DTEND;TZID=Europe/London:20260410T110000",
             "LOCATION:Bush House",
             "DESCRIPTION:Bring laptop",
         ]
