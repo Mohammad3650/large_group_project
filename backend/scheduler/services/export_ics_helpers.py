@@ -71,9 +71,9 @@ def build_ics_event_lines(block):
     if not has_timed_event_data(block):
         return None
 
-    tz = block.timezone or "UTC"
-    start_local = utc_to_local_date_time(block.day.date, block.start_time, tz)
-    end_local = utc_to_local_date_time(block.day.date, block.end_time, tz)
+    timezone = block.timezone or "UTC"
+    start_local = utc_to_local_date_time(block.day.date, block.start_time, timezone)
+    end_local = utc_to_local_date_time(block.day.date, block.end_time, timezone)
 
     start_str = start_local.strftime('%Y%m%dT%H%M%S')
     end_str = end_local.strftime('%Y%m%dT%H%M%S')
@@ -81,8 +81,8 @@ def build_ics_event_lines(block):
     return [
         "BEGIN:VEVENT",
         f"SUMMARY:{escape_ics_text(block.name)}",
-        f"DTSTART;TZID={tz}:{start_str}",
-        f"DTEND;TZID={tz}:{end_str}",
+        f"DTSTART;TZID={timezone}:{start_str}",
+        f"DTEND;TZID={timezone}:{end_str}",
         f"LOCATION:{escape_ics_text(block.location)}",
         f"DESCRIPTION:{escape_ics_text(block.description)}",
         "END:VEVENT",
