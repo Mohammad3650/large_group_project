@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from scheduler.services.email_validation_helpers import validate_unique_email, normalise_email
+
 User = get_user_model()
 
 
@@ -33,14 +35,5 @@ class UserDetailsSerializer(serializers.ModelSerializer):
                  provided it is not already associated with another user account.
 
         """
-        normalised_email = value.strip().lower()
-        user = self.instance
-
-        email_in_use = (
-            User.objects.exclude(pk=user.pk).filter(email=normalised_email).exists()
-        )
-
-        if email_in_use:
-            raise serializers.ValidationError("Email is already in use.")
-
-        return normalised_email
+        normalised_email = normalise_email(value)
+        return validate_unique_email(normalised_email, current_user=self.instance)

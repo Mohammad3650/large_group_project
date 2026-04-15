@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from scheduler.services.email_validation_helpers import normalise_email
+
 User = get_user_model()
 
 
@@ -49,7 +51,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         Returns:
             str: The normalised email address in lowercase with surrounding whitespace removed.
         """
-        return value.strip().lower()
+        return normalise_email(value)
 
     def create(self, validated_data):
         """
