@@ -1,12 +1,11 @@
 import { api } from '../../../../api.js';
-
-const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions/';
+import { CALENDAR_SUBSCRIPTIONS_ENDPOINT } from '../../../../constants/apiEndpoints.js';
 
 /**
  * Refresh a saved calendar subscription.
  *
- * @param {number} subscriptionId - The subscription ID
- * @returns {Promise<Object>} The API response data
+ * @param {number} subscriptionId
+ * @returns {Promise<Object>}
  */
 async function refreshCalendarSubscription(subscriptionId) {
     const response = await api.post(

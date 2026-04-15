@@ -1,14 +1,13 @@
 import { api } from '../../../../api.js';
-
-const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions/';
+import { CALENDAR_SUBSCRIPTIONS_ENDPOINT } from '../../../../constants/apiEndpoints.js';
 
 /**
  * Create a new calendar subscription and import its events.
  *
- * @param {Object} payload - The subscription payload
- * @param {string} payload.name - Display name for the subscription
- * @param {string} payload.sourceUrl - ICS/webcal URL to import
- * @returns {Promise<Object>} The API response data
+ * @param {Object} payload
+ * @param {string} payload.name
+ * @param {string} payload.sourceUrl
+ * @returns {Promise<Object>}
  */
 async function createCalendarSubscription({ name, sourceUrl }) {
     const response = await api.post(CALENDAR_SUBSCRIPTIONS_ENDPOINT, {

@@ -1,11 +1,10 @@
 import { api } from '../../../../api.js';
-
-const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions/';
+import { CALENDAR_SUBSCRIPTIONS_ENDPOINT } from '../../../../constants/apiEndpoints.js';
 
 /**
  * Fetch all saved calendar subscriptions for the current user.
  *
- * @returns {Promise<Array>} The list of saved subscriptions
+ * @returns {Promise<Array>}
  */
 async function getCalendarSubscriptions() {
     const response = await api.get(CALENDAR_SUBSCRIPTIONS_ENDPOINT);
