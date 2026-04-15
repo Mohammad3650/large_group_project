@@ -1,5 +1,4 @@
-import { api } from '../../../../api.js';
-import downloadFile from '../Helpers/downloadFile.js';
+import handleExport from './handleExport.js';
 
 const EXPORT_ICS_ENDPOINT = '/api/time-blocks/export/ics/';
 const EXPORT_ICS_FILENAME = 'studysync_schedule.ics';
@@ -7,19 +6,11 @@ const EXPORT_ICS_FILENAME = 'studysync_schedule.ics';
 /**
  * Export the user's schedule as an ICS file.
  *
- * @param {Function} setError - Error state setter
- * @returns {Promise<void>} Resolves when export completes
+ * @param {Function} setError
+ * @returns {Promise<void>}
  */
 async function handleExportIcs(setError) {
-    try {
-        const response = await api.get(EXPORT_ICS_ENDPOINT, {
-            responseType: 'blob'
-        });
-
-        downloadFile(response.data, EXPORT_ICS_FILENAME);
-    } catch {
-        setError('Failed to export ICS');
-    }
+    return handleExport(EXPORT_ICS_ENDPOINT, EXPORT_ICS_FILENAME, setError);
 }
 
 export default handleExportIcs;

@@ -1,7 +1,6 @@
 from datetime import date, datetime
-from zoneinfo import ZoneInfo
 
-LOCAL_TIMEZONE = ZoneInfo("Europe/London")
+from scheduler.services.constants import LOCAL_TIMEZONE
 
 
 def normalise_ics_datetime(value):

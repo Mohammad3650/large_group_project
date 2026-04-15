@@ -1,12 +1,11 @@
 import { api } from '../../../../api.js';
-
-const CALENDAR_SUBSCRIPTIONS_ENDPOINT = '/api/calendar-subscriptions/';
+import { CALENDAR_SUBSCRIPTIONS_ENDPOINT } from '../../../../constants/apiEndpoints.js';
 
 /**
  * Delete a saved calendar subscription.
  *
- * @param {number} subscriptionId - The subscription ID
- * @returns {Promise<void>} Resolves when deletion completes
+ * @param {number} subscriptionId
+ * @returns {Promise<Object>}
  */
 async function deleteCalendarSubscription(subscriptionId) {
     const response = await api.delete(
