@@ -36,6 +36,16 @@ describe('handleExport', () => {
         expect(setError).not.toHaveBeenCalled();
     });
 
+    it('sets the fallback file error message when filename has no extension', async () => {
+        const setError = vi.fn();
+        api.get.mockRejectedValue(new Error('Export failed'));
+
+        await handleExport('/api/export/', 'studysync_schedule', setError);
+
+        expect(downloadFile).not.toHaveBeenCalled();
+        expect(setError).toHaveBeenCalledWith('Failed to export file');
+    });
+
     it('sets a CSV error message when csv export fails', async () => {
         const setError = vi.fn();
         api.get.mockRejectedValue(new Error('Export failed'));

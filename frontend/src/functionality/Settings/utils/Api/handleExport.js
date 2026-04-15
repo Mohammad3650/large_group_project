@@ -2,7 +2,12 @@ import { api } from '../../../../api.js';
 import downloadFile from '../Helpers/downloadFile.js';
 
 function buildExportErrorMessage(filename) {
-    const extension = filename.split('.').pop()?.toUpperCase() || 'file';
+    const filenameParts = filename.split('.');
+    const hasExtension = filenameParts.length > 1;
+    const extension = hasExtension
+        ? filenameParts.at(-1)?.toUpperCase()
+        : 'file';
+
     return `Failed to export ${extension}`;
 }
 
