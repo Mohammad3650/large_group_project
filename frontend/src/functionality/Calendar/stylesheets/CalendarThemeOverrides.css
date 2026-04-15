@@ -228,9 +228,14 @@ body.dark-theme .sx__calendar-header select {
 
 body.dark-theme .sx__date-input svg,
 body.dark-theme .sx__view-selection-selected-item svg,
-body.dark-theme .sx__calendar-header svg {
+body.dark-theme .sx__calendar-header svg,
+body.dark-theme .sx__date-picker-popup svg {
     fill: var(--text-main) !important;
     color: var(--text-main) !important;
+}
+
+body.dark-theme .sx__date-picker-popup .sx__chevron {
+    border-color: var(--text-main) !important;
 }
 
 body.dark-theme .sx__time-axis,
