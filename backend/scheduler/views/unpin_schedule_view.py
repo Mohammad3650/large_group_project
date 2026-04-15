@@ -1,8 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from ..models import TimeBlock
+from ..services.time_block_mutation_service import mutate_time_block
 
 
 @api_view(["PATCH"])
@@ -21,11 +19,7 @@ def unpin_schedule(request, block_id):
         200 OK: If the time block was successfully unpinned.
         404 Not Found: If the time block does not exist or does not belong to the user.
     """
-    try:
-        block = TimeBlock.objects.get(id=block_id, day__user=request.user)
-        block.pinned = False
-        block.pinned_at = None
-        block.save()
-        return Response(status=status.HTTP_200_OK)
-    except TimeBlock.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    return mutate_time_block(request.user, block_id, {
+        "pinned": False,
+        "pinned_at": None,
+    })
